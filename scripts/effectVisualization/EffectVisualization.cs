@@ -16,7 +16,7 @@ public partial class EffectVisualization : CanvasItem
 
     public EffectVisualization(EffectVisualization other) : base(other)
     {
-        //
+        //TODO remove comment
         _lifespan = other._lifespan;
         _enabled = other._enabled;
         _delay = other._delay;
