@@ -1,0 +1,12 @@
+{
+	"AssetGroups": [
+		{
+			"Name": "typelesss",
+			"Assets": [
+				{"Name": "TypelessPellet", "AssetPath": "res://scenes/effectVisualizations/effect_visualization_missile_typeless_pellet.tscn"}
+			]
+		}
+	]
+
+
+}

@@ -1,0 +1,42 @@
+{
+    "Parts": [
+        {
+            "ResourceName": "JoyFormSquare",
+            "ResourceType": "polygon",
+            "MovementRules": [
+                {
+                    "ActiveStates": [ 0 ],
+                    "VerticeIndices": [],
+                    "TransformationType": "rotation",
+                    "TransformationDuration": -1.0,
+                    "Acceleration": 1.0,
+                    "Transformation": [ 0.0, 0.0, 180.0 ]
+                }
+            ],
+            "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
+        },
+        {
+            "ResourceName": "JoyFormSquare",
+            "ResourceType": "polygon",
+            "MovementRules": [
+                {
+                    "ActiveStates": [ 0 ],
+                    "VerticeIndices": [],
+                    "TransformationType": "rotation",
+                    "TransformationDuration": -1.0,
+                    "Acceleration": 1.0,
+                    "Transformation": [ 0.0, 0.0, -40.0 ]
+                }
+            ],
+            "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
+        }
+    ],
+    "BoundingZones": [
+        {
+            "Shape": "ellipse",
+            "Type": "effectSender",
+            "ZoneArgs": [ 35.0 ],
+            "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
+        }
+    ]
+}

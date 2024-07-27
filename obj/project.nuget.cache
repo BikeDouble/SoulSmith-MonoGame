@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "SCgahbNozw4CidQ/Qjm4YLl4FlSV3kL23eBxWSlnLxwTzhF13vewxiV5C/Q++cBOUuXAY8Uc+z/VIbJXB7rskQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\eviec\\Documents\\GitHub\\SoulSmithMonoGame\\SoulSmith-MonoGame\\SoulSmith-MonoGame.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\eviec\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\eviec\\.nuget\\packages\\monogame.extended\\4.0.0\\monogame.extended.4.0.0.nupkg.sha512",
+    "C:\\Users\\eviec\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
+  ],
+  "logs": []
+}

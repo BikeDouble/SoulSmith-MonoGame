@@ -1,0 +1,3 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/eviec/Documents/GitHub/SoulSmithMonoGame/SoulSmith-MonoGame/Content/fonts/uiFont.spritefont","C:/Users/eviec/Documents/GitHub/SoulSmithMonoGame/SoulSmith-MonoGame/Content/bin/DesktopGL/Content/fonts/uiFont.xnb","FontDescriptionProcessor","SpriteFontContent",2068,21535,0.2726496
+"C:/Users/eviec/Documents/GitHub/SoulSmithMonoGame/SoulSmith-MonoGame/Content/unitSprites/joyv1.png","C:/Users/eviec/Documents/GitHub/SoulSmithMonoGame/SoulSmith-MonoGame/Content/bin/DesktopGL/Content/unitSprites/joyv1.xnb","TextureProcessor","Texture2DContent",6371,276761,0.1663758

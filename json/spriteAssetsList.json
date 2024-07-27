@@ -1,0 +1,18 @@
+{
+	"AssetGroups": [
+		{
+			"Name": "forms",
+			"Assets": [
+				{"Name": "joyForm", "AssetPath": "json/sprites/joyForm.json"}
+			]
+		},
+		{
+			"Name": "areaOneUnits",
+			"Assets": [
+				{"Name": "basicScrap", "AssetPath": "tbd"}
+			]
+		}
+	]
+
+
+}

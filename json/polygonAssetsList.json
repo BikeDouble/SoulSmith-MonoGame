@@ -1,0 +1,21 @@
+{
+	"AssetGroups": [
+		{
+			"Name": "FormSprites",
+			"Assets": [
+				{
+					"Name": "JoyFormSquare",
+					"AssetPath": "json/shapes/joyFormSquare.json"
+				},
+				{
+					"Name": "BlueJoyFormSquare",
+					"AssetPath": "json/shapes/blueJoyFormSquare.json"
+				},
+				{
+					"Name": "MoveButton",
+					"AssetPath": "json/shapes/moveButton.json"
+				}
+			]
+		}
+	]
+}

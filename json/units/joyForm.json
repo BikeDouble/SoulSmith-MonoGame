@@ -1,0 +1,13 @@
+{
+    "FriendlyName": "Joy",
+    "SpriteName": "joyForm",
+    "MaxHealth": 1200,
+    "Attack": 120,
+    "Defense": 120,
+    "MoveSet": [
+        "TypelessHit",
+        "TypelessDoubleHit",
+        "TypelessAttackUp"
+    ],
+    "Emotion": 1
+}
