@@ -34,8 +34,8 @@
     "BoundingZones": [
         {
             "Shape": "ellipse",
-            "Type": "effectSender",
-            "ZoneArgs": [ 35.0 ],
+            "Types": [ "eSender", "eReceiver"],
+            "ZoneArgs": [ 55.0 ],
             "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
         }
     ]

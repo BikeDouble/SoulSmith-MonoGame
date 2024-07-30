@@ -132,6 +132,7 @@ public partial class AssetManager<T> where T : class
     // Get a specific asset
     public TrackedResource<T> GetAsset(string assetName)
     {
+        //Debug.Assert(assetName != "JoyForm");
         Asset<T> asset = null;
         _assetDict.TryGetValue(assetName.ToLower(), out asset);
 

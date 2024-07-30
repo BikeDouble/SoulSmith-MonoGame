@@ -19,7 +19,10 @@ public partial class UnitUIMoveButton : Button
 		AddChild( _label );
 	}
 
-	public UnitUIMoveButton(SpriteFont font, TrackedResource<ColoredPolygon> resource, Position position = null) : base(resource, position) 
+	public UnitUIMoveButton(
+		SpriteFont font, 
+		DrawableResource_Polygon resource,
+		Position position = null) : base(resource, (DrawableResource)resource.DeepClone(), null, position) 
 	{
         _label = new CanvasItem(font, "O");
         AddChild(_label);
@@ -30,7 +33,8 @@ public partial class UnitUIMoveButton : Button
 		_move = move;
 		SetLabelText(move.FriendlyName);
 		SetEmotionColor(move.Emotion.Color);
-		Resource.UpdateColor(_idleColor);
+		IdleResource?.UpdateColor(_idleColor);
+		HoveredResource?.UpdateColor(_hoverColor);
 	}
 
 	private void SetEmotionColor(Color color)
@@ -45,18 +49,6 @@ public partial class UnitUIMoveButton : Button
 		_hoverColor = Color.Gray;
 		_idleColor = Color.Gray;
 	}
-
-    public override void OnMouseEnter()
-    {
-		Resource.UpdateColor(_hoverColor);
-        base.OnMouseEnter();
-    }
-
-    public override void OnMouseExit()
-    {
-		Resource.UpdateColor(_idleColor);
-        base.OnMouseExit();
-    }
 
     private void SetLabelText(string text)
 	{

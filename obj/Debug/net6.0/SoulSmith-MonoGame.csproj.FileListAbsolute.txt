@@ -26,3 +26,4 @@ C:\Users\eviec\Documents\GitHub\SoulSmithMonoGame\SoulSmith-MonoGame\obj\Debug\n
 C:\Users\eviec\Documents\GitHub\SoulSmithMonoGame\SoulSmith-MonoGame\bin\Debug\net6.0\Content\unitSprites\joyv1.xnb
 C:\Users\eviec\Documents\GitHub\SoulSmithMonoGame\SoulSmith-MonoGame\bin\Debug\net6.0\MonoGame.Extended.dll
 C:\Users\eviec\Documents\GitHub\SoulSmithMonoGame\SoulSmith-MonoGame\bin\Debug\net6.0\Content\fonts\uiFont.xnb
+C:\Users\eviec\Documents\GitHub\SoulSmithMonoGame\SoulSmith-MonoGame\obj\Debug\net6.0\SoulSmith-MonoGame.sourcelink.json

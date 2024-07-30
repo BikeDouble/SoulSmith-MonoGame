@@ -13,10 +13,10 @@ public partial class EffectQueue : CanvasItem
     private DropOutStack<MoveInput> _moveHistory; //Move history is pushed after move is queued
     private bool _processingEnabled = true;
     private Unit _lastMoveTarget;
-    private Effect _moveBeginEffect = new Effect_Trigger(EffectTrigger.OnMoveBegin, EffectTargetingStyle.Self);
-    private Effect _moveEndEffect = new Effect_Trigger(EffectTrigger.OnMoveEnd, EffectTargetingStyle.Self);
-    private Effect _roundBeginEffect = new Effect_Trigger(EffectTrigger.OnRoundBegin, EffectTargetingStyle.Self);
-    private Effect _roundEndEffect = new Effect_Trigger(EffectTrigger.OnRoundEnd, EffectTargetingStyle.Self);
+    private Effect _moveBeginEffect = GameManager.InstantiateEffect(EffectTemplate.Trigger(EffectTrigger.OnMoveBegin, EffectTargetingStyle.Self));
+    private Effect _moveEndEffect = GameManager.InstantiateEffect(EffectTemplate.Trigger(EffectTrigger.OnMoveEnd, EffectTargetingStyle.Self));
+    private Effect _roundBeginEffect = GameManager.InstantiateEffect(EffectTemplate.Trigger(EffectTrigger.OnRoundBegin, EffectTargetingStyle.Self));
+    private Effect _roundEndEffect = GameManager.InstantiateEffect(EffectTemplate.Trigger(EffectTrigger.OnRoundEnd, EffectTargetingStyle.Self));
 
     public readonly struct QueuedEffect
     {
@@ -224,11 +224,13 @@ public partial class EffectQueue : CanvasItem
     //
     public void ProcessEffect(EffectInput effectInput, EffectResult parentEffectResult = null)
     {
-        Effect effect = effectInput.Effect;
-        Unit user = effectInput.Sender;
-        Unit target = effectInput.Target;
+        GenerateEffectRequestArgs args = new GenerateEffectRequestArgs();
+        args.ParentEffectResult = parentEffectResult;
+        args.Target = effectInput.Target;
+        args.Sender = effectInput.Sender;
+        args.ChildEffects = effectInput.Effect.ChildEffects;
 
-        user.Stats.SendEffect(effect.GenerateEffectRequest(user, target));
+        effectInput.Sender.Stats.SendEffect(effectInput.Effect.GenerateEffectRequest(args));
     }
 
     public void ResolveEffect(EffectRequest request, EffectResult result)

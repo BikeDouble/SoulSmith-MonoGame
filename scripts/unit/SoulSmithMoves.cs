@@ -79,52 +79,5 @@ namespace SoulSmithMoves
         public Unit Sender;
         public Unit Target;
     }
-
-    public static class MoveHelpers
-    {
-        public static Effect StatHit(
-            double percent,
-            StatType stat,
-            string visualizationName = null,
-            double visualizationDelay = 0f)
-        {
-            List<Effect> childEffects = new List<Effect>();
-            childEffects.Add(new Effect_Trigger_OnHit());
-            childEffects.Add(new Effect_Trigger(EffectTrigger.OnBeingHit, EffectTargetingStyle.ParentTarget));
-
-            Effect effect = new Effect_StatPercent_Damage(DamageType.Hit,
-                                                          stat,
-                                                          percent,
-                                                          EffectTargetingStyle.MoveTarget,
-                                                          visualizationName,
-                                                          visualizationDelay,
-                                                          childEffects
-                                                          );
-            return effect;
-        }
-
-        //Returns an attack that deals (percent * attacker's attack stat)
-        public static Effect AttackHit(
-            double percent,
-            string visualizationName = null,
-            double visualizationDelay = 0f)
-        {
-            List<Effect> childEffects = new List<Effect>();
-            childEffects.Add(new Effect_Trigger_OnHit());
-            childEffects.Add(new Effect_Trigger(EffectTrigger.OnBeingHit, EffectTargetingStyle.ParentTarget));
-
-            Effect effect = new Effect_StatPercent_Damage(DamageType.Hit,
-                                                          StatType.Attack,
-                                                          percent,
-                                                          EffectTargetingStyle.MoveTarget,
-                                                          visualizationName,
-                                                          visualizationDelay,
-                                                          childEffects
-                                                          );
-
-            return effect;
-        }
-
-    }
 }
 

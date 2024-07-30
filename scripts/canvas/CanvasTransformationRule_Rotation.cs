@@ -18,7 +18,7 @@ public class CanvasTransformationRule_Rotation : CanvasTransformationRule
         _rotation = rotation * (float)(Math.PI/180);
     }
 
-    public CanvasTransformationRule_Rotation(CanvasTransformationRule_Rotation other) : base(other)
+    public CanvasTransformationRule_Rotation(CanvasTransformationRule_Rotation other, CanvasItem affectedItem = null) : base(other, affectedItem)
     {
         _rotation = other._rotation;
         _origin = new Vector2(other._origin.X, other._origin.Y);
@@ -27,6 +27,11 @@ public class CanvasTransformationRule_Rotation : CanvasTransformationRule
     public override object DeepClone()
     {
         return new CanvasTransformationRule_Rotation(this);
+    }
+
+    public override object DeepClone(CanvasItem affectedItem)
+    {
+        return new CanvasTransformationRule_Rotation(this, affectedItem);
     }
 
     protected override void TransformInternal(double delta, CanvasItem item)

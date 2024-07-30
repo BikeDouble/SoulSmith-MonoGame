@@ -10,7 +10,7 @@ public partial class UnitUIMoveMenu : CanvasItem
 {
 	private List<UnitUIMoveButton> _moveButtons;
 
-    public UnitUIMoveMenu(SpriteFont font, TrackedResource<ColoredPolygon> moveButtonResource = null) : base()
+    public UnitUIMoveMenu(SpriteFont font, DrawableResource_Polygon moveButtonResource = null) : base()
     {
 		CreateMoveButtons(font, moveButtonResource);
     }
@@ -20,7 +20,7 @@ public partial class UnitUIMoveMenu : CanvasItem
     private const int SPACEBETWEENBUTTONS = 70;
 	private const float MOVEBUTTONSCALE = 1.2f;
 
-    private void CreateMoveButtons(SpriteFont font, TrackedResource<ColoredPolygon> resource = null)
+    private void CreateMoveButtons(SpriteFont font, DrawableResource_Polygon resource = null)
 	{
 		if (_moveButtons != null)
 			return;
@@ -30,7 +30,7 @@ public partial class UnitUIMoveMenu : CanvasItem
         for (int i = 0; i < 3; i++)
         {
 			Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (i * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE);
-            UnitUIMoveButton button = new UnitUIMoveButton(font, resource, buttonPosition);
+            UnitUIMoveButton button = new UnitUIMoveButton(font, (DrawableResource_Polygon)resource?.DeepClone(), buttonPosition);
 			_moveButtons.Add(button);
             AddChild(button);
             button.ButtonPressedEventHandler += OnMoveButtonPressed;

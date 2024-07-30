@@ -18,7 +18,7 @@ public class CanvasTransformationRule_VertexTranslation : CanvasTransformationRu
         _verticeIndices = verticeIndices;
     }
 
-    public CanvasTransformationRule_VertexTranslation(CanvasTransformationRule_VertexTranslation other) : base(other)
+    public CanvasTransformationRule_VertexTranslation(CanvasTransformationRule_VertexTranslation other, CanvasItem affectedItem = null) : base(other, affectedItem)
     {
         _verticeIndices = other._verticeIndices;
         _translation = new Vector2(other._translation.X, other._translation.Y);
@@ -27,6 +27,11 @@ public class CanvasTransformationRule_VertexTranslation : CanvasTransformationRu
     public override object DeepClone()
     {
         return new CanvasTransformationRule_VertexTranslation(this);
+    }
+
+    public override object DeepClone(CanvasItem affectedItem)
+    {
+        return new CanvasTransformationRule_VertexTranslation(this, affectedItem);
     }
 
     protected override void TransformInternal(double delta, CanvasItem item)

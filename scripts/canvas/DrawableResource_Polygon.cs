@@ -15,7 +15,7 @@ public class DrawableResource_Polygon : DrawableResource
     {
         _staticPolygon = new Polygon(other._staticPolygon.Vertices);
         _color = other._color;
-        _drawnPolygon = _staticPolygon;
+        _drawnPolygon = other._drawnPolygon;
     }
 
     public DrawableResource_Polygon(TrackedResource<ColoredPolygon> polygon)

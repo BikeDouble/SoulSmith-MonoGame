@@ -1,6 +1,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace SoulSmithStats
 {
@@ -22,9 +24,9 @@ namespace SoulSmithStats
 
     public readonly struct StatModifier
     {
-        public StatModifier(List<StatType> stats, int flatMod = 0, double additiveMod = 0f, double multiplicativeMod = 1f)
+        public StatModifier(IEnumerable<StatType> stats, int flatMod = 0, double additiveMod = 0f, double multiplicativeMod = 1f)
         {
-            Stats = stats;
+            Stats = stats.ToList().AsReadOnly();
             FlatMod = flatMod;
             AdditiveMod = additiveMod;
             MultiplicativeMod = multiplicativeMod;
@@ -32,7 +34,8 @@ namespace SoulSmithStats
 
         public StatModifier(StatType stat, int flatMod = 0, double additiveMod = 0f, double multiplicativeMod = 1f)
         {
-            Stats = new List<StatType> { stat };
+            List<StatType> stats = new List<StatType> { stat };
+            Stats = stats.AsReadOnly();
             FlatMod = flatMod;
             AdditiveMod = additiveMod;
             MultiplicativeMod = multiplicativeMod;
@@ -61,13 +64,13 @@ namespace SoulSmithStats
 
         public StatModifier()
         {
-            Stats = new List<StatType>();
+            Stats = null;
             FlatMod = 0;
             AdditiveMod = 0f;
             MultiplicativeMod = 1f;
         }
 
-        public List<StatType> Stats { get; }
+        public ReadOnlyCollection<StatType> Stats { get; }
         public int FlatMod { get; }
         public double AdditiveMod { get; }
         public double MultiplicativeMod {  get; }

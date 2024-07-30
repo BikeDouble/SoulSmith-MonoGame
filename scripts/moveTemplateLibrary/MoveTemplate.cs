@@ -3,6 +3,7 @@ using SoulSmithEmotions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 
 namespace SoulSmithMoves
@@ -11,18 +12,18 @@ namespace SoulSmithMoves
     {
         public MoveTemplate(string name,
                         string description,
-                        List<Effect> effects,
+                        IEnumerable<EffectTemplate> effects,
                         MoveTargetingStyle targetingStyle = MoveTargetingStyle.Enemy,
                         EmotionTag type = EmotionTag.Typeless)
         {
             FriendlyName = name;
             Description = description;
-            Effects = effects.AsReadOnly();
+            Effects = effects?.ToList().AsReadOnly();
             TargetingStyle = targetingStyle;
             EmotionTag = type;
         }
 
-        public ReadOnlyCollection<Effect> Effects { get; }
+        public ReadOnlyCollection<EffectTemplate> Effects { get; }
         public EmotionTag EmotionTag { get; }
         public MoveTargetingStyle TargetingStyle { get; }
         public string FriendlyName { get; }

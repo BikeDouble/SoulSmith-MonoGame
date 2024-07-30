@@ -23,9 +23,17 @@ public class CanvasTransformationRule : IDeepCloneable
         _acceleration = acceleration;
     }
 
-    public CanvasTransformationRule(CanvasTransformationRule other)
+    public CanvasTransformationRule(CanvasTransformationRule other, CanvasItem affectedItem = null)
     {
-        _affectedItem = (CanvasItem)other._affectedItem.DeepClone();
+        if (affectedItem == null)
+        {
+            _affectedItem = (CanvasItem)other._affectedItem.DeepClone();
+        }
+        else
+        {
+            _affectedItem = affectedItem;
+        }
+
         _activeStates = other._activeStates;
         _totalDuration = other._totalDuration;
         _acceleration = other._acceleration;   
@@ -92,6 +100,11 @@ public class CanvasTransformationRule : IDeepCloneable
     public virtual object DeepClone()
     {
         return new CanvasTransformationRule(this);
+    }
+
+    public virtual object DeepClone(CanvasItem affectedItem)
+    {
+        return new CanvasTransformationRule(this, affectedItem);
     }
 
     public CanvasItem AffectedItem { get { return _affectedItem; } }

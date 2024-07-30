@@ -8,12 +8,12 @@
 					"AssetPath": "json/shapes/joyFormSquare.json"
 				},
 				{
-					"Name": "BlueJoyFormSquare",
-					"AssetPath": "json/shapes/blueJoyFormSquare.json"
-				},
-				{
 					"Name": "MoveButton",
 					"AssetPath": "json/shapes/moveButton.json"
+				},
+				{
+					"Name": "TargetButtonIdle",
+					"AssetPath": "json/shapes/targetButtonIdle.json"
 				}
 			]
 		}

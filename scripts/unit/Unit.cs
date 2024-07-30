@@ -27,7 +27,7 @@ public partial class Unit : CanvasItem
 		UnitUI uI,
         EmotionTag emotion,
 		string friendlyName,
-		int timeOnBoard)
+		int timeOnBoard) : base()
 	{
 		_sprite = sprite;
 		AddChild(sprite);

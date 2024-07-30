@@ -25,12 +25,12 @@ public partial class EffectVisualization_Missile : EffectVisualization
         MoveMissile(delta);
     }
 
-    public override void BeginVisualization(Unit user, Unit target, double delay)
+    public override void BeginVisualization(Unit sender, Unit target, double delay)
     {
-        base.BeginVisualization(user, target, delay);
+        base.BeginVisualization(sender, target, delay);
         _remainingFlightDuration = _totalFlightDuration;
-        _target = target.Sprite.GetRandomVisualizationPoint();
-        _start = user.Sprite.GetRandomVisualizationPoint();
+        _target = target.Sprite.GetRandomBoundingPointGlobal(BoundingZoneType.EffectReceiver);
+        _start = sender.Sprite.GetRandomBoundingPointGlobal(BoundingZoneType.EffectSender);
         Position.Set(_start);
     }
 

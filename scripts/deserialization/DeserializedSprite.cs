@@ -27,7 +27,7 @@ public class DeserializedCanvasTransformationRule
 public class DeserializedBoundingZone
 {
     public string Shape { get; set; }
-    public string Type { get; set; }
+    public string[] Types { get; set; } = null;
     public float[] ZoneArgs { get; set; }
     public float[] PositionArgs { get; set; } = null;
 }

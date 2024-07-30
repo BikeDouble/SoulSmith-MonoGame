@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
+using System.Collections.ObjectModel;
 
 public class CanvasItem : FormsObject
 {
@@ -14,10 +15,13 @@ public class CanvasItem : FormsObject
     private string _resourceType = "none";
     public Position Position = null;  
     private DrawableResource _drawableResource = null;
+    private Dictionary<BoundingZoneType, CanvasItem> _boundingZones = null;
 
-    public CanvasItem(Position position = null)
+    public CanvasItem(Position position = null, Dictionary<BoundingZoneType, CanvasItem> boundingZones = null)
     {
         Position = new Position(position);
+        _boundingZones = boundingZones;
+        AddChildrenInBoundingZones();
     }
 
     public CanvasItem(int x, int y)
@@ -30,26 +34,18 @@ public class CanvasItem : FormsObject
         Position = new Position(positionArgs);
     }
 
-    public CanvasItem(TrackedResource<Texture2D> sprite, Position position = null)
+    public CanvasItem(DrawableResource sprite, Dictionary<BoundingZoneType, CanvasItem> boundingZones = null, Position position = null)
     {
         Position = new Position(position);
 
         if (sprite != null)
         {
-            _drawableResource = new DrawableResource_Texture2D(sprite);
-            _drawableResource.UpdatePosition(position);
+            _drawableResource = sprite;
+            UpdateResourcePosition();
         }
-    }
 
-    public CanvasItem(TrackedResource<ColoredPolygon> sprite, Position position = null)
-    {
-        Position = new Position(position);
-
-        if (sprite != null)
-        {
-            _drawableResource = new DrawableResource_Polygon(sprite);
-            _drawableResource.UpdatePosition(Position);
-        }
+        _boundingZones = boundingZones;
+        AddChildrenInBoundingZones();
     }
 
     public CanvasItem(SpriteFont font, string text = null, Position position = null)
@@ -59,7 +55,7 @@ public class CanvasItem : FormsObject
         if (font != null)
         {
             _drawableResource = new DrawableResource_Text(font, text);
-            _drawableResource.UpdatePosition(Position);
+            UpdateResourcePosition();
         }
     }
 
@@ -69,6 +65,31 @@ public class CanvasItem : FormsObject
         _visible = other._visible;
 
         _drawableResource = (DrawableResource)other._drawableResource?.DeepClone();
+        _boundingZones = CloneBoundingZones(other.BoundingZones, Children, other.Children);
+    }
+
+    private static Dictionary<BoundingZoneType, CanvasItem> CloneBoundingZones(
+        ReadOnlyDictionary<BoundingZoneType, CanvasItem> otherZones, 
+        ReadOnlyCollection<FormsObject> children,
+        ReadOnlyCollection<FormsObject> otherChildren)
+    {
+        if (otherZones == null) return null;
+
+        Dictionary<BoundingZoneType, CanvasItem> boundingZones = new();
+
+        foreach (KeyValuePair<BoundingZoneType, CanvasItem> pair in otherZones) 
+        {
+            int zoneIndex = otherChildren.IndexOf(pair.Value);
+
+            CanvasItem zone = children[zoneIndex] as CanvasItem;
+
+            if (zone != null)
+                boundingZones.TryAdd(pair.Key, zone);
+        }
+
+        if (boundingZones.Count < 1) return null;
+
+        return boundingZones;
     }
 
     public event EventHandler<GetGlobalPositionEventArgs> GetGlobalPositionEventHandler;
@@ -92,6 +113,48 @@ public class CanvasItem : FormsObject
         e.Position += Position;
 
         GetGlobalPositionEventHandler?.Invoke(this, e);
+    }
+
+    private void AddChildrenInBoundingZones()
+    {
+        if (_boundingZones == null) return;
+
+        foreach (KeyValuePair<BoundingZoneType, CanvasItem> item in _boundingZones)
+        {
+            AddChild(item.Value);
+        }
+    }
+
+    public virtual Vector2 GetRandomBoundingPointLocal(BoundingZoneType zoneType)
+    {
+        if (zoneType == BoundingZoneType.None)
+            return Vector2.Zero;
+
+        if (_boundingZones == null)
+            return Vector2.Zero;
+
+        CanvasItem zone = _boundingZones.GetValueOrDefault(zoneType);
+
+        if (zone == null)
+            return Vector2.Zero;
+
+        return zone.GetRandomBoundingPointLocal(zoneType);
+    }
+
+    public virtual Vector2 GetRandomBoundingPointGlobal(BoundingZoneType zoneType)
+    {
+        if (zoneType == BoundingZoneType.None)
+            return Vector2.Zero;
+
+        if (_boundingZones == null)
+            return Vector2.Zero;
+
+        CanvasItem zone = _boundingZones.GetValueOrDefault(zoneType);
+
+        if (zone == null)
+            return Vector2.Zero;
+
+        return zone.GetRandomBoundingPointGlobal(zoneType);
     }
 
     public event EventHandler<GetGlobalVisibilityEventArgs> GetGlobalVisibilityEventHandler;
@@ -137,37 +200,53 @@ public class CanvasItem : FormsObject
     public void Transform(Position transformation)
     {
         Position.Transform(transformation);
-        Resource.UpdatePosition(Position);
+        UpdateResourcePosition();
     }
 
     public void Translate(Vector2 translation)
     {
         Position.Translate(translation);
-        Resource.UpdatePosition(Position);
+        UpdateResourcePosition();
     }
 
     public void Rotate(float rotation)
     {
         Position.Rotate(rotation);
-        Resource.UpdatePosition(Position);
+        UpdateResourcePosition();
     }
 
     public void Rotate(float rotation, Vector2 origin)
     {
         Position.Rotate(rotation, origin);
-        Resource.UpdatePosition(Position);
+        UpdateResourcePosition();
     }
 
-    public override void Draw(Position absolutePosition, SpriteBatch spriteBatch)
+    public virtual void UpdateResourcePosition()
+    {
+        Resource?.UpdatePosition(Position);
+    }
+
+    public override void Draw(Position absolutePosition, SpriteBatch spriteBatch, DrawableResource overridenResource = null)
     {
         Position newPosition;
 
         newPosition = new Position(absolutePosition);
         newPosition.Transform(Position);
 
-        if ((_drawableResource != null) && (_visible))
+        DrawableResource resourceToDraw;
+
+        if (overridenResource != null)
         {
-            _drawableResource.Draw(newPosition, spriteBatch);
+            resourceToDraw = overridenResource;
+        }
+        else
+        {
+            resourceToDraw = _drawableResource;
+        }
+
+        if ((resourceToDraw != null) && (_visible))
+        {
+            resourceToDraw.Draw(newPosition, spriteBatch);
         }
 
         if (_visible)
@@ -200,6 +279,7 @@ public class CanvasItem : FormsObject
         if (child is CanvasItem)
         {
             DeRegisterChildEvents((CanvasItem)child);
+            RemoveBoundingZones((CanvasItem)child);
         }
 
         base.RemoveChild(child);
@@ -225,13 +305,42 @@ public class CanvasItem : FormsObject
         child.GetGlobalVisibilityEventHandler -= IsVisibleInternal;
     }
 
+    private void RemoveBoundingZones(CanvasItem child)
+    {
+        if ((_boundingZones == null) || (_boundingZones.Count == 0))
+            return;
+
+        if (_boundingZones.ContainsValue(child))
+        {
+            List<BoundingZoneType> badKeys = new();
+            foreach (KeyValuePair<BoundingZoneType, CanvasItem> pair in _boundingZones)
+            {
+                if (pair.Value == child)
+                    badKeys.Add(pair.Key);
+            }
+
+            foreach (BoundingZoneType badKey in badKeys)
+            {
+                _boundingZones.Remove(badKey);
+            }
+        }
+    }
+
     public override object DeepClone()
     {
         return new CanvasItem(this);
     }
 
     public bool Visible { get { return _visible; } }
-    protected DrawableResource Resource { get { return _drawableResource; } set { _drawableResource = value; } }
+    protected virtual DrawableResource Resource { get { return _drawableResource; } set { _drawableResource = value; } }
+    public ReadOnlyDictionary<BoundingZoneType, CanvasItem> BoundingZones { get { return _boundingZones == null ? null : new ReadOnlyDictionary<BoundingZoneType, CanvasItem>(_boundingZones); } }
+}
+
+public enum BoundingZoneType
+{
+    None = 0,
+    EffectSender,
+    EffectReceiver
 }
 
 public class GetGlobalPositionEventArgs : EventArgs
@@ -265,10 +374,8 @@ public class Position
         if (other == null)
             return;
 
-        Width = other.Width;
-        Height = other.Height;
-        X = other.X;
-        Y = other.Y;
+        Scale = other.Scale;
+        Coordinates = other.Coordinates;
         Rotation = other.Rotation;
     }
 

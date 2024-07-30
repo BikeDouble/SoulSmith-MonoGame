@@ -11,7 +11,7 @@ public partial class UnitUI : CanvasItem
 	private UnitUIHealthBar _healthBar;
 	private Button _targetButton; //TODO
 
-	public UnitUI(SpriteFont font, TrackedResource<ColoredPolygon> moveButton, TrackedResource<ColoredPolygon> targetButton)
+	public UnitUI(SpriteFont font, DrawableResource_Polygon moveButton, DrawableResource_Polygon targetButton)
 	{
         _moveMenu = new UnitUIMoveMenu(font, moveButton);
         _moveMenu.MoveButtonPressedEventHandler += OnMoveButtonPressed;
@@ -20,7 +20,7 @@ public partial class UnitUI : CanvasItem
 		Position healthBarPosition = new Position(0, 120);
         _healthBar = new UnitUIHealthBar(font, healthBarPosition);
         AddChild(_healthBar);
-        _targetButton = new Button(targetButton);
+        _targetButton = new Button(new DrawableResource_Polygon(targetButton), new DrawableResource_Polygon(targetButton));
         _targetButton.ButtonPressedEventHandler += OnTargetButtonPressed;
         AddChild(_targetButton);
 

@@ -25,7 +25,7 @@ public class FormsObject : IDeepCloneable
     {
         _children = new();
 
-        foreach (FormsObject child in _children)
+        foreach (FormsObject child in other._children)
         {
             _children.Add((FormsObject)child.DeepClone());
         }
@@ -60,7 +60,7 @@ public class FormsObject : IDeepCloneable
         }
     }
 
-    public virtual void Draw(Position parentAbsolutePosition, SpriteBatch spriteBatch)
+    public virtual void Draw(Position parentAbsolutePosition, SpriteBatch spriteBatch, DrawableResource activeResource = null)
     {
 
     }

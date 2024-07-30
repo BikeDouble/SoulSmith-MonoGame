@@ -47,8 +47,12 @@ public static class TypelessMoveTemplates
 
     private static MoveTemplate Hit()
     {
-        List<Effect> effects = new List<Effect>();
-        Effect effect = MoveHelpers.AttackHit(1f, TYPELESSPELLETVISUALIZATIONNAME);
+        List<EffectTemplate> effects = new List<EffectTemplate>();
+        EffectTemplate effect = EffectTemplate.AttackHit(
+            1f, 
+            EffectTargetingStyle.MoveTarget,
+            null,
+            TYPELESSPELLETVISUALIZATIONNAME);
         effects.Add(effect);
 
         MoveTemplate move = new MoveTemplate(TYPELESSHITFRIENDLYNAME, TYPELESSHITFRIENDLYDESCRIPT, effects);
@@ -59,11 +63,19 @@ public static class TypelessMoveTemplates
     private static MoveTemplate DoubleHit()
     {
 
-        List<Effect> effects = new List<Effect>();
-        Effect effect = MoveHelpers.AttackHit(0.4f, TYPELESSPELLETVISUALIZATIONNAME);
+        List<EffectTemplate> effects = new List<EffectTemplate>();
+        EffectTemplate effect = EffectTemplate.AttackHit(
+            0.4f,
+            EffectTargetingStyle.MoveTarget,
+            null,
+            TYPELESSPELLETVISUALIZATIONNAME);
         effects.Add(effect);
 
-        effect = MoveHelpers.AttackHit(0.4f, TYPELESSPELLETVISUALIZATIONNAME, 0.3f);
+        effect = EffectTemplate.AttackHit(
+            0.4f,
+            EffectTargetingStyle.MoveTarget,
+            null,
+            TYPELESSPELLETVISUALIZATIONNAME);
         effects.Add(effect);
 
         MoveTemplate move = new MoveTemplate(TYPLESSDOUBLEHITFRIENDLYNAME, TYPLESSDOUBLEHITFRIENDLYDESCRIPT, effects);
@@ -72,9 +84,13 @@ public static class TypelessMoveTemplates
 
     private static MoveTemplate AttackUp()
     {
-        List<Effect> effects = new List<Effect>();
+        List<EffectTemplate> effects = new List<EffectTemplate>();
         StatModifier statModifier = new StatModifier(StatType.Attack, 0, 4, 1);
-        Effect effect = new Effect_StatModifier(statModifier, EffectTargetingStyle.MoveTarget);
+        EffectTemplate effect = EffectTemplate.StatModifier(
+            statModifier, 
+            -1,
+            EffectTargetingStyle.MoveTarget,
+            null);
         effects.Add(effect);
 
         MoveTemplate move = new MoveTemplate(ATTACKUPFRIENDLYNAME, ATTACKUPFRIENDLYDESCRIPT, effects, MoveTargetingStyle.AllyOrSelf, EmotionTag.Typeless);

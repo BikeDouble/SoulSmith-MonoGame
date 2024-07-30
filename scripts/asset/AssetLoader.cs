@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.ObjectModel;
 using SoulSmithEmotions;
 using SoulSmithStats;
+using System.Diagnostics;
 
 
 public class AssetLoader
@@ -72,8 +73,19 @@ public class AssetLoader
     private static ColoredPolygon LoadPolygonInternal(string assetPath)
     {
         DeserializedPolygon deserializedPolygon = ReadJson<DeserializedPolygon>(assetPath);
-        List<Vector2> vertices = deserializedPolygon.VerticesAsVectorList();
-        Polygon polygon = new Polygon(vertices);
+
+        Polygon polygon = null;
+        if (deserializedPolygon.Vertices != null)
+        {
+            List<Vector2> vertices = deserializedPolygon.VerticesAsVectorList();
+            polygon = new Polygon(vertices);
+        }
+        else if (deserializedPolygon.Radius != 0)
+        {
+            polygon = RegularPolygon(deserializedPolygon.Radius, deserializedPolygon.Sides);
+        }
+
+
         ColoredPolygon coloredPolygon = new ColoredPolygon(polygon, deserializedPolygon.Color);
 
         return coloredPolygon;
@@ -108,10 +120,20 @@ public class AssetLoader
 
         List<CanvasTransformationRule> rules = new List<CanvasTransformationRule>();
         List<FormsObject> unrulyChildren = new List<FormsObject>();
+        Dictionary<BoundingZoneType, CanvasItem> boundingZones = new Dictionary<BoundingZoneType, CanvasItem>();
+
+        if (deserializedSprite.BoundingZones != null)
+        {
+            boundingZones = InstantiateBoundingZones(deserializedSprite.BoundingZones);
+        }
+        else
+        {
+            boundingZones = new Dictionary<BoundingZoneType, CanvasItem>();
+        }
 
         foreach (DeserializedSpritePart part in deserializedParts) 
         {
-            CanvasItem child = InstantiateCanvasItem(part.ResourceName, part.ResourceType);
+            CanvasItem child = InstantiateCanvasItem(part.ResourceName, part.ResourceType, part.BoundingZones);
 
             foreach (DeserializedCanvasTransformationRule dRule in part.MovementRules)
             {
@@ -126,14 +148,23 @@ public class AssetLoader
                     unrulyChildren.Add(child);
                 }
             }
+
+            if (child.BoundingZones != null)
+            {
+                foreach (KeyValuePair<BoundingZoneType, CanvasItem> item in  child.BoundingZones)
+                {
+                    boundingZones.TryAdd(item.Key, child);
+                }
+            }
         }
 
-        return new CanvasItem_TransformationRules(rules, unrulyChildren);
+        return new CanvasItem_TransformationRules(rules, unrulyChildren, boundingZones);
     }
 
-    private CanvasItem InstantiateCanvasItem(string resourceName, string resourceType)
+    private CanvasItem InstantiateCanvasItem(string resourceName, string resourceType, DeserializedBoundingZone[] deserializedboundingZones = null)
     {
         resourceType = resourceType.ToLower();
+        Dictionary<BoundingZoneType, CanvasItem> boundingZones;
 
         switch (resourceType)
         {
@@ -143,7 +174,8 @@ public class AssetLoader
                 if (polygon == null)
                     return null;
 
-                return new CanvasItem(polygon);
+                boundingZones = InstantiateBoundingZones(deserializedboundingZones);
+                return new CanvasItem(new DrawableResource_Polygon(polygon), boundingZones);
 
             /*case ("texture"):
                 TrackedResource<Texture2D> texture = GetTextureAsset(resourceName);
@@ -159,7 +191,7 @@ public class AssetLoader
                 if (sprite == null) 
                     return null;
 
-                return new CanvasItem_TransformationRules(sprite);
+                return (CanvasItem_TransformationRules)sprite.Resource.DeepClone();
 
             case ("none"):
                 return null;
@@ -167,6 +199,82 @@ public class AssetLoader
             default:
                 return null;
         }
+    }
+
+    private const bool SHOWBOUNDINGZONEOUTLINE = true;
+
+    private static Dictionary<BoundingZoneType, CanvasItem> InstantiateBoundingZones(DeserializedBoundingZone[] deserializedBoundingZones)
+    {
+        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null;
+
+        if (deserializedBoundingZones != null)
+        {
+            boundingZones = new();
+            foreach (DeserializedBoundingZone deserializedZone in deserializedBoundingZones)
+            {
+                (BoundingZoneType[], CanvasItem) zoneTypeList = InstantiateBoundingZoneTypeTuple(deserializedZone);
+
+                if ((zoneTypeList.Item1 != null) && (zoneTypeList.Item2 != null))
+                {
+                    foreach (BoundingZoneType zoneType in zoneTypeList.Item1)
+                    {
+                        if (zoneType != BoundingZoneType.None)
+                            boundingZones.Add(zoneType, zoneTypeList.Item2);
+                    }
+                }
+            }
+
+            if (boundingZones.Count < 1)
+                boundingZones = null;
+
+        }
+
+        return boundingZones;
+    }
+
+    private static (BoundingZoneType[], BoundingZone) InstantiateBoundingZoneTypeTuple(DeserializedBoundingZone deserializedZone)
+    {
+        string zoneShape = deserializedZone.Shape.ToLower();
+        BoundingZone zone;
+        Position position = new Position(deserializedZone.PositionArgs);
+
+        switch (zoneShape)
+        {
+            case ("ellipse"):
+                zone = new BoundingZone_Ellipse(deserializedZone.ZoneArgs[0], SHOWBOUNDINGZONEOUTLINE, position);
+                break;
+
+            default:
+                return (null, null);
+        }
+
+        BoundingZoneType[] types = ConvertBoundingZoneTypesStringToEnum(deserializedZone.Types);
+
+        return (types, zone);
+    }
+
+    private static BoundingZoneType[] ConvertBoundingZoneTypesStringToEnum(string[] stringTypes)
+    {
+        BoundingZoneType[] types = new BoundingZoneType[stringTypes.Length];
+
+        if (types.Length < 1)
+            return null;
+
+        for (int i = 0; i < types.Length; i++)
+        {
+            string typeString = stringTypes[i].ToLower();
+            switch (typeString)
+            {
+                case ("esender"):
+                    types[i] = BoundingZoneType.EffectSender; break;
+                case ("ereceiver"):
+                    types[i] = BoundingZoneType.EffectReceiver; break;
+                default:
+                    types[i] = BoundingZoneType.None; break;
+            }
+        }
+
+        return types;
     }
 
     private static CanvasTransformationRule InstantiateCanvasTransformationRule(DeserializedCanvasTransformationRule dRule, CanvasItem canvasItem)
@@ -220,20 +328,6 @@ public class AssetLoader
                     dRule.Acceleration);
 
             default: 
-                return null;
-        }
-    }
-
-    private CanvasItem CreateCanvasItemWithUncertainType(string assetName, string assetType)
-    {
-        assetType = assetType.ToLower();
-
-        switch (assetType)
-        {
-            case ("polygon"):
-                return new CanvasItem(GetPolygonAsset(assetName));
-
-            default:
                 return null;
         }
     }

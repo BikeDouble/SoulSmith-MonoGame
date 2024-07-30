@@ -6,6 +6,7 @@ using SoulSmithMoves;
 using SoulSmithEmotions;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 
 public partial class GameManager : CanvasItem
 {
@@ -138,10 +139,11 @@ public partial class GameManager : CanvasItem
 
 	private UnitUI InstantiateUnitUI()
 	{
-		TrackedResource<ColoredPolygon> moveButton = GetPolygonAsset("MoveButton");
+		DrawableResource_Polygon moveButton = new DrawableResource_Polygon(GetPolygonAsset("MoveButton"));
+		DrawableResource_Polygon targetButtonIdle = new DrawableResource_Polygon(GetPolygonAsset("TargetButtonIdle"));
 		SpriteFont font = _fontLibrary["uIFont"];
 		
-		UnitUI unitUI = new UnitUI(font, moveButton, moveButton);
+		UnitUI unitUI = new UnitUI(font, moveButton, targetButtonIdle);
 
 		return unitUI;
 	}
@@ -220,9 +222,8 @@ public partial class GameManager : CanvasItem
 		if (template == null)
 			return null;
 
-		List<Effect> effects = new List<Effect>(template.Effects);
+		List<Effect> effects = InstantiateEffects(template.Effects);
 
-		LoadVisualizationsForEffects(effects);
 		Move move = new Move(template, _emotionLibrary[template.EmotionTag], effects);
 
 		return move;
@@ -240,37 +241,40 @@ public partial class GameManager : CanvasItem
 		return copiedEffects;
 	}
 
-	private static void LoadVisualizationsForEffects(List<Effect> effects)
+	private static List<Effect> InstantiateEffects(IEnumerable<EffectTemplate> effectTemplates)
 	{
-		foreach (Effect effect in effects)
+		if ((effectTemplates == null) || (effectTemplates.Count() == 0))
+			return null;
+
+		List<Effect> effects = new List<Effect>(effectTemplates.Count());
+
+		foreach (EffectTemplate template in effectTemplates)
 		{
-			LoadVisualizationsForEffect(effect);
+			effects.Add(InstantiateEffect(template));
 		}
+
+		return effects;
 	}
 
 	/// <summary>
 	/// Loads visualization with stored visualization name for effect and all child effects
 	/// </summary>
-	/// <param name="effect"></param>
-	private static void LoadVisualizationsForEffect(Effect effect)
+	/// <param name="template"></param>
+	public static Effect InstantiateEffect(EffectTemplate template)
 	{
-		if (effect.VisualizationName == null) { return; }
+		//TrackedResource<CanvasItem_TransformationRules> sprite = _spriteAssetManager.GetAsset(template.VisualizationName);
 
-		if (effect.VisualizationName == "") { return; }
+		List<Effect> childEffects = InstantiateEffects(template.ChildEffects);
 
-		TrackedResource<CanvasItem_TransformationRules>sprite = _spriteAssetManager.GetAsset(effect.VisualizationName);
+		Effect effect = new Effect(template.GenerateEffectRequest,
+			template.TargetingStyle,
+            childEffects,
+            null,
+            template.VisualizationDelay,
+            template.RequiresPriority,
+            template.SwapSenderAndTarget);
 
-		effect.LoadVisualizationSprite(sprite);
-
-		ReadOnlyCollection<Effect> childEffects = effect.ChildEffects;
-
-		if (effect.ChildEffects != null)
-		{
-			foreach (Effect childEffect in childEffects)
-			{
-				LoadVisualizationsForEffect(childEffect);
-			}
-		}
+		return effect;
     }
 
     //Listens to combat manager

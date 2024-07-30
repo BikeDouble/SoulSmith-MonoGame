@@ -1,74 +1,68 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 
 public class CanvasItem_TransformationRules : CanvasItem
 {
     private List<CanvasTransformationRule> _transformationRules;
 
-    public CanvasItem_TransformationRules(float[] positionArgs) : base(positionArgs)
-    {
-
-    }
-
-    public CanvasItem_TransformationRules(List<CanvasTransformationRule> rules) 
+    public CanvasItem_TransformationRules(
+        List<CanvasTransformationRule> rules, 
+        List<FormsObject> unrulyChildren = null, 
+        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null) : base(null, boundingZones)
     {
         _transformationRules = rules;
 
-        AddAllChildrenInTransformationRules();
-    }
-
-    public CanvasItem_TransformationRules(List<CanvasTransformationRule> rules, List<FormsObject> unrulyChildren)
-    {
-        _transformationRules = rules;
-
-        AddAllChildrenInTransformationRules();
-
-        foreach (FormsObject child in unrulyChildren)
+        foreach (CanvasTransformationRule rule in rules)
         {
-            AddChild(child);
+            AddChild(rule);
+        }
+
+        if (unrulyChildren != null)
+        {
+            foreach (FormsObject child in unrulyChildren)
+            {
+                AddChild(child);
+            }
         }
     }
 
     public CanvasItem_TransformationRules(CanvasItem_TransformationRules other) : base(other)
-    { 
-        _transformationRules = new List<CanvasTransformationRule>();
-
-        foreach (CanvasTransformationRule rule in other._transformationRules)
-        {
-            CanvasTransformationRule newRule = null;
-
-            if (rule is CanvasTransformationRule_Rotation)
-            {
-                newRule = new CanvasTransformationRule_Rotation((CanvasTransformationRule_Rotation)rule);
-            }
-            else if (rule is CanvasTransformationRule_Translation)
-            {
-                newRule = new CanvasTransformationRule_Translation((CanvasTransformationRule_Translation)rule);
-            }
-            else if (rule is CanvasTransformationRule_VertexTranslation)
-            {
-                newRule = new CanvasTransformationRule_VertexTranslation((CanvasTransformationRule_VertexTranslation)rule);
-            }
-
-            if (newRule != null)
-            {
-                _transformationRules.Add(newRule);
-            }
-            else if (rule.AffectedItem != null)
-            {
-                AddChild(rule.AffectedItem);
-            }
-        }
-
-        AddAllChildrenInTransformationRules();
+    {
+        _transformationRules = CloneTransformationRules(
+            other._transformationRules,
+            Children,
+            other.Children);
     }
 
-    private void AddAllChildrenInTransformationRules()
+    private static List<CanvasTransformationRule> CloneTransformationRules(
+        List<CanvasTransformationRule> otherRules,
+        ReadOnlyCollection<FormsObject> children,
+        ReadOnlyCollection<FormsObject> otherChildren)
     {
-        foreach (CanvasTransformationRule rule in _transformationRules)
+        if (otherRules == null) return null;
+
+        List<CanvasTransformationRule> rules = new();
+
+        foreach (CanvasTransformationRule rule in otherRules)
         {
-            AddChild(rule);
+            int ruleIndex = otherChildren.IndexOf(rule.AffectedItem);
+
+            CanvasItem affectedItem = children[ruleIndex] as CanvasItem;
+
+            Debug.Assert(affectedItem != null);
+
+            if (affectedItem != null)
+            {
+                CanvasTransformationRule newRule = (CanvasTransformationRule)rule.DeepClone(affectedItem);
+                rules.Add(newRule);
+            }
         }
+
+        if (rules.Count < 1) return null;
+
+        return rules;
     }
 
     public override void Process(double delta)
@@ -98,7 +92,7 @@ public class CanvasItem_TransformationRules : CanvasItem
     {
         CanvasItem newChild = rule.AffectedItem;
 
-        base.AddChild(newChild);
+        AddChild(newChild);
 
         if (!_transformationRules.Contains(rule))
             _transformationRules.Add(rule);

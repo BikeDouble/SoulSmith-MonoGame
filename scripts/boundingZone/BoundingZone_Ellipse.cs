@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using System;
 
 public class BoundingZone_Ellipse : BoundingZone
 {
     private float _radius = 0;
-    private bool _showOutline;
 
-    public BoundingZone_Ellipse(float radius, bool showOutline = true)
+    public BoundingZone_Ellipse(float radius, bool showOutline = true, Position position = null) : base(showOutline, position)
     {
         _radius = radius;
 
@@ -17,16 +17,11 @@ public class BoundingZone_Ellipse : BoundingZone
         }
     }
 
-    public override void Draw(Position absolutePosition, SpriteBatch spriteBatch)
-    {
-        base.Draw(absolutePosition, spriteBatch);
-    }
-
-    public override Vector2 GetRandomPoint()
+    public override Vector2 GetRandomBoundingPointLocal(BoundingZoneType zoneType = BoundingZoneType.None)
     {
         float direction = Rand.RandFloat() * Position.MAXROTATION;
 
-        float distance = Rand.RandFloat() * _radius;
+        float distance = (float)(Math.Sqrt(Rand.RandFloat()) * _radius);
 
         Vector2 point = new Vector2(distance, 0);
 
@@ -37,6 +32,11 @@ public class BoundingZone_Ellipse : BoundingZone
         point = Position.RotatePointAroundPoint(point, Vector2.Zero, Position.Rotation);
 
         return point;
+    }
+
+    public override Vector2 GetRandomBoundingPointGlobal(BoundingZoneType zoneType = BoundingZoneType.None)
+    {
+        return (GetRandomBoundingPointLocal() + GetGlobalPosition().Coordinates);
     }
 }
 

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 public class DeserializedPolygon
 {
-    public DeserializedVertex[] Vertices { get; set; }
+    public DeserializedVertex[] Vertices { get; set; } = null;
     public int[] Color { get; set; }
+    public float Radius { get; set; } = 0f;
+    public int Sides { get; set; } = 3;
 
     public List<Vector2> VerticesAsVectorList()
     {
