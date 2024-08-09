@@ -5,9 +5,10 @@
     "Attack": 120,
     "Defense": 120,
     "MoveSet": [
-        "TypelessHit",
-        "TypelessDoubleHit",
-        "TypelessAttackUp"
+        "TypelessAttackUp",
+        "JoyDoubleHit",
+        "TypelessHit"
     ],
-    "Emotion": 1
+    "Emotion": 1,
+    "TimeOnBoard":  5
 }

@@ -5,6 +5,8 @@ public class DeserializedPolygon
 {
     public DeserializedVertex[] Vertices { get; set; } = null;
     public int[] Color { get; set; }
+    public int LineThickness { get; set; } = 1;
+    public bool Filled { get; set; } = true;
     public float Radius { get; set; } = 0f;
     public int Sides { get; set; } = 3;
 

@@ -2,27 +2,39 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework.Graphics;
+using SoulSmithModifiers;
 using SoulSmithMoves;
+using SoulSmithUnitUI;
 
 public partial class UnitUI : CanvasItem
 { 
 	//Children
 	private UnitUIMoveMenu _moveMenu;
 	private UnitUIHealthBar _healthBar;
-	private Button _targetButton; //TODO
+	private UnitUIModifierDisplay _modifierDisplay;
+	private UnitUITimeOnBoardDisplay _timeOnBoardDisplay = null;
+	private Button _targetButton;
+	private readonly SpriteFont _font;
 
-	public UnitUI(SpriteFont font, DrawableResource_Polygon moveButton, DrawableResource_Polygon targetButton)
+	public UnitUI(SpriteFont font, DrawableResource_Polygon moveButton, DrawableResource_Polygon targetButton, DrawableResource_Polygon targetButtonHovered)
 	{
-        _moveMenu = new UnitUIMoveMenu(font, moveButton);
+		_font = font;
+
+        _moveMenu = new UnitUIMoveMenu(_font, moveButton);
         _moveMenu.MoveButtonPressedEventHandler += OnMoveButtonPressed;
         AddChild(_moveMenu);
 
 		Position healthBarPosition = new Position(0, 120);
-        _healthBar = new UnitUIHealthBar(font, healthBarPosition);
+        _healthBar = new UnitUIHealthBar(_font, healthBarPosition);
         AddChild(_healthBar);
-        _targetButton = new Button(new DrawableResource_Polygon(targetButton), new DrawableResource_Polygon(targetButton));
+
+        _targetButton = new Button(new DrawableResource_Polygon(targetButton), new DrawableResource_Polygon(targetButtonHovered));
+		_targetButton.Hide();
         _targetButton.ButtonPressedEventHandler += OnTargetButtonPressed;
         AddChild(_targetButton);
+
+		_modifierDisplay = new UnitUIModifierDisplay();
+		AddChild(_modifierDisplay);
 
         Initialize();
     }
@@ -32,9 +44,40 @@ public partial class UnitUI : CanvasItem
 		
 	}
 	
-	public void Update(UnitStats stats)
+	public void Update(IReadOnlyUnitStats stats)
 	{
 		UpdateHealthBar(stats);
+		UpdateRoundsOnBoardCounter(stats);
+	}
+
+	private void UpdateRoundsOnBoardCounter(IReadOnlyUnitStats stats)
+	{
+		int timeOnBoard = stats.TimeOnBoard;
+
+		if (timeOnBoard > -1)
+		{
+			if (_timeOnBoardDisplay == null)
+			{
+				_timeOnBoardDisplay = new UnitUITimeOnBoardDisplay(_font);
+				AddChild(_timeOnBoardDisplay);
+			}
+
+			_timeOnBoardDisplay.UpdateText(timeOnBoard.ToString());
+		}
+    }
+
+	//
+	// Modifier related functions
+	//
+
+	public void OnModifierAdded(Modifier modifier)
+	{
+		_modifierDisplay.OnModifierAdded(modifier);
+	}
+
+	public void OnModifierRemoved(Modifier modifier)
+	{
+		_modifierDisplay.OnModifierRemoved(modifier);
 	}
 
 	//
@@ -91,7 +134,7 @@ public partial class UnitUI : CanvasItem
 	// Healthbar related functions
 	//
 	
-	private void UpdateHealthBar(UnitStats stats)
+	private void UpdateHealthBar(IReadOnlyUnitStats stats)
 	{
 		_healthBar.Update(stats);
 	}

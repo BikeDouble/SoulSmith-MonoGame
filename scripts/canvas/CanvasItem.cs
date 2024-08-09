@@ -8,8 +8,10 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using MonoGame.Extended.Graphics;
 
-public class CanvasItem : FormsObject
+public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
 {
     private bool _visible = true;
     private string _resourceType = "none";
@@ -17,35 +19,25 @@ public class CanvasItem : FormsObject
     private DrawableResource _drawableResource = null;
     private Dictionary<BoundingZoneType, CanvasItem> _boundingZones = null;
 
-    public CanvasItem(Position position = null, Dictionary<BoundingZoneType, CanvasItem> boundingZones = null)
+    public CanvasItem(
+        Position position = null,
+        DrawableResource sprite = null,
+        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null, 
+        IEnumerable<SoulSmithObject> children = null) : base(children)
     {
         Position = new Position(position);
         _boundingZones = boundingZones;
         AddChildrenInBoundingZones();
+
+        if (sprite != null)
+        {
+            _drawableResource = sprite;
+        }
     }
 
     public CanvasItem(int x, int y)
     {
         Position = new Position(x, y);
-    }
-
-    public CanvasItem(float[] positionArgs)
-    {
-        Position = new Position(positionArgs);
-    }
-
-    public CanvasItem(DrawableResource sprite, Dictionary<BoundingZoneType, CanvasItem> boundingZones = null, Position position = null)
-    {
-        Position = new Position(position);
-
-        if (sprite != null)
-        {
-            _drawableResource = sprite;
-            UpdateResourcePosition();
-        }
-
-        _boundingZones = boundingZones;
-        AddChildrenInBoundingZones();
     }
 
     public CanvasItem(SpriteFont font, string text = null, Position position = null)
@@ -55,7 +47,6 @@ public class CanvasItem : FormsObject
         if (font != null)
         {
             _drawableResource = new DrawableResource_Text(font, text);
-            UpdateResourcePosition();
         }
     }
 
@@ -66,12 +57,20 @@ public class CanvasItem : FormsObject
 
         _drawableResource = (DrawableResource)other._drawableResource?.DeepClone();
         _boundingZones = CloneBoundingZones(other.BoundingZones, Children, other.Children);
+
+        foreach (SoulSmithObject child in Children)
+        {
+            if (child is CanvasItem)
+            {
+                RegisterChildEvents((CanvasItem)child);
+            }
+        }
     }
 
     private static Dictionary<BoundingZoneType, CanvasItem> CloneBoundingZones(
         ReadOnlyDictionary<BoundingZoneType, CanvasItem> otherZones, 
-        ReadOnlyCollection<FormsObject> children,
-        ReadOnlyCollection<FormsObject> otherChildren)
+        ReadOnlyCollection<SoulSmithObject> children,
+        ReadOnlyCollection<SoulSmithObject> otherChildren)
     {
         if (otherZones == null) return null;
 
@@ -197,33 +196,41 @@ public class CanvasItem : FormsObject
         _visible = false;
     }
 
+    public void Set(Position position)
+    {
+        if (position == null)
+            return;
+
+        Position.Set(position);
+    }
+
     public void Transform(Position transformation)
     {
+        if (transformation == null)
+            return;
+
         Position.Transform(transformation);
-        UpdateResourcePosition();
     }
 
     public void Translate(Vector2 translation)
     {
+        if (translation == Vector2.Zero) return;
+
         Position.Translate(translation);
-        UpdateResourcePosition();
     }
 
     public void Rotate(float rotation)
     {
+        if (rotation == 0) return;
+
         Position.Rotate(rotation);
-        UpdateResourcePosition();
     }
 
     public void Rotate(float rotation, Vector2 origin)
     {
-        Position.Rotate(rotation, origin);
-        UpdateResourcePosition();
-    }
+        if (rotation == 0) return;
 
-    public virtual void UpdateResourcePosition()
-    {
-        Resource?.UpdatePosition(Position);
+        Position.Rotate(rotation, origin);
     }
 
     public override void Draw(Position absolutePosition, SpriteBatch spriteBatch, DrawableResource overridenResource = null)
@@ -251,14 +258,14 @@ public class CanvasItem : FormsObject
 
         if (_visible)
         {
-            foreach (FormsObject child in Children)
+            foreach (SoulSmithObject child in Children)
             {
                 child.Draw(newPosition, spriteBatch);
             }
         }
     }
 
-    public override void AddChild(FormsObject child)
+    public override void AddChild(SoulSmithObject child)
     {
         if (Children.Contains(child))
             return;
@@ -271,7 +278,7 @@ public class CanvasItem : FormsObject
         base.AddChild(child);
     }
 
-    public override void RemoveChild(FormsObject child)
+    public override void RemoveChild(SoulSmithObject child)
     {
         if (!Children.Contains(child))
             return;
@@ -369,6 +376,11 @@ public class Position
         Rotation = rotation;
     }
 
+    public Position(Vector2 coordinates)
+    {
+        Coordinates = coordinates;
+    }
+
     public Position(Position other)
     {
         if (other == null)
@@ -381,20 +393,18 @@ public class Position
 
     public Position(float[] positionArgs)
     {
-        if (positionArgs.Length >= 5)
+        if ((positionArgs != null) && (positionArgs.Length >= 5))
         {
             Coordinates = new Vector2(positionArgs[0], positionArgs[1]);
             Scale = new Vector2(positionArgs[2], positionArgs[3]);
-            Rotation = positionArgs[4];
+            Rotation = (float)((float)(positionArgs[4]/180) * Math.PI);
         }
     }
 
     public Position Transform(Position transformation)
     {
-        Width *= transformation.Width;
-        Height *= transformation.Height;
-        X += transformation.X;
-        Y += transformation.Y;
+        Scale *= transformation.Scale;
+        Coordinates += transformation.Coordinates;
         Rotation += transformation.Rotation;
 
         return this;
@@ -440,10 +450,8 @@ public class Position
 
     public Position Set(Position transformation)
     {
-        Width = transformation.Width;
-        Height = transformation.Height;
-        X = transformation.X;
-        Y = transformation.Y;
+        Scale = transformation.Scale;
+        Coordinates = transformation.Coordinates;
         Rotation = transformation.Rotation;
 
         return this;

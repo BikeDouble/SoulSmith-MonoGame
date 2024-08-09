@@ -14,7 +14,7 @@ public partial class MoveSelector_Console : MoveSelector
 	
 	public override void SelectSender()
 	{
-		ReadOnlyCollection<Unit> activeUnits = Team.GetActiveUnits();
+		ReadOnlyCollection<IReadOnlyUnit> activeUnits = Team.GetActiveUnitsAsReadOnly();
 		if (activeUnits.Count == 0)
 		{
 			PassTurn();
@@ -45,7 +45,7 @@ public partial class MoveSelector_Console : MoveSelector
 	
 	public override void SelectMove()
 	{
-		Unit userUnit = GetUser();
+		IReadOnlyUnit userUnit = GetUser();
         ReadOnlyCollection<Move> moveSet = userUnit.MoveSet;
         if (moveSet.Count == 0)
         {
@@ -77,7 +77,7 @@ public partial class MoveSelector_Console : MoveSelector
 	
 	public override void SelectTarget()
 	{
-		List<Unit> viableTargets = GetViableTargets();
+		List<IReadOnlyUnit> viableTargets = GetViableTargets();
         if (viableTargets.Count == 0)
         {
             PassTurn();
@@ -106,7 +106,7 @@ public partial class MoveSelector_Console : MoveSelector
         ReturnMoveInputToCombatManager();
     }
 
-	private static void WriteUnits(ReadOnlyCollection<Unit> unitList)
+	private static void WriteUnits(ReadOnlyCollection<IReadOnlyUnit> unitList)
 	{
 		int i = 0;
         foreach (Unit unit in unitList)

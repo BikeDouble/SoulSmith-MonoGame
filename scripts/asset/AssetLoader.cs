@@ -10,26 +10,156 @@ using System.Collections.ObjectModel;
 using SoulSmithEmotions;
 using SoulSmithStats;
 using System.Diagnostics;
+using SoulSmithMoves;
+using SoulSmithModifiers;
+using System.Linq;
 
 
-public class AssetLoader
+public class AssetLoader : SoulSmithObject, IAssetLoadOnly
 {
     //Im bad at files
     public const string FILEPREFIX = "../../../";
 
-    private readonly ContentManager _content;
-    private readonly GameManager _gameManager;
+    //File paths - preface all with ../../../ im sure this will result in no problems for me in the future
+    private const string POLYGONASSETJSONFILEPATH = AssetLoader.FILEPREFIX + "json/polygonAssetsList.json";
+    private const string SPRITEASSETJSONFILEPATH = AssetLoader.FILEPREFIX + "json/spriteAssetsList.json";
+    private const string UNITTEMPLATEASSETJSONFILEPATH = AssetLoader.FILEPREFIX + "json/unitTemplateAssetsList.json";
+    private const string EFFECTVISUALIZATIONJSONFILEPATH = AssetLoader.FILEPREFIX + "json/effectVisualizationAssetsList.json";
 
-    public AssetLoader(ContentManager content, GameManager gameManager)
+    private static Dictionary<string, MoveTemplate> _moveTemplateLibrary;
+    private static Dictionary<string, SpriteFont> _fontLibrary;
+    private static Dictionary<string, EffectVisualizationTemplate> _effectVisualizationTemplateLibrary;
+    private static Dictionary<string, ModifierTemplate> _modifierTemplateLibrary;
+    private static Dictionary<EmotionTag, Emotion> _emotionLibrary;
+
+    private static AssetManager<ColoredPolygon> _polygonAssetManager;
+    private static AssetManager<CanvasItem> _spriteAssetManager;
+    private static AssetManager<UnitTemplate> _unitTemplateAssetManager;
+
+    private readonly ContentManager _content;
+
+    public AssetLoader(ContentManager content)
     {
         _content = content;
-        _gameManager = gameManager;
 
         LoadSprite = (string assetPath)
             => LoadSpriteInternal(assetPath);
 
         LoadUnitTemplate = (string assetPath)
             => LoadUnitTemplateInternal(assetPath);
+
+        InitializeAssetManagers(content);
+        InitializeLibraries(content);
+    }
+
+    private void InitializeLibraries(ContentManager content)
+    {
+        _effectVisualizationTemplateLibrary = EffectVisualizationTemplateLibrary.CreateDict(this);
+
+        _modifierTemplateLibrary = ModifierTemplateLibrary.CreateDict(this);
+
+        _emotionLibrary = EmotionLibrary.CreateDict(this);
+
+        _moveTemplateLibrary = MoveTemplateLibrary.CreateDict(this);
+
+        _fontLibrary = new();
+        _fontLibrary.Add("uIFont", content.Load<SpriteFont>("fonts/uiFont"));
+    }
+
+    private void InitializeAssetManagers(ContentManager content)
+    {
+        _polygonAssetManager = new AssetManager<ColoredPolygon>(POLYGONASSETJSONFILEPATH, LoadPolygon);
+        _polygonAssetManager.PreloadAll();
+
+        _spriteAssetManager = new AssetManager<CanvasItem>(SPRITEASSETJSONFILEPATH, LoadSprite);
+        _spriteAssetManager.PreloadAssetGroup("forms");
+
+        _unitTemplateAssetManager = new AssetManager<UnitTemplate>(UNITTEMPLATEASSETJSONFILEPATH, LoadUnitTemplate);
+        _unitTemplateAssetManager.PreloadAll();
+        //_effectVisualizationAssetManager = new AssetManager<PackedScene>(EFFECTVISUALIZATIONJSONFILEPATH);
+    }
+
+    public ModifierTemplate GetModifierTemplate(string name)
+    {
+        return _modifierTemplateLibrary.GetValueOrDefault(name);
+    }
+
+    public MoveTemplate GetMoveTemplate(string assetName)
+    {
+        return _moveTemplateLibrary.GetValueOrDefault(assetName);
+    }
+
+    public SpriteFont GetFont(string assetName)
+    {
+        return _fontLibrary.GetValueOrDefault(assetName);
+    }
+
+    public EffectVisualizationTemplate GetEffectVisualizationTemplate(string assetName)
+    {
+        return _effectVisualizationTemplateLibrary.GetValueOrDefault(assetName);
+    }
+
+    public Emotion GetEmotion(EmotionTag tag)
+    {
+        return _emotionLibrary.GetValueOrDefault(tag);
+    }
+
+    public TrackedResource<ColoredPolygon> GetPolygon(string assetName)
+    {
+        return _polygonAssetManager.GetAsset(assetName);
+    }
+
+    public TrackedResource<CanvasItem> GetSprite(string assetName)
+    {
+        return _spriteAssetManager.GetAsset(assetName);
+    }
+
+    public TrackedResource<UnitTemplate> GetUnitTemplate(string assetName)
+    {
+        return _unitTemplateAssetManager.GetAsset(assetName);
+    }
+
+    /// <summary>
+	/// Loads visualization with stored visualization name for effect and all child effects
+	/// </summary>
+	/// <param name="template"></param>
+	public Effect LoadEffectFromTemplate(EffectTemplate template)
+    {
+        if (template == null) return null;
+
+        EffectVisualizationTemplate visTemplate = null;
+
+        if ((template.VisualizationName != null)
+            && (template.VisualizationName != "")
+            && (template.VisualizationName != "none"))
+            visTemplate = GetEffectVisualizationTemplate(template.VisualizationName);
+
+        List<Effect> childEffects = LoadMultipleEffectsFromTemplates(template.ChildEffects);
+
+        Effect effect = new Effect(template.GenerateEffectRequest,
+            template.TargetingStyle,
+            childEffects,
+            visTemplate,
+            template.VisualizationDelay,
+            template.RequiresPriority,
+            template.SwapSenderAndTarget);
+
+        return effect;
+    }
+
+    public List<Effect> LoadMultipleEffectsFromTemplates(IEnumerable<EffectTemplate> effectTemplates)
+    {
+        if ((effectTemplates == null) || (effectTemplates.Count() == 0))
+            return null;
+
+        List<Effect> effects = new List<Effect>(effectTemplates.Count());
+
+        foreach (EffectTemplate template in effectTemplates)
+        {
+            effects.Add(LoadEffectFromTemplate(template));
+        }
+
+        return effects;
     }
 
     public Func<string, UnitTemplate> LoadUnitTemplate;
@@ -86,7 +216,7 @@ public class AssetLoader
         }
 
 
-        ColoredPolygon coloredPolygon = new ColoredPolygon(polygon, deserializedPolygon.Color);
+        ColoredPolygon coloredPolygon = new ColoredPolygon(polygon, deserializedPolygon.Color, deserializedPolygon.LineThickness, deserializedPolygon.Filled);
 
         return coloredPolygon;
     }
@@ -111,15 +241,15 @@ public class AssetLoader
         return new Polygon(vertices);
     }
 
-    public Func<string, CanvasItem_TransformationRules> LoadSprite;
+    public Func<string, CanvasItem> LoadSprite;
 
-    private CanvasItem_TransformationRules LoadSpriteInternal(string assetPath)
+    private CanvasItem LoadSpriteInternal(string assetPath)
     {
         DeserializedSprite deserializedSprite = ReadJson<DeserializedSprite>(assetPath);
         DeserializedSpritePart[] deserializedParts = deserializedSprite.Parts;
 
         List<CanvasTransformationRule> rules = new List<CanvasTransformationRule>();
-        List<FormsObject> unrulyChildren = new List<FormsObject>();
+        List<SoulSmithObject> unrulyChildren = new List<SoulSmithObject>();
         Dictionary<BoundingZoneType, CanvasItem> boundingZones = new Dictionary<BoundingZoneType, CanvasItem>();
 
         if (deserializedSprite.BoundingZones != null)
@@ -133,19 +263,26 @@ public class AssetLoader
 
         foreach (DeserializedSpritePart part in deserializedParts) 
         {
-            CanvasItem child = InstantiateCanvasItem(part.ResourceName, part.ResourceType, part.BoundingZones);
+            CanvasItem child = InstantiateCanvasItem(part.ResourceName, part.ResourceType, part.PositionArgs, part.BoundingZones);
 
-            foreach (DeserializedCanvasTransformationRule dRule in part.MovementRules)
+            if (part.MovementRules == null)
             {
-                CanvasTransformationRule rule = InstantiateCanvasTransformationRule(dRule, child);
+                unrulyChildren.Add(child);
+            }
+            else
+            {
+                foreach (DeserializedCanvasTransformationRule dRule in part.MovementRules)
+                {
+                    CanvasTransformationRule rule = InstantiateCanvasTransformationRule(dRule, child);
 
-                if (rule != null)
-                {
-                    rules.Add(rule);
-                }
-                else
-                {
-                    unrulyChildren.Add(child);
+                    if (rule != null)
+                    {
+                        rules.Add(rule);
+                    }
+                    else
+                    {
+                        unrulyChildren.Add(child);
+                    }
                 }
             }
 
@@ -158,10 +295,13 @@ public class AssetLoader
             }
         }
 
-        return new CanvasItem_TransformationRules(rules, unrulyChildren, boundingZones);
+        if (rules.Count == 0)
+            return new CanvasItem(new Position(deserializedSprite.PositionArgs), null, boundingZones, unrulyChildren);
+
+        return new CanvasItem_TransformationRules(rules, unrulyChildren, boundingZones, new Position(deserializedSprite.PositionArgs));
     }
 
-    private CanvasItem InstantiateCanvasItem(string resourceName, string resourceType, DeserializedBoundingZone[] deserializedboundingZones = null)
+    private CanvasItem InstantiateCanvasItem(string resourceName, string resourceType, float[] positionArgs, DeserializedBoundingZone[] deserializedboundingZones = null)
     {
         resourceType = resourceType.ToLower();
         Dictionary<BoundingZoneType, CanvasItem> boundingZones;
@@ -169,13 +309,13 @@ public class AssetLoader
         switch (resourceType)
         {
             case ("polygon"):
-                TrackedResource<ColoredPolygon> polygon = GetPolygonAsset(resourceName);
+                TrackedResource<ColoredPolygon> polygon = GetPolygon(resourceName);
 
                 if (polygon == null)
                     return null;
 
                 boundingZones = InstantiateBoundingZones(deserializedboundingZones);
-                return new CanvasItem(new DrawableResource_Polygon(polygon), boundingZones);
+                return new CanvasItem(null, new DrawableResource_Polygon(polygon), boundingZones);
 
             /*case ("texture"):
                 TrackedResource<Texture2D> texture = GetTextureAsset(resourceName);
@@ -186,12 +326,15 @@ public class AssetLoader
                 return new CanvasItem(texture);*/
 
             case ("sprite"):
-                TrackedResource<CanvasItem_TransformationRules> sprite = GetSpriteAsset(resourceName);
+                TrackedResource<CanvasItem> sprite = GetSprite(resourceName);
 
                 if (sprite == null) 
                     return null;
 
-                return (CanvasItem_TransformationRules)sprite.Resource.DeepClone();
+                CanvasItem newSprite = (CanvasItem)sprite.Resource.DeepClone();
+                newSprite.Set(new Position(positionArgs));
+
+                return newSprite;
 
             case ("none"):
                 return null;
@@ -280,6 +423,18 @@ public class AssetLoader
     private static CanvasTransformationRule InstantiateCanvasTransformationRule(DeserializedCanvasTransformationRule dRule, CanvasItem canvasItem)
     {
         string type = dRule.TransformationType.ToLower();
+        Func<float, float> velocityFunc = GetVelocityFunc(dRule.VelocityFunction);
+        float duration = dRule.TransformationDuration;
+
+        switch (duration)
+        {
+            case -7:
+                duration = (float)UnitSprite.ATTACKANIMATIONDURATION; break;
+            case -8:
+                duration = (float)UnitSprite.HURTANIMATIONDURATION; break;
+            case -9:
+                duration = (float)UnitSprite.DEATHANIMATIONDURATION; break;
+        }
 
         switch (type)
         {
@@ -289,13 +444,19 @@ public class AssetLoader
 
                 Vector2 origin = new Vector2(dRule.Transformation[0], dRule.Transformation[1]);
 
+                float peakRotationDiff = 0;
+                
+                if (dRule.PeakTransformation != null)
+                    peakRotationDiff = dRule.PeakTransformation[2] - dRule.Transformation[2];
+
                 return new CanvasTransformationRule_Rotation(
                     canvasItem,
                     dRule.ActiveStates,
                     dRule.Transformation[2],
+                    peakRotationDiff,
                     origin,
-                    dRule.TransformationDuration,
-                    dRule.Acceleration);
+                    duration,
+                    velocityFunc);
 
             case ("translation"):
                 if (dRule.Transformation.Length < 2)
@@ -303,12 +464,20 @@ public class AssetLoader
 
                 Vector2 translation = new Vector2(dRule.Transformation[0], dRule.Transformation[1]);
 
+                Vector2 peakTranslationDiff = Vector2.Zero;
+
+                if (dRule.PeakTransformation != null)
+                    peakTranslationDiff = new Vector2(
+                        dRule.PeakTransformation[0] - dRule.Transformation[0],
+                        dRule.PeakTransformation[1] - dRule.Transformation[1]);
+
                 return new CanvasTransformationRule_Translation(
                     canvasItem,
                     dRule.ActiveStates,
                     translation,
-                    dRule.TransformationDuration,
-                    dRule.Acceleration);
+                    peakTranslationDiff,
+                    duration,
+                    velocityFunc);
 
             case ("vertexTranslation"):
                 if (dRule.Transformation.Length < 2)
@@ -319,27 +488,38 @@ public class AssetLoader
 
                 translation = new Vector2(dRule.Transformation[0], dRule.Transformation[1]);
 
+                peakTranslationDiff = Vector2.Zero;
+
+                if (dRule.PeakTransformation != null)
+                    peakTranslationDiff = new Vector2(
+                        dRule.PeakTransformation[0] - dRule.Transformation[0],
+                        dRule.PeakTransformation[1] - dRule.Transformation[1]);
+
                 return new CanvasTransformationRule_VertexTranslation(
                     canvasItem,
                     dRule.ActiveStates,
                     dRule.VerticeIndices,
                     translation,
-                    dRule.TransformationDuration,
-                    dRule.Acceleration);
+                    peakTranslationDiff,
+                    duration,
+                    velocityFunc);
 
             default: 
                 return null;
         }
     }
 
-    private TrackedResource<ColoredPolygon> GetPolygonAsset(string assetName)
+    private static Func<float, float> GetVelocityFunc(string name)
     {
-        return _gameManager.GetPolygonAsset(assetName);
-    }
+        if (name == null) return null;
 
-    private TrackedResource<CanvasItem_TransformationRules> GetSpriteAsset(string assetName)
-    {
-        return _gameManager.GetSpriteAsset(assetName);
+        switch (name.ToLower())
+        {
+            case "smoothbell":
+                return CanvasTransformationRule.SmoothBell;
+            default:
+                return null;
+        }
     }
 
     public static T ReadJson<T>(string jsonPath)
@@ -362,3 +542,16 @@ public class AssetLoader
     }
 }
 
+public interface IAssetLoadOnly
+{
+    public ModifierTemplate GetModifierTemplate(string name);
+    public MoveTemplate GetMoveTemplate(string assetName);
+    public SpriteFont GetFont(string assetName);
+    public EffectVisualizationTemplate GetEffectVisualizationTemplate(string assetName);
+    public Emotion GetEmotion(EmotionTag tag);
+    public TrackedResource<ColoredPolygon> GetPolygon(string assetName);
+    public TrackedResource<CanvasItem> GetSprite(string assetName);
+    public TrackedResource<UnitTemplate> GetUnitTemplate(string assetName);
+    public Effect LoadEffectFromTemplate(EffectTemplate template);
+    public List<Effect> LoadMultipleEffectsFromTemplates(IEnumerable<EffectTemplate> effectTemplates);
+}

@@ -6,11 +6,13 @@ using System.Diagnostics;
 public class CanvasItem_TransformationRules : CanvasItem
 {
     private List<CanvasTransformationRule> _transformationRules;
+    private int _state = -1;
 
     public CanvasItem_TransformationRules(
         List<CanvasTransformationRule> rules, 
-        List<FormsObject> unrulyChildren = null, 
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null) : base(null, boundingZones)
+        List<SoulSmithObject> unrulyChildren = null, 
+        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null,
+        Position position = null) : base(position, null, boundingZones, unrulyChildren)
     {
         _transformationRules = rules;
 
@@ -18,15 +20,9 @@ public class CanvasItem_TransformationRules : CanvasItem
         {
             AddChild(rule);
         }
-
-        if (unrulyChildren != null)
-        {
-            foreach (FormsObject child in unrulyChildren)
-            {
-                AddChild(child);
-            }
-        }
     }
+
+    public CanvasItem_TransformationRules() { }
 
     public CanvasItem_TransformationRules(CanvasItem_TransformationRules other) : base(other)
     {
@@ -38,8 +34,8 @@ public class CanvasItem_TransformationRules : CanvasItem
 
     private static List<CanvasTransformationRule> CloneTransformationRules(
         List<CanvasTransformationRule> otherRules,
-        ReadOnlyCollection<FormsObject> children,
-        ReadOnlyCollection<FormsObject> otherChildren)
+        ReadOnlyCollection<SoulSmithObject> children,
+        ReadOnlyCollection<SoulSmithObject> otherChildren)
     {
         if (otherRules == null) return null;
 
@@ -67,15 +63,39 @@ public class CanvasItem_TransformationRules : CanvasItem
 
     public override void Process(double delta)
     {
-        foreach (CanvasTransformationRule rule in _transformationRules)
+        if (_transformationRules != null)
         {
-            rule.Transform(delta);
+            foreach (CanvasTransformationRule rule in _transformationRules)
+            {
+                rule.Transform(delta);
+            }
         }
 
         base.Process(delta);
     }
 
-    public override void RemoveChild(FormsObject child)
+    public void UpdateState(int newState)
+    {
+        if (_state == newState) return;
+
+        _state = newState;
+
+        if (_transformationRules != null)
+        {
+            foreach (CanvasTransformationRule rule in _transformationRules)
+            {
+                rule.UpdateState(newState);
+            }
+        }
+
+        foreach (SoulSmithObject child in Children)
+        {
+            if (child is CanvasItem_TransformationRules)
+                ((CanvasItem_TransformationRules)child).UpdateState(newState);
+        }
+    }
+
+    public override void RemoveChild(SoulSmithObject child)
     {
         foreach (CanvasTransformationRule rule in _transformationRules)
         {
@@ -102,5 +122,7 @@ public class CanvasItem_TransformationRules : CanvasItem
     {
         return new CanvasItem_TransformationRules(this);
     }
+
+    public int State { get { return _state; } }
 }
 

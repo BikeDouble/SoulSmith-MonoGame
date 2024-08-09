@@ -18,7 +18,7 @@ public partial class UnitUIMoveMenu : CanvasItem
 	private const int TOPBUTTONX = 200;
 	private const int TOPBUTTONY = -SPACEBETWEENBUTTONS;
     private const int SPACEBETWEENBUTTONS = 70;
-	private const float MOVEBUTTONSCALE = 1.2f;
+	private const float MOVEBUTTONSCALE = 1f;
 
     private void CreateMoveButtons(SpriteFont font, DrawableResource_Polygon resource = null)
 	{

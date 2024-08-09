@@ -16,24 +16,22 @@ public class CanvasItem_MultipleResources : CanvasItem
         DrawableResource sprite1, 
         DrawableResource sprite2, 
         Dictionary<BoundingZoneType, CanvasItem> boundingZones = null, 
-        Position position = null) : base(null, boundingZones, position)  
+        Position position = null) : base(position, null, boundingZones)  
     {
         List<DrawableResource> drawableResources = new List<DrawableResource> { sprite1, sprite2 };
         _drawableResources = drawableResources.AsReadOnly();
         _activeResourceIndex = 0;
-        UpdateResourcePosition();
     }
 
     public CanvasItem_MultipleResources(
         IEnumerable<DrawableResource> sprites,
         Dictionary<BoundingZoneType, CanvasItem> boundingZones = null,
-        Position position = null) : base(null, boundingZones, position)
+        Position position = null) : base(position, null, boundingZones)
     {
         if ((sprites != null) && (sprites.Count() > 0))
         {
             _drawableResources = sprites.ToList().AsReadOnly();
             _activeResourceIndex = 0;
-            UpdateResourcePosition();
         }
     }
 
@@ -54,19 +52,6 @@ public class CanvasItem_MultipleResources : CanvasItem
             return -1;
 
         return index;
-    }
-
-    public override void UpdateResourcePosition()
-    {
-        if (_drawableResources != null)
-        {
-            for (int i = 1; i < _drawableResources.Count(); i++)
-            {
-                _drawableResources[i].UpdatePosition(Position);
-            }
-        }
-
-        base.UpdateResourcePosition();
     }
 
     public override void Draw(Position absolutePosition, SpriteBatch spriteBatch, DrawableResource overridenResource = null)

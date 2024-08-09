@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using SoulSmithStats;
 using SoulSmithEmotions;
+using System.Collections.ObjectModel;
 
 namespace SoulSmithMoves
 {
@@ -36,48 +37,53 @@ namespace SoulSmithMoves
         Attacker,
         ParentTarget,
         ParentSender,
-        DeterminedPreOffer
+        PredeterminedGlobalTrigger
     }
 
     public enum EffectTrigger
     {
         None,
-        OnHitting,
-        OnBeingHit,
         OnMoveBegin,
         OnMoveEnd,
         OnTurnBegin,
         OnTurnEnd,
         OnRoundEnd,
-        OnRoundBegin
+        OnRoundBegin,
+        OnUnitDeath
     }
     
     public struct EffectInput
     {
-        public EffectInput(Effect effect, Unit sender, Unit target = null)
+        public EffectInput(Effect effect, IReadOnlyUnit sender, IReadOnlyUnit target = null, IList<float> specialArgs = null)
         {
             Effect = effect;
             Sender = sender;
             Target = target;
+
+            if (specialArgs != null)
+            {
+                SpecialArgs = new ReadOnlyCollection<float>(specialArgs);
+            }
         }
 
         public void SwapSenderAndTarget()
         {
-            Unit temp = Sender;
+            IReadOnlyUnit temp = Sender;
             Sender = Target;
             Target = temp;
         }
 
         public Effect Effect;
-        public Unit Sender;
-        public Unit Target;
+        public IReadOnlyUnit Sender;
+        public IReadOnlyUnit Target;
+        public ReadOnlyCollection<float> SpecialArgs = null;
     }
 
     public struct MoveInput
     {
         public Move Move;
-        public Unit Sender;
-        public Unit Target;
+        public IReadOnlyUnit Sender;
+        public IReadOnlyUnit Target;
     }
 }
 

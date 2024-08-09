@@ -1,4 +1,5 @@
 ﻿
+using SoulSmithModifiers;
 using SoulSmithStats;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace SoulSmithMoves
             VisualizationDelay = visualizationDelay;
             RequiresPriority = priority;
             SwapSenderAndTarget = swapSenderAndTarget;
+            TargetingStyle = targetingStyle;
         }
 
         public bool RequiresPriority { get; }
@@ -44,7 +46,7 @@ namespace SoulSmithMoves
             bool swapSenderAndTarget = false)
         {
             return new EffectTemplate(
-                TriggerFunc(trigger),
+                GenerateTriggerFunc(trigger),
                 targetingStyle,
                 childEffects,
                 visName,
@@ -53,9 +55,9 @@ namespace SoulSmithMoves
                 swapSenderAndTarget);
         }
 
-        public static EffectTemplate StatModifier(
-            StatModifier statModifier,
-            int duration,
+        public static EffectTemplate Modifier(
+            ModifierTemplate modifier,
+            IDictionary<ModifierFloatArgType, float> modifierArgs,
             EffectTargetingStyle targetingStyle,
             IEnumerable<EffectTemplate> childEffects = null,
             string visName = "none",
@@ -64,7 +66,7 @@ namespace SoulSmithMoves
             bool swapSenderAndTarget = false)
         {
             return new EffectTemplate(
-                StatModFunc(statModifier, duration),
+                GenerateModFunc(modifier, modifierArgs),
                 targetingStyle,
                 childEffects,
                 visName,
@@ -84,7 +86,7 @@ namespace SoulSmithMoves
             bool swapSenderAndTarget = false)
         {
             return new EffectTemplate(
-                StatHitFunc(percent, stat),
+                GenerateStatHitFunc(percent, stat),
                 targetingStyle,
                 childEffects,
                 visName,
@@ -105,7 +107,62 @@ namespace SoulSmithMoves
             return StatHit(percent, StatType.Attack, targetingStyle, childEffects, visName, visDelay, priority, swapSenderAndTarget);
         }
 
-        public static Func<GenerateEffectRequestArgs, EffectRequest> StatHitFunc(
+        public static EffectTemplate SpecialArgFlatEssenceDamage(
+            IEnumerable<EffectTemplate> childEffects = null,
+            string visName = "none",
+            float visDelay = 0,
+            bool priority = false)
+        {
+            return new EffectTemplate(
+                SpecialArgsFlatEssenceDamageFunc,
+                EffectTargetingStyle.PredeterminedGlobalTrigger,
+                childEffects,
+                visName,
+                visDelay,
+                priority);
+        }
+
+        public static EffectTemplate SpecialArgStatBasedEssenceDamage(
+            IEnumerable<EffectTemplate> childEffects = null,
+            string visName = "none",
+            float visDelay = 0,
+            bool priority = false)
+        {
+            return new EffectTemplate(
+                SpecialArgsStatBasedEssenceDamageFunc,
+                EffectTargetingStyle.PredeterminedGlobalTrigger,
+                childEffects,
+                visName,
+                visDelay,
+                priority);
+        }
+
+        private static Func<GenerateEffectRequestArgs, EffectRequest> SpecialArgsFlatEssenceDamageFunc = (args) =>
+        {
+            int damage = (int)args.SpecialArgs[0];
+
+            return new EffectRequest(
+                args.Sender,
+                args.Target,
+                DamageType.Essence,
+                damage);
+        };
+
+        private static Func<GenerateEffectRequestArgs, EffectRequest> SpecialArgsStatBasedEssenceDamageFunc = (args) =>
+        {
+            StatType statType = ModifierTemplate.FloatToStatType(args.SpecialArgs[0]);
+            float statPercent = args.SpecialArgs[1];
+
+            int damage = (int)(statPercent * args.Sender.GetModStat(statType));
+
+            return new EffectRequest(
+                args.Sender,
+                args.Target,
+                DamageType.Essence,
+                damage);
+        };
+
+        public static Func<GenerateEffectRequestArgs, EffectRequest> GenerateStatHitFunc(
             float percent,
             StatType stat)
         {
@@ -118,7 +175,7 @@ namespace SoulSmithMoves
                 args.ChildEffects));
         }
 
-        public static Func<GenerateEffectRequestArgs, EffectRequest> TriggerFunc(
+        public static Func<GenerateEffectRequestArgs, EffectRequest> GenerateTriggerFunc(
             EffectTrigger trigger)
         {
             return (args) => (new EffectRequest(
@@ -128,14 +185,15 @@ namespace SoulSmithMoves
                 args.ChildEffects));
         }
 
-        public static Func<GenerateEffectRequestArgs, EffectRequest> StatModFunc(
-            StatModifier statMod,
-            int duration = -1)
+        public static Func<GenerateEffectRequestArgs, EffectRequest> GenerateModFunc(
+            ModifierTemplate mod,
+            IDictionary<ModifierFloatArgType, float> modArgs = null)
         {
             return (args) => (new EffectRequest(
                 args.Sender,
                 args.Target,
-                new Modifier_Stat(statMod, duration),
+                mod,
+                modArgs,
                 args.ChildEffects));
         }
 
@@ -148,9 +206,10 @@ namespace SoulSmithMoves
 
     public class GenerateEffectRequestArgs
     {
-        public Unit Sender;
-        public Unit Target;
+        public IReadOnlyUnit Sender;
+        public IReadOnlyUnit Target;
         public EffectResult ParentEffectResult = null;
         public ReadOnlyCollection<Effect> ChildEffects = null;
+        public ReadOnlyCollection<float> SpecialArgs = null;
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using SoulSmithMoves;
+using SoulSmithModifiers;
 
 public partial class TeamPosition : CanvasItem
 {
@@ -27,7 +28,7 @@ public partial class TeamPosition : CanvasItem
         _unit.OfferMoveAndUserEventHandler += OnOfferMoveAndUser;
         _unit.OfferTargetEventHandler += OnOfferTarget;
         _unit.EnqueueEffectInputEventHandler += EnqueueEffect;
-        _unit.ZeroHPEventHandler += OnUnitZeroHP;
+        _unit.UnitDeathCallEventHandler += OnUnitDeathCall;
         _unit.SendEffectEventHandler += SendEffect;
 		AddChild(unit);
 
@@ -45,7 +46,6 @@ public partial class TeamPosition : CanvasItem
 		OnUnitLeaveCombat();
     }
 
-	//TODO reconsider this
     public void DeleteUnit()
 	{
 		if (_containsUnit)
@@ -114,18 +114,13 @@ public partial class TeamPosition : CanvasItem
 		SendEffectEventHandler(this, e);
 	}
 
-	public event EventHandler<ZeroHPEventArgs> UnitZeroHPEventHandler;
+	public event EventHandler<UnitDeathCallArgs> UnitDeathCallEventHandler;
 
-	private void OnUnitZeroHP(object sender, ZeroHPEventArgs e)
+	private void OnUnitDeathCall(object sender, UnitDeathCallArgs e)
 	{
-		e.Unit = _unit;
+		e.CallingUnit = _unit;
 
-		UnitZeroHPEventHandler(this, e);
-	}
-		
-	public void OnUnitMoveAction()
-	{
-		_movedThisRound = true;
+		UnitDeathCallEventHandler(this, e);
 	}
 	
 	public void OnUnitLeaveCombat()
@@ -153,7 +148,8 @@ public partial class TeamPosition : CanvasItem
 		{
 			if (request.Trigger == EffectTrigger.OnMoveBegin)
 			{
-				_movedThisRound = true;
+				if (request.Sender == _unit)
+					_movedThisRound = true;
 			}
 
 			return _unit.ExecuteEffect(request);
@@ -163,6 +159,14 @@ public partial class TeamPosition : CanvasItem
 			return new EffectResult();
 		}
     }
+
+	public void ReceiveEffectResult(EffectResult result)
+	{
+		if (_containsUnit)
+		{
+			_unit.ReceiveEffectResult(result);
+		}
+	}
 
     public Unit Unit { get { return _unit; } } //Make sure this contains unit first!
 	public bool ContainsUnit {  get { return _containsUnit; } }

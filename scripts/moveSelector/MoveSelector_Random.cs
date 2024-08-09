@@ -26,7 +26,7 @@ public partial class MoveSelector_Random : MoveSelector
 	
 	public override void SelectMove()
 	{
-		Unit userUnit = GetUser();
+		IReadOnlyUnit userUnit = GetUser();
         ReadOnlyCollection<Move> moveSet = userUnit.MoveSet;
         if (moveSet.Count == 0)
         {
@@ -40,7 +40,7 @@ public partial class MoveSelector_Random : MoveSelector
 	
 	public override void SelectTarget()
 	{
-		List<Unit> viableTargets = GetViableTargets();
+		List<IReadOnlyUnit> viableTargets = GetViableTargets();
         if (viableTargets.Count == 0)
         {
             PassTurn();

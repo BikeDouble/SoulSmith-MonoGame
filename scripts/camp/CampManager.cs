@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-public class CampManager : FormsObject
+public class CampManager : SoulSmithObject
 {
 	private const int BASEFOUNDATIONCOUNT = 3;
 

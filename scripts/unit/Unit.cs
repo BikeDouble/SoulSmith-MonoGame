@@ -4,14 +4,16 @@ using System.Collections.ObjectModel;
 using SoulSmithMoves;
 using SoulSmithStats;
 using SoulSmithEmotions;
+using SoulSmithModifiers;
+using System.Collections;
 
-public partial class Unit : CanvasItem
+public partial class Unit : CanvasItem, IReadOnlyUnit
 {
 	//Children
 	private UnitUI _uI;
 	private UnitSprite _sprite;
-
     private UnitStats _stats;
+
     private string _friendlyName;
 	private ReadOnlyCollection<Move> _moveSet;
 	private bool _inCombat = false;
@@ -24,15 +26,20 @@ public partial class Unit : CanvasItem
 		StatsList statsList,
         ReadOnlyCollection<Move> moveSet,
         UnitSprite sprite,
+		Dictionary<BoundingZoneType, CanvasItem> boundingZones,
 		UnitUI uI,
         EmotionTag emotion,
 		string friendlyName,
-		int timeOnBoard) : base()
+		int timeOnBoard) : base(null, null, boundingZones)
 	{
 		_sprite = sprite;
+		_sprite.PlayIdleAnimation();
 		AddChild(sprite);
 
-		_stats = new UnitStats(statsList);
+		_stats = new UnitStats(statsList, timeOnBoard);
+		_stats.ModifierAddEventHandler += OnModifierAdded;
+		_stats.ModifierRemoveEventHandler += OnModifierRemoved;
+		AddChild(_stats);
 
         _uI = uI;
 		AddChild(_uI);
@@ -54,8 +61,7 @@ public partial class Unit : CanvasItem
 
 	private void InitializeStats()
 	{
-		_stats.UpdateUIEventHandler += UpdateUI;
-		_stats.ZeroHPEventHandler += EmitZeroHPSignal;
+		_stats.UnitDeathCallEventHandler += EmitUnitDeathCallSignal;
 		_stats.EnqueueEffectInputEventHandler += EnqueueEffectInput;
 		_stats.SendEffectEventHandler += SendEffect;
 	}
@@ -64,6 +70,11 @@ public partial class Unit : CanvasItem
 
     private void EnqueueEffectInput(object sender, EnqueueEffectInputEventArgs e)
 	{
+		if (e.EffectInput.Sender == null)
+		{
+			e.EffectInput.Sender = this;
+		}
+
 		EnqueueEffectInputEventHandler(this, e);
 	}
 
@@ -84,10 +95,31 @@ public partial class Unit : CanvasItem
 		_combatPosition = -1;
 	}
 
-    public EffectResult ExecuteEffect(EffectRequest effectResult)
+    public EffectResult ExecuteEffect(EffectRequest request)
     {
-        return _stats.ExecuteEffect(effectResult);
+		EffectResult result = null;
+
+		_stats.InterceptEffectRequest(request);
+
+        if (request.Sender == this)
+        {
+			if (request.Trigger == EffectTrigger.OnMoveBegin)
+				_sprite.PlayAttackAnimation();
+        }
+
+        if (request.Target == this)
+			result = _stats.ExecuteEffect(request);
+
+
+		UpdateUI();
+
+		return result;
     }
+
+	public void ReceiveEffectResult(EffectResult result)
+	{
+		_stats.ReceiveEffectResult(result);
+	}
 
     public int GetModStat(StatType stat)
 	{
@@ -99,27 +131,25 @@ public partial class Unit : CanvasItem
 		return _stats.GetBaseStat(stat);
 	}
 
-	public event EventHandler<ZeroHPEventArgs> ZeroHPEventHandler;
+	public event EventHandler<UnitDeathCallArgs> UnitDeathCallEventHandler;
 
-	private void EmitZeroHPSignal(object sender, ZeroHPEventArgs e)
+	private void EmitUnitDeathCallSignal(object sender, UnitDeathCallArgs e)
 	{
-		ZeroHPEventHandler(this, e);
+		UnitDeathCallEventHandler(this, e);
 	}
 
 	//
 	// UI related functions
 	//
-	public void UpdateUI(object sender, UpdateUIEventArgs e)
+	private void UpdateUI()
 	{
-		UnitStats stats = sender as UnitStats;
-
-		if (stats != null)
-		{
-            _uI.Update(stats);
+        if (_stats != null)
+        {
+            _uI.Update(_stats);
         }
-	}
+    }
 
-	public void InitializeUI()
+	private void InitializeUI()
 	{ 
 		_uI.MoveButtonPressedEventHandler += OnMoveButtonPressed;
 		_uI.TargetButtonPressedEventHandler += OnTargetButtonPressed;
@@ -164,8 +194,20 @@ public partial class Unit : CanvasItem
     //Listens to stats SendEffectRequest
     private void SendEffect(object sender, SendEffectEventArgs e)
     {
+		EffectRequest request = e.EffectRequest;
+
 		SendEffectEventHandler(this, e);
     }
+
+	private void OnModifierAdded(object sender, ModifierAddOrRemoveEventArgs e)
+	{
+		_uI.OnModifierAdded(e.Modifier);
+	}
+
+	private void OnModifierRemoved(object sender, ModifierAddOrRemoveEventArgs e)
+	{
+		_uI.OnModifierRemoved(e.Modifier);
+	}
 
     public void HideMoveSelectUI()
 	{
@@ -177,8 +219,9 @@ public partial class Unit : CanvasItem
 		_uI.HideTargetSelect();
 	}
 
-	public bool InCombat { get { return _inCombat; } }
+    public bool InCombat { get { return _inCombat; } }
 	public UnitStats Stats { get { return _stats; } }
+	public ReadOnlyDictionary<StatType, int> StatsList { get { return _stats.StatsList; } }
 	public ReadOnlyCollection<Move> MoveSet { get { return _moveSet; } }
 	public int CombatPosition { get { return _combatPosition; } set { _combatPosition = value; } }
 	public bool PlayerControlled { get { return _playerControlled; } set { _playerControlled = value; } }

@@ -1,23 +1,28 @@
 using System;
+using SoulSmithModifiers;
 using SoulSmithMoves;
 using SoulSmithStats;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
-public partial class UnitStats 
+public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 {
 	private StatsList _statsList;
 
 	private int _combatPosition;
 	private List<Modifier> _modifiers = new List<Modifier>();
+	private int _timeOnBoard = -1;
 
 	public UnitStats()
 	{
 		_statsList = new StatsList();
     }
 
-	public UnitStats(StatsList statsList)
+	public UnitStats(StatsList statsList, int timeOnBoard = -1)
 	{
 		_statsList = statsList;
+		_timeOnBoard = timeOnBoard;
 	}
 
     public event EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler;
@@ -64,7 +69,7 @@ public partial class UnitStats
         foreach (Modifier modifier in _modifiers)
         {
             StatModifier statModifier = modifier.GetStatModifier(stat);
-            if (statModifier.Stats.Contains(stat))
+            if (statModifier.Stat == stat)
             {
                 modifiers.Add(statModifier);
             }
@@ -109,30 +114,43 @@ public partial class UnitStats
     // Modifier related functions
     //
 
+	public event EventHandler<ModifierAddOrRemoveEventArgs> ModifierAddEventHandler;
+
 	private void AddModifier(Modifier modifier)
 	{
         _modifiers.Add(modifier);
 		modifier.RemoveModifierEventHandler += RemoveModifier;
 		modifier.EnqueueEffectInputEventHandler += EnqueueEffectInput;
-        modifier.OnApplied();
+
+		ModifierAddOrRemoveEventArgs e = new();
+		e.Modifier = modifier;
+
+		ModifierAddEventHandler?.Invoke(this, e);
     }
+
+	public event EventHandler<ModifierAddOrRemoveEventArgs> ModifierRemoveEventHandler;
 
 	private void RemoveModifier(object sender, RemoveModifierEventArgs e)
 	{
 		Modifier modifier = e.Modifier;
-		_modifiers.Remove(modifier);
-	}
+        modifier.RemoveModifierEventHandler -= RemoveModifier;
+        modifier.EnqueueEffectInputEventHandler -= EnqueueEffectInput;
+        _modifiers.Remove(modifier);
+
+        ModifierAddOrRemoveEventArgs e2 = new();
+        e2.Modifier = modifier;
+
+        ModifierRemoveEventHandler?.Invoke(this, e2);
+    }
 
 	//
 	// Damage related functions
 	//
 
 	// Returns amount of HP actually lost
-	private int LoseHP(int damage, bool gainDecay = true)
+	private static int CalculateEffectiveDamage(int damage, IReadOnlyUnitStats stats)
 	{
-		int newHealth = GetBaseStat(StatType.CurHealth) - damage;
-
-        SetStat(StatType.CurHealth, newHealth);
+		int newHealth = stats.GetBaseStat(StatType.CurHealth) - damage;
 
 		int effectiveDamage = damage;
 
@@ -140,28 +158,6 @@ public partial class UnitStats
         {
 			effectiveDamage += newHealth;
         }
-
-        if (gainDecay)
-		{
-			int newDecay = GetBaseStat(StatType.CurDecay) + ((effectiveDamage * GetModStat(StatType.DecayRate))/100);
-			SetStat(StatType.CurDecay, newDecay);
-		}
-
-		int decayedMaxHealth = GetBaseStat(StatType.MaxHealth) - GetBaseStat(StatType.CurDecay);
-
-
-        if (newHealth > decayedMaxHealth)
-		{
-			newHealth = decayedMaxHealth;
-			SetStat(StatType.CurHealth, newHealth);
-		}
-
-		if (newHealth <= 0)
-		{
-			CallForDeath();
-        }
-		
-		UpdateUI();
 
 		return effectiveDamage;
 	}
@@ -181,22 +177,15 @@ public partial class UnitStats
     // Signal emitters
     //
 
-	public event EventHandler<UpdateUIEventArgs> UpdateUIEventHandler;
+	public event EventHandler<UnitDeathCallArgs> UnitDeathCallEventHandler;
 
-	private void UpdateUI()
+	private void CallForDeath(IReadOnlyUnit killer)
 	{
-		UpdateUIEventArgs e = new UpdateUIEventArgs();
+		UnitDeathCallArgs e = new UnitDeathCallArgs();
 
-		UpdateUIEventHandler(this, e);
-	}
+		e.Killer = killer;
 
-	public event EventHandler<ZeroHPEventArgs> ZeroHPEventHandler;
-
-	private void CallForDeath()
-	{
-		ZeroHPEventArgs e = new ZeroHPEventArgs();
-
-		ZeroHPEventHandler(this, e);
+		UnitDeathCallEventHandler(this, e);
 	}
 
 	public event EventHandler<SendEffectEventArgs> SendEffectEventHandler;
@@ -234,8 +223,6 @@ public partial class UnitStats
             SetStat(StatType.CurHealth, newHealth);
         }
 
-		UpdateUI();
-
 		return effectiveHealing;
     }
 
@@ -243,145 +230,86 @@ public partial class UnitStats
 	{
         SetStat(StatType.CurHealth, 0);
         SetStat(StatType.CurDecay, GetBaseStat(StatType.MaxHealth));
-		UpdateUI();
     }
 
 	//
 	// Triggers
 	//
 
-	public void OnTrigger(EffectTrigger trigger, Unit sender)
-	{
-		switch (trigger)
-		{
-			case EffectTrigger.OnHitting:
-				OnHitting(sender);
-				break;
-			case EffectTrigger.OnBeingHit:
-				OnBeingHit(sender);
-				break;
-			case EffectTrigger.OnMoveBegin:
-				OnMoveBegin(sender); 
-				break;
-			case EffectTrigger.OnMoveEnd: 
-				OnMoveEnd(sender);
-				break;
-			case EffectTrigger.OnTurnBegin:
-				OnTurnBegin(sender);
-				break;
-			case EffectTrigger.OnTurnEnd:
-				OnTurnEnd(sender);
-				break;
-			case EffectTrigger.OnRoundBegin:
-				OnRoundBegin(sender);
-				break;
-			case EffectTrigger.OnRoundEnd:
-				OnRoundEnd(sender);
-				break;
-			default:
-				break;
-		}
-	}
-
-	private void OnHitting(Unit target)
-	{
-		foreach (Modifier modifier in _modifiers)
-		{
-			modifier.OnHitting(target);
-		}
-	}
-
-	private void OnBeingHit(Unit hitter)
-	{
-		foreach (Modifier modifier in _modifiers)
-		{
-			modifier.OnBeingHit(hitter);
-		}
-	}
-
-	private void OnMoveBegin(Unit target)
-	{
-		foreach (Modifier modifier in _modifiers)
-		{
-			modifier.OnMoveBegin(target);
-		}
-	}
-
-	private void OnMoveEnd(Unit target)
-	{
-		foreach (Modifier modifier in _modifiers)
-		{
-			modifier.OnMoveEnd(target);
-		}
-	}
-
-	private void OnTurnBegin(Unit self)
-	{
-		foreach (Modifier modifier in _modifiers)
-		{
-			modifier.OnTurnBegin(self);
-		}
-	}
-
-	private void OnTurnEnd(Unit mover)
-	{
-		foreach (Modifier modifier in _modifiers)
-		{
-			modifier.OnTurnEnd(mover);
-		}
-	}
-
-    private void OnRoundBegin(Unit self)
-    {
-        foreach (Modifier modifier in _modifiers)
-        {
-            modifier.OnRoundBegin(self);
-        }
-    }
-
-    private void OnRoundEnd(Unit self)
-	{
-		foreach (Modifier modifier in _modifiers)
-		{
-			modifier.OnRoundEnd(self);
-		}
-	}
-
     public EffectResult ExecuteEffect(EffectRequest request)
     {
 		if (request == null)
 		{
-			return new EffectResult();
+			return null;
 		}
+
+		EffectResult result = null;
 
 		if (request.RawDamage != 0)
 		{
-			return ExecuteDamageEffect(request);
+			result = ExecuteDamageEffect(request);
 		}
-
-        if (request.RawHealing != 0)
+        else if (request.RawHealing != 0)
         {
-            return ExecuteHealingEffect(request);
+            result = ExecuteHealingEffect(request);
         }
-
-        if (request.Modifier != null)
+        else if (request.ModifierTemplate != null)
 		{
-			return ExecuteModifierEffect(request);
+			result = ExecuteModifierEffect(request);
+		}
+		else if (request.Trigger != EffectTrigger.None)
+		{
+			result = ExecuteTriggerEffect(request);
 		}
 
-		if (request.Trigger != EffectTrigger.None)
+		if (result == null)
 		{
-			return ExecuteTriggerEffect(request);
+            return new EffectResult();
+        }
+		else
+		{
+			result.Sender = request.Sender;
+			result.Target = request.Target;
+			return result;
 		}
-
-		return new EffectResult();
+		
     }
+
+	public void ReceiveEffectResult(EffectResult result)
+	{
+		foreach(Modifier modifier in _modifiers) 
+		{
+			modifier.ProcessEffectResult(result);
+		}
+	}
+
+	public void InterceptEffectRequest(EffectRequest request)
+	{
+		if (request.Trigger == EffectTrigger.OnRoundEnd)
+		{
+			if (_timeOnBoard > -1)
+				DecrementTimeOnBoard();
+		}
+
+
+		//TODO
+	}
+
+	private void DecrementTimeOnBoard()
+	{
+		_timeOnBoard--;
+
+		if (_timeOnBoard <= 0)
+		{
+			CallForDeath(null);
+		}
+	}
 
 	private EffectResult ExecuteDamageEffect(EffectRequest request)
 	{
 		int hpLoss;
         DamageType damageType = request.DamageType;
-		EffectResult effectResult = new EffectResult();
+		EffectResult effectResult = new();
 
         switch (damageType)
         {
@@ -392,11 +320,25 @@ public partial class UnitStats
                 hpLoss = StandardDefenseCalculation(request.RawDamage, GetModStat(StatType.Defense));
                 break;
             default:
-				hpLoss = 0;
-				break;
+				return null;
         }
 
-		effectResult.EffectiveDamage = LoseHP(hpLoss, request.GainDecay);
+		int effectiveDamage = CalculateEffectiveDamage(hpLoss, this);
+
+		int newHP = GetModStat(StatType.CurHealth) - effectiveDamage;
+		SetStat(StatType.CurHealth, newHP);
+
+        if (request.GainDecay)
+        {
+            int newDecay = GetBaseStat(StatType.CurDecay) + ((effectiveDamage * GetModStat(StatType.DecayRate)) / 100);
+            SetStat(StatType.CurDecay, newDecay);
+        }
+
+		if (newHP <= 0)
+			CallForDeath(request.Sender);
+
+        effectResult.EffectiveDamage = effectiveDamage;
+		effectResult.DamageType = damageType;
 
 		return effectResult;
     }
@@ -406,35 +348,45 @@ public partial class UnitStats
 		EffectResult result = new EffectResult();
 
 		int rawHealing = request.RawHealing;
+
+		if (rawHealing == 0) return null;
+
 		int effectiveHealing = GainHP(rawHealing);
 		result.EffectiveHealing = effectiveHealing;
 
 		return result;
 	}
 
-	private EffectResult ExecuteModifierEffect(EffectRequest effectResult)
+	private EffectResult ExecuteModifierEffect(EffectRequest request)
 	{
 		EffectResult result = new EffectResult();
 
-		Modifier modifier = effectResult.Modifier;
-		modifier.ApplyTo(effectResult.Target, effectResult.Sender);
+		IAssetLoadOnly assetLoader = GetAssetLoader();
+		Debug.Assert(assetLoader != null);
+
+		Modifier modifier = request.ModifierTemplate.InstantiateAndApply(
+			assetLoader,
+			request.Target,
+			request.Sender,
+			request.ModifierArgs);
 		AddModifier(modifier);
-		result.ModifierApplied = true;
+		result.ModifierApplied = modifier;
 
 		return result;
 	}
 
-	private EffectResult ExecuteTriggerEffect(EffectRequest effectResult)
+	private EffectResult ExecuteTriggerEffect(EffectRequest request)
 	{
         EffectResult result = new EffectResult();
 
-        OnTrigger(effectResult.Trigger, effectResult.Sender);
-		result.TriggerApplied = true;
+		result.TriggerApplied = request.Trigger;
 
 		return result;
 	}
 
+	public ReadOnlyDictionary<StatType, int> StatsList { get { return _statsList.StatsDict; } }
     public int CombatPosition { get { return _combatPosition; } set { _combatPosition = value; } }
+	public int TimeOnBoard { get { return _timeOnBoard; } }
 }
 
 public class SendEffectEventArgs : EventArgs
@@ -447,7 +399,13 @@ public class UpdateUIEventArgs : EventArgs
 
 }
 
-public class ZeroHPEventArgs : EventArgs
+public class UnitDeathCallArgs : EventArgs
 {
-	public Unit Unit;
+	public IReadOnlyUnit CallingUnit;
+	public IReadOnlyUnit Killer;
+}
+
+public class ModifierAddOrRemoveEventArgs
+{
+	public Modifier Modifier;
 }

@@ -7,6 +7,11 @@ public class BoundingZone_Ellipse : BoundingZone
 {
     private float _radius = 0;
 
+    public BoundingZone_Ellipse(BoundingZone_Ellipse other) 
+    {
+        _radius = other._radius;
+    }
+
     public BoundingZone_Ellipse(float radius, bool showOutline = true, Position position = null) : base(showOutline, position)
     {
         _radius = radius;
@@ -36,7 +41,14 @@ public class BoundingZone_Ellipse : BoundingZone
 
     public override Vector2 GetRandomBoundingPointGlobal(BoundingZoneType zoneType = BoundingZoneType.None)
     {
-        return (GetRandomBoundingPointLocal() + GetGlobalPosition().Coordinates);
+        Vector2 globalCoordinates = GetGlobalPosition().Coordinates;
+
+        return (GetRandomBoundingPointLocal() + globalCoordinates);
+    }
+
+    public override object DeepClone()
+    {
+        return new BoundingZone_Ellipse(this);
     }
 }
 

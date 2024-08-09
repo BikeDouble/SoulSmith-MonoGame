@@ -5,6 +5,8 @@ public class ColoredPolygon
 {
     public Polygon Polygon;
     public Color Color;
+    public bool Filled;
+    public int LineThickness;
 
     public ColoredPolygon(ColoredPolygon other)
     {
@@ -12,7 +14,7 @@ public class ColoredPolygon
         Color = other.Color;
     }
 
-    public ColoredPolygon(Polygon polygon, int[] color) 
+    public ColoredPolygon(Polygon polygon, int[] color, int lineThickness, bool filled) 
     {
         if ((color == null) || (color?.Length < 4))
         {
@@ -24,19 +26,16 @@ public class ColoredPolygon
         }
 
         Polygon = DeepCopy(polygon);
+        Filled = filled;
+        LineThickness = lineThickness;
     }
 
-    public ColoredPolygon(Polygon polygon, Color color)
+    public ColoredPolygon(Polygon polygon, Color color, int lineThickness, bool filled)
     {
         Color = color;
-
         Polygon = DeepCopy(polygon);
-    }
-
-    public ColoredPolygon(Polygon polygon, int r = 255, int g = 255, int b = 255, int a = 255) 
-    {
-        Polygon = DeepCopy(polygon);
-        Color = new Color(r, g, b, a);
+        Filled = filled;
+        LineThickness = lineThickness;
     }
 
     public static Polygon DeepCopy(Polygon otherPolygon)

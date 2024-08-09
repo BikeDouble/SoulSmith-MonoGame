@@ -5,28 +5,43 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Shapes;
 using MonoGame.Extended;
+using Microsoft.Xna.Framework;
 
-public partial class EffectVisualization : CanvasItem
+public partial class EffectVisualization : CanvasItem_TransformationRules
 {
-    private double _lifespan = 3f; //Time in seconds before visualization automatically completes
+    private float _totalLifespan = 3f; //Time in seconds before visualization automatically completes
+    private float _remainingLifespan = 3f;
     private bool _enabled = false;
-    private double _delay = 0f;
+    private float _delay = 0f;
+    private Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> _begin;
+    private Func<EffectVisualizationProcessArgs, EffectVisualizationProcessOutput> _process;
+    private Vector2 _startPoint = Vector2.Zero;
+    private Vector2 _endPoint = Vector2.Zero;
+    private List<float> _processParams = null;
 
     public event EventHandler<ReadyEffectEventArgs> ReadyEffectEventHandler;
 
     public EffectVisualization(EffectVisualization other) : base(other)
     {
-        //TODO remove comment
-        _lifespan = other._lifespan;
+        _totalLifespan = other._totalLifespan;
+        _remainingLifespan = _totalLifespan;
         _enabled = other._enabled;
         _delay = other._delay;
-            
+        _begin = other._begin;
+        _process = other._process;
     }
 
-    public EffectVisualization()
+    public EffectVisualization(
+        CanvasItem sprite,
+        Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> begin,
+        Func<EffectVisualizationProcessArgs, EffectVisualizationProcessOutput> process,
+        float lifespan) : base()
     {
-        Hide();
-        //Pause();
+        AddChild(sprite);
+        _begin = begin;
+        _process = process;
+        _totalLifespan = lifespan;
+        _remainingLifespan = lifespan;
     }
 
     public override void Process(double delta)
@@ -37,7 +52,7 @@ public partial class EffectVisualization : CanvasItem
         }
         else
         {
-            _delay -= delta;
+            _delay -= (float)delta;
             if (_delay <= 0)
             {
                 EnableVisualization();
@@ -47,41 +62,81 @@ public partial class EffectVisualization : CanvasItem
     }
 
     //Tells the combat manager to apply the effect now, so that it is synced with the visualization
-    public virtual void EmitReadyEffect()
+    public void EmitReadyEffect()
     {
         ReadyEffectEventArgs e = new ReadyEffectEventArgs();
 
-        ReadyEffectEventHandler(this, e);
+        ReadyEffectEventHandler?.Invoke(this, e);
     }
 
-    public virtual void BeginVisualization(Unit user, Unit target, double delay = 0f)
+    public void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0f)
     {
+        EffectVisualizationBeginArgs args = new();
+        args.Sender = sender;
+        args.Target = target;
+
+        EffectVisualizationBeginOutput output = _begin?.Invoke(args);
+
+        ProcessBeginOutput(output);
+
+        _remainingLifespan = _totalLifespan;
+
+        Position.Set(_startPoint);
+
         _delay = delay;
-        Hide();
-        //Pause();
+        
+        if (_delay > 0)
+            Hide();
     }
 
-    public virtual void EnableVisualization()
+    private void ProcessBeginOutput(EffectVisualizationBeginOutput output)
+    {
+        if (output == null) return;
+
+        _startPoint = output.StartingPoint; 
+        _endPoint = output.EndingPoint;
+        _processParams = output.Params;
+    }
+
+    private EffectVisualizationProcessArgs CreateProcessArgs()
+    {
+        EffectVisualizationProcessArgs args = new EffectVisualizationProcessArgs();
+        args.Params = _processParams;
+        args.TotalLifeSpan = _totalLifespan;
+        args.ElapsedLifeSpan = _remainingLifespan;
+        args.StartingPoint = _startPoint;
+        args.EndingPoint = _endPoint;
+        args.CurrentPosition = Position;
+        
+        return args;
+    }
+
+    private void ProcessProcessOutput(EffectVisualizationProcessOutput output)
+    {
+        if (output == null) return;
+
+        Transform(output.Transformation);
+    }
+
+    public void EnableVisualization()
     {
         _enabled = true;
         Show();
         //Play();
     }
 
-    public virtual void EndVisualization()
+    public void EndVisualization()
     {
         Hide();
     }
 
-    public void LoadSprite(TrackedResource<CanvasItem_TransformationRules> sprite)
+    private void OnProcess(double delta)
     {
-        AddChild(sprite);
-    }
+        _remainingLifespan -= (float)delta;
 
-    public virtual void OnProcess(double delta)
-    {
-        _lifespan -= delta;
-        if (_lifespan <= 0)
+        ProcessProcessOutput(_process?.Invoke(CreateProcessArgs()));
+
+        if (_remainingLifespan <= 0)
         {
             EmitReadyEffect();
             EndVisualization();
@@ -92,12 +147,6 @@ public partial class EffectVisualization : CanvasItem
     {
         return new EffectVisualization(this);
     }
-
-    public void SetLifespan(double lifespan) 
-    {
-        _lifespan = lifespan;
-    }
-
 }
 
 public class ReadyEffectEventArgs : EventArgs

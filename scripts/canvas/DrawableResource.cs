@@ -11,8 +11,6 @@ public class DrawableResource : IDeepCloneable
 
     public virtual void Draw(Position position, SpriteBatch spriteBatch) { }
 
-    public virtual void UpdatePosition(Position position) { } 
-
     public virtual void UpdateText(string text) { }
 
     public virtual void UpdateColor(Color color) { }

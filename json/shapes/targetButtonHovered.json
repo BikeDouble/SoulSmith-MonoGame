@@ -1,0 +1,7 @@
+{
+    "Radius": 70,
+    "Sides": 4,
+    "Color": [ 255, 255, 255, 255 ],
+    "Filled": false,
+    "LineThickness": 5
+}

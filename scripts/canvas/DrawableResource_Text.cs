@@ -55,14 +55,12 @@ public class DrawableResource_Text : DrawableResource
         return new DrawableResource_Text(this);
     }
 
-    public override void UpdatePosition(Position position) { } 
-
     public override void UpdateText(string text)
     {
         _text = text;
     }
 
-    public void UpdateColor(Color color)
+    public override void UpdateColor(Color color)
     {
         _color = color;
     }

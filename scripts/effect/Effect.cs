@@ -10,10 +10,11 @@ using System;
 
 public class Effect 
 {
-    public Effect(Func<GenerateEffectRequestArgs, EffectRequest> generateEffectRequest, EffectTargetingStyle targetingStyle, IEnumerable<Effect> childEffects = null, EffectVisualization visualization = null, float visDelay = 0, bool priority = false, bool swapSenderAndTarget = false) 
+    public Effect(Func<GenerateEffectRequestArgs, EffectRequest> generateEffectRequest, EffectTargetingStyle targetingStyle, IEnumerable<Effect> childEffects = null, EffectVisualizationTemplate visualizationTemplate = null, float visDelay = 0, bool priority = false, bool swapSenderAndTarget = false) 
     {
         _generateEffectRequest = generateEffectRequest;
         _targetingStyle = targetingStyle;
+        _visualizationTemplate = visualizationTemplate;
         _visualizationDelay = visDelay;
         _childEffects = childEffects?.ToList().AsReadOnly();
         _requiresPriority = priority;
@@ -29,11 +30,11 @@ public class Effect
     private ReadOnlyCollection<Effect> _childEffects;
 
     //For visualizations 
-    private EffectVisualization _visualization = null;
+    private EffectVisualizationTemplate _visualizationTemplate = null;
     private float _visualizationDelay = 0f;
 
     public Func<GenerateEffectRequestArgs, EffectRequest> GenerateEffectRequest { get { return _generateEffectRequest; } }
-    public EffectVisualization Visualization { get { return _visualization; } }
+    public EffectVisualizationTemplate VisualizationTemplate { get { return _visualizationTemplate; } }
     public EffectTargetingStyle TargetingStyle { get { return _targetingStyle; } }
     public double VisualizationDelay { get { return _visualizationDelay; } }
     public ReadOnlyCollection<Effect> ChildEffects { get { return _childEffects; } }

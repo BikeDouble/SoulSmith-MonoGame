@@ -1,0 +1,9 @@
+{
+    "Parts": [
+        {
+            "ResourceName": "TypelessCircle",
+            "ResourceType": "polygon"
+        }
+    ],
+    "PositionArgs": [ 0.0, 0.0, 0.25, 0.25, 0.0 ]
+}

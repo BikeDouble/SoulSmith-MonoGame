@@ -1,22 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 public class CanvasTransformationRule_Translation : CanvasTransformationRule
 {
     private Vector2 _translation;
+    private Vector2 _peakTranslationDiff;
 
     public CanvasTransformationRule_Translation(
         CanvasItem affectedItem,
         int[] activeStates,
         Vector2 translation,
+        Vector2 peakTranslationDiff,
         float totalTransformationDuration = -1,
-        float acceleration = 1) : base(affectedItem, activeStates, totalTransformationDuration, acceleration)
+        Func<float, float> velocity = null) : base(affectedItem, activeStates, totalTransformationDuration, velocity)
     {
         _translation = translation;
     }
 
     public CanvasTransformationRule_Translation(CanvasTransformationRule_Translation other, CanvasItem affectedItem = null) : base(other, affectedItem)
     {
-        _translation = new Vector2(other._translation.X, other._translation.Y);
+        _translation = other._translation;
+        _peakTranslationDiff = other._peakTranslationDiff;
     }
 
     public override object DeepClone()
@@ -29,11 +33,13 @@ public class CanvasTransformationRule_Translation : CanvasTransformationRule
         return new CanvasTransformationRule_Translation(this, affectedItem);
     }
 
-    protected override void TransformInternal(double delta, CanvasItem item)
+    protected override void TransformInternal(double delta, float magnitude, CanvasItem item)
     {
-        base.TransformInternal(delta, item);
+        base.TransformInternal(delta, magnitude, item);
 
-        item.Translate(_translation * (float)delta);
+        Vector2 translation = _translation + (_peakTranslationDiff * magnitude);
+
+        item.Translate(translation * (float)delta);
     }
 }
 

@@ -1,0 +1,9 @@
+{
+    "Parts": [
+        {
+            "ResourceName": "DefenseStatModIcon",
+            "ResourceType": "polygon"
+        }
+    ],
+    "PositionArgs": [ 0.0, 0.0, 1, 1, 0.0 ]
+}

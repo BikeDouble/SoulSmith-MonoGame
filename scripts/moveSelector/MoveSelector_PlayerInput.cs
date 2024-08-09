@@ -43,7 +43,7 @@ public partial class MoveSelector_PlayerInput : MoveSelector
 		SelectTarget();
 	}
 	
-	public override void ReceiveTarget(Unit target)
+	public override void ReceiveTarget(IReadOnlyUnit target)
 	{
 		SetTarget(target);
 		ReturnMoveInputToCombatManager();

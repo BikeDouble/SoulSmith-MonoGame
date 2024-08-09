@@ -1,26 +1,29 @@
 ﻿
+using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 public class CanvasTransformationRule : IDeepCloneable
 {
     private CanvasItem _affectedItem;
 
     private int[] _activeStates;
-    private bool _bActive = true;
+    private bool _bActive = false;
     private float _totalDuration = -1;
-    private float _elapsedDuration = 0;
-    private float _acceleration = 1;
+    private float _elapsedDuration = -1;
+    private Func<float, float> _velocity = null;
 
     public CanvasTransformationRule(
         CanvasItem affectedItem,
         int[] activeStates,
         float totalTransformationDuration = -1,
-        float acceleration = 1)
+        Func<float, float> velocity = null)
     {
         _affectedItem = affectedItem;
         _activeStates = activeStates;
         _totalDuration = totalTransformationDuration;
-        _acceleration = acceleration;
+        _velocity = velocity;
     }
 
     public CanvasTransformationRule(CanvasTransformationRule other, CanvasItem affectedItem = null)
@@ -36,13 +39,14 @@ public class CanvasTransformationRule : IDeepCloneable
 
         _activeStates = other._activeStates;
         _totalDuration = other._totalDuration;
-        _acceleration = other._acceleration;   
         _bActive = other._bActive;
+        _velocity = other._velocity;
     }
 
     public void UpdateState(int newState)
     {
         _bActive = _activeStates.Contains(newState);
+        _elapsedDuration = 0;
     }
 
     public void Transform(double delta)
@@ -51,14 +55,21 @@ public class CanvasTransformationRule : IDeepCloneable
         {
             IncrementDuration(delta);
 
-            double passedDelta = delta;
+            float magnitude = 0;
 
-            if (_totalDuration > 0)
+            if (_velocity != null)
             {
-                passedDelta /= _totalDuration;
+                if (_totalDuration > 0)
+                {
+                    magnitude = _velocity(_elapsedDuration / _totalDuration);
+                }
+                else
+                {
+                    magnitude = _velocity((float)delta);
+                }
             }
 
-            TransformInternal(passedDelta, _affectedItem);
+            TransformInternal(delta, magnitude, _affectedItem);
 
             _bActive = !ExcededDuration();
         }
@@ -92,7 +103,7 @@ public class CanvasTransformationRule : IDeepCloneable
         return false;
     }
 
-    protected virtual void TransformInternal(double delta, CanvasItem item)
+    protected virtual void TransformInternal(double delta, float magnitude, CanvasItem item)
     {
 
     }
@@ -106,6 +117,15 @@ public class CanvasTransformationRule : IDeepCloneable
     {
         return new CanvasTransformationRule(this, affectedItem);
     }
+
+    public static Func<float, float> SmoothBell = (time) =>
+    {
+        float x = 2.828f * (time - 0.5f);
+        float term1 = (float)Math.Pow(x, 4) / 4;
+        float term2 = -(float)Math.Pow(x, 2);
+        float y = term1 + term2 + 1;
+        return y;
+    };
 
     public CanvasItem AffectedItem { get { return _affectedItem; } }
 }

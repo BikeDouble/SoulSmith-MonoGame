@@ -1,5 +1,6 @@
 using System;
 using SoulSmithMoves;
+using SoulSmithModifiers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -78,7 +79,7 @@ public partial class Team : CanvasItem
 			position.OfferMoveAndUserEventHandler += OnOfferMoveAndUser;
 			position.OfferTargetEventHandler += OnOfferTarget;
 			position.EnqueueEffectInputEventHandler += EnqueueEffectInput;
-			position.UnitZeroHPEventHandler += OnUnitZeroHP;
+			position.UnitDeathCallEventHandler += OnUnitDeathCall;
 			position.SendEffectEventHandler += SendEffect;
 		}
 	}
@@ -98,7 +99,7 @@ public partial class Team : CanvasItem
 		SendEffectEventHandler(this, e);
 	}
 
-    public void DeleteUnit(Unit unit)
+    public void DeleteUnit(IReadOnlyUnit unit)
 	{
 		TeamPosition position = GetPositionWithUnit(unit);
 
@@ -129,15 +130,24 @@ public partial class Team : CanvasItem
 		position.AssignUnit(unit);
 	}
 
+	public void ReceiveEffectResult(EffectResult result)
+	{
+		foreach (TeamPosition position in _teamPositions)
+		{
+			position.ReceiveEffectResult(result);
+		}
+	}
+
+
 	//
 	// Listeners
 	//
 
-	public event EventHandler<ZeroHPEventArgs> UnitZeroHPEventHandler;
+	public event EventHandler<UnitDeathCallArgs> UnitDeathCallEventHandler;
 
-	private void OnUnitZeroHP(object sender, ZeroHPEventArgs e)
+	private void OnUnitDeathCall(object sender, UnitDeathCallArgs e)
 	{
-		UnitZeroHPEventHandler(this, e);
+		UnitDeathCallEventHandler(this, e);
 	}
 
 	public void OnBeginRound()
@@ -266,7 +276,7 @@ public partial class Team : CanvasItem
 	/// </summary>
 	/// <param name="unit"></param>
 	/// <returns></returns>
-	public bool ContainsUnit(Unit unit)
+	public bool ContainsUnit(IReadOnlyUnit unit)
 	{
 		foreach (TeamPosition position in _teamPositions)
 		{
@@ -284,7 +294,7 @@ public partial class Team : CanvasItem
 	/// </summary>
 	/// <param name="unit"></param>
 	/// <returns></returns>
-    public TeamPosition GetPositionWithUnit(Unit unit)
+    public TeamPosition GetPositionWithUnit(IReadOnlyUnit unit)
     {
         foreach (TeamPosition position in _teamPositions)
         {
@@ -302,7 +312,7 @@ public partial class Team : CanvasItem
     /// </summary>
     /// <param name="unit"></param>
     /// <returns></returns>
-    public int GetPositionIndexWithUnit(Unit unit)
+    public int GetPositionIndexWithUnit(IReadOnlyUnit unit)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -356,6 +366,20 @@ public partial class Team : CanvasItem
 		return activeUnits.AsReadOnly();
 	}
 
+    //Returns all units that can still move this turn as ReadOnlyUnit
+    public ReadOnlyCollection<IReadOnlyUnit> GetActiveUnitsAsReadOnly()
+    {
+        List<IReadOnlyUnit> activeUnits = new List<IReadOnlyUnit>();
+        foreach (TeamPosition position in _teamPositions)
+        {
+            if (!position.MovedThisRound && position.ContainsUnit)
+            {
+                activeUnits.Add(position.Unit);
+            }
+        }
+        return activeUnits.AsReadOnly();
+    }
+
     //Returns all units that can still move this turn as UnitStats
     public List<UnitStats> GetActiveUnitStats()
     {
@@ -385,6 +409,20 @@ public partial class Team : CanvasItem
 		return activeUnits;
 	}
 
+    //Returns all units currently in this team as IReadOnlyUnits
+    public List<IReadOnlyUnit> GetReadOnlyUnits()
+    {
+        List<IReadOnlyUnit> activeUnits = new List<IReadOnlyUnit>();
+        foreach (TeamPosition position in _teamPositions)
+        {
+            if (position.ContainsUnit)
+            {
+                activeUnits.Add(position.Unit);
+            }
+        }
+        return activeUnits;
+    }
+
     public List<UnitStats> GetUnitStats()
     {
         List<UnitStats> activeUnits = new List<UnitStats>();
@@ -398,15 +436,15 @@ public partial class Team : CanvasItem
         return activeUnits;
     }
 
-	public void RemoveUnitFromCombat(Unit unit)
+	public void RemoveUnitFromCombat(IReadOnlyUnit unit)
 	{
-		TeamPosition position = GetPositionWithUnit(unit);
+        TeamPosition position = GetPositionWithUnit(unit);
 
-		if (position != null)
-		{
+        if (position != null)
+        {
             position.RemoveUnitFromCombat();
         }
-	}
+    }
 	
 	//
 	// Move Selection
@@ -417,16 +455,16 @@ public partial class Team : CanvasItem
 		_moveSelector.SelectMoveInput(thisTeam, enemyTeam);
 	}
 
-    public EffectResult ExecuteEffect(EffectRequest request)
+    public EffectResult ExecuteEffect(EffectRequest request, Unit unit)
     {
-		TeamPosition targetPosition = GetPositionWithUnit(request.Target);
+		TeamPosition targetPosition = GetPositionWithUnit(unit);
 		if (targetPosition != null)
 		{
 			return targetPosition.ExecuteEffect(request);
 		}
 		else
 		{
-			return new EffectResult();
+			return null;
 		}
     }
 

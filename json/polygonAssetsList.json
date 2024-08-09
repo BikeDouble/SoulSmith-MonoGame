@@ -14,6 +14,27 @@
 				{
 					"Name": "TargetButtonIdle",
 					"AssetPath": "json/shapes/targetButtonIdle.json"
+				},
+				{
+					"Name": "TargetButtonHovered",
+					"AssetPath": "json/shapes/targetButtonHovered.json"
+				},
+				{
+					"Name": "TypelessCircle",
+					"AssetPath": "json/shapes/typelessCircle.json"
+				}
+			]
+		},
+		{
+			"Name": "ModifierIcons",
+			"Assets": [
+				{
+					"Name": "AttackStatModIcon",
+					"AssetPath": "json/shapes/attackStatModIcon.json"
+				},
+				{
+					"Name": "DefenseStatModIcon",
+					"AssetPath": "json/shapes/defenseStatModIcon.json"
 				}
 			]
 		}

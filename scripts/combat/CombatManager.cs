@@ -1,7 +1,12 @@
 using System;
 using SoulSmithMoves;
+using SoulSmithModifiers;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
+namespace SoulSmithObjects;
 public partial class CombatManager : CanvasItem
 {
 	//This team always goes first in the round
@@ -15,32 +20,34 @@ public partial class CombatManager : CanvasItem
 	//TODO Delete
 	private bool _startingUnitsInstantiated = false;
 
-	private Queue<Unit> _unitClearQueue;
+	private Queue<IReadOnlyUnit> _unitClearQueue;
 	private int _activeTeamIndex; //Which team will be acting next
 	private int _turnCount = 0;
 	private int _consecutivePassedTurns = 0;
 	private int _roundCount = 0;
 	private bool _awaitingMoveInput;
 
-	public CombatManager()
+	public CombatManager(IAssetLoadOnly assetLoader)
 	{
-        Initialize();
+        Initialize(assetLoader);
 	}
 
 	//
 	// Initialization
 	//
 
-	public void Initialize()
+	private void Initialize(IAssetLoadOnly assetLoader)
 	{
 		InitializeTeams();
 		InitializeQueues();
-		InitializeUI();
+		InitializeUI(assetLoader);
 	}
 
-    private void InitializeUI()
+    private void InitializeUI(IAssetLoadOnly assetLoader)
     {
-        _combatUI = new CombatUI();
+		SpriteFont spriteFont = assetLoader.GetFont(GameManager.UIFONTNAME);
+
+        _combatUI = new CombatUI(spriteFont);
         AddChild(_combatUI);
     }
 
@@ -61,7 +68,7 @@ public partial class CombatManager : CanvasItem
             team.EnqueueEffectInputEventHandler += OnOfferEffectInput;
             team.ShowMoveSelectUIEventHandler += OnShowMoveSelectUI;
             team.ShowTargetSelectUIEventHandler += OnShowTargetSelectUI;
-            team.UnitZeroHPEventHandler += OnUnitZeroHP;
+            team.UnitDeathCallEventHandler += OnUnitDeathCall;
             team.SendEffectEventHandler += ExecuteEffect;
         }
     }
@@ -71,11 +78,12 @@ public partial class CombatManager : CanvasItem
         if (_effectQueue == null)
         {
             _effectQueue = new EffectQueue();
+			_effectQueue.ExecuteGlobalTriggerEffectEventHandler += ExecuteGlobalTriggerEffect;
         }
 
         AddChild(_effectQueue);
 
-        _unitClearQueue = new Queue<Unit>();
+        _unitClearQueue = new Queue<IReadOnlyUnit>();
     }
 
     public override void Process(double delta)
@@ -83,24 +91,28 @@ public partial class CombatManager : CanvasItem
 		if (!_awaitingMoveInput && _effectQueue.IsEmpty())
 		{
 			ClearUnitClearQueue();
+
+			ReadOnlyCollection<Unit> units = GetAllActiveUnits();
+			_effectQueue.OnTurnEnd();
+			_effectQueue.OnTurnBegin();
 			BeginTurn();
 		}
 
-		base.Process(delta);
+        base.Process(delta);
 	}
 
 	private void ClearUnitClearQueue()
 	{
 		while (_unitClearQueue.Count > 0)
 		{
-			Unit unit = _unitClearQueue.Dequeue();
+			IReadOnlyUnit unit = _unitClearQueue.Dequeue();
             Team team = GetTeamWithUnit(unit);
 			if (team != null)
 			{
 				if (team.PlayerControlled)
 				{
 					team.RemoveUnitFromCombat(unit);
-					InsertUnitToInventory(unit);
+					InsertUnitToInventory(unit as Unit);
 				}
 				else
 				{
@@ -151,7 +163,7 @@ public partial class CombatManager : CanvasItem
 		return nextIndex;
 	}
 
-	private Team GetTeamWithUnit(Unit unit)
+	private Team GetTeamWithUnit(IReadOnlyUnit unit)
 	{
 		foreach (Team team in _teams)
 		{
@@ -164,14 +176,14 @@ public partial class CombatManager : CanvasItem
 		return null;
 	}
 
-	private List<Unit> GetAllActiveUnits()
+	private ReadOnlyCollection<Unit> GetAllActiveUnits()
 	{
 		List<Unit> units = new List<Unit>();
 		foreach (Team team in _teams)
 		{
 			units.AddRange(team.GetActiveUnits());
 		}
-		return units;
+		return units.AsReadOnly();
 	}
 
 	//
@@ -197,7 +209,7 @@ public partial class CombatManager : CanvasItem
 			_startingUnitsInstantiated = true;
 		}
 
-		_effectQueue.OnRoundBegin(GetAllActiveUnits());
+		_effectQueue.OnRoundBegin();
 		_turnCount = 0;
 		_activeTeamIndex = TEAMGOESFIRSTINDEX;
 		_roundCount++;
@@ -251,6 +263,7 @@ public partial class CombatManager : CanvasItem
 	//Listens to both teams
 	public void OnOfferCompleteMoveInput(object sender, OfferCompleteMoveInputEventArgs e)
 	{
+		_consecutivePassedTurns = 0;
 		_awaitingMoveInput = false;
 		MoveInput moveInput = e.MoveInput;
 		_effectQueue.EnqueueMove(moveInput);
@@ -277,7 +290,7 @@ public partial class CombatManager : CanvasItem
 	{
 		ClearUnitClearQueue();
 
-		_effectQueue.OnRoundEnd(GetAllActiveUnits());
+		_effectQueue.OnRoundEnd();
 
 		RoundEndEventArgs e = new RoundEndEventArgs();
 
@@ -313,16 +326,15 @@ public partial class CombatManager : CanvasItem
 	}
 
 	//Listens to both teams
-	private void OnUnitZeroHP(object sender, ZeroHPEventArgs e)
+	private void OnUnitDeathCall(object sender, UnitDeathCallArgs e)
 	{
-		Unit unit = e.Unit;
-		_unitClearQueue.Enqueue(unit);
+		_effectQueue.OnUnitDeath(e.Killer, e.CallingUnit);
 	}
 
 	private void OnShowTargetSelectUI(object sender, ShowTargetSelectUIEventArgs e)
 	{
 		MoveTargetingStyle targetingStyle = e.TargetingStyle;
-		Unit unitSender = e.Sender;
+		IReadOnlyUnit unitSender = e.Sender;
 		List<int> positions;
 		Team senderTeam = sender as Team;
 
@@ -358,30 +370,72 @@ public partial class CombatManager : CanvasItem
 		showingTeam.ShowTargetSelectUIOrder(positions);
 	}
 
-	//Listens to both teams
+	// Listens to both teams
 	private void OnOfferEffectInput(object sender, EnqueueEffectInputEventArgs e)
 	{
 		EffectInput effectInput = e.EffectInput;
 		_effectQueue.EnqueueEffect(effectInput);
 	}
 
+	// Listens to effect queue
+	private void ExecuteGlobalTriggerEffect(object sender, ExecuteGlobalTriggerEffectEventArgs e)
+	{
+		ExecuteEffectInternal(e.EffectRequest);
+	}
+
+	// Listens to effect queue
 	private void ExecuteEffect(object sender, SendEffectEventArgs e)
 	{
 		EffectRequest request = e.EffectRequest;
-		Unit target = request.Target;
-		Team targetTeam = GetTeamWithUnit(target);
-		EffectResult result;
-		if (targetTeam != null)
-		{
-			result = targetTeam.ExecuteEffect(request);
-		}
-		else
-		{
-			result = new EffectResult();
-		}
 
-		//TODO REDO THIS ENTIRE SYSTEM WHY DID I DO THIS ???? D:
-		_effectQueue.ResolveEffect(request, result);
+		ExecuteEffectInternal(request);
+	}
+
+	private EffectResult ExecuteEffectInternal(EffectRequest request)
+	{
+        Unit target = request.Target as Unit;
+        if (target == null)
+        {
+            Trace.TraceError("CombatManager: Could not cast IReadOnlyUnit as Unit");
+        }
+
+        List<Unit> allActiveUnits = new List<Unit>(GetAllActiveUnits());
+        allActiveUnits.Remove(target);
+        EffectResult result = null;
+
+        foreach (Unit unit in allActiveUnits)
+        {
+            ExecuteEffectForUnit(request, unit);
+        }
+
+        if (target != null)
+            result = ExecuteEffectForUnit(request, target);
+
+        _effectQueue.ResolveEffect(request, result);
+
+        if (result != null)
+            GiveEffectResultToTeams(result);
+
+		return result;
+    }
+
+	private EffectResult ExecuteEffectForUnit(EffectRequest request, Unit unit)
+	{
+        Team team = GetTeamWithUnit(unit);
+        EffectResult result = null;
+
+        if (team != null) 
+			result = team.ExecuteEffect(request, unit);
+
+		return result;
+    }
+
+	private void GiveEffectResultToTeams(EffectResult result)
+	{
+		foreach (Team team in _teams)
+		{
+			team.ReceiveEffectResult(result);
+		}
 	}
 
 	private bool IsTurnOver()

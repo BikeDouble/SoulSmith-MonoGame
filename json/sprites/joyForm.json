@@ -5,12 +5,22 @@
             "ResourceType": "polygon",
             "MovementRules": [
                 {
-                    "ActiveStates": [ 0 ],
+                    "ActiveStates": [ 0, 1 ],
                     "VerticeIndices": [],
                     "TransformationType": "rotation",
                     "TransformationDuration": -1.0,
                     "Acceleration": 1.0,
                     "Transformation": [ 0.0, 0.0, 180.0 ]
+                },
+                {
+                    "ActiveStates": [ 1 ],
+                    "VerticeIndices": [],
+                    "TransformationType": "rotation",
+                    "TransformationDuration": -7,
+                    "Acceleration": 1.0,
+                    "Transformation": [ 0.0, 0.0, 0.0 ],
+                    "PeakTransformation": [ 0.0, 0.0, 270.0 ],
+                    "VelocityFunction": "smoothbell"
                 }
             ],
             "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
@@ -20,12 +30,22 @@
             "ResourceType": "polygon",
             "MovementRules": [
                 {
-                    "ActiveStates": [ 0 ],
+                    "ActiveStates": [ 0, 1 ],
                     "VerticeIndices": [],
                     "TransformationType": "rotation",
                     "TransformationDuration": -1.0,
                     "Acceleration": 1.0,
                     "Transformation": [ 0.0, 0.0, -40.0 ]
+                },
+                {
+                    "ActiveStates": [ 1 ],
+                    "VerticeIndices": [],
+                    "TransformationType": "rotation",
+                    "TransformationDuration": -7,
+                    "Acceleration": 1.0,
+                    "Transformation": [ 0.0, 0.0, 0.0 ],
+                    "PeakTransformation": [ 0.0, 0.0, -120.0 ],
+                    "VelocityFunction": "smoothbell"
                 }
             ],
             "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
@@ -34,9 +54,10 @@
     "BoundingZones": [
         {
             "Shape": "ellipse",
-            "Types": [ "eSender", "eReceiver"],
+            "Types": [ "eSender", "eReceiver" ],
             "ZoneArgs": [ 55.0 ],
             "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
         }
-    ]
+    ],
+    "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
 }

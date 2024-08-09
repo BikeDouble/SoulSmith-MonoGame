@@ -14,7 +14,7 @@ public partial class UnitUIHealthBar : CanvasItem
 		AddChild(_healthText);
 	}
 
-	public void Update(UnitStats stats)
+	public void Update(IReadOnlyUnitStats stats)
 	{
 		int curHealth = stats.GetModStat(StatType.CurHealth);
 		int maxHealth = stats.GetModStat(StatType.MaxHealth);

@@ -6,6 +6,7 @@ using MonoGame.Extended;
 using System.Diagnostics;
 using System;
 using System.Collections.Generic;
+using SoulSmithObjects;
 
 namespace SoulSmith_MonoGame
 {
@@ -13,7 +14,7 @@ namespace SoulSmith_MonoGame
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private FormsObject _root;
+        private SoulSmithObject _root;
 
         public static int WINDOWHEIGHT = 900;
         public static int WINDOWLENGTH = 1600;
@@ -43,9 +44,6 @@ namespace SoulSmith_MonoGame
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             _root.Process(gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
@@ -69,40 +67,3 @@ namespace SoulSmith_MonoGame
         }
     }
 }
-
-/*
-TODO DELETE OLD REFERENCE CODE
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-
-static class Program
-{
-    static void Main(string[] args)
-    {
-
-        while (!stop)
-        {
-            stopwatch.Start();
-            
-            stopwatch.Stop();
-            deltaTime = stopwatch.Elapsed.TotalSeconds;
-        }
-
-    }
-
-    static void PerformGameLoop(FormsObject root, double deltaTime)
-    {
-        root.Process(deltaTime);
-    }
-
-    
-}
-
-*/

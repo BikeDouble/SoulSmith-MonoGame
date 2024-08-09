@@ -1,15 +1,47 @@
 {
 	"AssetGroups": [
 		{
+			"Name": "visualizations",
+			"Assets": [
+				{
+					"Name": "joyPellet",
+					"AssetPath": "json/sprites/joyPellet.json"
+				},
+				{
+					"Name": "TypelessPellet",
+					"AssetPath": "json/sprites/typelessPellet.json"
+				}
+			]
+		},
+		{
 			"Name": "forms",
 			"Assets": [
-				{"Name": "joyForm", "AssetPath": "json/sprites/joyForm.json"}
+				{
+					"Name": "joyForm",
+					"AssetPath": "json/sprites/joyForm.json"
+				}
 			]
 		},
 		{
 			"Name": "areaOneUnits",
 			"Assets": [
-				{"Name": "basicScrap", "AssetPath": "tbd"}
+				{
+					"Name": "basicScrap",
+					"AssetPath": "tbd"
+				}
+			]
+		},
+		{
+			"Name": "modifierIcons",
+			"Assets": [
+				{
+					"Name": "AttackStatModIcon",
+					"AssetPath": "json/sprites/attackStatModIcon.json"
+				},
+				{
+					"Name": "DefenseStatModIcon",
+					"AssetPath": "json/sprites/defenseStatModIcon.json"
+				}
 			]
 		}
 	]

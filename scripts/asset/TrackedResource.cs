@@ -27,6 +27,6 @@ public partial class TrackedResource<T> where T : class
         _counter.DecreaseCount();
     }
 
-    public static implicit operator T(TrackedResource<T> wrapper) { return wrapper.Resource; }
+    public static implicit operator T(TrackedResource<T> wrapper) { return wrapper?.Resource; }
     public T Resource { get { return _resource; } }
 }

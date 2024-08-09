@@ -16,7 +16,7 @@ public partial class MoveSelector
 
     public event EventHandler<ShowTargetSelectUIEventArgs> ShowTargetSelectUIEventHandler;
 
-	protected void ShowTargetSelectUI(MoveTargetingStyle targetingStyle, Unit sender)
+	protected void ShowTargetSelectUI(MoveTargetingStyle targetingStyle, IReadOnlyUnit sender)
 	{
 		ShowTargetSelectUIEventArgs e = new ShowTargetSelectUIEventArgs();
 		e.TargetingStyle = targetingStyle;
@@ -101,12 +101,12 @@ public partial class MoveSelector
 		SetMove(move);
 	}
 	
-	public virtual void ReceiveSender(Unit user)
+	public virtual void ReceiveSender(IReadOnlyUnit user)
 	{
 		SetUser(user);
 	}
 	
-	public virtual void ReceiveTarget(Unit target)
+	public virtual void ReceiveTarget(IReadOnlyUnit target)
 	{
 		SetTarget(target);
 	}
@@ -120,12 +120,12 @@ public partial class MoveSelector
 		_moveInput.Move = move;
 	}
 	
-	public void SetUser(Unit user)
+	public void SetUser(IReadOnlyUnit user)
 	{
 		_moveInput.Sender = user;
 	}
 	
-	public void SetTarget(Unit target)
+	public void SetTarget(IReadOnlyUnit target)
 	{
 		_moveInput.Target = target;
 	}
@@ -139,12 +139,12 @@ public partial class MoveSelector
 		return _moveInput.Move;
 	}
 	
-	public Unit GetUser()
+	public IReadOnlyUnit GetUser()
 	{
 		return _moveInput.Sender;
 	}
 	
-	public Unit GetTarget()
+	public IReadOnlyUnit GetTarget()
 	{
 		return _moveInput.Target;
 	}
@@ -169,31 +169,31 @@ public partial class MoveSelector
 	/// Returns list of all viable targets, assuming move and user are already selected.
 	/// </summary>
 	/// <returns></returns>
-	public List<Unit> GetViableTargets()
+	public List<IReadOnlyUnit> GetViableTargets()
 	{
 		MoveTargetingStyle targetingStyle = GetMove().TargetingStyle;
 		
-		List<Unit> viableTargets;
+		List<IReadOnlyUnit> viableTargets;
 		
 		switch (targetingStyle)
 		{
 			case MoveTargetingStyle.AllyOrSelf:
-				viableTargets = Team.GetUnits();
+				viableTargets = Team.GetReadOnlyUnits();
 				return viableTargets;
 			case MoveTargetingStyle.Ally:
-				viableTargets = Team.GetUnits();
+				viableTargets = Team.GetReadOnlyUnits();
 				viableTargets.Remove(GetUser());
 				return viableTargets;
 			case MoveTargetingStyle.Enemy:
-				viableTargets = EnemyTeam.GetUnits();
+				viableTargets = EnemyTeam.GetReadOnlyUnits();
 				return viableTargets;
 			default:
-				viableTargets = new List<Unit>();
+				viableTargets = new List<IReadOnlyUnit>();
 				return viableTargets;
 		}
 	}
 
-	public Unit User { get { return _moveInput.Sender; } }
+	public IReadOnlyUnit User { get { return _moveInput.Sender; } }
 	public Team Team { get { return _thisTeam; } }
 	public Team EnemyTeam { get { return _enemyTeam; } }
 }
@@ -201,7 +201,7 @@ public partial class MoveSelector
 public class ShowTargetSelectUIEventArgs : EventArgs
 {
     public MoveTargetingStyle TargetingStyle;
-    public Unit Sender;
+    public IReadOnlyUnit Sender;
 }
 
 public class OfferCompleteMoveInputEventArgs : EventArgs
