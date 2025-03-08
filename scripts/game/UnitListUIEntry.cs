@@ -18,6 +18,8 @@ public class UnitListUIEntry : CanvasItem
 
     private IReadOnlyUnit _unit;
 
+    private string test;
+
     public IReadOnlyUnit Unit { get { return _unit; } }
 }
 
