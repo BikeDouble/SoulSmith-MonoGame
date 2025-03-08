@@ -5,7 +5,7 @@ using SoulSmithMoves;
 
 public partial class MoveSelector_Random : MoveSelector
 {
-	public override void SelectMoveInput(Team thisTeam, Team enemyTeam)
+	public override void SelectMoveInput(CombatTeam thisTeam, CombatTeam enemyTeam)
 	{
 		base.SelectMoveInput(thisTeam, enemyTeam);
 		SelectSender();

@@ -8,6 +8,10 @@
 					"AssetPath": "json/sprites/joyPellet.json"
 				},
 				{
+					"Name": "joyPassivePop",
+					"AssetPath": "json/sprites/joyPassivePop.json"
+				},
+				{
 					"Name": "TypelessPellet",
 					"AssetPath": "json/sprites/typelessPellet.json"
 				}
@@ -26,8 +30,8 @@
 			"Name": "areaOneUnits",
 			"Assets": [
 				{
-					"Name": "basicScrap",
-					"AssetPath": "tbd"
+					"Name": "animatedScrap",
+					"AssetPath": "json/sprites/animatedScrap.json"
 				}
 			]
 		},

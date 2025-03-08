@@ -22,13 +22,13 @@ public class DrawableResource_Texture2D : DrawableResource
         return new DrawableResource_Texture2D(this);
     }
 
-    public override void Draw(Position position, SpriteBatch spriteBatch)
+    public override void Draw(CanvasPosition position, Vector4 tint, SpriteBatch spriteBatch)
     {
         spriteBatch.Draw(
                 _texture,
                 position.Coordinates,
                 null,
-                Color.White,
+                GetTintedColor(tint),
                 position.Rotation,
                 new Vector2(0, 0),
                 position.ScaleAsVector2(),

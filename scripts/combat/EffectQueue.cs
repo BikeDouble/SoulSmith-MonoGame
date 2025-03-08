@@ -54,6 +54,7 @@ public partial class EffectQueue : CanvasItem
     {
         CheckAndProcess();
         base.Process(delta);
+        RemoveVisualizationsInList();
     }
     public void OnTurnBegin()
     {
@@ -111,8 +112,6 @@ public partial class EffectQueue : CanvasItem
     {
         QueuedEffect queuedEffect = queue.Dequeue();
         EffectInput effectInput = queuedEffect.EffectInput;
-
-        RemoveChild(queuedEffect.VisualizationListener.Visualization);
 
         if (effectInput.Effect == null)
         {
@@ -303,6 +302,48 @@ public partial class EffectQueue : CanvasItem
         }
 
         _effectHistory.Push((request, result));
+    }
+
+    private List<EffectVisualization> _visualizationsToRemove = new List<EffectVisualization>();
+
+    private void RemoveVisualizationsInList()
+    {
+        foreach (EffectVisualization visualization in _visualizationsToRemove)
+        {
+            RemoveChild(visualization);
+        }
+
+        _visualizationsToRemove.Clear();
+    }
+
+    private void OnEndVisualization(object sender, EventArgs e)
+    {
+        EffectVisualization senderAsVisualization = sender as EffectVisualization;
+
+        if (Children.Contains(senderAsVisualization))
+        {
+            _visualizationsToRemove.Add(senderAsVisualization);
+        }
+    }
+
+    public override void AddChild(SoulSmithObject child)
+    {
+        if (child is EffectVisualization)
+        {
+            ((EffectVisualization)child).EndVisualizationEventHandler += OnEndVisualization;
+        }
+
+        base.AddChild(child);
+    }
+
+    public override void RemoveChild(SoulSmithObject child)
+    {
+        if (child is EffectVisualization)
+        {
+            ((EffectVisualization)child).EndVisualizationEventHandler -= OnEndVisualization;
+        }
+
+        base.RemoveChild(child);
     }
 }
 

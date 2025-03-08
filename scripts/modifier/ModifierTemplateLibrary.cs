@@ -6,12 +6,12 @@ namespace SoulSmithModifiers;
 
 public static class ModifierTemplateLibrary
 {
-    public static Dictionary<string, ModifierTemplate> CreateDict(AssetLoader assetLoader)
+    public static Dictionary<string, ModifierTemplate> CreateDict()
     {
         List<Dictionary<string, ModifierTemplate>> dicts = new List<Dictionary<string, ModifierTemplate>>();
 
-        dicts.Add(BasicStatModifierTemplates.CreateDict(assetLoader));
-        dicts.Add(EffectOnHitModifierTemplates.CreateDict(assetLoader));
+        dicts.Add(BasicStatModifierTemplates.CreateDict());
+        dicts.Add(EffectOnHitModifierTemplates.CreateDict());
 
         return MergeDictionaries(dicts);
     }

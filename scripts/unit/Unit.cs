@@ -36,7 +36,7 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 		_sprite.PlayIdleAnimation();
 		AddChild(sprite);
 
-		_stats = new UnitStats(statsList, timeOnBoard);
+		_stats = new UnitStats(statsList, timeOnBoard, emotion);
 		_stats.ModifierAddEventHandler += OnModifierAdded;
 		_stats.ModifierRemoveEventHandler += OnModifierRemoved;
 		AddChild(_stats);
@@ -64,7 +64,9 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 		_stats.UnitDeathCallEventHandler += EmitUnitDeathCallSignal;
 		_stats.EnqueueEffectInputEventHandler += EnqueueEffectInput;
 		_stats.SendEffectEventHandler += SendEffect;
-	}
+
+        _stats.LoadEmotionAttributes(_emotion);
+    }
 
     public event EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler;
 
@@ -107,11 +109,13 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 				_sprite.PlayAttackAnimation();
         }
 
-        if (request.Target == this)
+		if (request.Target == this)
+		{
 			result = _stats.ExecuteEffect(request);
-
+		}
 
 		UpdateUI();
+		UpdateSprite();
 
 		return result;
     }
@@ -136,6 +140,16 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 	private void EmitUnitDeathCallSignal(object sender, UnitDeathCallArgs e)
 	{
 		UnitDeathCallEventHandler(this, e);
+
+		_sprite.PlayDeathAnimation();
+	}
+
+	private void UpdateSprite()
+	{
+		if (_sprite != null)
+		{
+			_sprite.Update(_stats);
+		}
 	}
 
 	//

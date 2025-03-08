@@ -15,25 +15,25 @@ namespace SoulSmithModifiers
         //Icon names
         private const string ATTACKSTATICICONNAME = "AttackStatModIcon";
 
-        public static Dictionary<string, ModifierTemplate> CreateDict(AssetLoader assetLoader)
+        public static Dictionary<string, ModifierTemplate> CreateDict()
         {
             List<Dictionary<string, ModifierTemplate>> dicts = new List<Dictionary<string, ModifierTemplate>>();
 
-            dicts.Add(StaticStatModifierTemplates(assetLoader));
+            dicts.Add(StaticStatModifierTemplates());
 
             return ModifierTemplateLibrary.MergeDictionaries(dicts);
         }
 
-        private static Dictionary<string, ModifierTemplate> StaticStatModifierTemplates(AssetLoader assetLoader)
+        private static Dictionary<string, ModifierTemplate> StaticStatModifierTemplates()
         {
             Dictionary<string, ModifierTemplate> dict = new();
 
-            dict.TryAdd(BASICATTACKSTATICMODIFIERNAME, AttackStatic(assetLoader));
+            dict.TryAdd(BASICATTACKSTATICMODIFIERNAME, AttackStatic());
 
             return dict;
         }
 
-        private static ModifierTemplate AttackStatic(AssetLoader assetLoader)
+        private static ModifierTemplate AttackStatic()
         {
             return ModifierTemplate.BasicStaticStatModifier(StatType.Attack,
                 BASICATTACKSTATICMODIFIERNAME,

@@ -13,8 +13,8 @@ public partial class UnitUIMoveButton : Button
 	private Move _move = null;
 	private Color _idleColor = Color.Gray;
 	private Color _hoverColor = Color.Gray;
-	private static Position _hoverTransformation = new Position(0, 0, HOVERSIZEMOD, HOVERSIZEMOD);
-	private static Position _unhoverTransformation = new Position(0, 0, 1 / HOVERSIZEMOD, 1 / HOVERSIZEMOD);
+	private static CanvasPosition _hoverTransformation = new CanvasPosition(0, 0, HOVERSIZEMOD, HOVERSIZEMOD);
+	private static CanvasPosition _unhoverTransformation = new CanvasPosition(0, 0, 1 / HOVERSIZEMOD, 1 / HOVERSIZEMOD);
 
 	public UnitUIMoveButton() : base()
 	{
@@ -25,7 +25,7 @@ public partial class UnitUIMoveButton : Button
 	public UnitUIMoveButton(
 		SpriteFont font, 
 		DrawableResource_Polygon resource,
-		Position position = null) : base(
+		CanvasPosition position = null) : base(
 			resource, 
 			(DrawableResource)resource.DeepClone(), 
 			null, 

@@ -1,6 +1,10 @@
 ﻿using MonoGame.Extended.Shapes;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using SoulSmithJsonConversion;
+using System.Text.Json.Serialization;
 
+[JsonConverter(typeof(ColoredPolygonJsonConverter))]
 public class ColoredPolygon
 {
     public Polygon Polygon;
@@ -36,6 +40,26 @@ public class ColoredPolygon
         Polygon = DeepCopy(polygon);
         Filled = filled;
         LineThickness = lineThickness;
+    }
+
+    public static Polygon RegularPolygon(float radius, int sides)
+    {
+        if (sides < 3)
+            return null;
+
+        if (radius < 0)
+            return null;
+
+        float rotationPer = CanvasPosition.MAXROTATION / sides;
+
+        List<Vector2> vertices = new List<Vector2>();
+
+        for (int i = 0; i < sides; i++)
+        {
+            vertices.Add(CanvasPosition.RotatePointAroundPoint(new Vector2(radius, 0), Vector2.Zero, i * rotationPer));
+        }
+
+        return new Polygon(vertices);
     }
 
     public static Polygon DeepCopy(Polygon otherPolygon)

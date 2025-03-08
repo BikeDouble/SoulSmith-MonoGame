@@ -13,39 +13,45 @@ public partial class CombatManager : CanvasItem
 	private const int TEAMGOESFIRSTINDEX = 1;
 
 	// Children
-	private List<Team> _teams;
+	private List<CombatTeam> _teams;
 	private EffectQueue _effectQueue = null;
 	private CombatUI _combatUI = null;
 
 	//TODO Delete
 	private bool _startingUnitsInstantiated = false;
 
-	private Queue<IReadOnlyUnit> _unitClearQueue;
+	private EnemySpawnSelector _enemySpawnSelector = null;
 	private int _activeTeamIndex; //Which team will be acting next
 	private int _turnCount = 0;
 	private int _consecutivePassedTurns = 0;
 	private int _roundCount = 0;
 	private bool _awaitingMoveInput;
 
-	public CombatManager(IAssetLoadOnly assetLoader)
+	public CombatManager()
 	{
-        Initialize(assetLoader);
+        Initialize();
 	}
 
 	//
 	// Initialization
 	//
 
-	private void Initialize(IAssetLoadOnly assetLoader)
+	private void Initialize()
 	{
+		InitializeEnemySpawnSelector();
 		InitializeTeams();
 		InitializeQueues();
-		InitializeUI(assetLoader);
+		InitializeUI();
 	}
 
-    private void InitializeUI(IAssetLoadOnly assetLoader)
+	private void InitializeEnemySpawnSelector()
+	{
+		_enemySpawnSelector = new EnemySpawnSelector();
+	}
+
+    private void InitializeUI()
     {
-		SpriteFont spriteFont = assetLoader.GetFont(GameManager.UIFONTNAME);
+		SpriteFont spriteFont = AssetLoader.GetFont(GameManager.UIFONTNAME);
 
         _combatUI = new CombatUI(spriteFont);
         AddChild(_combatUI);
@@ -54,11 +60,11 @@ public partial class CombatManager : CanvasItem
     private void InitializeTeams()
     {
 		//TODO move
-        _teams = new List<Team>();
-        _teams.Add(new Team(true));
-        _teams.Add(new Team(false));
+        _teams = new List<CombatTeam>();
+        _teams.Add(new CombatTeam(true));
+        _teams.Add(new CombatTeam(false));
 
-        foreach (Team team in _teams)
+        foreach (CombatTeam team in _teams)
         {
             AddChild(team);
             team.OfferCompleteMoveInputEventHandler += OnOfferCompleteMoveInput;
@@ -82,16 +88,12 @@ public partial class CombatManager : CanvasItem
         }
 
         AddChild(_effectQueue);
-
-        _unitClearQueue = new Queue<IReadOnlyUnit>();
     }
 
     public override void Process(double delta)
 	{
 		if (!_awaitingMoveInput && _effectQueue.IsEmpty())
 		{
-			ClearUnitClearQueue();
-
 			ReadOnlyCollection<Unit> units = GetAllActiveUnits();
 			_effectQueue.OnTurnEnd();
 			_effectQueue.OnTurnBegin();
@@ -99,27 +101,6 @@ public partial class CombatManager : CanvasItem
 		}
 
         base.Process(delta);
-	}
-
-	private void ClearUnitClearQueue()
-	{
-		while (_unitClearQueue.Count > 0)
-		{
-			IReadOnlyUnit unit = _unitClearQueue.Dequeue();
-            Team team = GetTeamWithUnit(unit);
-			if (team != null)
-			{
-				if (team.PlayerControlled)
-				{
-					team.RemoveUnitFromCombat(unit);
-					InsertUnitToInventory(unit as Unit);
-				}
-				else
-				{
-					team.DeleteUnit(unit);
-				}
-			}
-		}
 	}
 
 	public event EventHandler<OfferUnitToInventoryEventArgs> OfferUnitToInventoryEventHandler;
@@ -134,9 +115,9 @@ public partial class CombatManager : CanvasItem
 	// Getters
 	//
 
-	private Team GetEnemyTeam(Team callingTeam)
+	private CombatTeam GetEnemyTeam(CombatTeam callingTeam)
 	{
-		foreach (Team team in _teams)
+		foreach (CombatTeam team in _teams)
 		{
 			if (team != callingTeam)
 			{
@@ -146,7 +127,17 @@ public partial class CombatManager : CanvasItem
 		return null;
 	}
 
-	private Team GetNextActiveTeam()
+	private CombatTeam GetComputerTeam()
+	{
+		foreach (CombatTeam team in _teams)
+		{
+			if (!team.PlayerControlled)
+				return team;
+		}
+		return null;
+	}
+
+	private CombatTeam GetNextActiveTeam()
 	{
 		return _teams[GetNextActiveTeamIndex()];
 	}
@@ -163,9 +154,9 @@ public partial class CombatManager : CanvasItem
 		return nextIndex;
 	}
 
-	private Team GetTeamWithUnit(IReadOnlyUnit unit)
+	private CombatTeam GetTeamWithUnit(IReadOnlyUnit unit)
 	{
-		foreach (Team team in _teams)
+		foreach (CombatTeam team in _teams)
 		{
 			if (team.ContainsUnit(unit))
 			{
@@ -179,7 +170,7 @@ public partial class CombatManager : CanvasItem
 	private ReadOnlyCollection<Unit> GetAllActiveUnits()
 	{
 		List<Unit> units = new List<Unit>();
-		foreach (Team team in _teams)
+		foreach (CombatTeam team in _teams)
 		{
 			units.AddRange(team.GetActiveUnits());
 		}
@@ -200,14 +191,22 @@ public partial class CombatManager : CanvasItem
 	{
 		if (!_startingUnitsInstantiated)
 		{
-			foreach (Team team in _teams)
+			foreach (CombatTeam team in _teams)
 			{
-                // TODO remove 
-                Unit unit = InstantiateUnitWithTemplateName("JoyForm");
-                team.AssignUnitToPosition(unit, 0);
+				// TODO remove 
+				string unitName = "JoyForm";
+				//if (!team.PlayerControlled) unitName = "animatedScrap";
+				for (int i = 0; i < 3; i++)
+				{
+					Unit unit = InstantiateUnitWithTemplateName(unitName);
+					team.AssignUnitToPosition(unit, i);
+				}
             }
 			_startingUnitsInstantiated = true;
 		}
+
+		_enemySpawnSelector.UpdateRound(_roundCount);
+		CheckForEnemySpawns();
 
 		_effectQueue.OnRoundBegin();
 		_turnCount = 0;
@@ -220,7 +219,7 @@ public partial class CombatManager : CanvasItem
 
 	private void PrepareTeamsForNewRound()
 	{
-		foreach (Team team in _teams)
+		foreach (CombatTeam team in _teams)
 		{
 			team.OnBeginRound();
 		}
@@ -241,6 +240,38 @@ public partial class CombatManager : CanvasItem
 		UnitInstantiationEventHandler(this, e);
 
 		return e.Unit;
+	}
+
+	/// <summary>
+	/// Checks and spawns enemies, returns integer representing number of enemies spawned
+	/// </summary>
+	/// <returns></returns>
+	private int CheckForEnemySpawns()
+	{
+		CombatTeam enemyTeam = GetComputerTeam();
+		var positions = enemyTeam.GetPositions();
+		int enemiesSpawned = 0;
+
+		for (int i = 0; i < positions.Count; i++)
+		{
+			TeamPosition position = positions[i];
+            if (!position.ContainsUnit)
+            {
+				string unitTemplateName = _enemySpawnSelector.Select();
+				if (!(unitTemplateName is null))
+					SpawnUnitAtPosition(enemyTeam, i, unitTemplateName);
+				enemiesSpawned++;
+            }
+        }
+
+		return enemiesSpawned;
+	}
+
+	private void SpawnUnitAtPosition(CombatTeam team, int positionIndex, string unitTemplateName)
+	{
+		Unit unit = AssetLoader.InstantiateUnit(unitTemplateName);
+		//TODO make effect
+		team.AssignUnitToPosition(unit, positionIndex);
 	}
 
 	//
@@ -288,8 +319,6 @@ public partial class CombatManager : CanvasItem
 
 	private void EndRound()
 	{
-		ClearUnitClearQueue();
-
 		_effectQueue.OnRoundEnd();
 
 		RoundEndEventArgs e = new RoundEndEventArgs();
@@ -300,7 +329,7 @@ public partial class CombatManager : CanvasItem
 	//Listens to both teams
 	private void OnOfferMoveAndUser(object sender, MoveButtonPressedEventArgs args)
 	{
-		foreach (Team team in _teams)
+		foreach (CombatTeam team in _teams)
 		{
 			team.HideMoveSelectUI();
 		}
@@ -312,7 +341,7 @@ public partial class CombatManager : CanvasItem
 	{
 		Unit target = args.Target;
 
-		foreach (Team team in _teams)
+		foreach (CombatTeam team in _teams)
 		{
 			team.HideTargetSelectUI();
 		}
@@ -336,14 +365,14 @@ public partial class CombatManager : CanvasItem
 		MoveTargetingStyle targetingStyle = e.TargetingStyle;
 		IReadOnlyUnit unitSender = e.Sender;
 		List<int> positions;
-		Team senderTeam = sender as Team;
+		CombatTeam senderTeam = sender as CombatTeam;
 
 		if (senderTeam == null)
 		{
 			return;
 		}
 
-		Team showingTeam;
+		CombatTeam showingTeam;
 
 		switch (targetingStyle)
 		{
@@ -413,15 +442,38 @@ public partial class CombatManager : CanvasItem
 
         _effectQueue.ResolveEffect(request, result);
 
-        if (result != null)
-            GiveEffectResultToTeams(result);
+		if (result != null)
+		{
+			GiveEffectResultToTeams(result);
+
+            if (result.TriggerApplied == EffectTrigger.OnUnitDeath)
+            {
+                KillUnit(result.Target);
+            }
+        }
 
 		return result;
     }
 
-	private EffectResult ExecuteEffectForUnit(EffectRequest request, Unit unit)
+	private void KillUnit(IReadOnlyUnit unit)
 	{
-        Team team = GetTeamWithUnit(unit);
+		if (unit == null) return;
+
+		if (!unit.InCombat) return;
+
+        CombatTeam team = GetTeamWithUnit(unit);
+
+        team.RemoveUnitFromCombat(unit);
+
+        if (team.PlayerControlled)
+        {
+            InsertUnitToInventory(unit as Unit);
+        } 
+    }
+
+    private EffectResult ExecuteEffectForUnit(EffectRequest request, Unit unit)
+	{
+        CombatTeam team = GetTeamWithUnit(unit);
         EffectResult result = null;
 
         if (team != null) 
@@ -432,7 +484,7 @@ public partial class CombatManager : CanvasItem
 
 	private void GiveEffectResultToTeams(EffectResult result)
 	{
-		foreach (Team team in _teams)
+		foreach (CombatTeam team in _teams)
 		{
 			team.ReceiveEffectResult(result);
 		}
@@ -443,7 +495,7 @@ public partial class CombatManager : CanvasItem
 		return (_consecutivePassedTurns >= _teams.Count);
 	}
 
-	public Team ActiveTeam { get { return _teams[_activeTeamIndex]; } }	
+	public CombatTeam ActiveTeam { get { return _teams[_activeTeamIndex]; } }	
 }
 
 public class OfferUnitToInventoryEventArgs : EventArgs

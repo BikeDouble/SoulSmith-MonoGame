@@ -7,8 +7,8 @@ public partial class MoveSelector
 {	
 	private MoveInput _moveInput;
 	private bool _turnPassed;
-	private Team _thisTeam;
-	private Team _enemyTeam;
+	private CombatTeam _thisTeam;
+	private CombatTeam _enemyTeam;
 
 	public event EventHandler<OfferCompleteMoveInputEventArgs> OfferCompleteMoveInputEventHandler;
 
@@ -70,7 +70,7 @@ public partial class MoveSelector
 	// Selecters
 	//
 	
-	public virtual void SelectMoveInput(Team thisTeam, Team enemyTeam)
+	public virtual void SelectMoveInput(CombatTeam thisTeam, CombatTeam enemyTeam)
 	{
 		_thisTeam = thisTeam;
 		_enemyTeam = enemyTeam;
@@ -194,8 +194,8 @@ public partial class MoveSelector
 	}
 
 	public IReadOnlyUnit User { get { return _moveInput.Sender; } }
-	public Team Team { get { return _thisTeam; } }
-	public Team EnemyTeam { get { return _enemyTeam; } }
+	public CombatTeam Team { get { return _thisTeam; } }
+	public CombatTeam EnemyTeam { get { return _enemyTeam; } }
 }
 
 public class ShowTargetSelectUIEventArgs : EventArgs

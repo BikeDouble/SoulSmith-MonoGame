@@ -13,36 +13,36 @@ namespace SoulSmithModifiers
         public const string JOYESSENCEDAMAGEONHITNAME = "JoyEssenceDamageOnHit";
 
         // Visualization names
-        public const string JOYESSENCEDAMAGEONHITVISNAME = "JoyEssenceDamageOnHit";
+        public const string JOYESSENCEDAMAGEONHITVISNAME = JoyEffectVisualizationTemplates.JOYPASSIVEPOPNAME;
 
         // Icon names
-        public const string JOYESSENCEDAMAGEONHITICONNAME = null;
+        public const string JOYESSENCEDAMAGEONHITICONNAME = "";
 
-        public static Dictionary<string, ModifierTemplate> CreateDict(AssetLoader assetLoader)
+        public static Dictionary<string, ModifierTemplate> CreateDict()
         {
             List<Dictionary<string, ModifierTemplate>> dicts = new List<Dictionary<string, ModifierTemplate>>();
 
-            dicts.Add(EssenceDamageOnHitModifierTemplates(assetLoader));
+            dicts.Add(EssenceDamageOnHitModifierTemplates());
 
             return ModifierTemplateLibrary.MergeDictionaries(dicts);
         }
 
-        private static Dictionary<string, ModifierTemplate> EssenceDamageOnHitModifierTemplates(AssetLoader assetLoader)
+        private static Dictionary<string, ModifierTemplate> EssenceDamageOnHitModifierTemplates()
         {
             Dictionary<string, ModifierTemplate> dict = new();
 
-            dict.TryAdd(JOYESSENCEDAMAGEONHITNAME, JoyEssenceDamageOnHit(assetLoader));
+            dict.TryAdd(JOYESSENCEDAMAGEONHITNAME, JoyEssenceDamageOnHit());
 
             return dict;
         }
 
-        private static ModifierTemplate JoyEssenceDamageOnHit(AssetLoader assetLoader)
+        private static ModifierTemplate JoyEssenceDamageOnHit()
         {
             return ModifierTemplate.SpecialArgStatBasedEssenceDamageOnHitModifier(
                 JOYESSENCEDAMAGEONHITNAME,
                 JOYESSENCEDAMAGEONHITICONNAME,
                 JOYESSENCEDAMAGEONHITVISNAME,
-                0.2f);
+                0.5f);
         }
     }
 }

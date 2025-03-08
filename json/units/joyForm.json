@@ -1,7 +1,7 @@
 {
     "FriendlyName": "Joy",
     "SpriteName": "joyForm",
-    "MaxHealth": 1200,
+    "MaxHealth": 100,
     "Attack": 120,
     "Defense": 120,
     "MoveSet": [
@@ -10,5 +10,5 @@
         "TypelessHit"
     ],
     "Emotion": 1,
-    "TimeOnBoard":  5
+    "TimeOnBoard":  -1
 }

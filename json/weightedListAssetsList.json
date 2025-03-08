@@ -1,0 +1,10 @@
+{
+	"AssetGroups": [
+		{
+			"Name": "AreaOneSpawnLists",
+			"Assets": [
+				{"Name": "AreaOneRegular1", "AssetPath": "json/unitSpawnLists/areaOneRegular1.json"}
+			]
+		}
+	]
+}

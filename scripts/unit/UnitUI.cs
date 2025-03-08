@@ -24,7 +24,7 @@ public partial class UnitUI : CanvasItem
         _moveMenu.MoveButtonPressedEventHandler += OnMoveButtonPressed;
         AddChild(_moveMenu);
 
-		Position healthBarPosition = new Position(0, 120);
+		CanvasPosition healthBarPosition = new CanvasPosition(0, 120);
         _healthBar = new UnitUIHealthBar(_font, healthBarPosition);
         AddChild(_healthBar);
 

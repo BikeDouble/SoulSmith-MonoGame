@@ -15,28 +15,28 @@ namespace SoulSmithMoves
         //Sprite names
         private const string TYPELESSPELLETSPRITENAME = "TypelessPellet";
 
-        public static Dictionary<string, EffectVisualizationTemplate> CreateDict(AssetLoader assetLoader)
+        public static Dictionary<string, EffectVisualizationTemplate> CreateDict()
         {
             List<Dictionary<string, EffectVisualizationTemplate>> dicts = new List<Dictionary<string, EffectVisualizationTemplate>>();
 
-            dicts.Add(TypelessSingleVisualizations(assetLoader));
+            dicts.Add(TypelessSingleVisualizations());
 
             return EffectVisualizationTemplateLibrary.MergeDictionaries(dicts);
         }
 
-        private static Dictionary<string, EffectVisualizationTemplate> TypelessSingleVisualizations(AssetLoader assetLoader)
+        private static Dictionary<string, EffectVisualizationTemplate> TypelessSingleVisualizations()
         {
             Dictionary<string, EffectVisualizationTemplate> dict = new();
 
-            dict.TryAdd(TYPELESSPELLETNAME, TypelessPellet(assetLoader));
+            dict.TryAdd(TYPELESSPELLETNAME, TypelessPellet());
 
             return dict;
         }
 
-        private static EffectVisualizationTemplate TypelessPellet(AssetLoader assetLoader)
+        private static EffectVisualizationTemplate TypelessPellet()
         {
             return EffectVisualizationTemplate.StraightMissile(
-                assetLoader.GetSprite(TYPELESSPELLETSPRITENAME),
+                AssetLoader.GetSprite(TYPELESSPELLETSPRITENAME),
                 1);
         }
     }

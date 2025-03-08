@@ -46,14 +46,6 @@ public partial class TeamPosition : CanvasItem
 		OnUnitLeaveCombat();
     }
 
-    public void DeleteUnit()
-	{
-		if (_containsUnit)
-		{
-			OnUnitLeaveCombat();
-        }
-	}
-
     //
     // Listeners
     //

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -10,19 +11,22 @@ public class EffectVisualizationTemplate
 {
     private TrackedResource<CanvasItem> _trackedSprite = null;
     private Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> _beginVisualization = (args) => (new());
-    private Func<EffectVisualizationProcessArgs, EffectVisualizationProcessOutput> _processVisualization = (args) => (new());
+    private Action<EffectVisualizationProcessArgs> _processVisualization = null;
     private float _lifespan = 0;
+    private float _effectActivationTimer = 0;
 
     public EffectVisualizationTemplate(
         TrackedResource<CanvasItem> trackedSprite,
         Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> begin,
-        Func<EffectVisualizationProcessArgs, EffectVisualizationProcessOutput> process,
-        float lifespan)
+        Action<EffectVisualizationProcessArgs> process,
+        float lifespan,
+        float effectActivationTimer = -1)
     {
         _trackedSprite = trackedSprite;
         _beginVisualization = begin;
         _processVisualization = process;
         _lifespan = lifespan;
+        _effectActivationTimer = effectActivationTimer;
     }
 
     public EffectVisualization Instantiate()
@@ -36,7 +40,8 @@ public class EffectVisualizationTemplate
             (CanvasItem)template._trackedSprite.Resource.DeepClone(),
             template._beginVisualization,
             template._processVisualization,
-            template._lifespan);
+            template._lifespan,
+            template._effectActivationTimer);
     }
 
     public static EffectVisualizationTemplate StraightMissile(
@@ -50,26 +55,60 @@ public class EffectVisualizationTemplate
             lifespan);
     }
 
-    public static Func<EffectVisualizationProcessArgs, EffectVisualizationProcessOutput> ProcessMoveStraightTowardsEndPointFunc = (args) =>
+    public static EffectVisualizationTemplate GrowAndFadeOnTarget(
+        TrackedResource<CanvasItem> sprite,
+        float lifespan,
+        float effectActivationTimer = -1)
     {
-        EffectVisualizationProcessOutput output = new();
+        return new EffectVisualizationTemplate(
+            sprite,
+            BeginStationaryGrowAndFadeStartFunc,
+            ProcessStationaryGrowAndFadeFunc,
+            lifespan,
+            effectActivationTimer);
+    }
+
+    public static Action<EffectVisualizationProcessArgs> ProcessMoveStraightTowardsEndPointFunc = (args) =>
+    {
+        ITransformable item = args.Transformables[0];
 
         double interpolant = Math.Clamp( args.ElapsedLifeSpan / args.TotalLifeSpan, 0, 1);
         Vector2 difference = args.EndingPoint - args.StartingPoint;
-        Vector2 desiredPosition = args.StartingPoint + ((float)(1 - interpolant) * difference);
-        Vector2 translation = desiredPosition - args.CurrentPosition.Coordinates;
+        Vector2 desiredPosition = args.StartingPoint + ((float)interpolant * difference);
 
-        output.Transformation = new Position(translation);
-
-        return output;
+        item.Set(desiredPosition);
     };
 
     public static Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> BeginRandomSenderStartAndTargetEndFunc = (args) =>
     {
         EffectVisualizationBeginOutput output = new EffectVisualizationBeginOutput();
         output.StartingPoint = args.Sender.GetRandomBoundingPointGlobal(BoundingZoneType.EffectSender);
+        args.Transformables[0].Set(output.StartingPoint);
         output.EndingPoint = args.Target.GetRandomBoundingPointGlobal(BoundingZoneType.EffectReceiver);
         return output;
+    };
+
+    public static Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> BeginStationaryGrowAndFadeStartFunc = (args) =>
+    {
+        EffectVisualizationBeginOutput output = new EffectVisualizationBeginOutput();
+        Vector2 startingPoint = args.Target.GetRandomBoundingPointGlobal(BoundingZoneType.EffectSender);
+        output.StartingPoint = startingPoint;
+        ITransformable item = args.Transformables[0];
+        item.Set(startingPoint);
+        item.ScaleMultiplicative(Vector2.Zero);
+        return output;
+    };
+
+    public static Action<EffectVisualizationProcessArgs> ProcessStationaryGrowAndFadeFunc = (args) =>
+    {
+        ITransformable item = args.Transformables[0];
+        float progress = (float)(args.Delta / args.TotalLifeSpan);
+
+        float alphaChange = -(255f * progress);
+
+        item.ChangeTintAdditive(0, 0, 0, alphaChange);
+
+        item.ScaleAdditive(new Vector2(4 * progress));
     };
 
 }
@@ -77,6 +116,7 @@ public class EffectVisualizationBeginArgs
 {
     public IReadOnlyUnit Sender;
     public IReadOnlyUnit Target;
+    public ReadOnlyCollection<ITransformable> Transformables = null;
 }
 
 public class EffectVisualizationBeginOutput
@@ -88,15 +128,13 @@ public class EffectVisualizationBeginOutput
 
 public class EffectVisualizationProcessArgs
 {
-    public Position CurrentPosition = null;
     public Vector2 StartingPoint = Vector2.Zero;
     public Vector2 EndingPoint = Vector2.Zero;
+    public Vector4 ColorChange = Vector4.Zero;
+    public ReadOnlyCollection<ITransformable> Transformables = null;
     public float ElapsedLifeSpan = 0f;
     public float TotalLifeSpan = 0f;
+    public double Delta = 0f;
     public List<float> Params = null;
 }
 
-public class EffectVisualizationProcessOutput
-{
-    public Position Transformation = null;
-}

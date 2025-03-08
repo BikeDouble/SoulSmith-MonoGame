@@ -82,13 +82,16 @@ public class Modifier : IReadOnlyModifier
 
     public void ProcessEffectResult(EffectResult result)
     {
-        if (_removeAtEndOfTurn && (result.TriggerApplied == EffectTrigger.OnTurnEnd))
+        ProcessCommandDelegate(_processEffectResultDelegate, result);
+    }
+
+    public void InterceptEffectRequest(EffectRequest request)
+    {
+        if (_removeAtEndOfTurn && (request.Trigger == EffectTrigger.OnTurnEnd))
             Remove();
 
-        if ((_decrementTrigger != EffectTrigger.None) && (_decrementTrigger == result.TriggerApplied) && (result.Target == _host))
+        if ((_decrementTrigger != EffectTrigger.None) && (_decrementTrigger == request.Trigger))
             DecrementDuration();
-
-        ProcessCommandDelegate(_processEffectResultDelegate, result);
     }
 
     private void ProcessCommandDelegate(Func<ModifierDelegateArgs, ModifierCommands> func, EffectResult effectResult = null)

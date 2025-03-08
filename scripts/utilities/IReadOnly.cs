@@ -37,3 +37,19 @@ public interface IReadOnlyUnit : IReadOnlyCanvasItem
     ReadOnlyCollection<Move> MoveSet { get; }
 }
 
+public interface IReadOnlyCanvasPosition
+{
+    public Vector2 ScaleVector { get; }
+    public float Width { get; }
+    public float Height { get; }
+    public Vector2 Coordinates { get; }
+    public float Rotation { get; }
+    public int X { get; }
+    public int Y { get; }
+}
+
+public interface IReadOnlyWeightedList
+{
+    public int Count { get; }
+}
+

@@ -8,9 +8,6 @@ public class CampManager : SoulSmithObject
 
 	private List<CampFoundation> _foundations;
 
-	private List<CampBuilding> _buildingInventory;
-	private List<Unit> _unitInventory;
-
 	public CampManager() 
 	{ 
 		Initialize();
@@ -30,13 +27,7 @@ public class CampManager : SoulSmithObject
 
 	private void InitializeInventories()
 	{
-		_buildingInventory = new List<CampBuilding>();
-		_unitInventory = new List<Unit>();
-	}
 
-	public void AddUnitToInventory(Unit unit)
-	{
-		_unitInventory.Add(unit);
 	}
 
 	public void OnRoundEnd()

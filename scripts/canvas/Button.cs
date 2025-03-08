@@ -23,7 +23,7 @@ public class Button : CanvasItem_MultipleResources
         DrawableResource resource,
         DrawableResource hoveredResource,
         Dictionary<BoundingZoneType, CanvasItem> boundingZones = null,
-        Position position = null) : base(resource, hoveredResource, boundingZones, position) 
+        CanvasPosition position = null) : base(resource, hoveredResource, boundingZones, position) 
     {
         _idleResourceIndex = 0;
         _hoveredResourceIndex = 1;
@@ -80,7 +80,7 @@ public class Button : CanvasItem_MultipleResources
         if (Resource is null)
             return false;
 
-        Position globalPosition = GetGlobalPosition();
+        CanvasPosition globalPosition = GetGlobalPosition();
         MouseState mouseState = Mouse.GetState();
         Vector2 mousePosition = new Vector2(mouseState.X, mouseState.Y);
         Vector2 localMousePosition = mousePosition - globalPosition.Coordinates;

@@ -29,22 +29,22 @@ namespace SoulSmithMoves
         // Visualization names
         private const string TYPELESSPELLETVISUALIZATIONNAME = "TypelessPellet";
 
-        public static Dictionary<string, MoveTemplate> CreateDict(AssetLoader assetLoader)
+        public static Dictionary<string, MoveTemplate> CreateDict()
         {
             List<Dictionary<string, MoveTemplate>> dicts = new List<Dictionary<string, MoveTemplate>>();
 
-            dicts.Add(BasicMoves(assetLoader));
+            dicts.Add(BasicMoves());
 
             return MoveTemplateLibrary.MergeDictionaries(dicts);
         }
 
-        private static Dictionary<string, MoveTemplate> BasicMoves(AssetLoader assetLoader)
+        private static Dictionary<string, MoveTemplate> BasicMoves()
         {
             Dictionary<string, MoveTemplate> dict = new();
 
             dict.TryAdd(TYPELESSHITTEMPLATENAME, Hit());
             dict.TryAdd(TYPELESSDOUBLEHITTEMPLATENAME, DoubleHit());
-            dict.TryAdd(ATTACKUPTEMPLATENAME, AttackUp(assetLoader));
+            dict.TryAdd(ATTACKUPTEMPLATENAME, AttackUp());
 
             return dict;
         }
@@ -87,13 +87,14 @@ namespace SoulSmithMoves
             return move;
         }
 
-        private static MoveTemplate AttackUp(AssetLoader assetLoader)
+        private static MoveTemplate AttackUp()
         {
             List<EffectTemplate> effects = new List<EffectTemplate>();
-            ModifierTemplate modifier = assetLoader.GetModifierTemplate(ATTACKUPMODIFIERTEMPLATENAME);
+            ModifierTemplate modifier = AssetLoader.GetModifierTemplate(ATTACKUPMODIFIERTEMPLATENAME);
             Dictionary<ModifierFloatArgType, float> modArgs = new Dictionary<ModifierFloatArgType, float>
             {
-                { ModifierFloatArgType.AddMod, 4f }
+                { ModifierFloatArgType.AddMod, 0.5f },
+                { ModifierFloatArgType.Duration, 3 },
             };
 
             EffectTemplate effect = EffectTemplate.Modifier(

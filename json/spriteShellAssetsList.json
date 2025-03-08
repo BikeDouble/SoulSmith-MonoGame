@@ -1,0 +1,15 @@
+{
+	"AssetGroups": [
+		{
+			"Name": "units",
+			"Assets": [
+				{
+					"Name": "form",
+					"AssetPath": "json/spriteShells/form.json"
+				}
+			]
+		}
+	]
+
+
+}

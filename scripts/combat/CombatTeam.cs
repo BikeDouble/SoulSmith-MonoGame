@@ -6,14 +6,13 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using SoulSmith_MonoGame;
 
-public partial class Team : CanvasItem
+public partial class CombatTeam : CanvasItem
 {
-
 	private MoveSelector _moveSelector = null;
 	private bool _playerControlled;
 	private List<TeamPosition> _teamPositions = new List<TeamPosition>();
 
-	public Team(bool playerControlled)
+	public CombatTeam(bool playerControlled)
 	{
 		_playerControlled = playerControlled;
 
@@ -29,7 +28,7 @@ public partial class Team : CanvasItem
 		Initialize();
 	}
 
-	public Team()
+	public CombatTeam()
 	{
         _moveSelector = new MoveSelector_Random();
         Initialize();
@@ -97,18 +96,6 @@ public partial class Team : CanvasItem
 	private void SendEffect(object sender, SendEffectEventArgs e)
 	{
 		SendEffectEventHandler(this, e);
-	}
-
-    public void DeleteUnit(IReadOnlyUnit unit)
-	{
-		TeamPosition position = GetPositionWithUnit(unit);
-
-		if (position == null)
-		{
-			return;
-		}
-
-		position.DeleteUnit();
 	}
 
 	public void AssignUnitToPosition(Unit unit, int positionIndex)
@@ -445,12 +432,12 @@ public partial class Team : CanvasItem
             position.RemoveUnitFromCombat();
         }
     }
-	
-	//
-	// Move Selection
-	//
-	
-	public void SelectMoveInput(Team thisTeam, Team enemyTeam) 
+
+    //
+    // Move Selection
+    //
+
+    public void SelectMoveInput(CombatTeam thisTeam, CombatTeam enemyTeam) 
 	{
 		_moveSelector.SelectMoveInput(thisTeam, enemyTeam);
 	}

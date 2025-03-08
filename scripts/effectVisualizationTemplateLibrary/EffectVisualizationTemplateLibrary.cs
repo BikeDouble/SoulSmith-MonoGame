@@ -6,12 +6,12 @@ namespace SoulSmithMoves
 {
     public static class EffectVisualizationTemplateLibrary
     {
-        public static Dictionary<string, EffectVisualizationTemplate> CreateDict(AssetLoader assetLoader)
+        public static Dictionary<string, EffectVisualizationTemplate> CreateDict()
         {
             List<Dictionary<string, EffectVisualizationTemplate>> dicts = new List<Dictionary<string, EffectVisualizationTemplate>>();
 
-            dicts.Add(JoyEffectVisualizationTemplates.CreateDict(assetLoader));
-            dicts.Add(TypelessEffectVisualizationTemplates.CreateDict(assetLoader));
+            dicts.Add(JoyEffectVisualizationTemplates.CreateDict());
+            dicts.Add(TypelessEffectVisualizationTemplates.CreateDict());
 
             return MergeDictionaries(dicts);
         }

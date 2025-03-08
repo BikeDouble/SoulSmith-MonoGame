@@ -11,21 +11,22 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using MonoGame.Extended.Graphics;
 
-public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
+public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
 {
     private bool _visible = true;
     private string _resourceType = "none";
-    public Position Position = null;  
+    private CanvasPosition _position = null;  
+    private Vector4 _tint = Vector4.Zero;
     private DrawableResource _drawableResource = null;
     private Dictionary<BoundingZoneType, CanvasItem> _boundingZones = null;
 
     public CanvasItem(
-        Position position = null,
+        CanvasPosition position = null,
         DrawableResource sprite = null,
         Dictionary<BoundingZoneType, CanvasItem> boundingZones = null, 
         IEnumerable<SoulSmithObject> children = null) : base(children)
     {
-        Position = new Position(position);
+        _position = new CanvasPosition(position);
         _boundingZones = boundingZones;
         AddChildrenInBoundingZones();
 
@@ -37,12 +38,12 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
 
     public CanvasItem(int x, int y)
     {
-        Position = new Position(x, y);
+        _position = new CanvasPosition(x, y);
     }
 
-    public CanvasItem(SpriteFont font, string text = null, Position position = null)
+    public CanvasItem(SpriteFont font, string text = null, CanvasPosition position = null)
     {
-        Position = new Position(position);
+        _position = new CanvasPosition(position);
 
         if (font != null)
         {
@@ -50,13 +51,26 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
         }
     }
 
-    public CanvasItem(CanvasItem other) : base(other)
+    public CanvasItem(CanvasItem other, CanvasItem shelledItem = null) : base(other)
     {
-        Position = new Position(other.Position);
+        _position = new CanvasPosition(other._position);
         _visible = other._visible;
 
         _drawableResource = (DrawableResource)other._drawableResource?.DeepClone();
         _boundingZones = CloneBoundingZones(other.BoundingZones, Children, other.Children);
+
+        if (shelledItem != null)
+        {
+            AddChild(shelledItem);
+
+            if (shelledItem.BoundingZones != null)
+            {
+                foreach (KeyValuePair<BoundingZoneType, CanvasItem> item in shelledItem.BoundingZones)
+                {
+                    _boundingZones.TryAdd(item.Key, shelledItem);
+                }
+            }
+        }
 
         foreach (SoulSmithObject child in Children)
         {
@@ -72,7 +86,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
         ReadOnlyCollection<SoulSmithObject> children,
         ReadOnlyCollection<SoulSmithObject> otherChildren)
     {
-        if (otherZones == null) return null;
+        if (otherZones == null) return new();
 
         Dictionary<BoundingZoneType, CanvasItem> boundingZones = new();
 
@@ -93,11 +107,11 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
 
     public event EventHandler<GetGlobalPositionEventArgs> GetGlobalPositionEventHandler;
 
-    public Position GetGlobalPosition()
+    public CanvasPosition GetGlobalPosition()
     {
         GetGlobalPositionEventArgs e = new GetGlobalPositionEventArgs();
 
-        e.Position = new Position();
+        e.Position = new CanvasPosition();
 
         GetGlobalPositionInternal(this, e);
 
@@ -109,7 +123,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
         if (e == null)
             return;
 
-        e.Position += Position;
+        e.Position += _position;
 
         GetGlobalPositionEventHandler?.Invoke(this, e);
     }
@@ -146,7 +160,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
             return Vector2.Zero;
 
         if (_boundingZones == null)
-            return Vector2.Zero;
+            return GetGlobalPosition().Coordinates + Vector2.Zero;
 
         CanvasItem zone = _boundingZones.GetValueOrDefault(zoneType);
 
@@ -196,49 +210,81 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
         _visible = false;
     }
 
-    public void Set(Position position)
+    public void Set(CanvasPosition position)
     {
         if (position == null)
             return;
 
-        Position.Set(position);
+        _position.Set(position);
     }
 
-    public void Transform(Position transformation)
+    public void Set(Vector2 coordinates)
+    {
+        _position.Set(coordinates);
+    }
+
+    public void Transform(CanvasPosition transformation)
     {
         if (transformation == null)
             return;
 
-        Position.Transform(transformation);
+        _position.Transform(transformation);
     }
 
     public void Translate(Vector2 translation)
     {
         if (translation == Vector2.Zero) return;
 
-        Position.Translate(translation);
+        _position.Translate(translation);
+    }
+
+    public void ScaleMultiplicative(Vector2 scale)
+    {
+        if (scale == Vector2.One) return;
+
+        _position.ScaleMultiplicative(scale);
+    }
+    public void ScaleAdditive(Vector2 scale)
+    {
+        if (scale == Vector2.Zero) return;
+
+        _position.ScaleAdditive(scale);
     }
 
     public void Rotate(float rotation)
     {
         if (rotation == 0) return;
 
-        Position.Rotate(rotation);
+        _position.Rotate(rotation);
     }
 
     public void Rotate(float rotation, Vector2 origin)
     {
         if (rotation == 0) return;
 
-        Position.Rotate(rotation, origin);
+        _position.Rotate(rotation, origin);
     }
 
-    public override void Draw(Position absolutePosition, SpriteBatch spriteBatch, DrawableResource overridenResource = null)
+    public void ChangeTintAdditive(float r, float g, float b, float a)
     {
-        Position newPosition;
+        Vector4 tintChange = new(r, g, b, a);
 
-        newPosition = new Position(absolutePosition);
-        newPosition.Transform(Position);
+        ChangeTintAdditive(tintChange);
+    }
+
+    public void ChangeTintAdditive(Vector4 change)
+    {
+        _tint += change;
+    }
+
+    public override void Draw(CanvasPosition absolutePosition, Vector4 tint, SpriteBatch spriteBatch, DrawableResource overridenResource = null)
+    {
+        tint += _tint;
+
+        CanvasPosition newPosition;
+
+        newPosition = new CanvasPosition(absolutePosition);
+        newPosition.Transform(_position);
 
         DrawableResource resourceToDraw;
 
@@ -253,14 +299,14 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
 
         if ((resourceToDraw != null) && (_visible))
         {
-            resourceToDraw.Draw(newPosition, spriteBatch);
+            resourceToDraw.Draw(newPosition, tint, spriteBatch);
         }
 
         if (_visible)
         {
             foreach (SoulSmithObject child in Children)
             {
-                child.Draw(newPosition, spriteBatch);
+                child.Draw(newPosition, tint, spriteBatch);
             }
         }
     }
@@ -339,6 +385,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem
     }
 
     public bool Visible { get { return _visible; } }
+    public IReadOnlyCanvasPosition Position { get { return _position; } }
     protected virtual DrawableResource Resource { get { return _drawableResource; } set { _drawableResource = value; } }
     public ReadOnlyDictionary<BoundingZoneType, CanvasItem> BoundingZones { get { return _boundingZones == null ? null : new ReadOnlyDictionary<BoundingZoneType, CanvasItem>(_boundingZones); } }
 }
@@ -352,7 +399,7 @@ public enum BoundingZoneType
 
 public class GetGlobalPositionEventArgs : EventArgs
 {
-    public Position Position { get; set; }
+    public CanvasPosition Position { get; set; }
 }
 
 public class GetGlobalVisibilityEventArgs : EventArgs
@@ -360,14 +407,14 @@ public class GetGlobalVisibilityEventArgs : EventArgs
     public bool Visible { get; set; }
 }
 
-public class Position
+public class CanvasPosition : IReadOnlyCanvasPosition
 {
-    public Position()
+    public CanvasPosition()
     {
 
     }
 
-    public Position(int x = 0, int y = 0, float width = 1f, float height = 1f, float rotation = 0f)
+    public CanvasPosition(int x = 0, int y = 0, float width = 1f, float height = 1f, float rotation = 0f)
     {
         Width = width;
         Height = height;
@@ -376,53 +423,62 @@ public class Position
         Rotation = rotation;
     }
 
-    public Position(Vector2 coordinates)
+    public CanvasPosition(Vector2 coordinates)
     {
         Coordinates = coordinates;
     }
 
-    public Position(Position other)
+    public CanvasPosition(CanvasPosition other)
     {
         if (other == null)
             return;
 
-        Scale = other.Scale;
+        ScaleVector = other.ScaleVector;
         Coordinates = other.Coordinates;
         Rotation = other.Rotation;
     }
 
-    public Position(float[] positionArgs)
+    public CanvasPosition(float[] positionArgs)
     {
         if ((positionArgs != null) && (positionArgs.Length >= 5))
         {
             Coordinates = new Vector2(positionArgs[0], positionArgs[1]);
-            Scale = new Vector2(positionArgs[2], positionArgs[3]);
+            ScaleVector = new Vector2(positionArgs[2], positionArgs[3]);
             Rotation = (float)((float)(positionArgs[4]/180) * Math.PI);
         }
     }
 
-    public Position Transform(Position transformation)
+    public CanvasPosition Transform(CanvasPosition transformation)
     {
-        Scale *= transformation.Scale;
-        Coordinates += transformation.Coordinates;
-        Rotation += transformation.Rotation;
+        ScaleMultiplicative(transformation.ScaleVector);
+        Translate(transformation.Coordinates);
+        Rotate(transformation.Rotation);
 
         return this;
     }
 
-    public Position Transform(Vector2 translation)
-    {
-        return Translate(translation);
-    }
-
-    public Position Translate(Vector2 translation)
+    public CanvasPosition Translate(Vector2 translation)
     {
         Coordinates += translation;
 
         return this;
     }
 
-    public Position Rotate(float rotation, Vector2 origin)
+    public CanvasPosition ScaleMultiplicative(Vector2 scale)
+    {
+        ScaleVector *= scale;
+
+        return this;
+    }
+
+    public CanvasPosition ScaleAdditive(Vector2 scale)
+    {
+        ScaleVector += scale;
+
+        return this;
+    }
+
+    public CanvasPosition Rotate(float rotation, Vector2 origin)
     {
         Coordinates = RotatePointAroundPoint(Coordinates, origin, rotation);
 
@@ -441,25 +497,25 @@ public class Position
         return newRelativePos + origin;
     }
 
-    public Position Rotate(float rotation)
+    public CanvasPosition Rotate(float rotation)
     {
         Rotation += rotation;
 
         return this;
     }
 
-    public Position Set(Position transformation)
+    public CanvasPosition Set(CanvasPosition transformation)
     {
-        Scale = transformation.Scale;
+        ScaleVector = transformation.ScaleVector;
         Coordinates = transformation.Coordinates;
         Rotation = transformation.Rotation;
 
         return this;
     }
 
-    public Position Set(Vector2 transformation)
+    public CanvasPosition Set(Vector2 coordinates)
     {
-        Coordinates = transformation;
+        Coordinates = coordinates;
 
         return this;
     }
@@ -475,7 +531,7 @@ public class Position
     private Vector2 _coordinates = Vector2.Zero;
     private float _rotation = 0f;
 
-    public Vector2 Scale { get { return _scale; } private set { _scale = value; } }
+    public Vector2 ScaleVector { get { return _scale; } private set { _scale = value; } }
     public float Width { get { return _scale.X; } private set { _scale.X = value; } }
     public float Height { get { return _scale.Y; } private set { _scale.Y = value; } }
     public Vector2 Coordinates { get { return _coordinates; } private set { _coordinates = value; } }
@@ -496,6 +552,6 @@ public class Position
     public int X { get { return (int)Coordinates.X; } private set { _coordinates.X = value; } }
     public int Y {  get { return (int)Coordinates.Y; } private set { _coordinates.Y = value; } }
 
-    public static Position operator + (Position a, Position b)
-       => new Position( a.X + b.X, a.Y + b.Y, a.Width * b.Width, a.Height * b.Height, a.Rotation + b.Rotation);
+    public static CanvasPosition operator + (CanvasPosition a, CanvasPosition b)
+       => new CanvasPosition( a.X + b.X, a.Y + b.Y, a.Width * b.Width, a.Height * b.Height, a.Rotation + b.Rotation);
 }

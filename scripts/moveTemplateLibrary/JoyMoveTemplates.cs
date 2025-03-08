@@ -22,7 +22,7 @@ namespace SoulSmithMoves
         // Visualization names
         private const string JOYPELLETVISUALIZATIONNAME = "JoyPellet";
 
-        public static Dictionary<string, MoveTemplate> CreateDict(AssetLoader assetLoader)
+        public static Dictionary<string, MoveTemplate> CreateDict()
         {
             List<Dictionary<string, MoveTemplate>> dicts = new List<Dictionary<string, MoveTemplate>>();
 

@@ -10,7 +10,7 @@ public class BoundingZone : CanvasItem
         _showOutline = other._showOutline;
     }
 
-    public BoundingZone(bool showOutline = false, Position position = null) : base(position)
+    public BoundingZone(bool showOutline = false, CanvasPosition position = null) : base(position)
     {
         _showOutline = showOutline;
     }

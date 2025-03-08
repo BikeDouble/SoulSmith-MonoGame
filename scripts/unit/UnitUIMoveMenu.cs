@@ -13,6 +13,7 @@ public partial class UnitUIMoveMenu : CanvasItem
     public UnitUIMoveMenu(SpriteFont font, DrawableResource_Polygon moveButtonResource = null) : base()
     {
 		CreateMoveButtons(font, moveButtonResource);
+		Hide();
     }
 
 	private const int TOPBUTTONX = 200;
@@ -29,7 +30,7 @@ public partial class UnitUIMoveMenu : CanvasItem
 
         for (int i = 0; i < 3; i++)
         {
-			Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (i * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE);
+			CanvasPosition buttonPosition = new CanvasPosition(TOPBUTTONX, TOPBUTTONY + (i * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE);
             UnitUIMoveButton button = new UnitUIMoveButton(font, (DrawableResource_Polygon)resource?.DeepClone(), buttonPosition);
 			_moveButtons.Add(button);
             AddChild(button);

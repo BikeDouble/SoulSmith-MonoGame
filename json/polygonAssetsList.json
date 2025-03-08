@@ -26,6 +26,24 @@
 			]
 		},
 		{
+			"Name": "EnemySprites",
+			"Assets": [
+				{
+					"Name": "GearOne",
+					"AssetPath": "json/shapes/gear1.json"
+				}
+			]
+		},
+		{
+			"Name": "EffectVisualizations",
+			"Assets": [
+				{
+					"Name": "WhiteOctagon",
+					"AssetPath": "json/shapes/whiteOctagon.json"
+				}
+			]
+		},
+		{
 			"Name": "ModifierIcons",
 			"Assets": [
 				{

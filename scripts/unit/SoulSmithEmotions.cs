@@ -1,10 +1,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using SoulSmithJsonConversion;
 
 namespace SoulSmithEmotions
 {
 	//Is the order of the emotions, represented as binary strings FATWDJ
+	[JsonConverter(typeof(EmotionTagJsonConverter))]
 	public enum EmotionTag
 	{
 		Typeless =		0b000000,

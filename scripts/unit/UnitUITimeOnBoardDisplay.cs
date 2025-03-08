@@ -9,7 +9,7 @@ public class UnitUITimeOnBoardDisplay : CanvasItem
         SpriteFont font) : base(
             font, 
             null, 
-            new Position(0, -70))
+            new CanvasPosition(0, -70))
     {}
 }
 

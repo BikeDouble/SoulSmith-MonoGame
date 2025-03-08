@@ -5,7 +5,7 @@
             "ResourceType": "polygon",
             "MovementRules": [
                 {
-                    "ActiveStates": [ 0, 1 ],
+                    "ActiveStates": [ 0, 1, 3 ],
                     "VerticeIndices": [],
                     "TransformationType": "rotation",
                     "TransformationDuration": -1.0,
@@ -21,6 +21,16 @@
                     "Transformation": [ 0.0, 0.0, 0.0 ],
                     "PeakTransformation": [ 0.0, 0.0, 270.0 ],
                     "VelocityFunction": "smoothbell"
+                },
+                {
+                    "ActiveStates": [ 3 ],
+                    "VerticeIndices": [],
+                    "TransformationType": "rotation",
+                    "TransformationDuration": -9,
+                    "Acceleration": 1.0,
+                    "Transformation": [ 0.0, 0.0, 0.0 ],
+                    "PeakTransformation": [ 0.0, 0.0, -180.0 ],
+                    "VelocityFunction": "slope"
                 }
             ],
             "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
@@ -30,7 +40,7 @@
             "ResourceType": "polygon",
             "MovementRules": [
                 {
-                    "ActiveStates": [ 0, 1 ],
+                    "ActiveStates": [ 0, 1, 3 ],
                     "VerticeIndices": [],
                     "TransformationType": "rotation",
                     "TransformationDuration": -1.0,
@@ -46,6 +56,16 @@
                     "Transformation": [ 0.0, 0.0, 0.0 ],
                     "PeakTransformation": [ 0.0, 0.0, -120.0 ],
                     "VelocityFunction": "smoothbell"
+                },
+                {
+                    "ActiveStates": [ 3 ],
+                    "VerticeIndices": [],
+                    "TransformationType": "rotation",
+                    "TransformationDuration": -9,
+                    "Acceleration": 1.0,
+                    "Transformation": [ 0.0, 0.0, 0.0 ],
+                    "PeakTransformation": [ 0.0, 0.0, 40.0 ],
+                    "VelocityFunction": "slope"
                 }
             ],
             "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
@@ -59,5 +79,6 @@
             "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
         }
     ],
-    "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ]
+    "PositionArgs": [ 0.0, 0.0, 1.0, 1.0, 0.0 ],
+    "ShellName": "form"
 }

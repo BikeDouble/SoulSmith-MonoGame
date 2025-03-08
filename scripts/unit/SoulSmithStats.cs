@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace SoulSmithStats
 {
@@ -11,6 +12,54 @@ namespace SoulSmithStats
         public const int STANDARDDECAYRATE = 33;
     }
 
+    static class StatTypeHelper
+    {
+        public static StatType StringToStatType(string text)
+        {
+            string textLower = text.ToLower();
+
+            switch(textLower)
+            {
+                case "attack":
+                    return StatType.Attack;
+                case "defense":
+                    return StatType.Defense;
+                case "maxhealth":
+                    return StatType.MaxHealth;
+                case "curhealth":
+                    return StatType.CurHealth;
+                case "curdecay":
+                    return StatType.CurDecay;
+                case "decayrate":
+                    return StatType.DecayRate;
+                default:
+                    return StatType.None;
+            }
+        }
+
+        public static string StatTypeToString(StatType type)
+        {
+            switch (type)
+            {
+                case StatType.Attack:
+                    return "attack";
+                case StatType.Defense:
+                    return "defense";
+                case StatType.MaxHealth:
+                    return "maxhealth";
+                case StatType.CurHealth:
+                    return "curhealth";
+                case StatType.CurDecay:
+                    return "curdecay";
+                case StatType.DecayRate:
+                    return "decayrate";
+                default:
+                    return string.Empty;
+            }
+        }
+    }
+
+    [JsonConverter(typeof(SoulSmithJsonConversion.StatTypeJsonConverter))]
     public enum StatType
     {
         None = 0,
@@ -46,3 +95,4 @@ namespace SoulSmithStats
         public double MultiplicativeMod {  get; }
     }
 }
+

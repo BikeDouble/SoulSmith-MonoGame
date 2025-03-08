@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.IO;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
+using SoulSmithDeserialization;
 
 public partial class AssetManager<T> where T : class
 {

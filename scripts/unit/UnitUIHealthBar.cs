@@ -6,9 +6,13 @@ using SoulSmithStats;
 
 public partial class UnitUIHealthBar : CanvasItem
 {
+	//Children
+	private CanvasItem _backboard;
+	private CanvasItem _background;
+	private CanvasItem _healthbar;
 	private CanvasItem _healthText = null;
 
-	public UnitUIHealthBar(SpriteFont font, Position position = null) : base(position)
+	public UnitUIHealthBar(SpriteFont font, CanvasPosition position = null) : base(position)
 	{
 		_healthText = new CanvasItem(font);
 		AddChild(_healthText);

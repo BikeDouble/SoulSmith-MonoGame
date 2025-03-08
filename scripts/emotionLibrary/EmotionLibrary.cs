@@ -7,11 +7,11 @@ namespace SoulSmithEmotions
 {
     public static class EmotionLibrary
     {
-        public static Dictionary<EmotionTag, Emotion> CreateDict(IAssetLoadOnly assetLoader)
+        public static Dictionary<EmotionTag, Emotion> CreateDict()
         {
             List<Dictionary<EmotionTag, Emotion>> dicts = new List<Dictionary<EmotionTag, Emotion>>();
 
-            dicts.Add(SingleEmotions.CreateDict(assetLoader));
+            dicts.Add(SingleEmotions.CreateDict());
 
             return MergeDictionaries(dicts);
         }

@@ -1,5 +1,6 @@
 ﻿
 
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +17,7 @@ public class CanvasItem_MultipleResources : CanvasItem
         DrawableResource sprite1, 
         DrawableResource sprite2, 
         Dictionary<BoundingZoneType, CanvasItem> boundingZones = null, 
-        Position position = null) : base(position, null, boundingZones)  
+        CanvasPosition position = null) : base(position, null, boundingZones)  
     {
         List<DrawableResource> drawableResources = new List<DrawableResource> { sprite1, sprite2 };
         _drawableResources = drawableResources.AsReadOnly();
@@ -26,7 +27,7 @@ public class CanvasItem_MultipleResources : CanvasItem
     public CanvasItem_MultipleResources(
         IEnumerable<DrawableResource> sprites,
         Dictionary<BoundingZoneType, CanvasItem> boundingZones = null,
-        Position position = null) : base(position, null, boundingZones)
+        CanvasPosition position = null) : base(position, null, boundingZones)
     {
         if ((sprites != null) && (sprites.Count() > 0))
         {
@@ -54,7 +55,7 @@ public class CanvasItem_MultipleResources : CanvasItem
         return index;
     }
 
-    public override void Draw(Position absolutePosition, SpriteBatch spriteBatch, DrawableResource overridenResource = null)
+    public override void Draw(CanvasPosition absolutePosition, Vector4 tint, SpriteBatch spriteBatch, DrawableResource overridenResource = null)
     {
         if (overridenResource == null)
         {
@@ -62,7 +63,7 @@ public class CanvasItem_MultipleResources : CanvasItem
                 overridenResource = _drawableResources[_activeResourceIndex];
         }
 
-        base.Draw(absolutePosition, spriteBatch, overridenResource);
+        base.Draw(absolutePosition, tint, spriteBatch, overridenResource);
     }
 
     protected DrawableResource GetResource(int index)

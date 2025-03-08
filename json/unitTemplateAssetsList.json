@@ -5,8 +5,13 @@
 			"Assets": [
 				{"Name": "JoyForm", "AssetPath": "json/units/joyForm.json"}
 			]
+		},
+		{
+			"Name": "areaOneEnemies",
+			"Assets": [
+				{"Name": "AnimatedScrap", "AssetPath": "json/units/animatedScrap.json"},
+				{"Name": "HalfRat", "AssetPath": "json/units/halfRat.json"}
+			]
 		}
 	]
-
-
 }

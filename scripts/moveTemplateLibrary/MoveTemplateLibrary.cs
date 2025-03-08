@@ -6,12 +6,12 @@ namespace SoulSmithMoves
 {
     public static class MoveTemplateLibrary
     {
-        public static Dictionary<string, MoveTemplate> CreateDict(AssetLoader assetLoader)
+        public static Dictionary<string, MoveTemplate> CreateDict()
         {
             List<Dictionary<string, MoveTemplate>> dicts = new List<Dictionary<string, MoveTemplate>>();
 
-            dicts.Add(TypelessMoveTemplates.CreateDict(assetLoader));
-            dicts.Add(JoyMoveTemplates.CreateDict(assetLoader));
+            dicts.Add(TypelessMoveTemplates.CreateDict());
+            dicts.Add(JoyMoveTemplates.CreateDict());
 
             return MergeDictionaries(dicts);
         }

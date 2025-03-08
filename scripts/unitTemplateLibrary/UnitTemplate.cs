@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using SoulSmithMoves;
 using SoulSmithStats;
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
+[JsonConverter(typeof(SoulSmithJsonConversion.UnitTemplateJsonConverter))]
 public class UnitTemplate 
 {
 
@@ -17,14 +19,14 @@ public class UnitTemplate
     private int _maxMoveCount = 3;
     private string _friendlyName;
 
-    public UnitTemplate(ReadOnlyDictionary<StatType, int> statsList,
+    public UnitTemplate(IDictionary<StatType, int> statsList,
                         ReadOnlyCollection<string> moveSetString,
                         EmotionTag emotion,
                         int timeOnBoard,
                         string spriteName,
                         string friendlyName)
     {
-        _statsList = statsList;
+        _statsList = new(statsList);
         _moveSetString = moveSetString;
         _emotion = emotion;
         _spriteName = spriteName;

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input;
 using System;
 using System.Collections.Generic;
@@ -63,35 +64,35 @@ public class SoulSmithObject : IDeepCloneable
         }
 
         _children.Add(child);
-        child.GetAssetLoaderEventHandler += GetAssetLoaderInternal;
+        child.GetParentEventHandler += ReturnParent;
     }
 
     public virtual void RemoveChild(SoulSmithObject child)
     {
         if (_children.Contains(child))
         {
-            child.GetAssetLoaderEventHandler -= GetAssetLoaderInternal;
             _children.Remove(child);
+            child.GetParentEventHandler -= ReturnParent;
         }
     }
 
-    public event EventHandler<GetAssetLoaderEventArgs> GetAssetLoaderEventHandler;
+    public event EventHandler<GetParentEventArgs> GetParentEventHandler;
 
-    public IAssetLoadOnly GetAssetLoader()
+    public SoulSmithObject GetParent()
     {
-        GetAssetLoaderEventArgs e = new GetAssetLoaderEventArgs();
+        GetParentEventArgs e = new GetParentEventArgs();
 
-        GetAssetLoaderInternal(this, e);
+        GetParentEventHandler?.Invoke(this, e);
 
-        return e.AssetLoader;
+        return e.Parent;
     }
 
-    public virtual void GetAssetLoaderInternal(object sender, GetAssetLoaderEventArgs e)
+    private void ReturnParent(object sender, GetParentEventArgs e)
     {
-        GetAssetLoaderEventHandler?.Invoke(this, e);
+        e.Parent = this;
     }
 
-    public virtual void Draw(Position parentAbsolutePosition, SpriteBatch spriteBatch, DrawableResource activeResource = null)
+    public virtual void Draw(CanvasPosition parentAbsolutePosition, Vector4 tint, SpriteBatch spriteBatch, DrawableResource activeResource = null)
     {
 
     }
@@ -100,7 +101,7 @@ public class SoulSmithObject : IDeepCloneable
     public int ChildCount { get { return _children.Count; } }
 }
 
-public class GetAssetLoaderEventArgs : EventArgs
+public class GetParentEventArgs : EventArgs
 {
-    public IAssetLoadOnly AssetLoader = null;
+    public SoulSmithObject Parent;
 }

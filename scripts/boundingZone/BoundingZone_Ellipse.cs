@@ -12,29 +12,29 @@ public class BoundingZone_Ellipse : BoundingZone
         _radius = other._radius;
     }
 
-    public BoundingZone_Ellipse(float radius, bool showOutline = true, Position position = null) : base(showOutline, position)
+    public BoundingZone_Ellipse(float radius, bool showOutline = true, CanvasPosition position = null) : base(showOutline, position)
     {
         _radius = radius;
 
         if (showOutline)
         {
-            Resource = new DrawableResource_Polygon(AssetLoader.RegularPolygon(radius, 20), Color.Red);
+            Resource = new DrawableResource_Polygon(ColoredPolygon.RegularPolygon(radius, 20), Color.Red);
         }
     }
 
     public override Vector2 GetRandomBoundingPointLocal(BoundingZoneType zoneType = BoundingZoneType.None)
     {
-        float direction = Rand.RandFloat() * Position.MAXROTATION;
+        float direction = Rand.RandFloat() * CanvasPosition.MAXROTATION;
 
         float distance = (float)(Math.Sqrt(Rand.RandFloat()) * _radius);
 
         Vector2 point = new Vector2(distance, 0);
 
-        point = Position.RotatePointAroundPoint(point, Vector2.Zero, direction);
+        point = CanvasPosition.RotatePointAroundPoint(point, Vector2.Zero, direction);
 
-        point *= Position.Scale;
+        point *= Position.ScaleVector;
 
-        point = Position.RotatePointAroundPoint(point, Vector2.Zero, Position.Rotation);
+        point = CanvasPosition.RotatePointAroundPoint(point, Vector2.Zero, Position.Rotation);
 
         return point;
     }

@@ -61,5 +61,7 @@ public static class Rand
 
         return (1f - radius + change);
     }
+
+    public static Random Random { get { return _rand; } }
 }
 

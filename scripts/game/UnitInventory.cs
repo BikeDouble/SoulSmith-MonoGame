@@ -1,0 +1,38 @@
+﻿
+using SoulSmithUnitUI;
+using System.Collections.Generic;
+
+public class UnitInventory : CanvasItem
+{
+    private List<Unit> _units = new List<Unit>();
+    private UnitListUI _uI = new();
+
+    /// <summary>
+    /// Adds a unit to the inventory, does not allow duplicates.
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <returns> True if unit successfully added, false otherwise.</returns>
+    public bool AddUnit(Unit unit)
+    {
+        if (_units.Contains(unit)) return false;
+
+        if (unit == null) return false;
+
+        _units.Add(unit);
+        _uI.AddUnit(unit);
+        return true;
+    }
+
+    /// <summary>
+    /// Remove given unit from the inventory.
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <returns>True if unit successfully found and removed, false otherwise.</returns>
+    public bool RemoveUnit(Unit unit)
+    {
+        _uI.RemoveUnit(unit);
+        return _units.Remove(unit);
+    }
+
+}
+

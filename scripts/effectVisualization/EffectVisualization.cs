@@ -6,42 +6,77 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Shapes;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework;
+using System.Collections.ObjectModel;
 
 public partial class EffectVisualization : CanvasItem_TransformationRules
 {
     private float _totalLifespan = 3f; //Time in seconds before visualization automatically completes
-    private float _remainingLifespan = 3f;
+    private float _elapsedLifespan = 0f;
+    private float _effectActivationTimer = -1;
     private bool _enabled = false;
     private float _delay = 0f;
     private Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> _begin;
-    private Func<EffectVisualizationProcessArgs, EffectVisualizationProcessOutput> _process;
+    private Action<EffectVisualizationProcessArgs> _process;
     private Vector2 _startPoint = Vector2.Zero;
     private Vector2 _endPoint = Vector2.Zero;
     private List<float> _processParams = null;
+    private ReadOnlyCollection<ITransformable> _transformables = null;
 
     public event EventHandler<ReadyEffectEventArgs> ReadyEffectEventHandler;
 
     public EffectVisualization(EffectVisualization other) : base(other)
     {
         _totalLifespan = other._totalLifespan;
-        _remainingLifespan = _totalLifespan;
+        _elapsedLifespan = _totalLifespan;
         _enabled = other._enabled;
         _delay = other._delay;
         _begin = other._begin;
         _process = other._process;
+        _transformables = CloneTransformables(
+            other._transformables,
+            Children,
+            other.Children);
+    }
+
+    private static ReadOnlyCollection<ITransformable> CloneTransformables(
+        ReadOnlyCollection<ITransformable> otherTransformables,
+        ReadOnlyCollection<SoulSmithObject> children,
+        ReadOnlyCollection<SoulSmithObject> otherChildren)
+    {
+        if (otherTransformables == null) return null;
+
+        List<ITransformable> transformables = new();
+
+        foreach (ITransformable item in otherTransformables)
+        {
+            int itemIndex = otherChildren.IndexOf(item as SoulSmithObject);
+
+            CanvasItem transformable = children[itemIndex] as CanvasItem;
+
+            if (transformable != null)
+                transformables.Add(transformable);
+        }
+
+        if (transformables.Count < 1) return null;
+
+        return transformables.AsReadOnly();
     }
 
     public EffectVisualization(
         CanvasItem sprite,
         Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> begin,
-        Func<EffectVisualizationProcessArgs, EffectVisualizationProcessOutput> process,
-        float lifespan) : base()
+        Action<EffectVisualizationProcessArgs> process,
+        float lifespan,
+        float effectActivationTimer = -1) : base()
     {
+        List<ITransformable> transformables = new List<ITransformable> { sprite };
+        _transformables = transformables.AsReadOnly();
         AddChild(sprite);
         _begin = begin;
         _process = process;
         _totalLifespan = lifespan;
-        _remainingLifespan = lifespan;
+        _elapsedLifespan = lifespan;
+        _effectActivationTimer = effectActivationTimer;
     }
 
     public override void Process(double delta)
@@ -74,14 +109,13 @@ public partial class EffectVisualization : CanvasItem_TransformationRules
         EffectVisualizationBeginArgs args = new();
         args.Sender = sender;
         args.Target = target;
+        args.Transformables = _transformables;
 
         EffectVisualizationBeginOutput output = _begin?.Invoke(args);
 
         ProcessBeginOutput(output);
 
-        _remainingLifespan = _totalLifespan;
-
-        Position.Set(_startPoint);
+        _elapsedLifespan = 0;
 
         _delay = delay;
         
@@ -98,48 +132,56 @@ public partial class EffectVisualization : CanvasItem_TransformationRules
         _processParams = output.Params;
     }
 
-    private EffectVisualizationProcessArgs CreateProcessArgs()
+    private EffectVisualizationProcessArgs CreateProcessArgs(double delta)
     {
         EffectVisualizationProcessArgs args = new EffectVisualizationProcessArgs();
         args.Params = _processParams;
         args.TotalLifeSpan = _totalLifespan;
-        args.ElapsedLifeSpan = _remainingLifespan;
+        args.ElapsedLifeSpan = _elapsedLifespan;
         args.StartingPoint = _startPoint;
         args.EndingPoint = _endPoint;
-        args.CurrentPosition = Position;
+        args.Transformables = _transformables;
+        args.Delta = delta;
         
         return args;
-    }
-
-    private void ProcessProcessOutput(EffectVisualizationProcessOutput output)
-    {
-        if (output == null) return;
-
-        Transform(output.Transformation);
     }
 
     public void EnableVisualization()
     {
         _enabled = true;
         Show();
-        //Play();
     }
+
+    public event EventHandler EndVisualizationEventHandler;
 
     public void EndVisualization()
     {
         Hide();
+        EndVisualizationEventHandler?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnProcess(double delta)
     {
-        _remainingLifespan -= (float)delta;
+        _elapsedLifespan += (float)delta;
 
-        ProcessProcessOutput(_process?.Invoke(CreateProcessArgs()));
+        _process?.Invoke(CreateProcessArgs(delta));
 
-        if (_remainingLifespan <= 0)
+        if (_elapsedLifespan >= _totalLifespan)
         {
+            _elapsedLifespan = _totalLifespan;
             EmitReadyEffect();
             EndVisualization();
+        }
+
+        if (_effectActivationTimer >= 0)
+        {
+            _effectActivationTimer -= (float)delta;
+
+            if (_effectActivationTimer <= 0)
+            {
+                EmitReadyEffect();
+                _effectActivationTimer = -1;
+            }
         }
     }
 

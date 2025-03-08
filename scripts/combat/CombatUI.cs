@@ -15,7 +15,7 @@ public partial class CombatUI : CanvasItem
 
 	private void Initialize(SpriteFont font)
 	{
-		Position roundCounterPosition = new Position(Game1.WINDOWLENGTH/2, 30, 4, 4);
+		CanvasPosition roundCounterPosition = new CanvasPosition(Game1.WINDOWLENGTH/2, 30, 4, 4);
 
 		_roundCounter = new CanvasItem(font, null, roundCounterPosition);
 		AddChild(_roundCounter);

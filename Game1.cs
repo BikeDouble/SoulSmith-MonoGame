@@ -53,8 +53,8 @@ namespace SoulSmith_MonoGame
         {
             GraphicsDevice.Clear(Color.LightGray);
 
-            _spriteBatch.Begin();
-            _root.Draw(new Position(0, 0, 1, 1, 0), _spriteBatch);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            _root.Draw(new CanvasPosition(0, 0, 1, 1, 0), Vector4.Zero, _spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+namespace SoulSmithDeserialization;
 public class DeserializedAssetList 
 {
    public DeserializedAssetGroup[] AssetGroups { get; set; }

@@ -5,6 +5,7 @@ using SoulSmithStats;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using SoulSmithEmotions;
 
 public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 {
@@ -19,10 +20,30 @@ public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		_statsList = new StatsList();
     }
 
-	public UnitStats(StatsList statsList, int timeOnBoard = -1)
+	public UnitStats(StatsList statsList, int timeOnBoard = -1, EmotionTag emotion = EmotionTag.Typeless)
 	{
 		_statsList = statsList;
 		_timeOnBoard = timeOnBoard;
+	}
+
+	public void LoadEmotionAttributes(EmotionTag emotionTag)
+	{
+		Emotion emotion = AssetLoader.GetEmotion(emotionTag);
+
+		if (emotion == null)
+		{
+			Trace.TraceError("Null emotion with tag: " + emotionTag);
+			return;
+		}
+
+		ReadOnlyCollection<ModifierTemplateWithArgs> modifierTemplates = emotion.PermanentModifiers;
+		if (modifierTemplates != null)
+		{
+			foreach (ModifierTemplateWithArgs modifierTemplate in modifierTemplates)
+			{
+                ApplyModifier(modifierTemplate, (IReadOnlyUnit)GetParent());
+            }
+		}
 	}
 
     public event EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler;
@@ -128,6 +149,8 @@ public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		ModifierAddEventHandler?.Invoke(this, e);
     }
 
+	private List<Modifier> _modifiersToBeRemoved = new List<Modifier>();
+
 	public event EventHandler<ModifierAddOrRemoveEventArgs> ModifierRemoveEventHandler;
 
 	private void RemoveModifier(object sender, RemoveModifierEventArgs e)
@@ -135,13 +158,23 @@ public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		Modifier modifier = e.Modifier;
         modifier.RemoveModifierEventHandler -= RemoveModifier;
         modifier.EnqueueEffectInputEventHandler -= EnqueueEffectInput;
-        _modifiers.Remove(modifier);
+		_modifiersToBeRemoved.Add(modifier);
 
         ModifierAddOrRemoveEventArgs e2 = new();
         e2.Modifier = modifier;
 
         ModifierRemoveEventHandler?.Invoke(this, e2);
     }
+
+	private void ClearModifiersToBeRemovedList()
+	{
+		foreach (Modifier modifier in _modifiersToBeRemoved)
+		{
+			_modifiers.Remove(modifier);
+		}
+
+		_modifiersToBeRemoved.Clear();
+	}
 
 	//
 	// Damage related functions
@@ -226,12 +259,6 @@ public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		return effectiveHealing;
     }
 
-	public void OnDeath()
-	{
-        SetStat(StatType.CurHealth, 0);
-        SetStat(StatType.CurDecay, GetBaseStat(StatType.MaxHealth));
-    }
-
 	//
 	// Triggers
 	//
@@ -277,10 +304,12 @@ public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	public void ReceiveEffectResult(EffectResult result)
 	{
-		foreach(Modifier modifier in _modifiers) 
+		foreach (Modifier modifier in _modifiers) 
 		{
 			modifier.ProcessEffectResult(result);
 		}
+
+		ClearModifiersToBeRemovedList();
 	}
 
 	public void InterceptEffectRequest(EffectRequest request)
@@ -291,8 +320,12 @@ public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 				DecrementTimeOnBoard();
 		}
 
+		foreach (Modifier modifier in _modifiers)
+		{
+			modifier.InterceptEffectRequest(request);
+		}
 
-		//TODO
+		ClearModifiersToBeRemovedList();
 	}
 
 	private void DecrementTimeOnBoard()
@@ -360,20 +393,33 @@ public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	private EffectResult ExecuteModifierEffect(EffectRequest request)
 	{
 		EffectResult result = new EffectResult();
-
-		IAssetLoadOnly assetLoader = GetAssetLoader();
-		Debug.Assert(assetLoader != null);
-
-		Modifier modifier = request.ModifierTemplate.InstantiateAndApply(
-			assetLoader,
-			request.Target,
-			request.Sender,
-			request.ModifierArgs);
-		AddModifier(modifier);
-		result.ModifierApplied = modifier;
+		
+		result.ModifierApplied = ApplyModifier(request.ModifierTemplate, request.ModifierArgs);
 
 		return result;
 	}
+
+	private Modifier ApplyModifier(ModifierTemplateWithArgs templateWithArgs, IReadOnlyUnit sender = null)
+	{
+		return ApplyModifier(templateWithArgs.Template, templateWithArgs.Args, sender);
+	}
+
+	private Modifier ApplyModifier(ModifierTemplate template, 
+		ReadOnlyDictionary<ModifierFloatArgType, float> args,
+		IReadOnlyUnit sender = null)
+	{
+		if (template == null) return null;
+
+		if (sender == null) sender = (IReadOnlyUnit)GetParent();
+
+        Modifier modifier = template.InstantiateAndApply(
+            (IReadOnlyUnit)GetParent(),
+            sender,
+            args);
+        AddModifier(modifier);
+
+		return modifier;
+    }
 
 	private EffectResult ExecuteTriggerEffect(EffectRequest request)
 	{

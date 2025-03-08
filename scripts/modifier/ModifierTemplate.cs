@@ -41,18 +41,17 @@ public class ModifierTemplate
     }
 
     public Modifier InstantiateAndApply(
-        IAssetLoadOnly loader,
         IReadOnlyUnit host,
         IReadOnlyUnit applier,
         IDictionary<ModifierFloatArgType, float> floats)
     {
-        CanvasItem icon = loader.GetSprite(IconName);
+        CanvasItem icon = AssetLoader.GetSprite(IconName);
 
         Modifier modifier = new Modifier(
             host,
             applier,
             ModifierID,
-            loader.LoadEffectFromTemplate(Effect),
+            AssetLoader.LoadEffectFromTemplate(Effect),
             DecrementTrigger,
             (CanvasItem)icon?.DeepClone(),
             ProcessEffectResultDelegate,
