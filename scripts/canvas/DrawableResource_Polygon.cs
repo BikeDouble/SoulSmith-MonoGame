@@ -33,14 +33,14 @@ public class DrawableResource_Polygon : DrawableResource
         _lineThickness = lineWidth;
     }
 
-    public override void Draw(CanvasPosition position, Vector4 tint, SpriteBatch spriteBatch)
+    public override void Draw(IReadOnlyCanvasPosition position, Vector4 tint, SpriteBatch spriteBatch)
     {
         Polygon drawnPolygon = _staticPolygon.TransformedCopy(Vector2.Zero, position.Rotation, position.ScaleVector);
 
         DrawUnfilledInternal(drawnPolygon, position, spriteBatch, GetTintedColor(tint), _lineThickness);
     }
 
-    public static void DrawUnfilledInternal(Polygon polygon, CanvasPosition position, SpriteBatch spriteBatch, Color color, int lineThickness = 1)
+    public static void DrawUnfilledInternal(Polygon polygon, IReadOnlyCanvasPosition position, SpriteBatch spriteBatch, Color color, int lineThickness = 1)
     {
         spriteBatch.DrawPolygon(
                 position.Coordinates,

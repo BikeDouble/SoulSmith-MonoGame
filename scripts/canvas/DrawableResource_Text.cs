@@ -23,7 +23,7 @@ public class DrawableResource_Text : DrawableResource
         _text = other._text;
     }
 
-    public override void Draw(CanvasPosition position, Vector4 tint, SpriteBatch spriteBatch) 
+    public override void Draw(IReadOnlyCanvasPosition position, Vector4 tint, SpriteBatch spriteBatch) 
     {
         if (_font == null)
             return;
@@ -37,7 +37,7 @@ public class DrawableResource_Text : DrawableResource
         DrawInternal(_text, _font, position, spriteBatch, GetTintedColor(tint));
     }
 
-    public static void DrawInternal(string text, SpriteFont font, CanvasPosition position, SpriteBatch spriteBatch, Color color, bool centered = true)
+    public static void DrawInternal(string text, SpriteFont font, IReadOnlyCanvasPosition position, SpriteBatch spriteBatch, Color color, bool centered = true)
     {
         Vector2 coords = position.Coordinates;
 

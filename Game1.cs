@@ -53,9 +53,15 @@ namespace SoulSmith_MonoGame
         {
             GraphicsDevice.Clear(Color.LightGray);
 
+            RenderQueue renderQueue = new RenderQueue();
+
+            _root.CollectDrawPackets(new CanvasPosition(0, 0, 1, 1, 0), Vector4.Zero, renderQueue);
+
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            _root.Draw(new CanvasPosition(0, 0, 1, 1, 0), Vector4.Zero, _spriteBatch);
+            renderQueue.Draw(_spriteBatch);
             _spriteBatch.End();
+
+            renderQueue.Clear();
 
             base.Draw(gameTime);
         }

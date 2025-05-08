@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
 using SoulSmithModifiers;
 using SoulSmithMoves;
+using SoulSmithObjects;
 using SoulSmithUnitUI;
 
 public partial class UnitUI : CanvasItem
@@ -16,7 +18,16 @@ public partial class UnitUI : CanvasItem
 	private Button _targetButton;
 	private readonly SpriteFont _font;
 
+
+	public UnitUI() :
+		this(AssetLoader.GetFont(GameManager.UIFONTNAME),
+			new DrawableResource_Polygon(AssetLoader.GetPolygon("MoveButton")),
+            new DrawableResource_Polygon(AssetLoader.GetPolygon("TargetButtonIdle")),
+            new DrawableResource_Polygon(AssetLoader.GetPolygon("TargetButtonHovered")))
+	{ }
+
 	public UnitUI(SpriteFont font, DrawableResource_Polygon moveButton, DrawableResource_Polygon targetButton, DrawableResource_Polygon targetButtonHovered)
+		: base(new CanvasPosition(0, 0, 1, 1, 0, 5))
 	{
 		_font = font;
 
@@ -24,7 +35,7 @@ public partial class UnitUI : CanvasItem
         _moveMenu.MoveButtonPressedEventHandler += OnMoveButtonPressed;
         AddChild(_moveMenu);
 
-		CanvasPosition healthBarPosition = new CanvasPosition(0, 120);
+		CanvasPosition healthBarPosition = new CanvasPosition(0, 120, 1, 1, 0, 0);
         _healthBar = new UnitUIHealthBar(_font, healthBarPosition);
         AddChild(_healthBar);
 
@@ -138,7 +149,7 @@ public partial class UnitUI : CanvasItem
 	{
 		_healthBar.Update(stats);
 	}
-	
+
 }
 
 public class TargetButtonPressedEventArgs : EventArgs

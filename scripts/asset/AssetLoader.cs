@@ -538,7 +538,7 @@ public class AssetLoader : SoulSmithObject
             dRule.Tag);
     }
 
-    public static Unit InstantiateUnit(string templateName)
+    public static Unit InstantiateUnit(string templateName) //TODO chain Unit constructors and get rid of this
     {
         UnitTemplate template = AssetLoader.GetUnitTemplate(templateName);
 
@@ -547,49 +547,10 @@ public class AssetLoader : SoulSmithObject
             return null;
         }
 
-        return InstantiateUnit(template);
+        return new Unit(template);
     }
 
-    public static Unit InstantiateUnit(UnitTemplate template)
-    {
-        if (template == null) { return null; }
-
-        StatsList stats = new StatsList(template.StatsList);
-        List<Move> moves = InstantiateMoveSet(template);
-        UnitSprite sprite = InstantiateUnitSprite(template.SpriteName);
-        UnitUI uI = InstantiateUnitUI();
-        EmotionTag emotion = template.Emotion;
-        string friendlyName = template.FriendlyName;
-        int timeOnBoard = template.TimeOnBoard;
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = new();
-        boundingZones.Add(BoundingZoneType.EffectSender, sprite);
-        boundingZones.Add(BoundingZoneType.EffectReceiver, sprite);
-
-        Unit unit = new Unit(stats, moves.AsReadOnly(), sprite, boundingZones, uI, emotion, friendlyName, timeOnBoard);
-        return unit;
-    }
-
-    private static UnitSprite InstantiateUnitSprite(string spriteName)
-    {
-        float animationDesync = (float)Rand.RandDoubleAroundOne(UnitSprite.ANIMATIONDESYNCFACTORRADIUS);
-        UnitSprite sprite = new UnitSprite((CanvasItem)AssetLoader.GetSprite(spriteName), animationDesync);
-
-        return sprite;
-    }
-
-    private static UnitUI InstantiateUnitUI()
-    {
-        DrawableResource_Polygon moveButton = new DrawableResource_Polygon(AssetLoader.GetPolygon("MoveButton"));
-        DrawableResource_Polygon targetButtonIdle = new DrawableResource_Polygon(AssetLoader.GetPolygon("TargetButtonIdle"));
-        DrawableResource_Polygon targetButtonHovered = new DrawableResource_Polygon(AssetLoader.GetPolygon("TargetButtonHovered"));
-        SpriteFont font = AssetLoader.GetFont(GameManager.UIFONTNAME);
-
-        UnitUI unitUI = new UnitUI(font, moveButton, targetButtonIdle, targetButtonHovered);
-
-        return unitUI;
-    }
-
-    private static List<Move> InstantiateMoveSet(UnitTemplate template)
+    public static List<Move> InstantiateMoveSet(UnitTemplate template) //TODO make MoveSet object
     {
         if (template == null)
         {

@@ -19,6 +19,7 @@ public partial class GameManager : CanvasItem
 	private CampManager _campManager;
 	private UnitInventory _unitInventory;
 	private AssetLoader _assetLoader;
+	private GameHeaderUI _headerUI;
 
 	public GameManager(ContentManager content)
 	{
@@ -29,6 +30,7 @@ public partial class GameManager : CanvasItem
 	{
 
 		InitializeResources(content);
+		InitializeHeaderUI();
 		InitializeCombat();
 		InitializeCamp();
 		InitializeUnitInventory();
@@ -37,6 +39,12 @@ public partial class GameManager : CanvasItem
 	private void InitializeResources(ContentManager content)
 	{
 		_assetLoader = new(content);
+	}
+
+	private void InitializeHeaderUI()
+	{
+		_headerUI = new GameHeaderUI();
+		AddChild(_headerUI);
 	}
 
 	private void InitializeCamp()

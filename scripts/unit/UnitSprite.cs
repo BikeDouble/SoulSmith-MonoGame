@@ -5,9 +5,9 @@ using MonoGame.Extended.Graphics;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
-public partial class UnitSprite : CanvasItem_TransformationRules
+public partial class UnitSprite : CanvasItem_TransformationRules, IReadOnlyUnitSprite
 {
-    public const float ANIMATIONDESYNCFACTORRADIUS = 0.05f;
+    public const double ANIMATIONDESYNCFACTORRADIUS = 0.05f;
 
     public const int SPRITEIDLESTATE = 0;
     public const int SPRITEATTACKSTATE = 1;
@@ -82,13 +82,13 @@ public partial class UnitSprite : CanvasItem_TransformationRules
         _hPAffectedTransformationRules = GetAllTransformationRulesInChildTreeWithTag("hpaffected");
     }
 
-    public UnitSprite(CanvasItem_TransformationRules other, float animationCoef = 1) : base(other, null, animationCoef) 
+    public UnitSprite(CanvasItem_TransformationRules other, double animationCoef = 1) : base(other, null, animationCoef) 
     {
         UpdateState(SPRITEIDLESTATE);
         _hPAffectedTransformationRules = GetAllTransformationRulesInChildTreeWithTag("hpaffected");
     }
 
-    public UnitSprite(CanvasItem other, float animationCoef = 1) : base(other, null, animationCoef)
+    public UnitSprite(CanvasItem other, double animationCoef = 1) : base(other, null, animationCoef)
     {
         UpdateState(SPRITEIDLESTATE);
         _hPAffectedTransformationRules = GetAllTransformationRulesInChildTreeWithTag("hpaffected");

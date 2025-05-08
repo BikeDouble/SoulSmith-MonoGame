@@ -10,13 +10,16 @@ namespace SoulSmithUnitUI;
 
 public class UnitListUIEntry : CanvasItem
 {
+    private string _unitName;
+    private IReadOnlyUnit _unit;
+
     public UnitListUIEntry(
         IReadOnlyUnit unit)
     {
         _unit = unit;
-    }
+        
 
-    private IReadOnlyUnit _unit;
+    }
 
     private string test;
 

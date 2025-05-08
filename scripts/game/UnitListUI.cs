@@ -16,7 +16,7 @@ public class UnitListUI : CanvasItem
 
     }
 
-    public bool AddUnit(Unit unit)
+    private bool AddUnit(Unit unit)
     {
         if (ContainsUnit(unit)) return false;
 
@@ -26,7 +26,7 @@ public class UnitListUI : CanvasItem
         return true;
     }
 
-    public bool RemoveUnit(Unit unit)
+    private bool RemoveUnit(Unit unit)
     {
         Entry entry = GetEntryWithUnit(unit);
 
@@ -35,7 +35,7 @@ public class UnitListUI : CanvasItem
         return _entries.Remove(entry);
     }
 
-    public void SetEntries(IEnumerable<Unit> units)
+    private void SetEntries(IEnumerable<Unit> units)
     {
         Clear();
         foreach (Unit unit in units)
@@ -44,7 +44,7 @@ public class UnitListUI : CanvasItem
         }
     }
 
-    public void Clear()
+    private void Clear()
     {
         foreach (Entry entry in _entries)
         {
@@ -74,10 +74,17 @@ public class UnitListUI : CanvasItem
         return null;
     }
 
-    public void Show(IEnumerable<Unit> units)
+    public void ShowUnits(IEnumerable<Unit> units)
     {
         SetEntries(units);
         Show();
     }
+
+    public void HideUnits()
+    {
+        Hide();
+        Clear();
+    }
+       
 
 }

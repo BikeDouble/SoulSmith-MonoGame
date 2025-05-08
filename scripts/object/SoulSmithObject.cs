@@ -92,7 +92,7 @@ public class SoulSmithObject : IDeepCloneable
         e.Parent = this;
     }
 
-    public virtual void Draw(CanvasPosition parentAbsolutePosition, Vector4 tint, SpriteBatch spriteBatch, DrawableResource activeResource = null)
+    public virtual void CollectDrawPackets(CanvasPosition parentAbsolutePosition, Vector4 tint, RenderQueue renderQueue, DrawableResource activeResource = null)
     {
 
     }

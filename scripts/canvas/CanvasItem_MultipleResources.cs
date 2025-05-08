@@ -55,7 +55,7 @@ public class CanvasItem_MultipleResources : CanvasItem
         return index;
     }
 
-    public override void Draw(CanvasPosition absolutePosition, Vector4 tint, SpriteBatch spriteBatch, DrawableResource overridenResource = null)
+    public override void CollectDrawPackets(CanvasPosition absolutePosition, Vector4 tint, RenderQueue renderQueue, DrawableResource overridenResource = null)
     {
         if (overridenResource == null)
         {
@@ -63,7 +63,7 @@ public class CanvasItem_MultipleResources : CanvasItem
                 overridenResource = _drawableResources[_activeResourceIndex];
         }
 
-        base.Draw(absolutePosition, tint, spriteBatch, overridenResource);
+        base.CollectDrawPackets(absolutePosition, tint, renderQueue, overridenResource);
     }
 
     protected DrawableResource GetResource(int index)

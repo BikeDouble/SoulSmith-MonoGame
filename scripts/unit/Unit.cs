@@ -12,33 +12,51 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 	//Children
 	private UnitUI _uI;
 	private UnitSprite _sprite;
-    private UnitStats _stats;
+	private UnitStats _stats;
 
-    private string _friendlyName;
+	private string _friendlyName;
 	private ReadOnlyCollection<Move> _moveSet;
 	private bool _inCombat = false;
 	private bool _playerControlled = false;
 	private int _combatPosition;
 	private EmotionTag _emotion;
 	private int _timeOnBoard = -1;
-	
+
+	public Unit(UnitTemplate template) : this(
+		new StatsList(template.StatsList),
+		AssetLoader.InstantiateMoveSet(template).AsReadOnly(),
+        new UnitSprite(
+			(CanvasItem_TransformationRules)AssetLoader.GetSprite(template.SpriteName), 
+			Rand.RandDoubleAroundOne(UnitSprite.ANIMATIONDESYNCFACTORRADIUS)), 
+		new UnitUI(),
+		template.Emotion,
+		template.FriendlyName,
+		template.TimeOnBoard)
+	{ }
+
 	public Unit(
 		StatsList statsList,
-        ReadOnlyCollection<Move> moveSet,
-        UnitSprite sprite,
-		Dictionary<BoundingZoneType, CanvasItem> boundingZones,
+		ReadOnlyCollection<Move> moveSet,
+		UnitSprite sprite,
 		UnitUI uI,
-        EmotionTag emotion,
+		EmotionTag emotion,
 		string friendlyName,
-		int timeOnBoard) : base(null, null, boundingZones)
+		int timeOnBoard) : base(
+			null,
+			null,
+			new Dictionary<BoundingZoneType, CanvasItem>{ 
+				[BoundingZoneType.EffectSender] = sprite, 
+				[BoundingZoneType.EffectReceiver] = sprite }
+			)
 	{
-		_sprite = sprite;
+
+		new KeyValuePair<BoundingZoneType, CanvasItem>(BoundingZoneType.EffectSender, (CanvasItem) sprite);
+
+        _sprite = sprite;
 		_sprite.PlayIdleAnimation();
 		AddChild(sprite);
 
 		_stats = new UnitStats(statsList, timeOnBoard, emotion);
-		_stats.ModifierAddEventHandler += OnModifierAdded;
-		_stats.ModifierRemoveEventHandler += OnModifierRemoved;
 		AddChild(_stats);
 
         _uI = uI;
@@ -64,7 +82,8 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 		_stats.UnitDeathCallEventHandler += EmitUnitDeathCallSignal;
 		_stats.EnqueueEffectInputEventHandler += EnqueueEffectInput;
 		_stats.SendEffectEventHandler += SendEffect;
-
+        _stats.ModifierAddEventHandler += OnModifierAdded;
+        _stats.ModifierRemoveEventHandler += OnModifierRemoved;
         _stats.LoadEmotionAttributes(_emotion);
     }
 

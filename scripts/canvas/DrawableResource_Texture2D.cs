@@ -22,7 +22,7 @@ public class DrawableResource_Texture2D : DrawableResource
         return new DrawableResource_Texture2D(this);
     }
 
-    public override void Draw(CanvasPosition position, Vector4 tint, SpriteBatch spriteBatch)
+    public override void Draw(IReadOnlyCanvasPosition position, Vector4 tint, SpriteBatch spriteBatch)
     {
         spriteBatch.Draw(
                 _texture,
@@ -31,7 +31,7 @@ public class DrawableResource_Texture2D : DrawableResource
                 GetTintedColor(tint),
                 position.Rotation,
                 new Vector2(0, 0),
-                position.ScaleAsVector2(),
+                position.ScaleVector,
                 SpriteEffects.None,
                 0f);
     }

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-public class DrawableResource : IDeepCloneable
+public class DrawableResource : IDeepCloneable, IDrawableResource
 {
     private Color _color = Color.Black;
 
@@ -20,7 +20,7 @@ public class DrawableResource : IDeepCloneable
         _color = color;
     }
 
-    public virtual void Draw(CanvasPosition position, Vector4 tint, SpriteBatch spriteBatch) { }
+    public virtual void Draw(IReadOnlyCanvasPosition position, Vector4 tint, SpriteBatch spriteBatch) { }
 
     public virtual void UpdateText(string text) { }
 

@@ -28,6 +28,10 @@ public interface IReadOnlyCanvasItem : IReadOnlySoulSmithObject
     Vector2 GetRandomBoundingPointGlobal(BoundingZoneType type);
 }
 
+public interface IReadOnlyCanvasItem_TransformationRules : IReadOnlyCanvasItem { }
+
+public interface IReadOnlyUnitSprite : IReadOnlyCanvasItem_TransformationRules { }
+
 public interface IReadOnlyUnit : IReadOnlyCanvasItem
 {
     ReadOnlyDictionary<StatType, int> StatsList { get; }
@@ -35,6 +39,7 @@ public interface IReadOnlyUnit : IReadOnlyCanvasItem
     int GetModStat(StatType stat);
     int GetBaseStat(StatType stat);
     ReadOnlyCollection<Move> MoveSet { get; }
+    string FriendlyName { get; }
 }
 
 public interface IReadOnlyCanvasPosition
@@ -46,6 +51,7 @@ public interface IReadOnlyCanvasPosition
     public float Rotation { get; }
     public int X { get; }
     public int Y { get; }
+    public int Z { get; }
 }
 
 public interface IReadOnlyWeightedList

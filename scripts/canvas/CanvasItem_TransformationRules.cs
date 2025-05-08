@@ -3,11 +3,11 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
 
-public class CanvasItem_TransformationRules : CanvasItem
+public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_TransformationRules
 {
     private List<CanvasTransformationRule> _transformationRules;
     private int _state = -1;
-    private float _transformationCoef = 1;
+    private double _transformationCoef = 1;
 
     public CanvasItem_TransformationRules(
         List<CanvasTransformationRule> rules, 
@@ -25,7 +25,7 @@ public class CanvasItem_TransformationRules : CanvasItem
 
     public CanvasItem_TransformationRules() { }
 
-    public CanvasItem_TransformationRules(CanvasItem_TransformationRules other, CanvasItem shelledItem = null, float transformationCoef = 1) : base(other, shelledItem)
+    public CanvasItem_TransformationRules(CanvasItem_TransformationRules other, CanvasItem shelledItem = null, double transformationCoef = 1) : base(other, shelledItem)
     {
         _transformationCoef = transformationCoef;
 
@@ -36,7 +36,7 @@ public class CanvasItem_TransformationRules : CanvasItem
             shelledItem);
     }
 
-    public CanvasItem_TransformationRules(CanvasItem other, CanvasItem shelledItem = null, float transformationCoef = 1) : base(other, shelledItem)
+    public CanvasItem_TransformationRules(CanvasItem other, CanvasItem shelledItem = null, double transformationCoef = 1) : base(other, shelledItem)
     {
         _transformationCoef = transformationCoef;
 
@@ -191,6 +191,6 @@ public class CanvasItem_TransformationRules : CanvasItem
     }
 
     public int State { get { return _state; } }
-    protected float TransformationCoef { get { return _transformationCoef; } set { _transformationCoef = value; } }
+    protected double TransformationCoef { get { return _transformationCoef; } set { _transformationCoef = value; } }
 }
 

@@ -9,6 +9,7 @@ using MonoGame.Extended.Input;
 using SoulSmithMoves;
 using Microsoft.Xna.Framework.Graphics;
 using System.Runtime.CompilerServices;
+using SoulSmithInput;
 
 public class Button : CanvasItem_MultipleResources
 {
@@ -38,7 +39,7 @@ public class Button : CanvasItem_MultipleResources
                 if (!_hovered)
                     OnMouseEnter();
 
-                if (IsMouseLeftPressed())
+                if (MouseFunctions.IsMouseLeftPressed())
                 {
                     ButtonPressed();
                 }
@@ -73,25 +74,6 @@ public class Button : CanvasItem_MultipleResources
         ButtonPressedEventArgs e = new ButtonPressedEventArgs();
 
         ButtonPressedEventHandler?.Invoke(this, e);
-    }
-
-    public bool IsMouseOver()
-    {
-        if (Resource is null)
-            return false;
-
-        CanvasPosition globalPosition = GetGlobalPosition();
-        MouseState mouseState = Mouse.GetState();
-        Vector2 mousePosition = new Vector2(mouseState.X, mouseState.Y);
-        Vector2 localMousePosition = mousePosition - globalPosition.Coordinates;
-
-        return Resource.ContainsPoint(localMousePosition, Position);
-    }
-
-    public static bool IsMouseLeftPressed()
-    {
-        MouseState mouseState = Mouse.GetState();
-        return (mouseState.LeftButton == ButtonState.Pressed);
     }
 
     protected DrawableResource IdleResource { get { return GetResource(_idleResourceIndex); } }

@@ -422,10 +422,11 @@ public partial class CombatManager : CanvasItem
 
 	private EffectResult ExecuteEffectInternal(EffectRequest request)
 	{
-        Unit target = request.Target as Unit;
-        if (target == null)
-        {
-            Trace.TraceError("CombatManager: Could not cast IReadOnlyUnit as Unit");
+		Unit target = null;
+
+		if (request.Target != null)
+		{
+            target = (Unit)request.Target;
         }
 
         List<Unit> allActiveUnits = new List<Unit>(GetAllActiveUnits());
@@ -467,7 +468,7 @@ public partial class CombatManager : CanvasItem
 
         if (team.PlayerControlled)
         {
-            InsertUnitToInventory(unit as Unit);
+            InsertUnitToInventory((Unit)unit);
         } 
     }
 

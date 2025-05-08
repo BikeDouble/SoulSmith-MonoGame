@@ -19,7 +19,6 @@ public class UnitInventory : CanvasItem
         if (unit == null) return false;
 
         _units.Add(unit);
-        _uI.AddUnit(unit);
         return true;
     }
 
@@ -30,8 +29,15 @@ public class UnitInventory : CanvasItem
     /// <returns>True if unit successfully found and removed, false otherwise.</returns>
     public bool RemoveUnit(Unit unit)
     {
-        _uI.RemoveUnit(unit);
         return _units.Remove(unit);
+    }
+    
+    /// <summary>
+    /// Show units in the inventory.
+    /// </summary>
+    public void ShowUnits()
+    {
+        _uI.ShowUnits(_units);
     }
 
 }

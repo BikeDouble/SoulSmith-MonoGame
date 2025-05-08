@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SoulSmith-MonoGame")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f8381075cf9430a5497d07c08a4569383aca8e75")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("SoulSmith-MonoGame")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SoulSmith-MonoGame")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

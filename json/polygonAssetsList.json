@@ -55,6 +55,19 @@
 					"AssetPath": "json/shapes/defenseStatModIcon.json"
 				}
 			]
+		},
+		{
+			"Name": "GameUI",
+			"Assets": [
+				{
+					"Name": "GameHeaderButtonIdle",
+					"AssetPath": "json/shapes/gameHeaderButtonIdle.json"
+				},
+				{
+					"Name": "GameHeaderButtonHovered",
+					"AssetPath": "json/shapes/gameHeaderButtonHovered.json"
+				}
+			]
 		}
 	]
 }
