@@ -53,7 +53,7 @@ public class CanvasPosition : IReadOnlyCanvasPosition
         }
     }
 
-    public CanvasPosition Transform(CanvasPosition transformation)
+    public CanvasPosition Transform(IReadOnlyCanvasPosition transformation)
     {
         ScaleMultiplicative(transformation.ScaleVector);
         Translate(transformation.Coordinates);

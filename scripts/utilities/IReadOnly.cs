@@ -26,7 +26,10 @@ public interface IReadOnlyCanvasItem : IReadOnlySoulSmithObject
 {
     Vector2 GetRandomBoundingPointLocal(BoundingZoneType type);
     Vector2 GetRandomBoundingPointGlobal(BoundingZoneType type);
+    bool ContainsPointRelative(Vector2 point);
 }
+
+public interface IReadOnlyBoundingZone : IReadOnlyCanvasItem { }
 
 public interface IReadOnlyCanvasItem_TransformationRules : IReadOnlyCanvasItem { }
 

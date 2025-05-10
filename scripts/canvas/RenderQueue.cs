@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-public class RenderQueue
+public class RenderQueue : IAddOnly<DrawPacket> //TODO change input in CollectDrawPackets
 {
     List<DrawPacket> packets = new List<DrawPacket>();
 

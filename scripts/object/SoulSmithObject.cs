@@ -4,11 +4,12 @@ using MonoGame.Extended.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class SoulSmithObject : IDeepCloneable
+public class SoulSmithObject : IDeepCloneable, IReadOnlySoulSmithObject
 {
     private List<SoulSmithObject> _children;
 
@@ -38,6 +39,11 @@ public class SoulSmithObject : IDeepCloneable
         }
     }
 
+    /// <summary>
+    /// Processes object and input logic every frame.
+    /// </summary>
+    /// <param name="delta">How much time has passed in seconds since last process.</param>
+    /// <param name="inputQueue">Queue for input packet queries.</param>
     public virtual void Process(double delta)
     {
         foreach (SoulSmithObject child in _children)
@@ -95,6 +101,27 @@ public class SoulSmithObject : IDeepCloneable
     public virtual void CollectDrawPackets(CanvasPosition parentAbsolutePosition, Vector4 tint, RenderQueue renderQueue, DrawableResource activeResource = null)
     {
 
+    }
+
+    public virtual void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)
+    { 
+        foreach (SoulSmithObject child in Children)
+        {
+            child.CollectInputPackets(parentAbsolutePosition, inputQueue);
+        }
+    }
+
+    public virtual InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyCanvasPosition absPos = null, bool requestHover = false, int priority = 0)
+    {
+        InputPacket packet = new(
+            null,
+            func,
+            priority,
+            this,
+            absPos,
+            requestHover);
+
+        return packet;
     }
 
     public ReadOnlyCollection<SoulSmithObject> Children { get { return _children.AsReadOnly(); } }

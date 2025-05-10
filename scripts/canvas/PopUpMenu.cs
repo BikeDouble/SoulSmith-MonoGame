@@ -21,18 +21,41 @@ public class PopUpMenu : CanvasItem
 
     public override void Process(double delta)
     {
+        base.Process(delta);
+    }
+
+    public override void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)
+    {
+        CanvasPosition newPosition = absolutePosition;
+
+        if (newPosition == null)
+        {
+            newPosition = new CanvasPosition(parentAbsolutePosition);
+            newPosition.Transform(Position);
+        }
+
         if (Visible)
         {
-            if (!IsMouseOver())
+            InputPacket packet = CreateInputPacket(ProcessInput, newPosition, true);
+            inputQueue.Add(packet);
+        }
+
+        base.CollectInputPackets(newPosition, inputQueue);
+    }
+
+    private InputPacketFuncOutput ProcessInput(InputPacketFuncInput funcInput)
+    {
+        IReadOnlyList<InputType> inputs = funcInput.Inputs;
+
+        if (!inputs.Contains(InputType.MouseHover))
+        {
+            if (inputs.Contains(InputType.MouseLeft))
             {
-                if (MouseFunctions.IsMouseLeftPressed())
-                {
-                    Hide();
-                }
+                Hide();
             }
         }
 
-        base.Process(delta);
+        return null;
     }
 }
 

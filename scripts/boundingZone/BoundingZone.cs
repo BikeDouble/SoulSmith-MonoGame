@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-public class BoundingZone : CanvasItem
+public class BoundingZone : CanvasItem, IReadOnlyBoundingZone
 {
     private bool _showOutline;
 

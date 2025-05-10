@@ -170,14 +170,12 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         return zone.GetRandomBoundingPointGlobal(zoneType);
     }
 
-    public bool IsMouseOver()
+    public bool ContainsPointRelative(Vector2 point)
     {
         if (Resource is null)
             return false;
 
-        Vector2 relativeMousePosition = SoulSmithInput.MouseFunctions.GetRelativePosition(Position);
-
-        return Resource.ContainsPoint(relativeMousePosition, Position);
+        return Resource.ContainsPoint(point, Position);
     }
 
     public event EventHandler<GetGlobalVisibilityEventArgs> GetGlobalVisibilityEventHandler;
@@ -321,6 +319,35 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         }
     }
 
+    public override void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)
+    {
+        CanvasPosition newPosition = absolutePosition; 
+
+        if (newPosition == null)
+        {
+            newPosition = new CanvasPosition(parentAbsolutePosition);
+            newPosition.Transform(_position);
+        }
+
+        base.CollectInputPackets(newPosition, inputQueue);
+    }
+
+    public override InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyCanvasPosition absPos = null, bool requestHover = false, int priority = 0)
+    {
+        CanvasItem clickBox = _boundingZones?.GetValueOrDefault(BoundingZoneType.ButtonClickBox);
+        if (clickBox == null) { clickBox = this; } //TODO rework this
+
+        InputPacket packet = new(
+            clickBox,
+            func,
+            priority,
+            this,
+            absPos,
+            requestHover);
+
+        return packet;
+    }
+
     public override void AddChild(SoulSmithObject child)
     {
         if (Children.Contains(child))
@@ -368,6 +395,10 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         child.GetGlobalVisibilityEventHandler -= IsVisibleInternal;
     }
 
+    /// <summary>
+    /// Removes child from objects bounding zone dictionary.
+    /// </summary>
+    /// <param name="child"></param>
     private void RemoveBoundingZones(CanvasItem child)
     {
         if ((_boundingZones == null) || (_boundingZones.Count == 0))
@@ -404,7 +435,8 @@ public enum BoundingZoneType
 {
     None = 0,
     EffectSender,
-    EffectReceiver
+    EffectReceiver,
+    ButtonClickBox
 }
 
 public class GetGlobalPositionEventArgs : EventArgs

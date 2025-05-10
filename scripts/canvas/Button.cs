@@ -32,26 +32,57 @@ public class Button : CanvasItem_MultipleResources
 
     public override void Process(double delta)
     {
-        if (IsVisible())
-        {
-            if (IsMouseOver())
-            {
-                if (!_hovered)
-                    OnMouseEnter();
+        base.Process(delta);
+    }
 
-                if (MouseFunctions.IsMouseLeftPressed())
-                {
-                    ButtonPressed();
-                }
-            }
-            else
-            {
-                if (_hovered)
-                    OnMouseExit();
-            }
+    public override void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)
+    {
+        CanvasPosition newPosition = absolutePosition; 
+
+        if (newPosition == null)
+        {
+            newPosition = new CanvasPosition(parentAbsolutePosition);
+            newPosition.Transform(Position);
         }
 
-        base.Process(delta);
+        if (IsVisible())
+        {
+            InputPacket packet = CreateInputPacket(ProcessInputs, newPosition, true);
+            inputQueue.Add(packet);
+        }
+
+        base.CollectInputPackets(newPosition, inputQueue);
+    }
+
+    private InputPacketFuncOutput ProcessInputs(InputPacketFuncInput funcInput)
+    {
+        IReadOnlyList<InputType> inputTypes = funcInput.Inputs;
+
+        List<InputType> consumedInputs = null;
+
+        if (inputTypes.Contains(InputType.MouseHover))
+        {
+            consumedInputs = new List<InputType> { InputType.MouseHover};
+
+            if (!_hovered)
+                OnMouseEnter();
+
+            if (inputTypes.Contains(InputType.MouseLeft))
+            {
+                ButtonPressed();
+                consumedInputs.Add(InputType.MouseLeft);
+            }
+        }
+        else
+        {
+            if (_hovered)
+                OnMouseExit();
+        }
+
+        InputPacketFuncOutput output = new InputPacketFuncOutput();
+        output.ConsumedInputs = consumedInputs;
+
+        return output;
     }
 
     public virtual void OnMouseEnter()

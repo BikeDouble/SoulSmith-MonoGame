@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System;
 using System.Collections.Generic;
 using SoulSmithObjects;
+using SoulSmithInput;
 
 namespace SoulSmith_MonoGame
 {
@@ -15,6 +16,8 @@ namespace SoulSmith_MonoGame
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SoulSmithObject _root;
+        private RenderQueue _renderQueue;
+        private InputQueue _inputQueue;
 
         public static int WINDOWHEIGHT = 900;
         public static int WINDOWLENGTH = 1600;
@@ -26,6 +29,8 @@ namespace SoulSmith_MonoGame
             _graphics.PreferredBackBufferWidth = WINDOWLENGTH;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            _renderQueue = new RenderQueue();
+            _inputQueue = new InputQueue();
         }
 
         protected override void Initialize()
@@ -35,7 +40,7 @@ namespace SoulSmith_MonoGame
 
             base.Initialize();
         }
-        
+
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -44,24 +49,44 @@ namespace SoulSmith_MonoGame
 
         protected override void Update(GameTime gameTime)
         {
+            ProcessInputs();
+
             _root.Process(gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
+        }
+
+        private void ProcessInputs()
+        {
+            _root.CollectInputPackets(new CanvasPosition(), _inputQueue);
+
+            _inputQueue.Process(GetCurrentInputs());
+
+            _inputQueue.Clear();
+        }
+
+        private List<InputType> GetCurrentInputs()
+        {
+            List<InputType> inputs = new List<InputType> { InputType.MouseHover };
+            
+            if (MouseFunctions.IsMouseLeftPressed()) inputs.Add(InputType.MouseLeft);
+
+            if (MouseFunctions.IsMouseRightPressed()) inputs.Add(InputType.MouseRight);
+
+            return inputs;
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.LightGray);
 
-            RenderQueue renderQueue = new RenderQueue();
-
-            _root.CollectDrawPackets(new CanvasPosition(0, 0, 1, 1, 0), Vector4.Zero, renderQueue);
+            _root.CollectDrawPackets(new CanvasPosition(0, 0, 1, 1, 0), Vector4.Zero, _renderQueue);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            renderQueue.Draw(_spriteBatch);
+            _renderQueue.Draw(_spriteBatch);
             _spriteBatch.End();
 
-            renderQueue.Clear();
+            _renderQueue.Clear();
 
             base.Draw(gameTime);
         }

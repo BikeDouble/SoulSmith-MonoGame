@@ -10,9 +10,6 @@ namespace SoulSmithInput;
 
 public static class MouseFunctions
 {
-
-    
-
     public static Vector2 GetPosition()
     {
         MouseState mouseState = Mouse.GetState();
