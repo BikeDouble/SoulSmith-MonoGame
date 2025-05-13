@@ -82,9 +82,7 @@ namespace SoulSmith_MonoGame
 
             _root.CollectDrawPackets(new CanvasPosition(0, 0, 1, 1, 0), Vector4.Zero, _renderQueue);
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            _renderQueue.Draw(_spriteBatch);
-            _spriteBatch.End();
+            _renderQueue.Draw(_spriteBatch, _graphics.GraphicsDevice);
 
             _renderQueue.Clear();
 

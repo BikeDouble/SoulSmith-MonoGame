@@ -98,7 +98,7 @@ public class SoulSmithObject : IDeepCloneable, IReadOnlySoulSmithObject
         e.Parent = this;
     }
 
-    public virtual void CollectDrawPackets(CanvasPosition parentAbsolutePosition, Vector4 tint, RenderQueue renderQueue, DrawableResource activeResource = null)
+    public virtual void CollectDrawPackets(CanvasPosition parentAbsolutePosition, Vector4 tint, RenderQueue renderQueue, Microsoft.Xna.Framework.Rectangle? scissorRect = null, DrawableResource activeResource = null)
     {
 
     }

@@ -26,7 +26,7 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 		new StatsList(template.StatsList),
 		AssetLoader.InstantiateMoveSet(template).AsReadOnly(),
         new UnitSprite(
-			(CanvasItem_TransformationRules)AssetLoader.GetSprite(template.SpriteName), 
+			AssetLoader.GetSprite(template.SpriteName), 
 			Rand.RandDoubleAroundOne(UnitSprite.ANIMATIONDESYNCFACTORRADIUS)), 
 		new UnitUI(),
 		template.Emotion,
@@ -56,7 +56,7 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 		_sprite.PlayIdleAnimation();
 		AddChild(sprite);
 
-		_stats = new UnitStats(statsList, timeOnBoard, emotion);
+        _stats = new UnitStats(statsList, timeOnBoard, emotion);
 		AddChild(_stats);
 
         _uI = uI;

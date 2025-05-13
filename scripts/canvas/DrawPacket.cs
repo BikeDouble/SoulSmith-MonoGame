@@ -10,26 +10,20 @@ public class DrawPacket
     private IReadOnlyCanvasPosition _position;
     private Vector4 _tint;
     private IDrawableResource _resource;
+    private Rectangle? _scissorRect;
 
-    public DrawPacket(IReadOnlyCanvasPosition position, Vector4 tint, IDrawableResource resource)
+    public DrawPacket(IReadOnlyCanvasPosition position, Vector4 tint, IDrawableResource resource, Rectangle? scissorRect)
     {
         _position = position;
         _tint = tint;
         _resource = resource;
+        _scissorRect = scissorRect;
     }
 
-    public void Draw(SpriteBatch spriteBatch)
-    {
-        Vector4 tint = _tint;
-        IReadOnlyCanvasPosition position = _position;
-        IDrawableResource resourceToDraw = _resource;
-
-        if (resourceToDraw != null)
-        {
-            resourceToDraw.Draw(position, tint, spriteBatch);
-        }
-    }
-
+    public IReadOnlyCanvasPosition Position { get { return _position; } }
+    public Vector4 Tint { get { return _tint; } }
+    public IDrawableResource Resource { get { return _resource; } }
     public int Z { get { return _position.Z; } }
+    public Rectangle? ScissorRect { get { return _scissorRect; } }
 }
 

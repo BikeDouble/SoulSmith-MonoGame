@@ -134,7 +134,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
 
         foreach (KeyValuePair<BoundingZoneType, CanvasItem> item in _boundingZones)
         {
-            AddChild(item.Value);
+            if (!Children.Contains(item.Value)) AddChild(item.Value);
         }
     }
 
@@ -285,7 +285,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         _tint += change;
     }
 
-    public override void CollectDrawPackets(CanvasPosition absolutePosition, Vector4 tint, RenderQueue renderQueue, DrawableResource overridenResource = null)
+    public override void CollectDrawPackets(CanvasPosition absolutePosition, Vector4 tint, RenderQueue renderQueue, Rectangle? scissorRect = null, DrawableResource overridenResource = null)
     {
         tint += _tint;
 
@@ -307,16 +307,18 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
 
         if ((resourceToDraw != null) && (_visible))
         {
-            renderQueue.Add(new DrawPacket(newPosition, tint, Resource));
+            renderQueue.Add(new DrawPacket(newPosition, tint, Resource, scissorRect));
         }
 
         if (_visible)
         {
             foreach (SoulSmithObject child in Children)
             {
-                child.CollectDrawPackets(newPosition, tint, renderQueue);
+                child.CollectDrawPackets(newPosition, tint, renderQueue, scissorRect);
             }
         }
+
+        base.CollectDrawPackets(absolutePosition, tint, renderQueue, scissorRect, overridenResource);
     }
 
     public override void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)
