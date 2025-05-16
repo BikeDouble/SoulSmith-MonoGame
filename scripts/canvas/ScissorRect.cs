@@ -24,7 +24,7 @@ public class ScissorRect : CanvasItem
         _height = height;
     }
 
-    public override void CollectDrawPackets(CanvasPosition absolutePosition, Vector4 tint, RenderQueue renderQueue, Rectangle? scissorRect = null, DrawableResource overridenResource = null)
+    public override void CollectDrawPackets(CanvasPosition absolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
     {
         CanvasPosition newPosition = new CanvasPosition(absolutePosition);
         newPosition.Transform(Position);
@@ -36,7 +36,7 @@ public class ScissorRect : CanvasItem
             newRectangle = Rectangle.Intersect(newRectangle, scissorRect.Value);
         }
 
-        base.CollectDrawPackets(absolutePosition, tint, renderQueue, newRectangle, overridenResource);
+        base.CollectDrawPackets(absolutePosition, tint, renderQueue, newRectangle);
     }
 
     private Rectangle GetAbsoluteRect(IReadOnlyCanvasPosition absolutePosition)

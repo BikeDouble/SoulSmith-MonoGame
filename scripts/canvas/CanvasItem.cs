@@ -285,7 +285,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         _tint += change;
     }
 
-    public override void CollectDrawPackets(CanvasPosition absolutePosition, Vector4 tint, RenderQueue renderQueue, Rectangle? scissorRect = null, DrawableResource overridenResource = null)
+    public override void CollectDrawPackets(CanvasPosition absolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
     {
         tint += _tint;
 
@@ -294,16 +294,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         newPosition = new CanvasPosition(absolutePosition);
         newPosition.Transform(_position);
 
-        DrawableResource resourceToDraw;
-
-        if (overridenResource != null)
-        {
-            resourceToDraw = overridenResource;
-        }
-        else
-        {
-            resourceToDraw = _drawableResource;
-        }
+        DrawableResource resourceToDraw = Resource;
 
         if ((resourceToDraw != null) && (_visible))
         {
@@ -318,7 +309,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
             }
         }
 
-        base.CollectDrawPackets(absolutePosition, tint, renderQueue, scissorRect, overridenResource);
+        base.CollectDrawPackets(absolutePosition, tint, renderQueue, scissorRect);
     }
 
     public override void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)

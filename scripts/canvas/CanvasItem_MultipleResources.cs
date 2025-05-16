@@ -55,17 +55,6 @@ public class CanvasItem_MultipleResources : CanvasItem
         return index;
     }
 
-    public override void CollectDrawPackets(CanvasPosition absolutePosition, Vector4 tint, RenderQueue renderQueue, Rectangle? scissorRect = null, DrawableResource overridenResource = null)
-    {
-        if (overridenResource == null)
-        {
-            if ((_activeResourceIndex >= 0) && (_drawableResources != null))
-                overridenResource = _drawableResources[_activeResourceIndex];
-        }
-
-        base.CollectDrawPackets(absolutePosition, tint, renderQueue, scissorRect, overridenResource);
-    }
-
     protected DrawableResource GetResource(int index)
     {
         if (_drawableResources == null)
