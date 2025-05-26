@@ -1,8 +1,9 @@
 using System;
 using Microsoft.Xna.Framework;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public class BoundingZone : CanvasItem, IReadOnlyBoundingZone
+public class BoundingZone : CanvasObject, IReadOnlyBoundingZone
 {
     private bool _showOutline;
 
@@ -11,7 +12,7 @@ public class BoundingZone : CanvasItem, IReadOnlyBoundingZone
         _showOutline = other._showOutline;
     }
 
-    public BoundingZone(bool showOutline = false, CanvasPosition position = null) : base(position)
+    public BoundingZone(bool showOutline = false, Position position = null) : base(position)
     {
         _showOutline = showOutline;
     }

@@ -1,0 +1,9 @@
+{
+    "Textures": {
+        "UI": {
+            "Units": {
+                "MoveButton": "Textures/UI/moveButton.png"
+            }
+        }
+    }
+}

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 
 namespace SoulSmithObjects;
-public partial class CombatManager : CanvasItem
+public partial class CombatManager : CanvasObject
 {
 	//This team always goes first in the round
 	private const int TEAMGOESFIRSTINDEX = 1;
@@ -51,7 +51,7 @@ public partial class CombatManager : CanvasItem
 
     private void InitializeUI()
     {
-		SpriteFont spriteFont = AssetLoader.GetFont(GameManager.UIFONTNAME);
+		SpriteFont spriteFont = MasterAssetLoader.GetFont(GameManager.UIFONTNAME);
 
         _combatUI = new CombatUI(spriteFont);
         AddChild(_combatUI);
@@ -269,7 +269,7 @@ public partial class CombatManager : CanvasItem
 
 	private void SpawnUnitAtPosition(CombatTeam team, int positionIndex, string unitTemplateName)
 	{
-		Unit unit = AssetLoader.InstantiateUnit(unitTemplateName);
+		Unit unit = MasterAssetLoader.InstantiateUnit(unitTemplateName);
 		//TODO make effect
 		team.AssignUnitToPosition(unit, positionIndex);
 	}

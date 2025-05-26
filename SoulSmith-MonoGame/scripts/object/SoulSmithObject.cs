@@ -100,12 +100,12 @@ public class SoulSmithObject : IDeepCloneable, IReadOnlySoulSmithObject, IDrawPa
         e.Parent = this;
     }
 
-    public virtual void CollectDrawPackets(CanvasPosition parentAbsolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Microsoft.Xna.Framework.Rectangle? scissorRect = null)
+    public virtual void CollectDrawPackets(Position parentAbsolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Microsoft.Xna.Framework.Rectangle? scissorRect = null)
     {
 
     }
 
-    public virtual void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)
+    public virtual void CollectInputPackets(Position parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
     { 
         foreach (SoulSmithObject child in Children)
         {
@@ -113,7 +113,7 @@ public class SoulSmithObject : IDeepCloneable, IReadOnlySoulSmithObject, IDrawPa
         }
     }
 
-    public virtual InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyCanvasPosition absPos = null, bool requestHover = false, int priority = 0)
+    public virtual InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyPosition absPos = null, bool requestHover = false, int priority = 0)
     {
         InputPacket packet = new(
             null,

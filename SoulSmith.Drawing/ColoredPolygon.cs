@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using MonoGame.Extended.Serialization.Json;
 using System.Text.Json;
+using SoulSmith.Core;
 
 namespace SoulSmith.Drawing
 {
@@ -53,13 +54,13 @@ namespace SoulSmith.Drawing
             if (radius < 0)
                 return null;
 
-            float rotationPer = CanvasPosition.MAXROTATION / sides;
+            float rotationPer = Position.MAXROTATION / sides;
 
             List<Vector2> vertices = new List<Vector2>();
 
             for (int i = 0; i < sides; i++)
             {
-                vertices.Add(CanvasPosition.RotatePointAroundPoint(new Vector2(radius, 0), Vector2.Zero, i * rotationPer));
+                vertices.Add(Position.RotatePointAroundPoint(new Vector2(radius, 0), Vector2.Zero, i * rotationPer));
             }
 
             return new Polygon(vertices);

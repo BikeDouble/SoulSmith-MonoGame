@@ -8,17 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using SoulSmith.Drawing;
 using SoulSmith.Asset;
+using SoulSmith.Core;
 
 public class EffectVisualizationTemplate
 {
-    private TrackedAsset<CanvasItem> _trackedSprite = null;
+    private TrackedAsset<CanvasObject> _trackedSprite = null;
     private Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> _beginVisualization = (args) => (new());
     private Action<EffectVisualizationProcessArgs> _processVisualization = null;
     private float _lifespan = 0;
     private float _effectActivationTimer = 0;
 
     public EffectVisualizationTemplate(
-        TrackedAsset<CanvasItem> trackedSprite,
+        TrackedAsset<CanvasObject> trackedSprite,
         Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> begin,
         Action<EffectVisualizationProcessArgs> process,
         float lifespan,
@@ -39,7 +40,7 @@ public class EffectVisualizationTemplate
     private static EffectVisualization InstantiateInternal(EffectVisualizationTemplate template)
     {
         return new EffectVisualization(
-            (CanvasItem)template._trackedSprite.Resource.DeepClone(),
+            (CanvasObject)template._trackedSprite.Resource.DeepClone(),
             template._beginVisualization,
             template._processVisualization,
             template._lifespan,
@@ -47,7 +48,7 @@ public class EffectVisualizationTemplate
     }
 
     public static EffectVisualizationTemplate StraightMissile(
-        TrackedAsset<CanvasItem> sprite,
+        TrackedAsset<CanvasObject> sprite,
         float lifespan)
     {
         return new EffectVisualizationTemplate(
@@ -58,7 +59,7 @@ public class EffectVisualizationTemplate
     }
 
     public static EffectVisualizationTemplate GrowAndFadeOnTarget(
-        TrackedAsset<CanvasItem> sprite,
+        TrackedAsset<CanvasObject> sprite,
         float lifespan,
         float effectActivationTimer = -1)
     {
@@ -97,7 +98,7 @@ public class EffectVisualizationTemplate
         output.StartingPoint = startingPoint;
         ITransformable item = args.Transformables[0];
         item.Set(startingPoint);
-        item.ScaleMultiplicative(Vector2.Zero);
+        item.Scale(Vector2.Zero);
         return output;
     };
 
@@ -108,9 +109,9 @@ public class EffectVisualizationTemplate
 
         float alphaChange = -(255f * progress);
 
-        item.ChangeTintAdditive(0, 0, 0, alphaChange);
+        //item.ChangeTintAdditive(0, 0, 0, alphaChange); TODO
 
-        item.ScaleAdditive(new Vector2(4 * progress));
+        //item.ScaleAdditive(new Vector2(4 * progress));
     };
 
 }

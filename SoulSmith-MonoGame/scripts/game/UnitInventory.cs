@@ -2,7 +2,7 @@
 using SoulSmithUnitUI;
 using System.Collections.Generic;
 
-public class UnitInventory : CanvasItem
+public class UnitInventory : CanvasObject
 {
     private List<Unit> _units = new List<Unit>();
     private UnitListUI _uI = new();

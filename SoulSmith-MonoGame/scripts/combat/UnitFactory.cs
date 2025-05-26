@@ -7,7 +7,7 @@ public class UnitFactory
 
     protected void PutUnitInCombat(string unitType, int position)
     {
-        Unit unit = AssetLoader.InstantiateUnit(unitType);
+        Unit unit = MasterAssetLoader.InstantiateUnit(unitType);
     }
 
     protected void PutUnitInCombat(Unit unit, int position) 

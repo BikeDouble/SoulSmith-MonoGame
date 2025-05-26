@@ -12,7 +12,7 @@ public class EnemySpawnSelector
 
     public EnemySpawnSelector()
     {
-        _spawnLists = AssetLoader.LoadMasterEnemySpawnList();
+        _spawnLists = MasterAssetLoader.LoadMasterEnemySpawnList();
         UpdateRound(1);
     }
 

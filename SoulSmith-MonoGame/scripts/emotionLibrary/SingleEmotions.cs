@@ -36,7 +36,7 @@ namespace SoulSmithEmotions {
             modArgs.TryAdd(ModifierFloatArgType.StatType, (float)StatType.Attack);
             modArgs.TryAdd(ModifierFloatArgType.StatPercent, 0.2f);
             ModifierTemplateWithArgs modifierTemplate = new ModifierTemplateWithArgs(
-                AssetLoader.GetModifierTemplate(EffectOnHitModifierTemplates.JOYESSENCEDAMAGEONHITNAME),
+                MasterAssetLoader.GetModifierTemplate(EffectOnHitModifierTemplates.JOYESSENCEDAMAGEONHITNAME),
                 modArgs);
             mofifierTemplates.Add(modifierTemplate);
 

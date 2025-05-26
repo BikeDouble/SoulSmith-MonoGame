@@ -6,7 +6,7 @@ namespace SoulSmithUnitUI;
 
 using Entry = SoulSmithUnitUI.UnitListUIEntry;
 
-public class UnitListUI : CanvasItem
+public class UnitListUI : CanvasObject
 {
     // Children
     private List<Entry> _entries;

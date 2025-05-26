@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public class GameHeaderUI : CanvasItem
+public class GameHeaderUI : CanvasObject
 {
-    private Button _unitInventoryButton;
+    private ButtonObject _unitInventoryButton;
 
     public const string BUTTONIDLERESOURCENAME = "GameHeaderButtonIdle";
     public const string BUTTONHOVEREDRESOURCENAME = "GameHeaderButtonHovered";
@@ -18,10 +19,10 @@ public class GameHeaderUI : CanvasItem
 
     public GameHeaderUI() 
     {
-        _unitInventoryButton = new Button(new DrawableResource_Polygon(AssetLoader.GetPolygon(BUTTONIDLERESOURCENAME).Resource), //TODO
-            new DrawableResource_Polygon(AssetLoader.GetPolygon(BUTTONHOVEREDRESOURCENAME).Resource), //TODO
+        _unitInventoryButton = new ButtonObject(new DrawableResource_Polygon(MasterAssetLoader.GetPolygon(BUTTONIDLERESOURCENAME).Resource), //TODO
+            new DrawableResource_Polygon(MasterAssetLoader.GetPolygon(BUTTONHOVEREDRESOURCENAME).Resource), //TODO
             null, 
-            new CanvasPosition(INVENTORYBUTTONPOSITIONX, INVENTORYBUTTONPOSITIONY));
+            new Position(INVENTORYBUTTONPOSITIONX, INVENTORYBUTTONPOSITIONY));
         AddChild(_unitInventoryButton);
     }
 

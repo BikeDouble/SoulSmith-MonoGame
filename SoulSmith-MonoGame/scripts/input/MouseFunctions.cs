@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
 namespace SoulSmithInput;
 
@@ -18,7 +19,7 @@ public static class MouseFunctions
         return mousePosition;
     }
 
-    public static Vector2 GetRelativePosition(IReadOnlyCanvasPosition objectPosition)
+    public static Vector2 GetRelativePosition(IReadOnlyPosition objectPosition)
     {
         Vector2 objectCoords = objectPosition.Coordinates;
         return GetPosition() - objectCoords;

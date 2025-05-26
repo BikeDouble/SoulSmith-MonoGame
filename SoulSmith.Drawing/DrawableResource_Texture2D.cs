@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Graphics;
 using SoulSmith.Asset;
+using SoulSmith.Core;
 
 namespace SoulSmith.Drawing
 {
@@ -25,7 +26,7 @@ namespace SoulSmith.Drawing
             return new DrawableResource_Texture2D(this);
         }
 
-        public override void Draw(IReadOnlyCanvasPosition position, Vector4 tint, SpriteBatch spriteBatch)
+        public override void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
                     _texture.Resource,

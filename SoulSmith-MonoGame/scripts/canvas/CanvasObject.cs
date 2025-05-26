@@ -13,22 +13,22 @@ using MonoGame.Extended.Graphics;
 using SoulSmith.Drawing;
 using SoulSmith.Core;
 
-public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
+public class CanvasObject : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
 {
     private bool _visible = true;
     private string _resourceType = "none";
-    private CanvasPosition _position = null;  
+    private Position _position = null;  
     private Vector4 _tint = Vector4.Zero;
     private DrawableResource _drawableResource = null;
-    private Dictionary<BoundingZoneType, CanvasItem> _boundingZones = null;
+    private Dictionary<BoundingZoneType, CanvasObject> _boundingZones = null;
 
-    public CanvasItem(
-        CanvasPosition position = null,
+    public CanvasObject(
+        Position position = null,
         DrawableResource sprite = null,
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null, 
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones = null, 
         IEnumerable<SoulSmithObject> children = null) : base(children)
     {
-        _position = new CanvasPosition(position);
+        _position = new Position(position);
         _boundingZones = boundingZones;
         AddChildrenInBoundingZones();
 
@@ -38,14 +38,14 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         }
     }
 
-    public CanvasItem(int x, int y)
+    public CanvasObject(int x, int y)
     {
-        _position = new CanvasPosition(x, y);
+        _position = new Position(x, y);
     }
 
-    public CanvasItem(SpriteFont font, string text = null, CanvasPosition position = null)
+    public CanvasObject(SpriteFont font, string text = null, Position position = null)
     {
-        _position = new CanvasPosition(position);
+        _position = new Position(position);
 
         if (font != null)
         {
@@ -53,9 +53,9 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         }
     }
 
-    public CanvasItem(CanvasItem other, CanvasItem shelledItem = null) : base(other)
+    public CanvasObject(CanvasObject other, CanvasObject shelledItem = null) : base(other)
     {
-        _position = new CanvasPosition(other._position);
+        _position = new Position(other._position);
         _visible = other._visible;
 
         _drawableResource = (DrawableResource)other._drawableResource?.DeepClone();
@@ -67,7 +67,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
 
             if (shelledItem.BoundingZones != null)
             {
-                foreach (KeyValuePair<BoundingZoneType, CanvasItem> item in shelledItem.BoundingZones)
+                foreach (KeyValuePair<BoundingZoneType, CanvasObject> item in shelledItem.BoundingZones)
                 {
                     _boundingZones.TryAdd(item.Key, shelledItem);
                 }
@@ -76,27 +76,27 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
 
         foreach (SoulSmithObject child in Children)
         {
-            if (child is CanvasItem)
+            if (child is CanvasObject)
             {
-                RegisterChildEvents((CanvasItem)child);
+                RegisterChildEvents((CanvasObject)child);
             }
         }
     }
 
-    private static Dictionary<BoundingZoneType, CanvasItem> CloneBoundingZones(
-        ReadOnlyDictionary<BoundingZoneType, CanvasItem> otherZones, 
+    private static Dictionary<BoundingZoneType, CanvasObject> CloneBoundingZones(
+        ReadOnlyDictionary<BoundingZoneType, CanvasObject> otherZones, 
         ReadOnlyCollection<SoulSmithObject> children,
         ReadOnlyCollection<SoulSmithObject> otherChildren)
     {
         if (otherZones == null) return new();
 
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = new();
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones = new();
 
-        foreach (KeyValuePair<BoundingZoneType, CanvasItem> pair in otherZones) 
+        foreach (KeyValuePair<BoundingZoneType, CanvasObject> pair in otherZones) 
         {
             int zoneIndex = otherChildren.IndexOf(pair.Value);
 
-            CanvasItem zone = children[zoneIndex] as CanvasItem;
+            CanvasObject zone = children[zoneIndex] as CanvasObject;
 
             if (zone != null)
                 boundingZones.TryAdd(pair.Key, zone);
@@ -109,11 +109,11 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
 
     public event EventHandler<GetGlobalPositionEventArgs> GetGlobalPositionEventHandler;
 
-    public CanvasPosition GetGlobalPosition()
+    public Position GetGlobalPosition()
     {
         GetGlobalPositionEventArgs e = new GetGlobalPositionEventArgs();
 
-        e.Position = new CanvasPosition();
+        e.Position = new Position();
 
         GetGlobalPositionInternal(this, e);
 
@@ -134,7 +134,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
     {
         if (_boundingZones == null) return;
 
-        foreach (KeyValuePair<BoundingZoneType, CanvasItem> item in _boundingZones)
+        foreach (KeyValuePair<BoundingZoneType, CanvasObject> item in _boundingZones)
         {
             if (!Children.Contains(item.Value)) AddChild(item.Value);
         }
@@ -148,7 +148,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         if (_boundingZones == null)
             return Vector2.Zero;
 
-        CanvasItem zone = _boundingZones.GetValueOrDefault(zoneType);
+        CanvasObject zone = _boundingZones.GetValueOrDefault(zoneType);
 
         if (zone == null)
             return Vector2.Zero;
@@ -164,7 +164,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         if (_boundingZones == null)
             return GetGlobalPosition().Coordinates + Vector2.Zero;
 
-        CanvasItem zone = _boundingZones.GetValueOrDefault(zoneType);
+        CanvasObject zone = _boundingZones.GetValueOrDefault(zoneType);
 
         if (zone == null)
             return Vector2.Zero;
@@ -220,7 +220,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         _visible = false;
     }
 
-    public void Set(CanvasPosition position)
+    public void Set(Position position)
     {
         if (position == null)
             return;
@@ -233,7 +233,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         _position.Set(coordinates);
     }
 
-    public void Transform(CanvasPosition transformation)
+    public void Transform(IReadOnlyPosition transformation)
     {
         if (transformation == null)
             return;
@@ -248,17 +248,11 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         _position.Translate(translation);
     }
 
-    public void ScaleMultiplicative(Vector2 scale)
+    public void Scale(Vector2 scale)
     {
         if (scale == Vector2.One) return;
 
-        _position.ScaleMultiplicative(scale);
-    }
-    public void ScaleAdditive(Vector2 scale)
-    {
-        if (scale == Vector2.Zero) return;
-
-        _position.ScaleAdditive(scale);
+        _position.Scale(scale);
     }
 
     public void Rotate(float rotation)
@@ -268,7 +262,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         _position.Rotate(rotation);
     }
 
-    public void Rotate(float rotation, Vector2 origin)
+    public void Rotate(float rotation, Vector2? origin = null)
     {
         if (rotation == 0) return;
 
@@ -287,13 +281,13 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         _tint += change;
     }
 
-    public override void CollectDrawPackets(CanvasPosition absolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
+    public override void CollectDrawPackets(Position absolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
     {
         tint += _tint;
 
-        CanvasPosition newPosition;
+        Position newPosition;
 
-        newPosition = new CanvasPosition(absolutePosition);
+        newPosition = new Position(absolutePosition);
         newPosition.Transform(_position);
 
         DrawableResource resourceToDraw = Resource;
@@ -314,22 +308,22 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         base.CollectDrawPackets(absolutePosition, tint, renderQueue, scissorRect);
     }
 
-    public override void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)
+    public override void CollectInputPackets(Position parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
     {
-        CanvasPosition newPosition = absolutePosition; 
+        Position newPosition = absolutePosition; 
 
         if (newPosition == null)
         {
-            newPosition = new CanvasPosition(parentAbsolutePosition);
+            newPosition = new Position(parentAbsolutePosition);
             newPosition.Transform(_position);
         }
 
         base.CollectInputPackets(newPosition, inputQueue);
     }
 
-    public override InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyCanvasPosition absPos = null, bool requestHover = false, int priority = 0)
+    public override InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyPosition absPos = null, bool requestHover = false, int priority = 0)
     {
-        CanvasItem clickBox = _boundingZones?.GetValueOrDefault(BoundingZoneType.ButtonClickBox);
+        CanvasObject clickBox = _boundingZones?.GetValueOrDefault(BoundingZoneType.ButtonClickBox);
         if (clickBox == null) { clickBox = this; } //TODO rework this
 
         InputPacket packet = new(
@@ -348,9 +342,9 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         if (Children.Contains(child))
             return;
 
-        if (child is CanvasItem) 
+        if (child is CanvasObject) 
         {
-            RegisterChildEvents((CanvasItem)child);
+            RegisterChildEvents((CanvasObject)child);
         }
 
         base.AddChild(child);
@@ -361,10 +355,10 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         if (!Children.Contains(child))
             return;
 
-        if (child is CanvasItem)
+        if (child is CanvasObject)
         {
-            DeRegisterChildEvents((CanvasItem)child);
-            RemoveBoundingZones((CanvasItem)child);
+            DeRegisterChildEvents((CanvasObject)child);
+            RemoveBoundingZones((CanvasObject)child);
         }
 
         base.RemoveChild(child);
@@ -378,13 +372,13 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         }
     }
 
-    private void RegisterChildEvents(CanvasItem child)
+    private void RegisterChildEvents(CanvasObject child)
     {
         child.GetGlobalPositionEventHandler += GetGlobalPositionInternal;
         child.GetGlobalVisibilityEventHandler += IsVisibleInternal;
     }
 
-    private void DeRegisterChildEvents(CanvasItem child)
+    private void DeRegisterChildEvents(CanvasObject child)
     {
         child.GetGlobalPositionEventHandler -= GetGlobalPositionInternal;
         child.GetGlobalVisibilityEventHandler -= IsVisibleInternal;
@@ -394,7 +388,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
     /// Removes child from objects bounding zone dictionary.
     /// </summary>
     /// <param name="child"></param>
-    private void RemoveBoundingZones(CanvasItem child)
+    private void RemoveBoundingZones(CanvasObject child)
     {
         if ((_boundingZones == null) || (_boundingZones.Count == 0))
             return;
@@ -402,7 +396,7 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
         if (_boundingZones.ContainsValue(child))
         {
             List<BoundingZoneType> badKeys = new();
-            foreach (KeyValuePair<BoundingZoneType, CanvasItem> pair in _boundingZones)
+            foreach (KeyValuePair<BoundingZoneType, CanvasObject> pair in _boundingZones)
             {
                 if (pair.Value == child)
                     badKeys.Add(pair.Key);
@@ -417,13 +411,13 @@ public class CanvasItem : SoulSmithObject, IReadOnlyCanvasItem, ITransformable
 
     public override object DeepClone()
     {
-        return new CanvasItem(this);
+        return new CanvasObject(this);
     }
 
     public bool Visible { get { return _visible; } }
-    public IReadOnlyCanvasPosition Position { get { return _position; } }
+    public IReadOnlyPosition Position { get { return _position; } }
     protected virtual DrawableResource Resource { get { return _drawableResource; } set { _drawableResource = value; } }
-    public ReadOnlyDictionary<BoundingZoneType, CanvasItem> BoundingZones { get { return _boundingZones == null ? null : new ReadOnlyDictionary<BoundingZoneType, CanvasItem>(_boundingZones); } }
+    public ReadOnlyDictionary<BoundingZoneType, CanvasObject> BoundingZones { get { return _boundingZones == null ? null : new ReadOnlyDictionary<BoundingZoneType, CanvasObject>(_boundingZones); } }
 }
 
 public enum BoundingZoneType
@@ -436,7 +430,7 @@ public enum BoundingZoneType
 
 public class GetGlobalPositionEventArgs : EventArgs
 {
-    public CanvasPosition Position { get; set; }
+    public Position Position { get; set; }
 }
 
 public class GetGlobalVisibilityEventArgs : EventArgs

@@ -8,8 +8,9 @@ using MonoGame.Extended;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public partial class EffectVisualization : CanvasItem_TransformationRules
+public partial class EffectVisualization : CanvasObject_TransformationRules
 {
     private float _totalLifespan = 3f; //Time in seconds before visualization automatically completes
     private float _elapsedLifespan = 0f;
@@ -52,7 +53,7 @@ public partial class EffectVisualization : CanvasItem_TransformationRules
         {
             int itemIndex = otherChildren.IndexOf(item as SoulSmithObject);
 
-            CanvasItem transformable = children[itemIndex] as CanvasItem;
+            CanvasObject transformable = children[itemIndex] as CanvasObject;
 
             if (transformable != null)
                 transformables.Add(transformable);
@@ -64,7 +65,7 @@ public partial class EffectVisualization : CanvasItem_TransformationRules
     }
 
     public EffectVisualization(
-        CanvasItem sprite,
+        CanvasObject sprite,
         Func<EffectVisualizationBeginArgs, EffectVisualizationBeginOutput> begin,
         Action<EffectVisualizationProcessArgs> process,
         float lifespan,

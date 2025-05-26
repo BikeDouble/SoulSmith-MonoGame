@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using InputPacketFunc = System.Func<InputPacketFuncInput, InputPacketFuncOutput>;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
 public enum InputType 
 {
@@ -23,7 +24,7 @@ public class InputPacket
     private int _priority;
     private int _z;
     private bool _requestHover;
-    private IReadOnlyCanvasPosition _position;
+    private IReadOnlyPosition _position;
     private IReadOnlySoulSmithObject _sender;
 
     public InputPacket(
@@ -31,7 +32,7 @@ public class InputPacket
         InputPacketFunc func,
         int priority,
         IReadOnlySoulSmithObject sender,
-        IReadOnlyCanvasPosition position = null,
+        IReadOnlyPosition position = null,
         bool requestHover = false)
     {
         _boundingZone = boundingZone;
@@ -56,7 +57,7 @@ public class InputPacket
     public int Z { get { return _z; } }
     public int Priority { get { return _priority; } }  
     public bool RequestHover { get { return _requestHover; } }
-    public IReadOnlyCanvasPosition Position { get { return _position; } }
+    public IReadOnlyPosition Position { get { return _position; } }
     public IReadOnlySoulSmithObject Sender { get { return _sender; } }
 }
 

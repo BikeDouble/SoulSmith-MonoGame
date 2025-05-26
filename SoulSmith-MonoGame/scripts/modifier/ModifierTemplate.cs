@@ -46,15 +46,15 @@ public class ModifierTemplate
         IReadOnlyUnit applier,
         IDictionary<ModifierFloatArgType, float> floats)
     {
-        CanvasItem icon = AssetLoader.GetSprite(IconName)?.Resource; //TODO
+        CanvasObject icon = MasterAssetLoader.GetSprite(IconName)?.Resource; //TODO
 
         Modifier modifier = new Modifier(
             host,
             applier,
             ModifierID,
-            AssetLoader.LoadEffectFromTemplate(Effect),
+            MasterAssetLoader.LoadEffectFromTemplate(Effect),
             DecrementTrigger,
-            (CanvasItem)icon?.DeepClone(),
+            (CanvasObject)icon?.DeepClone(),
             ProcessEffectResultDelegate,
             ApplyDelegate,
             RemoveDelegate,

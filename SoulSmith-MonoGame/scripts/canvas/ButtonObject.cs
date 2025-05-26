@@ -13,20 +13,20 @@ using SoulSmithInput;
 using SoulSmith.Drawing;
 using SoulSmith.Core;
 
-public class Button : CanvasItem_MultipleResources
+public class ButtonObject : CanvasObject_MultipleResources
 {
     public event EventHandler<ButtonPressedEventArgs> ButtonPressedEventHandler;
     private bool _hovered = false;
     private int _idleResourceIndex = -1;
     private int _hoveredResourceIndex = -1;
 
-    public Button() : base() { }
+    public ButtonObject() : base() { }
 
-    public Button(
+    public ButtonObject(
         DrawableResource resource,
         DrawableResource hoveredResource,
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null,
-        CanvasPosition position = null) : base(resource, hoveredResource, boundingZones, position) 
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones = null,
+        Position position = null) : base(resource, hoveredResource, boundingZones, position) 
     {
         _idleResourceIndex = 0;
         _hoveredResourceIndex = 1;
@@ -37,13 +37,13 @@ public class Button : CanvasItem_MultipleResources
         base.Process(delta);
     }
 
-    public override void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)
+    public override void CollectInputPackets(Position parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
     {
-        CanvasPosition newPosition = absolutePosition; 
+        Position newPosition = absolutePosition; 
 
         if (newPosition == null)
         {
-            newPosition = new CanvasPosition(parentAbsolutePosition);
+            newPosition = new Position(parentAbsolutePosition);
             newPosition.Transform(Position);
         }
 

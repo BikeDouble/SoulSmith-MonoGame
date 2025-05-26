@@ -39,14 +39,14 @@ namespace SoulSmithMoves
         private static EffectVisualizationTemplate JoyPellet()
         {
             return EffectVisualizationTemplate.StraightMissile(
-                AssetLoader.GetSprite(JOYPELLETSPRITENAME),
+                MasterAssetLoader.GetSprite(JOYPELLETSPRITENAME),
                 1);
         }
 
         private static EffectVisualizationTemplate JoyPassivePop()
         {
             return EffectVisualizationTemplate.GrowAndFadeOnTarget(
-                AssetLoader.GetSprite(JOYPASSIVEPOPNAME),
+                MasterAssetLoader.GetSprite(JOYPASSIVEPOPNAME),
                 0.25f,
                 0);
         }

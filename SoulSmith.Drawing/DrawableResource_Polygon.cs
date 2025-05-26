@@ -5,6 +5,7 @@ using MonoGame.Extended.Shapes;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using SoulSmith.Core;
 
 namespace SoulSmith.Drawing
 {
@@ -35,14 +36,14 @@ namespace SoulSmith.Drawing
             _lineThickness = lineWidth;
         }
 
-        public override void Draw(IReadOnlyCanvasPosition position, Vector4 tint, SpriteBatch spriteBatch)
+        public override void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch)
         {
             Polygon drawnPolygon = _staticPolygon.TransformedCopy(Vector2.Zero, position.Rotation, position.ScaleVector);
 
             DrawUnfilledInternal(drawnPolygon, position, spriteBatch, GetTintedColor(tint), _lineThickness);
         }
 
-        public static void DrawUnfilledInternal(Polygon polygon, IReadOnlyCanvasPosition position, SpriteBatch spriteBatch, Color color, int lineThickness = 1)
+        public static void DrawUnfilledInternal(Polygon polygon, IReadOnlyPosition position, SpriteBatch spriteBatch, Color color, int lineThickness = 1)
         {
             spriteBatch.DrawPolygon(
                     position.Coordinates,
@@ -56,7 +57,7 @@ namespace SoulSmith.Drawing
             return new DrawableResource_Polygon(this);
         }
 
-        public override bool ContainsPoint(Vector2 point, IReadOnlyCanvasPosition position)
+        public override bool ContainsPoint(Vector2 point, IReadOnlyPosition position)
         {
             Polygon drawnPolygon = _staticPolygon.TransformedCopy(Vector2.Zero, position.Rotation, position.ScaleVector);
 

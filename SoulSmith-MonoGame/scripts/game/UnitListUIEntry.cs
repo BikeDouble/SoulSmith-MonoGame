@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SoulSmithUnitUI;
 
-public class UnitListUIEntry : CanvasItem
+public class UnitListUIEntry : CanvasObject
 {
     private string _unitName;
     private IReadOnlyUnit _unit;

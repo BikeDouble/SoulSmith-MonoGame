@@ -6,29 +6,30 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public class CanvasItem_MultipleResources : CanvasItem
+public class CanvasObject_MultipleResources : CanvasObject
 {
     private ReadOnlyCollection<DrawableResource> _drawableResources = null;
     private int _activeResourceIndex = -1;
 
-    public CanvasItem_MultipleResources() : base() { }
+    public CanvasObject_MultipleResources() : base() { }
 
-    public CanvasItem_MultipleResources(
+    public CanvasObject_MultipleResources(
         DrawableResource sprite1, 
         DrawableResource sprite2, 
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null, 
-        CanvasPosition position = null) : base(position, null, boundingZones)  
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones = null, 
+        Position position = null) : base(position, null, boundingZones)  
     {
         List<DrawableResource> drawableResources = new List<DrawableResource> { sprite1, sprite2 };
         _drawableResources = drawableResources.AsReadOnly();
         _activeResourceIndex = 0;
     }
 
-    public CanvasItem_MultipleResources(
+    public CanvasObject_MultipleResources(
         IEnumerable<DrawableResource> sprites,
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null,
-        CanvasPosition position = null) : base(position, null, boundingZones)
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones = null,
+        Position position = null) : base(position, null, boundingZones)
     {
         if ((sprites != null) && (sprites.Count() > 0))
         {

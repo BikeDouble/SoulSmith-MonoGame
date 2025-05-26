@@ -4,18 +4,19 @@ using Microsoft.Xna.Framework.Graphics;
 using SoulSmithMoves;
 using SoulSmithStats;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public partial class UnitUIHealthBar : CanvasItem
+public partial class UnitUIHealthBar : CanvasObject
 {
 	//Children
-	private CanvasItem _backboard;
-	private CanvasItem _background;
-	private CanvasItem _healthbar;
-	private CanvasItem _healthText = null;
+	private CanvasObject _backboard;
+	private CanvasObject _background;
+	private CanvasObject _healthbar;
+	private CanvasObject _healthText = null;
 
-	public UnitUIHealthBar(SpriteFont font, CanvasPosition position = null) : base(position)
+	public UnitUIHealthBar(SpriteFont font, Position position = null) : base(position)
 	{
-		_healthText = new CanvasItem(font);
+		_healthText = new CanvasObject(font);
 		AddChild(_healthText);
 	}
 

@@ -1,0 +1,74 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+namespace SoulSmith.Asset
+{
+    [JsonConverter(typeof(AssetManifestJsonConverter))]
+    public class AssetManifest
+    {
+        public Dictionary<string, string> Manifest;
+
+        public AssetManifest(IDictionary<string, string> manifest) 
+        {
+            Manifest = new Dictionary<string, string>(manifest);
+        }
+    }
+
+    internal class AssetManifestJsonConverter : System.Text.Json.Serialization.JsonConverter<AssetManifest> //TODO test!
+    {
+        public override AssetManifest Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType != JsonTokenType.StartObject)
+                throw new JsonException("Expected start of object");
+            reader.Read();
+            string text = reader.GetString() ?? throw new JsonException("String cannot be null");
+            Stack<string> lastAddedNames = new Stack<string>();
+            lastAddedNames.Push(text);
+            Dictionary<string, string> dict = new();
+
+            while (lastAddedNames.Count > 0)
+            {
+                reader.Read();
+                if (reader.TokenType == JsonTokenType.PropertyName)
+                {
+                    string newText = reader.GetString() ?? throw new JsonException("String cannot be null");
+                    text = AddToPath(text, newText);
+                    lastAddedNames.Push(newText);
+                }
+                else if (reader.TokenType == JsonTokenType.EndObject)
+                {
+                    text = RemoveFromPath(text, lastAddedNames.Pop());
+                }
+                else if (reader.TokenType == JsonTokenType.String)
+                {
+                    dict.Add(text, reader.GetString() ?? throw new JsonException("String cannot be null"));
+                    text = RemoveFromPath(text, lastAddedNames.Pop());
+                }
+            }
+            
+            reader.Read(); // Read to end of object
+
+            return new AssetManifest(dict);
+        }
+
+        private string AddToPath(string predecessors, string name)
+        {
+            return predecessors + "/" + name;
+        }
+
+        private string RemoveFromPath(string predecessors, string name)
+        {
+            return predecessors.Remove(predecessors.Length - name.Length + 1);
+        }
+
+        public override void Write(Utf8JsonWriter writer, AssetManifest value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

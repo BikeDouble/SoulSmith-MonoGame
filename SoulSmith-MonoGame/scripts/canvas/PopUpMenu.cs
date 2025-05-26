@@ -10,14 +10,14 @@ using SoulSmith.Core;
 /// <summary>
 /// CanvasItem that hides itself if clicked outside of.
 /// </summary>
-public class PopUpMenu : CanvasItem
+public class PopUpMenu : CanvasObject
 {
     public PopUpMenu() : base() { }
 
     public PopUpMenu(
-        CanvasPosition position = null,
+        Position position = null,
         DrawableResource sprite = null,
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null,
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones = null,
         IEnumerable<SoulSmithObject> children = null) : base(position, sprite, boundingZones, children)
     {}
 
@@ -26,13 +26,13 @@ public class PopUpMenu : CanvasItem
         base.Process(delta);
     }
 
-    public override void CollectInputPackets(CanvasPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, CanvasPosition absolutePosition = null)
+    public override void CollectInputPackets(Position parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
     {
-        CanvasPosition newPosition = absolutePosition;
+        Position newPosition = absolutePosition;
 
         if (newPosition == null)
         {
-            newPosition = new CanvasPosition(parentAbsolutePosition);
+            newPosition = new Position(parentAbsolutePosition);
             newPosition.Transform(Position);
         }
 

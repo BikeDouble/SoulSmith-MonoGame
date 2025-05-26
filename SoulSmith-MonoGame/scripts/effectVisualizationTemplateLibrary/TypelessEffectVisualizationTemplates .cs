@@ -36,7 +36,7 @@ namespace SoulSmithMoves
         private static EffectVisualizationTemplate TypelessPellet()
         {
             return EffectVisualizationTemplate.StraightMissile(
-                AssetLoader.GetSprite(TYPELESSPELLETSPRITENAME),
+                MasterAssetLoader.GetSprite(TYPELESSPELLETSPRITENAME),
                 1);
         }
     }

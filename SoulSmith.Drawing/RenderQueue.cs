@@ -81,7 +81,7 @@ namespace SoulSmith.Drawing
         private void DrawDrawPacket(DrawPacket packet, SpriteBatch spriteBatch)
         {
             Vector4 tint = packet.Tint;
-            IReadOnlyCanvasPosition position = packet.Position;
+            IReadOnlyPosition position = packet.Position;
             IDrawableResource resourceToDraw = packet.Resource;
 
             if (resourceToDraw != null)

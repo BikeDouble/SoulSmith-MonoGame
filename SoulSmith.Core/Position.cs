@@ -1,15 +1,10 @@
-﻿
+﻿using Microsoft.Xna.Framework;
 
-namespace SoulSmith.Drawing
+namespace SoulSmith.Core
 {
-    public class CanvasPosition : IReadOnlyCanvasPosition
+    public class Position : IReadOnlyPosition, ITransformable
     {
-        public CanvasPosition()
-        {
-
-        }
-
-        public CanvasPosition(int x = 0, int y = 0, float width = 1f, float height = 1f, float rotation = 0f, int z = 0)
+        public Position(int x = 0, int y = 0, float width = 1f, float height = 1f, float rotation = 0f, int z = 0)
         {
             Width = width;
             Height = height;
@@ -19,12 +14,12 @@ namespace SoulSmith.Drawing
             Z = z;
         }
 
-        public CanvasPosition(Vector2 coordinates)
+        public Position(Vector2 coordinates)
         {
             Coordinates = coordinates;
         }
 
-        public CanvasPosition(CanvasPosition other)
+        public Position(Position other)
         {
             if (other == null)
                 return;
@@ -35,7 +30,7 @@ namespace SoulSmith.Drawing
             Z = other.Z;
         }
 
-        public CanvasPosition(float[] positionArgs)
+        public Position(float[] positionArgs)
         {
             if ((positionArgs != null) && (positionArgs.Length >= 5))
             {
@@ -50,49 +45,36 @@ namespace SoulSmith.Drawing
             }
         }
 
-        public CanvasPosition Transform(IReadOnlyCanvasPosition transformation)
+        public void Transform(IReadOnlyPosition transformation)
         {
-            ScaleMultiplicative(transformation.ScaleVector);
+            Scale(transformation.ScaleVector);
             Translate(transformation.Coordinates);
             Rotate(transformation.Rotation);
             ZTranslate(transformation.Z);
-
-            return this;
         }
 
-        public CanvasPosition Translate(Vector2 translation)
+        public void Translate(Vector2 translation)
         {
             Coordinates += translation;
-
-            return this;
         }
 
-        public CanvasPosition ZTranslate(int zTranslation)
+        public void ZTranslate(int zTranslation)
         {
             Z += zTranslation;
-
-            return this;
         }
 
-        public CanvasPosition ScaleMultiplicative(Vector2 scale)
+        public void Scale(Vector2 scale)
         {
             ScaleVector *= scale;
-
-            return this;
         }
 
-        public CanvasPosition ScaleAdditive(Vector2 scale)
+        public void Rotate(float rotation, Vector2? origin = null)
         {
-            ScaleVector += scale;
+            Vector2 originVal = origin ?? Vector2.Zero;
 
-            return this;
-        }
+            Coordinates = RotatePointAroundPoint(Coordinates, originVal, rotation);
 
-        public CanvasPosition Rotate(float rotation, Vector2 origin)
-        {
-            Coordinates = RotatePointAroundPoint(Coordinates, origin, rotation);
-
-            return Rotate(rotation);
+            Rotation += rotation;
         }
 
         public static Vector2 RotatePointAroundPoint(Vector2 point, Vector2 origin, float rotation)
@@ -107,28 +89,17 @@ namespace SoulSmith.Drawing
             return newRelativePos + origin;
         }
 
-        public CanvasPosition Rotate(float rotation)
-        {
-            Rotation += rotation;
-
-            return this;
-        }
-
-        public CanvasPosition Set(CanvasPosition transformation)
+        public void Set(Position transformation)
         {
             ScaleVector = transformation.ScaleVector;
             Coordinates = transformation.Coordinates;
             Rotation = transformation.Rotation;
             Z = transformation.Z;
-
-            return this;
         }
 
-        public CanvasPosition Set(Vector2 coordinates)
+        public void Set(Vector2 coordinates)
         {
             Coordinates = coordinates;
-
-            return this;
         }
 
         public const float MAXROTATION = (float)(Math.PI * 2);
@@ -164,8 +135,8 @@ namespace SoulSmith.Drawing
         public int X { get { return (int)Coordinates.X; } private set { _coordinates.X = value; } }
         public int Y { get { return (int)Coordinates.Y; } private set { _coordinates.Y = value; } }
         public int Z { get { return _z; } private set { _z = value; } }
-        public static CanvasPosition operator +(CanvasPosition a, CanvasPosition b)
-           => new CanvasPosition(a.X + b.X, a.Y + b.Y, a.Width * b.Width, a.Height * b.Height, a.Rotation + b.Rotation, a.Z + b.Z);
+        public static Position operator +(Position a, Position b)
+           => new Position(a.X + b.X, a.Y + b.Y, a.Width * b.Width, a.Height * b.Height, a.Rotation + b.Rotation, a.Z + b.Z);
     }
 
 

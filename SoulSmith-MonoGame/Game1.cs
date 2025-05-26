@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using SoulSmithObjects;
 using SoulSmithInput;
+using SoulSmith.Core;
 using SoulSmith.Drawing;
+using Microsoft.Xna.Framework.Content;
 
 namespace SoulSmith_MonoGame
 {
@@ -19,6 +21,7 @@ namespace SoulSmith_MonoGame
         private SoulSmithObject _root;
         private RenderQueue _renderQueue;
         private InputQueue _inputQueue;
+        private MasterAssetLoader _assetLoader;
 
         public static int WINDOWHEIGHT = 900;
         public static int WINDOWLENGTH = 1600;
@@ -37,7 +40,8 @@ namespace SoulSmith_MonoGame
         protected override void Initialize()
         {
             SetTrace("debug.log");
-            _root = new GameManager(Content);
+            InitializeResources(Content, GraphicsDevice);
+            _root = new GameManager();
 
             base.Initialize();
         }
@@ -46,6 +50,12 @@ namespace SoulSmith_MonoGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        }
+
+        private void InitializeResources(ContentManager content, GraphicsDevice graphicsDevice)
+        {
+            _assetLoader = new(content, graphicsDevice);
+            //_assetManager = new(content, manifest);
         }
 
         protected override void Update(GameTime gameTime)
@@ -59,7 +69,7 @@ namespace SoulSmith_MonoGame
 
         private void ProcessInputs()
         {
-            _root.CollectInputPackets(new CanvasPosition(), _inputQueue);
+            _root.CollectInputPackets(new Position(), _inputQueue);
 
             _inputQueue.Process(GetCurrentInputs());
 
@@ -81,7 +91,7 @@ namespace SoulSmith_MonoGame
         {
             GraphicsDevice.Clear(Color.LightGray);
 
-            _root.CollectDrawPackets(new CanvasPosition(0, 0, 1, 1, 0), Vector4.Zero, _renderQueue);
+            _root.CollectDrawPackets(new Position(0, 0, 1, 1, 0), Vector4.Zero, _renderQueue);
 
             _renderQueue.Draw(_spriteBatch, _graphics.GraphicsDevice);
 

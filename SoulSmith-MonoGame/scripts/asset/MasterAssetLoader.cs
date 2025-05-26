@@ -22,36 +22,38 @@ using SoulSmith.Core;
 using SoulSmith.Asset;
 
 
-public class AssetLoader : SoulSmithObject
+public class MasterAssetLoader : SoulSmithObject
 {
     //Im bad at files
     public const string FILEPREFIX = "../../../";
 
     //File paths - preface all with ../../../ im sure this will result in no problems for me in the future
-    private const string POLYGONASSETJSONFILEPATH = AssetLoader.FILEPREFIX + "json/polygonAssetsList.json";
-    private const string SPRITEASSETJSONFILEPATH = AssetLoader.FILEPREFIX + "json/spriteAssetsList.json";
-    private const string UNITTEMPLATEASSETJSONFILEPATH = AssetLoader.FILEPREFIX + "json/unitTemplateAssetsList.json";
-    private const string SPRITESHELLASSETJSONFILEPATH = AssetLoader.FILEPREFIX + "json/spriteShellAssetsList.json";
-    private const string WEIGHTEDLISTASSETJSONFILEPATH = AssetLoader.FILEPREFIX + "json/weightedListAssetsList.json";
+    private const string POLYGONASSETJSONFILEPATH = MasterAssetLoader.FILEPREFIX + "json/polygonAssetsList.json";
+    private const string SPRITEASSETJSONFILEPATH = MasterAssetLoader.FILEPREFIX + "json/spriteAssetsList.json";
+    private const string UNITTEMPLATEASSETJSONFILEPATH = MasterAssetLoader.FILEPREFIX + "json/unitTemplateAssetsList.json";
+    private const string SPRITESHELLASSETJSONFILEPATH = MasterAssetLoader.FILEPREFIX + "json/spriteShellAssetsList.json";
+    private const string WEIGHTEDLISTASSETJSONFILEPATH = MasterAssetLoader.FILEPREFIX + "json/weightedListAssetsList.json";
     private const string MASTERENEMYSPAWNLISTJSONFILEPATH = "json/masterEnemySpawnList.json";
 
     private static Dictionary<string, MoveTemplate> _moveTemplateLibrary;
-    private static Dictionary<string, SpriteFont> _fontLibrary;
     private static Dictionary<string, EffectVisualizationTemplate> _effectVisualizationTemplateLibrary;
     private static Dictionary<string, ModifierTemplate> _modifierTemplateLibrary;
     private static Dictionary<EmotionTag, Emotion> _emotionLibrary;
 
     private static AssetManager<ColoredPolygon> _polygonAssetManager;
-    private static AssetManager<CanvasItem> _spriteAssetManager;
-    private static AssetManager<CanvasItem_TransformationRules> _spriteShellAssetManager;
+    private static AssetManager<CanvasObject> _spriteAssetManager;
+    private static AssetManager<CanvasObject_TransformationRules> _spriteShellAssetManager;
     private static AssetManager<UnitTemplate> _unitTemplateAssetManager;
     private static AssetManager<SoulSmithWeightedList<string>> _weightedListAssetManager;
+    private static AssetManager<Texture2D> _texture2DAssetManager;
 
     private readonly ContentManager _content;
+    private readonly GraphicsDevice _graphicsDevice;
 
-    public AssetLoader(ContentManager content)
+    public MasterAssetLoader(ContentManager content, GraphicsDevice graphicsDevice)
     {
         _content = content;
+        _graphicsDevice = graphicsDevice;
 
         InitializeAssetManagers(content);
         InitializeLibraries(content);
@@ -66,9 +68,6 @@ public class AssetLoader : SoulSmithObject
         _emotionLibrary = EmotionLibrary.CreateDict();
 
         _moveTemplateLibrary = MoveTemplateLibrary.CreateDict();
-
-        _fontLibrary = new();
-        _fontLibrary.Add("uIFont", content.Load<SpriteFont>("fonts/uiFont"));
     }
 
     private void InitializeAssetManagers(ContentManager content)
@@ -76,10 +75,10 @@ public class AssetLoader : SoulSmithObject
         _polygonAssetManager = new AssetManager<ColoredPolygon>(POLYGONASSETJSONFILEPATH, LoadPolygon);
         _polygonAssetManager.PreloadAll();
 
-        _spriteShellAssetManager = new AssetManager<CanvasItem_TransformationRules>(SPRITESHELLASSETJSONFILEPATH, LoadSpriteShell);
+        _spriteShellAssetManager = new AssetManager<CanvasObject_TransformationRules>(SPRITESHELLASSETJSONFILEPATH, LoadSpriteShell);
         _spriteShellAssetManager.PreloadAll();
 
-        _spriteAssetManager = new AssetManager<CanvasItem>(SPRITEASSETJSONFILEPATH, LoadSprite);
+        _spriteAssetManager = new AssetManager<CanvasObject>(SPRITEASSETJSONFILEPATH, LoadSprite);
         _spriteAssetManager.PreloadAssetGroup("forms");
 
         _unitTemplateAssetManager = new AssetManager<UnitTemplate>(UNITTEMPLATEASSETJSONFILEPATH, LoadUnitTemplate);
@@ -103,7 +102,7 @@ public class AssetLoader : SoulSmithObject
 
     public static SpriteFont GetFont(string assetName)
     {
-        return _fontLibrary.GetValueOrDefault(assetName);
+        return null;
     }
 
     public static EffectVisualizationTemplate GetEffectVisualizationTemplate(string assetName)
@@ -121,7 +120,7 @@ public class AssetLoader : SoulSmithObject
         return _polygonAssetManager.GetAsset(assetName);
     }
 
-    public static TrackedAsset<CanvasItem> GetSprite(string assetName)
+    public static TrackedAsset<CanvasObject> GetSprite(string assetName)
     {
         return _spriteAssetManager.GetAsset(assetName);
     }
@@ -136,7 +135,7 @@ public class AssetLoader : SoulSmithObject
         return _unitTemplateAssetManager.GetAsset(assetName);
     }
 
-    public static TrackedAsset<CanvasItem_TransformationRules> GetSpriteShell(string assetName)
+    public static TrackedAsset<CanvasObject_TransformationRules> GetSpriteShell(string assetName)
     {
         return _spriteShellAssetManager.GetAsset(assetName);
     }
@@ -219,10 +218,10 @@ public class AssetLoader : SoulSmithObject
     public static Func<string, ColoredPolygon> LoadPolygon = (string assetPath)
         => ReadJson<ColoredPolygon>(assetPath);    
 
-    public static Func<string, CanvasItem_TransformationRules> LoadSpriteShell = (path) =>
+    public static Func<string, CanvasObject_TransformationRules> LoadSpriteShell = (path) =>
         LoadSpriteShellInternal(path);
 
-    private static CanvasItem_TransformationRules LoadSpriteShellInternal(string assetPath)
+    private static CanvasObject_TransformationRules LoadSpriteShellInternal(string assetPath)
     {
         DeserializedSpriteShell shell = ReadJson<DeserializedSpriteShell>(assetPath);
 
@@ -235,21 +234,21 @@ public class AssetLoader : SoulSmithObject
         }
 
         if (rules.Count > 0)
-            return new CanvasItem_TransformationRules(rules);
+            return new CanvasObject_TransformationRules(rules);
 
         return null;
     }
 
-    public static Func<string, CanvasItem> LoadSprite = (assetPath) => LoadSpriteInternal(assetPath);
+    public static Func<string, CanvasObject> LoadSprite = (assetPath) => LoadSpriteInternal(assetPath);
 
-    private static CanvasItem LoadSpriteInternal(string assetPath)
+    private static CanvasObject LoadSpriteInternal(string assetPath)
     {
         DeserializedSprite deserializedSprite = ReadJson<DeserializedSprite>(assetPath);
         DeserializedSpritePart[] deserializedParts = deserializedSprite.Parts;
 
         List<CanvasTransformationRule> rules = new List<CanvasTransformationRule>();
         List<SoulSmithObject> unrulyChildren = new List<SoulSmithObject>();
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = new Dictionary<BoundingZoneType, CanvasItem>();
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones = new Dictionary<BoundingZoneType, CanvasObject>();
 
         if (deserializedSprite.BoundingZones != null)
         {
@@ -257,12 +256,12 @@ public class AssetLoader : SoulSmithObject
         }
         else
         {
-            boundingZones = new Dictionary<BoundingZoneType, CanvasItem>();
+            boundingZones = new Dictionary<BoundingZoneType, CanvasObject>();
         }
 
         foreach (DeserializedSpritePart part in deserializedParts) 
         {
-            CanvasItem child = InstantiateCanvasItem(part.ResourceName, part.ResourceType, part.PositionArgs, part.BoundingZones);
+            CanvasObject child = InstantiateCanvasItem(part.ResourceName, part.ResourceType, part.PositionArgs, part.BoundingZones);
 
             if (part.MovementRules == null)
             {
@@ -287,37 +286,37 @@ public class AssetLoader : SoulSmithObject
 
             if (child.BoundingZones != null)
             {
-                foreach (KeyValuePair<BoundingZoneType, CanvasItem> item in  child.BoundingZones)
+                foreach (KeyValuePair<BoundingZoneType, CanvasObject> item in  child.BoundingZones)
                 {
                     boundingZones.TryAdd(item.Key, child);
                 }
             }
         }
 
-        CanvasItem sprite;
+        CanvasObject sprite;
 
         if (rules.Count == 0)
         {
-            sprite = new CanvasItem(new CanvasPosition(deserializedSprite.PositionArgs), null, boundingZones, unrulyChildren);
+            sprite = new CanvasObject(new Position(deserializedSprite.PositionArgs), null, boundingZones, unrulyChildren);
         }
         else
         {
-            sprite = new CanvasItem_TransformationRules(rules, unrulyChildren, boundingZones, new CanvasPosition(deserializedSprite.PositionArgs));
+            sprite = new CanvasObject_TransformationRules(rules, unrulyChildren, boundingZones, new Position(deserializedSprite.PositionArgs));
         }
 
         if (deserializedSprite.ShellName != null)
         {
-            TrackedAsset<CanvasItem_TransformationRules> trackedShell = GetSpriteShell(deserializedSprite.ShellName);
-            sprite = (CanvasItem)trackedShell.Resource.DeepClone(sprite);
+            TrackedAsset<CanvasObject_TransformationRules> trackedShell = GetSpriteShell(deserializedSprite.ShellName);
+            sprite = (CanvasObject)trackedShell.Resource.DeepClone(sprite);
         }
 
         return sprite;
     }
 
-    private static CanvasItem InstantiateCanvasItem(string resourceName, string resourceType, float[] positionArgs, DeserializedBoundingZone[] deserializedboundingZones = null)
+    private static CanvasObject InstantiateCanvasItem(string resourceName, string resourceType, float[] positionArgs, DeserializedBoundingZone[] deserializedboundingZones = null)
     {
         resourceType = resourceType.ToLower();
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones;
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones;
 
         switch (resourceType)
         {
@@ -328,7 +327,7 @@ public class AssetLoader : SoulSmithObject
                     return null;
 
                 boundingZones = InstantiateBoundingZones(deserializedboundingZones);
-                return new CanvasItem(null, new DrawableResource_Polygon(polygon.Resource), boundingZones);
+                return new CanvasObject(null, new DrawableResource_Polygon(polygon.Resource), boundingZones);
 
             /*case ("texture"):
                 TrackedResource<Texture2D> texture = GetTextureAsset(resourceName);
@@ -339,13 +338,13 @@ public class AssetLoader : SoulSmithObject
                 return new CanvasItem(texture);*/
 
             case ("sprite"):
-                TrackedAsset<CanvasItem> sprite = GetSprite(resourceName);
+                TrackedAsset<CanvasObject> sprite = GetSprite(resourceName);
 
                 if (sprite == null) 
                     return null;
 
-                CanvasItem newSprite = (CanvasItem)sprite.Resource.DeepClone();
-                newSprite.Set(new CanvasPosition(positionArgs));
+                CanvasObject newSprite = (CanvasObject)sprite.Resource.DeepClone();
+                newSprite.Set(new Position(positionArgs));
 
                 return newSprite;
 
@@ -359,16 +358,16 @@ public class AssetLoader : SoulSmithObject
 
     private const bool SHOWBOUNDINGZONEOUTLINE = false;
 
-    private static Dictionary<BoundingZoneType, CanvasItem> InstantiateBoundingZones(DeserializedBoundingZone[] deserializedBoundingZones)
+    private static Dictionary<BoundingZoneType, CanvasObject> InstantiateBoundingZones(DeserializedBoundingZone[] deserializedBoundingZones)
     {
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null;
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones = null;
 
         if (deserializedBoundingZones != null)
         {
             boundingZones = new();
             foreach (DeserializedBoundingZone deserializedZone in deserializedBoundingZones)
             {
-                (BoundingZoneType[], CanvasItem) zoneTypeList = InstantiateBoundingZoneTypeTuple(deserializedZone);
+                (BoundingZoneType[], CanvasObject) zoneTypeList = InstantiateBoundingZoneTypeTuple(deserializedZone);
 
                 if ((zoneTypeList.Item1 != null) && (zoneTypeList.Item2 != null))
                 {
@@ -392,7 +391,7 @@ public class AssetLoader : SoulSmithObject
     {
         string zoneShape = deserializedZone.Shape.ToLower();
         BoundingZone zone;
-        CanvasPosition position = new CanvasPosition(deserializedZone.PositionArgs);
+        Position position = new Position(deserializedZone.PositionArgs);
 
         switch (zoneShape)
         {
@@ -543,7 +542,7 @@ public class AssetLoader : SoulSmithObject
 
     public static Unit InstantiateUnit(string templateName) //TODO chain Unit constructors and get rid of this
     {
-        UnitTemplate template = AssetLoader.GetUnitTemplate(templateName).Resource; //TODO
+        UnitTemplate template = MasterAssetLoader.GetUnitTemplate(templateName).Resource; //TODO
 
         if (template == null)
         {
@@ -591,7 +590,7 @@ public class AssetLoader : SoulSmithObject
 
     private static Move InstantiateMove(string name)
     {
-        MoveTemplate moveTemplate = AssetLoader.GetMoveTemplate(name);
+        MoveTemplate moveTemplate = MasterAssetLoader.GetMoveTemplate(name);
         return InstantiateMove(moveTemplate);
     }
 
@@ -600,9 +599,9 @@ public class AssetLoader : SoulSmithObject
         if (template == null)
             return null;
 
-        List<Effect> effects = AssetLoader.LoadMultipleEffectsFromTemplates(template.Effects);
+        List<Effect> effects = MasterAssetLoader.LoadMultipleEffectsFromTemplates(template.Effects);
 
-        Move move = new Move(template, AssetLoader.GetEmotion(template.EmotionTag), effects);
+        Move move = new Move(template, MasterAssetLoader.GetEmotion(template.EmotionTag), effects);
 
         return move;
     }

@@ -2,6 +2,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SoulSmith.Core;
 
 namespace SoulSmith.Drawing
 {
@@ -24,7 +25,7 @@ namespace SoulSmith.Drawing
             _text = other._text;
         }
 
-        public override void Draw(IReadOnlyCanvasPosition position, Vector4 tint, SpriteBatch spriteBatch)
+        public override void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch)
         {
             if (_font == null)
                 return;
@@ -38,7 +39,7 @@ namespace SoulSmith.Drawing
             DrawInternal(_text, _font, position, spriteBatch, GetTintedColor(tint));
         }
 
-        public static void DrawInternal(string text, SpriteFont font, IReadOnlyCanvasPosition position, SpriteBatch spriteBatch, Color color, bool centered = true)
+        public static void DrawInternal(string text, SpriteFont font, IReadOnlyPosition position, SpriteBatch spriteBatch, Color color, bool centered = true)
         {
             Vector2 coords = position.Coordinates;
 

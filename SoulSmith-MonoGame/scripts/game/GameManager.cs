@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 
 namespace SoulSmithObjects;
-public partial class GameManager : CanvasItem
+public partial class GameManager : CanvasObject
 {
 
 	public const string UIFONTNAME = "uIFont";
@@ -18,27 +18,19 @@ public partial class GameManager : CanvasItem
 	private CombatManager _combatManager;
 	private CampManager _campManager;
 	private UnitInventory _unitInventory;
-	private AssetLoader _assetLoader;
 	private GameHeaderUI _headerUI;
 
-	public GameManager(ContentManager content)
+	public GameManager() 
 	{
-		Initialize(content);
+		Initialize();
 	}
 
-	private void Initialize(ContentManager content)
+	private void Initialize()
 	{
-
-		InitializeResources(content);
 		InitializeHeaderUI();
 		InitializeCombat();
 		InitializeCamp();
 		InitializeUnitInventory();
-	}
-
-	private void InitializeResources(ContentManager content)
-	{
-		_assetLoader = new(content);
 	}
 
 	private void InitializeHeaderUI()
@@ -79,7 +71,7 @@ public partial class GameManager : CanvasItem
 	{
 		if (e == null) { return; }
 
-		Unit unit = AssetLoader.InstantiateUnit(e.UnitTemplateName);
+		Unit unit = MasterAssetLoader.InstantiateUnit(e.UnitTemplateName);
 
 		e.Unit = unit;
 	}

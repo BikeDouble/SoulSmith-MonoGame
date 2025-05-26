@@ -51,11 +51,11 @@ public class CanvasTransformationRule : IDeepCloneable
         if (_tag == null) _tag = string.Empty;
     }
 
-    public CanvasTransformationRule(CanvasTransformationRule other, CanvasItem affectedItem = null)
+    public CanvasTransformationRule(CanvasTransformationRule other, CanvasObject affectedItem = null)
     {
         if (affectedItem == null)
         {
-            _affectedItem = (ITransformable)other._affectedItem.DeepClone();
+            _affectedItem = new CanvasObject();// (ITransformable)other._affectedItem.DeepClone(); TODO
         }
         else
         {
@@ -192,7 +192,7 @@ public class CanvasTransformationRule : IDeepCloneable
         return new CanvasTransformationRule(this);
     }
 
-    public virtual object DeepClone(CanvasItem affectedItem)
+    public virtual object DeepClone(CanvasObject affectedItem)
     {
         return new CanvasTransformationRule(this, affectedItem);
     }
@@ -335,7 +335,7 @@ public class CanvasTransformationRule : IDeepCloneable
         Vector2 scaleDiff = (scale + (peakScaleDiff * magnitude)) - Vector2.One;
         scaleDiff = ((float)delta * scaleDiff);
 
-        item.ScaleAdditive(scaleDiff);
+        item.Scale(scaleDiff);
     };
 
     public static Action<TransformaionRuleDelegateArgs, ITransformable, double, float> TranslationDelegate = (args, item, delta, magnitude) =>
@@ -360,7 +360,7 @@ public class CanvasTransformationRule : IDeepCloneable
 
         colorChange = (float)delta * (colorChange + (peakColorChangeDiff * magnitude));
 
-        item.ChangeTintAdditive(colorChange);
+        //item.ChangeTintAdditive(colorChange); TODO
     };
 
     public ITransformable AffectedItem { get { return _affectedItem; } }

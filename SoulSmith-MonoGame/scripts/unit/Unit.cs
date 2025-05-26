@@ -7,7 +7,7 @@ using SoulSmithEmotions;
 using SoulSmithModifiers;
 using System.Collections;
 
-public partial class Unit : CanvasItem, IReadOnlyUnit
+public partial class Unit : CanvasObject, IReadOnlyUnit
 {
 	//Children
 	private UnitUI _uI;
@@ -24,9 +24,9 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 
 	public Unit(UnitTemplate template) : this(
 		new StatsList(template.StatsList),
-		AssetLoader.InstantiateMoveSet(template).AsReadOnly(),
+		MasterAssetLoader.InstantiateMoveSet(template).AsReadOnly(),
         new UnitSprite(
-			AssetLoader.GetSprite(template.SpriteName).Resource, //TODO 
+			MasterAssetLoader.GetSprite(template.SpriteName).Resource, //TODO 
 			Rand.RandDoubleAroundOne(UnitSprite.ANIMATIONDESYNCFACTORRADIUS)), 
 		new UnitUI(),
 		template.Emotion,
@@ -44,13 +44,13 @@ public partial class Unit : CanvasItem, IReadOnlyUnit
 		int timeOnBoard) : base(
 			null,
 			null,
-			new Dictionary<BoundingZoneType, CanvasItem>{ 
+			new Dictionary<BoundingZoneType, CanvasObject>{ 
 				[BoundingZoneType.EffectSender] = sprite, 
 				[BoundingZoneType.EffectReceiver] = sprite }
 			)
 	{
 
-		new KeyValuePair<BoundingZoneType, CanvasItem>(BoundingZoneType.EffectSender, (CanvasItem) sprite);
+		new KeyValuePair<BoundingZoneType, CanvasObject>(BoundingZoneType.EffectSender, (CanvasObject) sprite);
 
         _sprite = sprite;
 		_sprite.PlayIdleAnimation();

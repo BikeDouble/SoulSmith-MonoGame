@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
 public class BoundingZone_Ellipse : BoundingZone
 {
@@ -13,7 +14,7 @@ public class BoundingZone_Ellipse : BoundingZone
         _radius = other._radius;
     }
 
-    public BoundingZone_Ellipse(float radius, bool showOutline = true, CanvasPosition position = null) : base(showOutline, position)
+    public BoundingZone_Ellipse(float radius, bool showOutline = true, Position position = null) : base(showOutline, position)
     {
         _radius = radius;
 
@@ -25,17 +26,17 @@ public class BoundingZone_Ellipse : BoundingZone
 
     public override Vector2 GetRandomBoundingPointLocal(BoundingZoneType zoneType = BoundingZoneType.None)
     {
-        float direction = Rand.RandFloat() * CanvasPosition.MAXROTATION;
+        float direction = Rand.RandFloat() * SoulSmith.Core.Position.MAXROTATION;
 
         float distance = (float)(Math.Sqrt(Rand.RandFloat()) * _radius);
 
         Vector2 point = new Vector2(distance, 0);
 
-        point = CanvasPosition.RotatePointAroundPoint(point, Vector2.Zero, direction);
+        point = SoulSmith.Core.Position.RotatePointAroundPoint(point, Vector2.Zero, direction);
 
         point *= Position.ScaleVector;
 
-        point = CanvasPosition.RotatePointAroundPoint(point, Vector2.Zero, Position.Rotation);
+        point = SoulSmith.Core.Position.RotatePointAroundPoint(point, Vector2.Zero, Position.Rotation);
 
         return point;
     }

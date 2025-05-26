@@ -28,6 +28,9 @@
     <ProjectReference Include="..\SoulSmith.Core\SoulSmith.Core.csproj" />
     <ProjectReference Include="..\SoulSmith.Drawing\SoulSmith.Drawing.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Fonts\" />
+  </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
     <Exec Command="dotnet tool restore" />

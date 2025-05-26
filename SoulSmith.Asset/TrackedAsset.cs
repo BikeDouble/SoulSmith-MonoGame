@@ -5,7 +5,7 @@ using System.Diagnostics.Metrics;
 namespace SoulSmith.Asset
 {
     //Handed out with asset to keep count of active asset instances
-    public partial class TrackedAsset<T> : IDisposable where T : class
+    public class TrackedAsset<T> : IDisposable
     {
         private AssetCounter _counter;
         private T _resource;

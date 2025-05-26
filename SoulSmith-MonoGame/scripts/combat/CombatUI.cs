@@ -3,11 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using SoulSmith_MonoGame;
 using System;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public partial class CombatUI : CanvasItem
+public partial class CombatUI : CanvasObject
 {
 	//Children
-	private CanvasItem _roundCounter;
+	private CanvasObject _roundCounter;
 
 	public CombatUI(SpriteFont font) 
 	{
@@ -16,9 +17,9 @@ public partial class CombatUI : CanvasItem
 
 	private void Initialize(SpriteFont font)
 	{
-		CanvasPosition roundCounterPosition = new CanvasPosition(Game1.WINDOWLENGTH/2, 30, 4, 4);
+		Position roundCounterPosition = new Position(Game1.WINDOWLENGTH/2, 30, 4, 4);
 
-		_roundCounter = new CanvasItem(font, null, roundCounterPosition);
+		_roundCounter = new CanvasObject(font, null, roundCounterPosition);
 		AddChild(_roundCounter);
 	}
 

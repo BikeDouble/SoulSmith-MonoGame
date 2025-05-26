@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
-namespace SoulSmith.Drawing
+namespace SoulSmith.Core
 {
-    public interface IReadOnlyCanvasPosition
+    public interface IReadOnlyPosition
     {
         public Vector2 ScaleVector { get; }
         public float Width { get; }

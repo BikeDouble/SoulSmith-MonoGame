@@ -28,7 +28,7 @@ public partial class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	public void LoadEmotionAttributes(EmotionTag emotionTag)
 	{
-		Emotion emotion = AssetLoader.GetEmotion(emotionTag);
+		Emotion emotion = MasterAssetLoader.GetEmotion(emotionTag);
 
 		if (emotion == null)
 		{

@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using SoulSmith_MonoGame;
 
-public partial class CombatTeam : CanvasItem
+public partial class CombatTeam : CanvasObject
 {
 	private MoveSelector _moveSelector = null;
 	private bool _playerControlled;

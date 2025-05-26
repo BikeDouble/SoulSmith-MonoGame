@@ -3,18 +3,19 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_TransformationRules
+public class CanvasObject_TransformationRules : CanvasObject, IReadOnlyCanvasItem_TransformationRules
 {
     private List<CanvasTransformationRule> _transformationRules;
     private int _state = -1;
     private double _transformationCoef = 1;
 
-    public CanvasItem_TransformationRules(
+    public CanvasObject_TransformationRules(
         List<CanvasTransformationRule> rules, 
         List<SoulSmithObject> unrulyChildren = null, 
-        Dictionary<BoundingZoneType, CanvasItem> boundingZones = null,
-        CanvasPosition position = null) : base(position, null, boundingZones, unrulyChildren)
+        Dictionary<BoundingZoneType, CanvasObject> boundingZones = null,
+        Position position = null) : base(position, null, boundingZones, unrulyChildren)
     {
         _transformationRules = rules;
 
@@ -24,9 +25,9 @@ public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_Tr
         }
     }
 
-    public CanvasItem_TransformationRules() { }
+    public CanvasObject_TransformationRules() { }
 
-    public CanvasItem_TransformationRules(CanvasItem_TransformationRules other, CanvasItem shelledItem = null, double transformationCoef = 1) : base(other, shelledItem)
+    public CanvasObject_TransformationRules(CanvasObject_TransformationRules other, CanvasObject shelledItem = null, double transformationCoef = 1) : base(other, shelledItem)
     {
         _transformationCoef = transformationCoef;
 
@@ -37,11 +38,11 @@ public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_Tr
             shelledItem);
     }
 
-    public CanvasItem_TransformationRules(CanvasItem other, CanvasItem shelledItem = null, double transformationCoef = 1) : base(other, shelledItem)
+    public CanvasObject_TransformationRules(CanvasObject other, CanvasObject shelledItem = null, double transformationCoef = 1) : base(other, shelledItem)
     {
         _transformationCoef = transformationCoef;
 
-       CanvasItem_TransformationRules otherAsTransformationRules = other as CanvasItem_TransformationRules;
+       CanvasObject_TransformationRules otherAsTransformationRules = other as CanvasObject_TransformationRules;
 
         if (otherAsTransformationRules != null)
         {
@@ -61,7 +62,7 @@ public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_Tr
         List<CanvasTransformationRule> otherRules,
         ReadOnlyCollection<SoulSmithObject> children,
         ReadOnlyCollection<SoulSmithObject> otherChildren,
-        CanvasItem shelledItem)
+        CanvasObject shelledItem)
     {
         if (otherRules == null) return null;
 
@@ -71,7 +72,7 @@ public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_Tr
         {
             int ruleIndex = otherChildren.IndexOf(rule.AffectedItem as SoulSmithObject);
 
-            CanvasItem affectedItem = (ruleIndex == -1) ? null : children[ruleIndex] as CanvasItem;
+            CanvasObject affectedItem = (ruleIndex == -1) ? null : children[ruleIndex] as CanvasObject;
 
             Debug.Assert((affectedItem != null) || (shelledItem != null));
 
@@ -123,8 +124,8 @@ public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_Tr
 
         foreach (SoulSmithObject child in Children)
         {
-            if (child is CanvasItem_TransformationRules)
-                ((CanvasItem_TransformationRules)child).UpdateState(newState);
+            if (child is CanvasObject_TransformationRules)
+                ((CanvasObject_TransformationRules)child).UpdateState(newState);
         }
     }
 
@@ -143,7 +144,7 @@ public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_Tr
 
     public void AddChild(CanvasTransformationRule rule) 
     {
-        CanvasItem newChild = rule.AffectedItem as CanvasItem;
+        CanvasObject newChild = rule.AffectedItem as CanvasObject;
 
         AddChild(newChild);
 
@@ -153,12 +154,12 @@ public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_Tr
 
     public override object DeepClone()
     {
-        return new CanvasItem_TransformationRules(this);
+        return new CanvasObject_TransformationRules(this);
     }
 
-    public object DeepClone(CanvasItem shelledItem)
+    public object DeepClone(CanvasObject shelledItem)
     {
-        return new CanvasItem_TransformationRules(this, shelledItem);
+        return new CanvasObject_TransformationRules(this, shelledItem);
     }
 
     public ReadOnlyCollection<CanvasTransformationRule> GetAllTransformationRulesInChildTreeWithTag(string tag)
@@ -180,7 +181,7 @@ public class CanvasItem_TransformationRules : CanvasItem, IReadOnlyCanvasItem_Tr
 
         foreach (SoulSmithObject child in children)
         {
-            CanvasItem_TransformationRules ruleChild = child as CanvasItem_TransformationRules;
+            CanvasObject_TransformationRules ruleChild = child as CanvasObject_TransformationRules;
 
             if (ruleChild != null)
             {

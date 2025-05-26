@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework.Graphics;
 using System.Reflection;
 
-public partial class EffectQueue : CanvasItem
+public partial class EffectQueue : CanvasObject
 {
     public const double UNIVERSALMOVEEFFECTDELAY = UnitSprite.ATTACKANIMATIONDURATION / 2;
 

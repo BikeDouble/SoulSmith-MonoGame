@@ -8,27 +8,28 @@ using SoulSmithMoves;
 using SoulSmithObjects;
 using SoulSmithUnitUI;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public partial class UnitUI : CanvasItem
+public partial class UnitUI : CanvasObject
 { 
 	//Children
 	private UnitUIMoveMenu _moveMenu;
 	private UnitUIHealthBar _healthBar;
 	private UnitUIModifierDisplay _modifierDisplay;
 	private UnitUITimeOnBoardDisplay _timeOnBoardDisplay = null;
-	private Button _targetButton;
+	private ButtonObject _targetButton;
 	private readonly SpriteFont _font;
 
 
 	public UnitUI() :
-		this(AssetLoader.GetFont(GameManager.UIFONTNAME),
-			new DrawableResource_Polygon(AssetLoader.GetPolygon("MoveButton").Resource), //TODO fix TrackedAsset
-            new DrawableResource_Polygon(AssetLoader.GetPolygon("TargetButtonIdle").Resource),
-            new DrawableResource_Polygon(AssetLoader.GetPolygon("TargetButtonHovered").Resource))
+		this(MasterAssetLoader.GetFont(GameManager.UIFONTNAME),
+			new DrawableResource_Polygon(MasterAssetLoader.GetPolygon("MoveButton").Resource), //TODO fix TrackedAsset
+            new DrawableResource_Polygon(MasterAssetLoader.GetPolygon("TargetButtonIdle").Resource),
+            new DrawableResource_Polygon(MasterAssetLoader.GetPolygon("TargetButtonHovered").Resource))
 	{ }
 
 	public UnitUI(SpriteFont font, DrawableResource_Polygon moveButton, DrawableResource_Polygon targetButton, DrawableResource_Polygon targetButtonHovered)
-		: base(new CanvasPosition(0, 0, 1, 1, 0, 5))
+		: base(new Position(0, 0, 1, 1, 0, 5))
 	{
 		_font = font;
 
@@ -36,11 +37,11 @@ public partial class UnitUI : CanvasItem
         _moveMenu.MoveButtonPressedEventHandler += OnMoveButtonPressed;
         AddChild(_moveMenu);
 
-		CanvasPosition healthBarPosition = new CanvasPosition(0, 120, 1, 1, 0, 0);
+		Position healthBarPosition = new Position(0, 120, 1, 1, 0, 0);
         _healthBar = new UnitUIHealthBar(_font, healthBarPosition);
         AddChild(_healthBar);
 
-        _targetButton = new Button(new DrawableResource_Polygon(targetButton), new DrawableResource_Polygon(targetButtonHovered));
+        _targetButton = new ButtonObject(new DrawableResource_Polygon(targetButton), new DrawableResource_Polygon(targetButtonHovered));
 		_targetButton.Hide();
         _targetButton.ButtonPressedEventHandler += OnTargetButtonPressed;
         AddChild(_targetButton);

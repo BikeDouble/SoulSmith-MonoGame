@@ -90,7 +90,7 @@ namespace SoulSmithMoves
         private static MoveTemplate AttackUp()
         {
             List<EffectTemplate> effects = new List<EffectTemplate>();
-            ModifierTemplate modifier = AssetLoader.GetModifierTemplate(ATTACKUPMODIFIERTEMPLATENAME);
+            ModifierTemplate modifier = MasterAssetLoader.GetModifierTemplate(ATTACKUPMODIFIERTEMPLATENAME);
             Dictionary<ModifierFloatArgType, float> modArgs = new Dictionary<ModifierFloatArgType, float>
             {
                 { ModifierFloatArgType.AddMod, 0.5f },

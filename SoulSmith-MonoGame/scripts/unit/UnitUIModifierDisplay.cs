@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using SoulSmithModifiers;
 
 namespace SoulSmithUnitUI;
-public class UnitUIModifierDisplay : CanvasItem
+public class UnitUIModifierDisplay : CanvasObject
 {
     public const int ICONSIZE = 30;
     public const int ICONSPERLINE = 5;
@@ -17,11 +17,11 @@ public class UnitUIModifierDisplay : CanvasItem
     public static ReadOnlyCollection<Vector2> IconPositions = GenerateIconPositions();
 
     // Children
-    private Dictionary<Modifier, CanvasItem> _displayedIcons;
+    private Dictionary<Modifier, CanvasObject> _displayedIcons;
 
     public UnitUIModifierDisplay() 
     {
-        _displayedIcons = new Dictionary<Modifier, CanvasItem>();
+        _displayedIcons = new Dictionary<Modifier, CanvasObject>();
     }
 
     public static ReadOnlyCollection<Vector2> GenerateIconPositions()
@@ -45,7 +45,7 @@ public class UnitUIModifierDisplay : CanvasItem
 
     public void OnModifierRemoved(Modifier modifier)
     {
-        CanvasItem removedIcon = _displayedIcons.GetValueOrDefault(modifier);
+        CanvasObject removedIcon = _displayedIcons.GetValueOrDefault(modifier);
 
         if (removedIcon != null)
         {
@@ -54,7 +54,7 @@ public class UnitUIModifierDisplay : CanvasItem
         }
     }
 
-    private void RemoveDisplayIcon(CanvasItem removedIcon)
+    private void RemoveDisplayIcon(CanvasObject removedIcon)
     {
         RemoveChild(removedIcon);
         //TODO
@@ -62,7 +62,7 @@ public class UnitUIModifierDisplay : CanvasItem
 
     public void OnModifierAdded(Modifier modifier)
     {
-        CanvasItem addedIcon = modifier.Icon as CanvasItem;
+        CanvasObject addedIcon = modifier.Icon as CanvasObject;
 
         if (addedIcon != null)
         {
@@ -71,7 +71,7 @@ public class UnitUIModifierDisplay : CanvasItem
         }
     }
 
-    private void AddDisplayIcon(CanvasItem addedIcon)
+    private void AddDisplayIcon(CanvasObject addedIcon)
     {
         int positionIndex = _displayedIcons.Count - 1;
 

@@ -6,8 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Shapes;
 using SoulSmithMoves;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public partial class UnitUIMoveMenu : CanvasItem
+public partial class UnitUIMoveMenu : CanvasObject
 {
 	private List<UnitUIMoveButton> _moveButtons;
 
@@ -31,7 +32,7 @@ public partial class UnitUIMoveMenu : CanvasItem
 
         for (int i = 0; i < 3; i++)
         {
-			CanvasPosition buttonPosition = new CanvasPosition(TOPBUTTONX, TOPBUTTONY + (i * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE);
+			Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (i * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE);
             UnitUIMoveButton button = new UnitUIMoveButton(font, (DrawableResource_Polygon)resource?.DeepClone(), buttonPosition);
 			_moveButtons.Add(button);
             AddChild(button);

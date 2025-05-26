@@ -23,7 +23,7 @@ namespace SoulSmith.Drawing
             _color = color;
         }
 
-        public virtual void Draw(IReadOnlyCanvasPosition position, Vector4 tint, SpriteBatch spriteBatch) { }
+        public virtual void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch) { }
 
         public virtual void UpdateText(string text) { }
 
@@ -51,7 +51,7 @@ namespace SoulSmith.Drawing
             return new DrawableResource(this);
         }
 
-        public virtual bool ContainsPoint(Vector2 point, IReadOnlyCanvasPosition position)
+        public virtual bool ContainsPoint(Vector2 point, IReadOnlyPosition position)
         {
             return false;
         }

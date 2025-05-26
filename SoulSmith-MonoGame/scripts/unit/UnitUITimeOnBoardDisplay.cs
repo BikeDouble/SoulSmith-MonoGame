@@ -1,8 +1,9 @@
 ﻿
 using Microsoft.Xna.Framework.Graphics;
 using SoulSmith.Drawing;
+using SoulSmith.Core;
 
-public class UnitUITimeOnBoardDisplay : CanvasItem
+public class UnitUITimeOnBoardDisplay : CanvasObject
 {
     public const int ROUNDSONBOARDCOUNTERY = -90;
 
@@ -10,7 +11,7 @@ public class UnitUITimeOnBoardDisplay : CanvasItem
         SpriteFont font) : base(
             font, 
             null, 
-            new CanvasPosition(0, -70))
+            new Position(0, -70))
     {}
 }
 

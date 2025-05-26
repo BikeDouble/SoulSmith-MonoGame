@@ -2,7 +2,7 @@ using System;
 using SoulSmithMoves;
 using SoulSmithModifiers;
 
-public partial class TeamPosition : CanvasItem
+public partial class TeamPosition : CanvasObject
 {
 	private Unit _unit;
 
