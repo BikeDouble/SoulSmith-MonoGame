@@ -11,4 +11,10 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SoulSmith.Collections\SoulSmith.Collections.csproj" />
+    <ProjectReference Include="..\SoulSmith.Drawing\SoulSmith.Drawing.csproj" />
+    <ProjectReference Include="..\SoulSmith.Templates\SoulSmith.Templates.csproj" />
+  </ItemGroup>
+
 </Project>

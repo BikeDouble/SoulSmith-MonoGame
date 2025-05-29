@@ -30,10 +30,10 @@ namespace SoulSmith.Asset
             Stack<string> lastAddedNames = new Stack<string>();
             lastAddedNames.Push(text);
             Dictionary<string, string> dict = new();
+            reader.Read();
 
-            while (lastAddedNames.Count > 0)
+            while (!((lastAddedNames.Count() == 0) && (reader.TokenType == JsonTokenType.EndObject)))
             {
-                reader.Read();
                 if (reader.TokenType == JsonTokenType.PropertyName)
                 {
                     string newText = reader.GetString() ?? throw new JsonException("String cannot be null");
@@ -49,21 +49,24 @@ namespace SoulSmith.Asset
                     dict.Add(text, reader.GetString() ?? throw new JsonException("String cannot be null"));
                     text = RemoveFromPath(text, lastAddedNames.Pop());
                 }
+                reader.Read();
             }
-            
-            reader.Read(); // Read to end of object
 
             return new AssetManifest(dict);
         }
 
         private string AddToPath(string predecessors, string name)
         {
+            if (predecessors.Length == 0) return name;
+
             return predecessors + "/" + name;
         }
 
         private string RemoveFromPath(string predecessors, string name)
         {
-            return predecessors.Remove(predecessors.Length - name.Length + 1);
+            if (predecessors.Length <= name.Length) return string.Empty;
+
+            return predecessors.Remove(predecessors.Length - name.Length - 1);
         }
 
         public override void Write(Utf8JsonWriter writer, AssetManifest value, JsonSerializerOptions options)

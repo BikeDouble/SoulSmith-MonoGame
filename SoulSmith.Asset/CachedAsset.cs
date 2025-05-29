@@ -22,7 +22,7 @@ namespace SoulSmith.Asset
 
         }
 
-        public TrackedAsset<T> GetAsset()
+        public IReadOnlyTrackedAsset<T> GetAsset()
         {
             return new TrackedAsset<T>(_asset, _counter);
         }

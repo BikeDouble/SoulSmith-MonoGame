@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SoulSmith.Asset\SoulSmith.Asset.csproj" />
+    <ProjectReference Include="..\SoulSmith.Collections\SoulSmith.Collections.csproj" />
+    <ProjectReference Include="..\SoulSmith.Drawing\SoulSmith.Drawing.csproj" />
+    <ProjectReference Include="..\SoulSmith.Battle\SoulSmith.Battle.csproj" />
+    <ProjectReference Include="..\SoulSmith.Object\SoulSmith.Object.csproj" />
+    <ProjectReference Include="..\SoulSmith.UnitStats\SoulSmith.UnitStats.csproj" />
+    <ProjectReference Include="..\SoulSmith.Units\SoulSmith.Units.csproj" />
+  </ItemGroup>
+
+</Project>

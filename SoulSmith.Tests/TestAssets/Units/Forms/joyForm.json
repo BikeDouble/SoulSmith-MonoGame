@@ -1,0 +1,14 @@
+{
+    "FriendlyName": "Joy",
+    "SpriteName": "Textures/Units/Forms/JoyV1",
+    "MaxHealth": 100,
+    "Attack": 120,
+    "Defense": 120,
+    "MoveSet": [
+        "TypelessAttackUp",
+        "JoyDoubleHit",
+        "TypelessHit"
+    ],
+    "Emotion": 1,
+    "TimeOnBoard":  -1
+}

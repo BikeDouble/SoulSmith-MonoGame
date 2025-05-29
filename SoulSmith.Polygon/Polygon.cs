@@ -2,11 +2,12 @@
 using SoulSmith.Core;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using SoulSmith.Vector;
 
 namespace SoulSmith.Shapes
 {
     [JsonConverter(typeof(PolygonJsonConverter))]
-    public class Polygon : IZone, ITransformable, IDeepCloneable
+    public class Polygon : IZone, IDeepCloneable
     {
         private List<Vector2> _vertices;
 
@@ -15,8 +16,10 @@ namespace SoulSmith.Shapes
             _vertices = new List<Vector2>(vertices);
         }
 
-        public bool Contains(Vector2 point)
+        public bool Contains(Vector2 point, IReadOnlyPosition transformation = null)
         {
+            if (transformation != null) return GetTransformedCopy(transformation).Contains(point);
+
             if (_vertices.Count < 3) return false;
 
             return CountRayCastIntersections(point) % 2 == 1;
@@ -78,24 +81,23 @@ namespace SoulSmith.Shapes
             return new Polygon(_vertices);
         }
 
-        public void Set(Position position)
+        public Polygon GetTransformedCopy(IReadOnlyPosition transformation)
         {
+            Polygon copy = (Polygon)DeepClone();
 
+            copy.Transform(transformation);
+
+            return copy;
         }
 
-        public void Set(Vector2 coordinates)
-        {
-
-        }
-
-        public void Transform(IReadOnlyPosition transformation)
+        private void Transform(IReadOnlyPosition transformation)
         {
             Scale(transformation.ScaleVector);
             Translate(transformation.Coordinates);
             Rotate(transformation.Rotation);
         }
 
-        public void Translate(Vector2 translation)
+        private void Translate(Vector2 translation)
         {
             for (int i = 0; i < _vertices.Count; i++)
             {
@@ -103,7 +105,7 @@ namespace SoulSmith.Shapes
             }
         }
 
-        public void Scale(Vector2 scale)
+        private void Scale(Vector2 scale)
         {
             for (int i = 0; i < _vertices.Count; i++)
             {
@@ -111,7 +113,7 @@ namespace SoulSmith.Shapes
             }
         }
 
-        public void Rotate(float rotation, Vector2? origin = null)
+        private void Rotate(float rotation, Vector2? origin = null)
         {
             Vector2 originVal = origin ?? Vector2.Zero;
 
@@ -219,68 +221,6 @@ namespace SoulSmith.Shapes
         public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
         {
             return; //TODO
-        }
-    }
-
-    internal class Vector2ArrayConverter : JsonConverter<Vector2[]> //TODO remove
-    {
-        public override Vector2[] Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            var vertices = new List<Vector2>();
-
-            if (reader.TokenType != JsonTokenType.StartArray)
-                throw new JsonException("Expected StartArray token");
-
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonTokenType.EndArray)
-                    break;
-
-                if (reader.TokenType != JsonTokenType.StartObject)
-                    throw new JsonException("Expected StartObject for Vector2");
-
-                float x = 0, y = 0;
-
-                while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
-                {
-                    if (reader.TokenType != JsonTokenType.PropertyName)
-                        continue;
-
-                    string propName = reader.GetString();
-                    reader.Read();
-
-                    switch (propName)
-                    {
-                        case "X":
-                        case "x":
-                            x = reader.GetSingle();
-                            break;
-                        case "Y":
-                        case "y":
-                            y = reader.GetSingle();
-                            break;
-                    }
-                }
-
-                vertices.Add(new Vector2(x, y));
-            }
-
-            return vertices.ToArray();
-        }
-
-        public override void Write(Utf8JsonWriter writer, Vector2[] value, JsonSerializerOptions options)
-        {
-            writer.WriteStartArray();
-
-            foreach (var v in value)
-            {
-                writer.WriteStartObject();
-                writer.WriteNumber("X", v.X);
-                writer.WriteNumber("Y", v.Y);
-                writer.WriteEndObject();
-            }
-
-            writer.WriteEndArray();
         }
     }
 }

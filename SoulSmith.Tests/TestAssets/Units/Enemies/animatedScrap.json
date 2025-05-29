@@ -1,0 +1,13 @@
+{
+    "FriendlyName": "Animated Scrap",
+    "SpriteName": "animatedScrap",
+    "MaxHealth": 500,
+    "Attack": 120,
+    "Defense": 120,
+    "MoveSet": [
+        "TypelessDoubleHit",
+        "TypelessHit"
+    ],
+    "Emotion": 0,
+    "TimeOnBoard":  4
+}

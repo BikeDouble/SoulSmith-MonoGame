@@ -1,8 +1,34 @@
 {
+    "SpawnLists": {
+        "Area1": {
+            "Passive1": "WeightedLists/SpawnLists/Area1/area1Passive1.json"
+        }
+    },
     "Textures": {
         "UI": {
             "Units": {
-                "MoveButton": "Textures/UI/moveButton.png"
+
+            }
+        },
+        "Units": {
+            "Forms": {
+                "JoyV1": "Textures/Units/Forms/joyv1.png"
+            }
+        }
+    },
+    "Units": {
+        "Forms": {
+            "Joy": "Units/Forms/joyForm.json"
+        },
+        "Enemies": {
+            "AnimatedScrap": "Units/Enemies/animatedScrap.json",
+            "HalfRat": "Units/Enemies/halfRat.json"
+        }
+    },
+    "ZonedTextures": {
+        "UI": {
+            "Units": {
+                "MoveButton": "ZonedTextures/UI/Units/moveButton.png"
             }
         }
     }

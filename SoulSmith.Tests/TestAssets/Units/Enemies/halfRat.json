@@ -1,0 +1,13 @@
+{
+    "FriendlyName": "Half Rat",
+    "SpriteName": "DefenseStatModIcon",
+    "MaxHealth": 300,
+    "Attack": 160,
+    "Defense": 80,
+    "MoveSet": [
+        "TypelessDoubleHit",
+        "TypelessHit"
+    ],
+    "Emotion": 0,
+    "TimeOnBoard":  3
+}

@@ -2,8 +2,22 @@
     "Textures": {
         "UI": {
             "Units": {
-                "MoveButton": "Textures/UI/moveButton.png"
+                "MoveButton": "Textures/UI/Units/moveButton.png"
             }
+        },
+        "Units": {
+            "Forms": {
+                "JoyV1": "Textures/Units/Forms/joyv1.png"
+            }
+        }
+    },
+    "Units": {
+        "Forms": {
+            "Joy": "Units/Forms/joyForm.json"
+        },
+        "Enemies": {
+            "AnimatedScrap": "Units/Enemies/animatedScrap.json",
+            "HalfRat": "Units/Enemies/halfRat.json"
         }
     }
 }

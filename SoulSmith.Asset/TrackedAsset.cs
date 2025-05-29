@@ -5,7 +5,7 @@ using System.Diagnostics.Metrics;
 namespace SoulSmith.Asset
 {
     //Handed out with asset to keep count of active asset instances
-    public class TrackedAsset<T> : IDisposable
+    public class TrackedAsset<T> : IReadOnlyTrackedAsset<T>
     {
         private AssetCounter _counter;
         private T _resource;
@@ -17,10 +17,10 @@ namespace SoulSmith.Asset
             _counter.IncreaseCount();
         }
 
-        public TrackedAsset(TrackedAsset<T> other)
+        public TrackedAsset(IReadOnlyTrackedAsset<T> other)
         {
-            _resource = other.Resource;
-            _counter = other._counter;
+            _resource = other.Value;
+            _counter = other.Counter;
             _counter.IncreaseCount();
         }
 
@@ -37,6 +37,7 @@ namespace SoulSmith.Asset
 
 
         //public static implicit operator T(TrackedAsset<T> wrapper) { return wrapper?.Resource; }
-        public T Resource { get { return _resource; } }
+        public T Value { get { return _resource; } }
+        public AssetCounter Counter { get { return _counter; } }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Asset
 {
-    internal class Cache<T> 
+    internal class Cache<T> where T : IDisposable
     {
         Dictionary<string, CachedAsset<T>> _cache = new Dictionary<string, CachedAsset<T>>();
 
@@ -36,6 +36,7 @@ namespace SoulSmith.Asset
 
             foreach (string key in toRemove)
             {
+                _cache[key].Dispose();
                 _cache.Remove(key);
             }
 
@@ -54,7 +55,7 @@ namespace SoulSmith.Asset
             return _cache.ContainsKey(key);
         }
 
-        public TrackedAsset<T> GetAsset(string key)
+        public IReadOnlyTrackedAsset<T> GetAsset(string key)
         {
             return _cache[key]?.GetAsset();
         }        

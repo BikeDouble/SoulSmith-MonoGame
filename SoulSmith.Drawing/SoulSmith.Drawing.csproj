@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SoulSmith.Asset\SoulSmith.Asset.csproj" />
     <ProjectReference Include="..\SoulSmith.Core\SoulSmith.Core.csproj" />
     <ProjectReference Include="..\SoulSmith.Polygon\SoulSmith.Shapes.csproj" />
   </ItemGroup>

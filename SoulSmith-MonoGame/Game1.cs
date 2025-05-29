@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Shapes;
-using MonoGame.Extended;
 using System.Diagnostics;
-using System;
 using System.Collections.Generic;
-using SoulSmithObjects;
-using SoulSmithInput;
+using SoulSmith.Input;
 using SoulSmith.Core;
 using SoulSmith.Drawing;
+using SoulSmith.Game;
+using SoulSmith.Object;
 using Microsoft.Xna.Framework.Content;
+using SoulSmith.Asset;
+using System.Text.Json;
+using System.IO;
 
 namespace SoulSmith_MonoGame
 {
@@ -21,16 +21,15 @@ namespace SoulSmith_MonoGame
         private SoulSmithObject _root;
         private RenderQueue _renderQueue;
         private InputQueue _inputQueue;
-        private MasterAssetLoader _assetLoader;
+        private AssetManager _assetManager;
 
-        public static int WINDOWHEIGHT = 900;
-        public static int WINDOWLENGTH = 1600;
+        public static string ASSETMANIFESTPATH = "../../../Assets/assetManifest.json";
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferHeight = WINDOWHEIGHT;
-            _graphics.PreferredBackBufferWidth = WINDOWLENGTH;
+            _graphics.PreferredBackBufferHeight = SoulSmith.Drawing.Window.WINDOWHEIGHT;
+            _graphics.PreferredBackBufferWidth = SoulSmith.Drawing.Window.WINDOWLENGTH;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             _renderQueue = new RenderQueue();
@@ -54,8 +53,7 @@ namespace SoulSmith_MonoGame
 
         private void InitializeResources(ContentManager content, GraphicsDevice graphicsDevice)
         {
-            _assetLoader = new(content, graphicsDevice);
-            //_assetManager = new(content, manifest);
+            _assetManager = new(content, JsonSerializer.Deserialize<AssetManifest>(File.ReadAllText(ASSETMANIFESTPATH)));
         }
 
         protected override void Update(GameTime gameTime)

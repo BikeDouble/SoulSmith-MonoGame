@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SoulSmith.Core\SoulSmith.Core.csproj" />
+    <ProjectReference Include="..\SoulSmith.Vector\SoulSmith.Vector.csproj" />
   </ItemGroup>
 
 </Project>

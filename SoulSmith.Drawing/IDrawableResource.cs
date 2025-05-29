@@ -9,9 +9,10 @@ using SoulSmith.Core;
 
 namespace SoulSmith.Drawing
 {
-    public interface IDrawableResource
+    public interface IDrawableResource : IDisposable
     {
         public void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch);
+        public void UpdateState(string newState) { }
     }
 }
 
