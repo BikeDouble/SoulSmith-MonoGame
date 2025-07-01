@@ -4,11 +4,12 @@ using System.Text.Json;
 using SoulSmith.Effect;
 using SoulSmith.Collections;
 using SoulSmith.Core;
+using SoulSmith.Asset;
 
 namespace SoulSmith.Move
 {
     [JsonConverter(typeof(MoveJsonConverter))]
-    public class Move
+    public class Move : IAsset
     {
         public Move(string friendlyName, string description, MoveTargetingStyle targetingStyle, EmotionTag.EmotionTag emotionTag, IList<IEffect> effects)
         {
@@ -25,6 +26,14 @@ namespace SoulSmith.Move
         public string FriendlyName { get; }
         public string Description { get; }
 
+        public void Dispose()
+        {
+            foreach (IEffect effect in Effects)
+            {
+                effect.Dispose();
+            }
+        }
+
         public static IEnumerable<Move> GenerateMoveList(IReadOnlySoulSmithWeightedList<string> possibleMovesPaths, int maxCount) //TODO move to asset
         {
             if (possibleMovesPaths.Count < maxCount) maxCount = possibleMovesPaths.Count;
@@ -35,7 +44,14 @@ namespace SoulSmith.Move
 
             for (int i = 0; i < movePaths.Count; i++)
             {
-                moves[i] = AssetManager.Instance.GetMove(movePaths[i]);
+                string fullMoveKey = "Moves/" + movePaths[i];
+
+                Move curMove = (Move)AssetManager.Instance.GetMove(fullMoveKey);
+
+                if (curMove == null) throw new ArgumentNullException(nameof(curMove));
+
+                moves[i] = curMove;
+
             }
 
             return moves;

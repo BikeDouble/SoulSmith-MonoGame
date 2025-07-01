@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SoulSmith.Asset\SoulSmith.Asset.csproj" />
     <ProjectReference Include="..\SoulSmith.Collections\SoulSmith.Collections.csproj" />
     <ProjectReference Include="..\SoulSmith.EmotionTag\SoulSmith.EmotionTag.csproj" />
     <ProjectReference Include="..\SoulSmith.UnitStats\SoulSmith.UnitStats.csproj" />

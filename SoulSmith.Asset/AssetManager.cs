@@ -1,18 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using SoulSmith.Drawing;
-using SoulSmith.Shapes;
 using System.Text.Json;
-using SoulSmith.Templates;
 using SoulSmith.Collections;
-using System.IO;
 
 namespace SoulSmith.Asset
 { 
@@ -29,9 +18,15 @@ namespace SoulSmith.Asset
         private GraphicsDevice _graphics;
 
         // Cached data
-        private Cache<DrawableResource_Texture2D> _textureCache;
-        private Cache<ZonedResource> _zonedTextureCache;
-        private Cache<UnitTemplate> _unitTemplateCache;
+        private Cache _textureCache;
+        private Cache _zonedTextureCache;
+        private Cache _unitTemplateCache;
+
+        // Loaders
+        private IGraphicsAssetLoader _textureLoader;
+        private IGraphicsAssetLoader _zonedTextureLoader;
+        private IBasicAssetLoader _unitTemplateLoader;
+        private IBasicAssetLoader _moveLoader;
 
         public static void Initialize(ContentManager content, GraphicsDevice graphics, AssetManifest manifest)
         {
@@ -50,13 +45,18 @@ namespace SoulSmith.Asset
 
         private void InitializeCaches()
         {
-            _textureCache = new Cache<DrawableResource_Texture2D>();
-            _zonedTextureCache = new Cache<ZonedResource>();
-            _unitTemplateCache = new Cache<UnitTemplate>();
+            _textureCache = new Cache();
+            _zonedTextureCache = new Cache();
+            _unitTemplateCache = new Cache();
 
         }
 
-        public IReadOnlyTrackedAsset<UnitTemplate> GetUnitTemplate(string key)
+        public void RegisterUnitTemplateLoader(IBasicAssetLoader loader)
+        {
+            _unitTemplateLoader = loader;
+        }
+
+        public IReadOnlyTrackedAsset<IAsset> GetUnitTemplate(string key) //TODO eliminate UnitTemplate
         {
             if (_unitTemplateCache.Contains(key)) return _unitTemplateCache.GetAsset(key);
 
@@ -64,21 +64,23 @@ namespace SoulSmith.Asset
 
             string filePath = FILEPREFIX + _manifest[key];
 
-            if (!File.Exists(filePath)) return null;
+            if (_unitTemplateLoader == null) throw new Exception("UnitTemplate loader not registered");
 
-            string fileText = File.ReadAllText(filePath);
-
-            UnitTemplate template = JsonSerializer.Deserialize<UnitTemplate>(fileText);
+            IAsset template = _unitTemplateLoader.Load(filePath);
 
             if (template == null) return null;
 
             _unitTemplateCache.CacheAsset(key, template);
 
             return _unitTemplateCache.GetAsset(key);
-
         }
 
-        public IReadOnlyTrackedAsset<DrawableResource_Texture2D> GetTexture2D(string key)
+        public void RegisterTextureLoader(IGraphicsAssetLoader loader)
+        {
+            _textureLoader = loader;
+        }
+
+        public IReadOnlyTrackedAsset<IAsset> GetTexture2D(string key)
         {
             if (_textureCache.Contains(key)) return _textureCache.GetAsset(key);
 
@@ -86,18 +88,21 @@ namespace SoulSmith.Asset
 
             string filepath = FILEPREFIX + _manifest[key];
 
-            if (!File.Exists(filepath)) return null;
+            IAsset resource = _textureLoader.Load(filepath, _graphics);
 
-            Texture2D texture = Texture2D.FromFile(_graphics, filepath);
+            if (resource == null) return null;
 
-            if (texture == null) return null;
-
-            _textureCache.CacheAsset(key, new DrawableResource_Texture2D(texture));
+            _textureCache.CacheAsset(key, resource);
 
             return _textureCache.GetAsset(key);
         }
 
-        public IReadOnlyTrackedAsset<ZonedResource> GetZonedTexture2D(string key)
+        public void RegisterZonedTextureLoader(IGraphicsAssetLoader loader)
+        {
+            _zonedTextureLoader = loader;
+        }
+
+        public IReadOnlyTrackedAsset<IAsset> GetZonedTexture2D(string key)
         {
             if (_zonedTextureCache.Contains(key)) return _zonedTextureCache.GetAsset(key);
 
@@ -105,25 +110,28 @@ namespace SoulSmith.Asset
 
             string textureFilepath = FILEPREFIX + _manifest[key];
 
-            if (!File.Exists(textureFilepath)) return null;
+            IAsset resource = _zonedTextureLoader.Load(textureFilepath, _graphics);
 
-            Texture2D texture = Texture2D.FromFile(_graphics, textureFilepath);
-
-            if (texture == null) return null;
-
-            string metaFilepath = GetMetaFilepathFromFilepath(textureFilepath, "json"); //TODO make more elegant
-
-            if (!File.Exists(metaFilepath)) return null;
-
-            IZone zone = JsonSerializer.Deserialize<IZone>(File.ReadAllText(metaFilepath));
-
-            if (zone == null) return null;
-
-            ZonedResource resource = new ZonedResource(zone, new DrawableResource_Texture2D(texture));
+            if (resource == null) return null;
 
             _zonedTextureCache.CacheAsset(key, resource);
 
             return _zonedTextureCache.GetAsset(key);
+        }
+
+        public void RegisterMoveLoader(IBasicAssetLoader loader) { _moveLoader = loader; }
+
+        public IAsset GetMove(string key)
+        {
+            if (!_manifest.ContainsKey(key)) return null;
+
+            string filePath = FILEPREFIX + _manifest[key];
+
+            if (_moveLoader == null) throw new Exception("Move loader not registered");
+
+            IAsset move = _moveLoader.Load(filePath);
+
+            return move;
         }
 
         public static string GetMetaFilepathFromFilepath(string filepath, string metafileExtension = "json")
@@ -154,8 +162,6 @@ namespace SoulSmith.Asset
 
             return list;
         }
-
-        public 
 
         public static AssetManager Instance { get; private set; }
     }

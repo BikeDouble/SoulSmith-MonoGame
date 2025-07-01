@@ -14,8 +14,6 @@ public class EffectVisualization : CanvasObject
     private IReadOnlyUnit _sender = null;
     private IReadOnlyUnit _target = null;
 
-    private List<float> _processParams = null;
-
     public event EventHandler<ReadyEffectEventArgs> ReadyEffectEventHandler;
 
     public EffectVisualization(

@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework.Content;
 using SoulSmith.Asset;
 using System.Text.Json;
 using System.IO;
+using SoulSmith.Templates;
+using SoulSmith.Move;
 
 namespace SoulSmith_MonoGame
 {
@@ -54,6 +56,10 @@ namespace SoulSmith_MonoGame
         private void InitializeResources(ContentManager content, GraphicsDevice graphicsDevice)
         {
             _assetManager = new(content, graphicsDevice, JsonSerializer.Deserialize<AssetManifest>(File.ReadAllText(ASSETMANIFESTPATH)));
+            _assetManager.RegisterUnitTemplateLoader(new UnitTemplateLoader());
+            _assetManager.RegisterTextureLoader(new DrawableResource_Texture2DLoader());
+            _assetManager.RegisterZonedTextureLoader(new ZonedTextureLoader());
+            _assetManager.RegisterMoveLoader(new MoveLoader());
         }
 
         protected override void Update(GameTime gameTime)

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Asset
 {
-    internal class Cache<T> where T : IDisposable
+    internal class Cache
     {
-        Dictionary<string, CachedAsset<T>> _cache = new Dictionary<string, CachedAsset<T>>();
+        Dictionary<string, CachedAsset> _cache = new Dictionary<string, CachedAsset>();
 
         public Cache() 
         {
@@ -43,11 +43,11 @@ namespace SoulSmith.Asset
             return toRemove.Count;
         }
 
-        public void CacheAsset(string name, T asset)
+        public void CacheAsset(string name, IAsset asset)
         {
             if (_cache.ContainsKey(name)) return;
 
-            _cache.Add(name, new CachedAsset<T>(asset));
+            _cache.Add(name, new CachedAsset(asset));
         }
 
         public bool Contains(string key)
@@ -55,7 +55,7 @@ namespace SoulSmith.Asset
             return _cache.ContainsKey(key);
         }
 
-        public IReadOnlyTrackedAsset<T> GetAsset(string key)
+        public IReadOnlyTrackedAsset<IAsset> GetAsset(string key)
         {
             return _cache[key]?.GetAsset();
         }        

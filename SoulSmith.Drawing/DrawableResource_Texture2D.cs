@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SoulSmith.Asset;
 using SoulSmith.Core;
 
 namespace SoulSmith.Drawing

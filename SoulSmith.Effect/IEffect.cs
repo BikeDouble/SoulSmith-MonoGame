@@ -6,7 +6,7 @@ using SoulSmith.Battle;
 namespace SoulSmith.Effect
 {
     [JsonConverter(typeof(IEffectJsonConverter))]
-    public interface IEffect
+    public interface IEffect : IDisposable
     {
         public EffectRequest GenerateEffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, EffectResult parentEffectResult = null);
         public EffectVisualization CloneVisualization();

@@ -1,3 +1,4 @@
+using SoulSmith.Asset;
 using SoulSmith.Collections;
 using SoulSmith.UnitStats;
 using System.Collections.ObjectModel;
@@ -5,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace SoulSmith.Templates;
 [JsonConverter(typeof(UnitTemplateJsonConverter))]
-public class UnitTemplate : IDisposable 
+public class UnitTemplate : IAsset
 {
 
     private ReadOnlyDictionary<StatType, int> _statsList;

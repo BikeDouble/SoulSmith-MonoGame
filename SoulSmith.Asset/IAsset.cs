@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Asset
 {
-    public interface IReadOnlyTrackedAsset<out T> : IDisposable where T : IAsset
+    public interface IAsset : IDisposable
     {
-        T Value { get; }
-        AssetCounter Counter { get; }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace SoulSmith.Effect
 {
-    public class VisualizedEffect
+    public class VisualizedEffect : IDisposable
     {
         private EffectVisualization _visualization;
 
@@ -14,6 +14,11 @@ namespace SoulSmith.Effect
         public EffectVisualization CloneVisualization()
         {
             return _visualization.CloneVisualization();
+        }
+
+        public void Dispose()
+        {
+            _visualization?.Dispose();
         }
     }
 }
