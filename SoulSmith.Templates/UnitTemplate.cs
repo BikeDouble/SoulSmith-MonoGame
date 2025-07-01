@@ -1,3 +1,4 @@
+using SoulSmith.Collections;
 using SoulSmith.UnitStats;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
@@ -8,7 +9,7 @@ public class UnitTemplate : IDisposable
 {
 
     private ReadOnlyDictionary<StatType, int> _statsList;
-    private ReadOnlyCollection<string> _moveSetString;
+    private IReadOnlySoulSmithWeightedList<string> _moveSetString;
     private EmotionTag.EmotionTag _emotion;
     private string _spriteName;
     private int _timeOnBoard;
@@ -16,7 +17,7 @@ public class UnitTemplate : IDisposable
     private string _friendlyName;
 
     public UnitTemplate(IDictionary<StatType, int> statsList,
-                        ReadOnlyCollection<string> moveSetString,
+                        IReadOnlySoulSmithWeightedList<string> moveSetString,
                         EmotionTag.EmotionTag emotion,
                         int timeOnBoard,
                         string spriteName,
@@ -33,7 +34,7 @@ public class UnitTemplate : IDisposable
     public void Dispose() { }
 
     public ReadOnlyDictionary<StatType, int> StatsList { get { return _statsList; } }
-    public ReadOnlyCollection<string> MoveSetString { get {  return _moveSetString; } }
+    public IReadOnlySoulSmithWeightedList<string> MoveSetWeightedList { get {  return _moveSetString; } }
     public EmotionTag.EmotionTag Emotion { get { return _emotion; } }
     public string SpriteName { get { return _spriteName; } }
     public int TimeOnBoard { get { return _timeOnBoard; } }

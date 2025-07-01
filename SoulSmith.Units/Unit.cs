@@ -11,6 +11,8 @@ using System.Collections;
 using SoulSmith.EmotionTag;
 using SoulSmith.Core;
 using SoulSmith.Templates;
+using SoulSmith.Asset;
+using SoulSmith.Shapes;
 
 namespace SoulSmith.Units;
 public class Unit : CanvasObject, IReadOnlyUnit
@@ -27,12 +29,14 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	private int _combatPosition;
 	private EmotionTag.EmotionTag _emotion;
 	private int _timeOnBoard = -1;
+	private IZone _hitZone = null;
+	private IZone _fireZone = null;
 
 	public Unit(UnitTemplate template) : this(
 		new StatsList(template.StatsList),
-		null,//MasterAssetLoader.InstantiateMoveSet(template).AsReadOnly(), TODO
+		Move.GenerateMoveList(template.MoveSetWeightedList, template.MaxMoveCount),
         new UnitSprite(
-			null, //MasterAssetLoader.GetSprite(template.SpriteName).Value, //TODO 
+			AssetManager.Instance.GetTexture2D(template.SpriteName), //TODO 
 			Rand.RandDoubleAroundOne(UnitSprite.ANIMATIONDESYNCFACTORRADIUS)), 
 		new UnitUI(),
 		template.Emotion,
@@ -250,7 +254,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	}
 
     public bool InCombat { get { return _inCombat; } }
-	public UnitStats Stats { get { return _stats; } }
+	public IReadOnlyUnitStats Stats { get { return _stats; } }
 	public ReadOnlyDictionary<StatType, int> StatsList { get { return _stats.StatsList; } }
 	public ReadOnlyCollection<Move> MoveSet { get { return _moveSet; } }
 	public int CombatPosition { get { return _combatPosition; } set { _combatPosition = value; } }
@@ -258,4 +262,12 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	public UnitUI UI { get { return _uI; } }
 	public UnitSprite Sprite { get { return _sprite; } }
 	public string FriendlyName { get { return _friendlyName; } }
+	public IZone HitZone { get { return _hitZone; } }
+	public IZone FireZone { get { return _fireZone; } }
+    public int MaxHealth { get { return _stats.GetModStat(StatType.MaxHealth); } }
+    public int CurHealth { get { return _stats.GetModStat(StatType.CurHealth); } }
+    public int Attack { get { return _stats.GetModStat(StatType.Attack); } }
+    public int Defense { get { return _stats.GetModStat(StatType.Defense); } }
+    public int DecayRate { get { return _stats.GetModStat(StatType.DecayRate); } }
+    public int CurDecay { get { return _stats.GetModStat(StatType.CurDecay); } }
 }

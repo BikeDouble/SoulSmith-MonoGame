@@ -1,0 +1,25 @@
+{
+    "Name": "Laugh",
+    "EmotionTag": 1,
+    "TargetingStyle": "Enemy",
+    "LocalizationKey": "Move/HitDamage/Single/Attack",
+    "LocalizationVariables": {
+        "AttackPercent": 100
+    },
+    "Effects": [   
+        {
+            "Type": "HitDamageFormulaEffect",
+            "Effect": {
+                "Formula": "sender.Attack * 1",
+                "Visualization": {
+                    "Type": "DirectMissile",
+                    "Visualization": {
+                        "MissileSprite": "Textures/Units/Forms/JoyV1",
+                        "FlightTime": 1,
+                        "Delay": 0
+                    }
+                }
+            }
+        }
+    ]
+}

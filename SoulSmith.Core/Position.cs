@@ -68,6 +68,11 @@ namespace SoulSmith.Core
             ScaleVector *= scale;
         }
 
+        public void SetScale(Vector2 scale)
+        {
+            ScaleVector = scale;
+        }
+
         public void Rotate(float rotation, Vector2? origin = null)
         {
             Vector2 originVal = origin ?? Vector2.Zero;

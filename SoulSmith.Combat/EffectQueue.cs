@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using SoulSmith.Collections;
 using SoulSmith.Battle.Effect;
-using Effect = SoulSmith.Battle.Effect.Effect;
+using EffectDeprecated = SoulSmith.Battle.Effect.EffectDeprecated;
 using SoulSmith.Units;
 using SoulSmith.Battle;
 using SoulSmith.Object;
@@ -21,13 +21,13 @@ public class EffectQueue : CanvasObject
     private DropOutStack<MoveInput> _moveHistory; //Move history is pushed after move is queued
     private bool _processingEnabled = true;
     private IReadOnlyUnit _lastMoveTarget;
-    private Effect _moveBeginEffect = Effect.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnMoveBegin, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private Effect _moveEndEffect = Effect.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnMoveEnd, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private Effect _roundBeginEffect = Effect.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnRoundBegin, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private Effect _roundEndEffect = Effect.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnRoundEnd, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private Effect _turnBeginEffect = Effect.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnTurnBegin, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private Effect _turnEndEffect = Effect.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnTurnEnd, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private Effect _unitDeathEffect = Effect.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnUnitDeath, EffectTargetingStyle.PredeterminedGlobalTrigger));
+    private EffectDeprecated _moveBeginEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnMoveBegin, EffectTargetingStyle.PredeterminedGlobalTrigger));
+    private EffectDeprecated _moveEndEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnMoveEnd, EffectTargetingStyle.PredeterminedGlobalTrigger));
+    private EffectDeprecated _roundBeginEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnRoundBegin, EffectTargetingStyle.PredeterminedGlobalTrigger));
+    private EffectDeprecated _roundEndEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnRoundEnd, EffectTargetingStyle.PredeterminedGlobalTrigger));
+    private EffectDeprecated _turnBeginEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnTurnBegin, EffectTargetingStyle.PredeterminedGlobalTrigger));
+    private EffectDeprecated _turnEndEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnTurnEnd, EffectTargetingStyle.PredeterminedGlobalTrigger));
+    private EffectDeprecated _unitDeathEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnUnitDeath, EffectTargetingStyle.PredeterminedGlobalTrigger));
 
     public readonly struct QueuedEffect
     {
@@ -156,12 +156,12 @@ public class EffectQueue : CanvasObject
 
     public void EnqueueMove(MoveInput moveInput)
     {
-        ReadOnlyCollection<Effect> effects = moveInput.Move.Effects;
+        ReadOnlyCollection<EffectDeprecated> effects = moveInput.Move.Effects;
         IReadOnlyUnit sender = moveInput.Sender;
         _lastMoveTarget = moveInput.Target;
 
         EnqueueEffect(new EffectInput(_moveBeginEffect, sender, _lastMoveTarget));
-        foreach (Effect effect in effects)
+        foreach (EffectDeprecated effect in effects)
         {
             EnqueueEffect(new EffectInput(effect, sender, _lastMoveTarget), null, null, UNIVERSALMOVEEFFECTDELAY);
         }
@@ -298,7 +298,7 @@ public class EffectQueue : CanvasObject
     {
         if (request.ChildEffects != null)
         {
-            foreach (Effect childEffect in request.ChildEffects)
+            foreach (EffectDeprecated childEffect in request.ChildEffects)
             {
                 EffectInput childEffectInput = new EffectInput(childEffect, request.Sender);
                 EnqueueEffect(childEffectInput, request, result);

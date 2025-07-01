@@ -12,6 +12,7 @@ using SoulSmith.Shapes;
 using System.Text.Json;
 using SoulSmith.Templates;
 using SoulSmith.Collections;
+using System.IO;
 
 namespace SoulSmith.Asset
 { 
@@ -20,25 +21,30 @@ namespace SoulSmith.Asset
     /// </summary>
     public class AssetManager
     {
+        public const string FILEPREFIX = "../../../Assets/";
+        public const int PERIODSINPREFIX = 6;
+
         private Dictionary<string, string> _manifest;
         private ContentManager _content;
+        private GraphicsDevice _graphics;
 
         // Cached data
         private Cache<DrawableResource_Texture2D> _textureCache;
         private Cache<ZonedResource> _zonedTextureCache;
         private Cache<UnitTemplate> _unitTemplateCache;
 
-        public static void Initialize(ContentManager content, AssetManifest manifest)
+        public static void Initialize(ContentManager content, GraphicsDevice graphics, AssetManifest manifest)
         {
-            if (Instance == null) Instance = new AssetManager(content, manifest);
+            if (Instance == null) Instance = new AssetManager(content, graphics, manifest);
         }
 
-        public AssetManager(ContentManager content, AssetManifest manifest)
+        public AssetManager(ContentManager content, GraphicsDevice graphics, AssetManifest manifest)
         {
             if (Instance == null) { Instance = this; }
 
             _content = content;
             _manifest = manifest.Manifest;
+            _graphics = graphics;
             InitializeCaches();
         }
 
@@ -56,7 +62,7 @@ namespace SoulSmith.Asset
 
             if (!_manifest.ContainsKey(key)) return null;
 
-            string filePath = _manifest[key];
+            string filePath = FILEPREFIX + _manifest[key];
 
             if (!File.Exists(filePath)) return null;
 
@@ -78,11 +84,11 @@ namespace SoulSmith.Asset
 
             if (!_manifest.ContainsKey(key)) return null;
 
-            string filePath = _manifest[key];
+            string filepath = FILEPREFIX + _manifest[key];
 
-            if (!File.Exists(filePath)) return null;
+            if (!File.Exists(filepath)) return null;
 
-            Texture2D texture = _content.Load<Texture2D>(filePath);
+            Texture2D texture = Texture2D.FromFile(_graphics, filepath);
 
             if (texture == null) return null;
 
@@ -97,15 +103,15 @@ namespace SoulSmith.Asset
 
             if (!_manifest.ContainsKey(key)) return null;
 
-            string textureFilepath = _manifest[key];
+            string textureFilepath = FILEPREFIX + _manifest[key];
 
             if (!File.Exists(textureFilepath)) return null;
 
-            Texture2D texture = _content.Load<Texture2D>(textureFilepath);
+            Texture2D texture = Texture2D.FromFile(_graphics, textureFilepath);
 
             if (texture == null) return null;
 
-            string metaFilepath = textureFilepath.Split('.')[0] + ".meta.json";
+            string metaFilepath = GetMetaFilepathFromFilepath(textureFilepath, "json"); //TODO make more elegant
 
             if (!File.Exists(metaFilepath)) return null;
 
@@ -120,6 +126,13 @@ namespace SoulSmith.Asset
             return _zonedTextureCache.GetAsset(key);
         }
 
+        public static string GetMetaFilepathFromFilepath(string filepath, string metafileExtension = "json")
+        {
+            string filepathWithoutExtension = Path.Combine(Path.GetDirectoryName(filepath), Path.GetFileNameWithoutExtension(filepath));
+            string metafilepath = filepathWithoutExtension + ".meta." + metafileExtension;
+            return metafilepath;
+        }
+
         public SoulSmithWeightedList<string> GetSpawnList(string key)
         {
             return GetWeightedList<string>(key);
@@ -129,16 +142,20 @@ namespace SoulSmith.Asset
         {
             if (!_manifest.ContainsKey(key)) return null;
 
-            string filepath = _manifest[key];
+            string filepath = FILEPREFIX + _manifest[key];
 
             if (!File.Exists(filepath)) return null;
 
             string fileString = File.ReadAllText(filepath);
 
-            SoulSmithWeightedList<T> list = JsonSerializer.Deserialize<SoulSmithWeightedList<T>>(filepath);
+            JsonSerializerOptions optionsWithWeightedListConverter = new JsonSerializerOptions();
+            optionsWithWeightedListConverter.Converters.Add(new SoulSmithWeightedListJsonConverter<T>());
+            SoulSmithWeightedList<T> list = JsonSerializer.Deserialize<SoulSmithWeightedList<T>>(filepath, optionsWithWeightedListConverter);
 
             return list;
         }
+
+        public 
 
         public static AssetManager Instance { get; private set; }
     }

@@ -20,11 +20,11 @@ namespace SoulSmith.Drawing
             _resource = resource;
         }
 
-        public bool Contains(Vector2 point, IReadOnlyPosition transformation = null)
+        public bool ContainsGlobal(Vector2 point, IReadOnlyPosition transformation = null)
         {
             if (_clickZone == null) return false;
 
-            return _clickZone.Contains(point, transformation);
+            return _clickZone.ContainsGlobal(point, transformation);
         }
 
         public void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch)

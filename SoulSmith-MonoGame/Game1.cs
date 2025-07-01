@@ -53,7 +53,7 @@ namespace SoulSmith_MonoGame
 
         private void InitializeResources(ContentManager content, GraphicsDevice graphicsDevice)
         {
-            _assetManager = new(content, JsonSerializer.Deserialize<AssetManifest>(File.ReadAllText(ASSETMANIFESTPATH)));
+            _assetManager = new(content, graphicsDevice, JsonSerializer.Deserialize<AssetManifest>(File.ReadAllText(ASSETMANIFESTPATH)));
         }
 
         protected override void Update(GameTime gameTime)

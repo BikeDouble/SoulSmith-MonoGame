@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SoulSmith.Collections;
 
 namespace SoulSmith.Templates;
 
@@ -29,7 +30,7 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
         int defense = -1;
         int decayRate = StatConstants.STANDARDDECAYRATE;
         int timeOnBoard = -1;
-        ReadOnlyCollection<string> moveSet = null;
+        SoulSmithWeightedList<string> moveSet = null;
         EmotionTag.EmotionTag emotionTag = EmotionTag.EmotionTag.Typeless;
 
         while (reader.TokenType != JsonTokenType.EndObject)
@@ -69,8 +70,9 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
                     timeOnBoard = reader.GetInt32();
                     break;
                 case "MoveSet":
-                    string[] moveSetArray = JsonSerializer.Deserialize<string[]>(ref reader, options);
-                    moveSet = moveSetArray.ToList().AsReadOnly();
+                    JsonSerializerOptions optionsWithWeightedListConverter = new JsonSerializerOptions();
+                    optionsWithWeightedListConverter.Converters.Add(new SoulSmithWeightedListJsonConverter<string>());
+                    moveSet = JsonSerializer.Deserialize<SoulSmithWeightedList<string>>(ref reader, optionsWithWeightedListConverter);
                     break;
                 default:
                     throw new JsonException($"Unknown property: {propertyName}");

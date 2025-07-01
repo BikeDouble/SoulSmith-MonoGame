@@ -1,15 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
-using MonoGame.Extended.Shapes;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using MonoGame.Extended.Graphics;
 using SoulSmith.Drawing;
 using SoulSmith.Core;
 using SoulSmith.Shapes;
@@ -17,7 +7,7 @@ using SoulSmith.Asset;
 using SoulSmith.Input;
 
 namespace SoulSmith.Object.Canvas;
-public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformable
+public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformable, ICanvasObject
 {
     private bool _visible = true;
     private string _resourceType = "none";
@@ -101,7 +91,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
 
         if (zone == null) return false;
 
-        return zone.Contains(point, Position);
+        return zone.ContainsGlobal(point, Position);
     }
 
     public event EventHandler<GetGlobalVisibilityEventArgs> GetGlobalVisibilityEventHandler;
@@ -177,6 +167,11 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         if (scale == Vector2.One) return;
 
         _position.Scale(scale);
+    }
+
+    public void SetScale(Vector2 scale)
+    {
+        _position.SetScale(scale);
     }
 
     public void Rotate(float rotation)

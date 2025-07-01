@@ -40,7 +40,7 @@ public class InputQueue : IAddOnly<InputPacket>
         {
             if (packet.Zone != null && 
                 //packet.Position != null &&
-                packet.Zone.Contains(mousePos, packet.Position))
+                packet.Zone.ContainsGlobal(mousePos, packet.Position))
             {
                 funcInput.Inputs = availableInputs;
             }

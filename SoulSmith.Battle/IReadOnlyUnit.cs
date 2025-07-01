@@ -4,11 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SoulSmith.Object.Canvas;
+using SoulSmith.Shapes;
 using SoulSmith.UnitStats;
 
 namespace SoulSmith.Battle
 {
-    public interface IReadOnlyUnit
+    public interface IReadOnlyUnit : IReadOnlyCanvasObject
     {
         ReadOnlyDictionary<StatType, int> StatsList { get; }
         bool InCombat { get; }
@@ -16,5 +18,13 @@ namespace SoulSmith.Battle
         int GetBaseStat(StatType stat);
         ReadOnlyCollection<Move.Move> MoveSet { get; }
         string FriendlyName { get; }
+        IZone HitZone { get; }
+        IZone FireZone { get; }
+        int MaxHealth { get; }
+        int CurHealth { get; }
+        int Attack { get; }
+        int Defense { get; }
+        int CurDecay { get; }
+        int DecayRate { get; }
     }
 }

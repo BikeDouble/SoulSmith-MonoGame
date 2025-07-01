@@ -1,4 +1,9 @@
 {
+    "Moves": {
+        "Joy": {
+            "SingleHit": 
+        }
+    },
     "SpawnLists": {
         "Area1": {
             "Passive1": "WeightedLists/SpawnLists/Area1/area1Passive1.json"
@@ -28,7 +33,9 @@
     "ZonedTextures": {
         "UI": {
             "Units": {
-                "MoveButton": "ZonedTextures/UI/Units/moveButton.png"
+                "MoveButton": "ZonedTextures/UI/Units/moveButton.png",
+                "TargetButtonHovered": "ZonedTextures/UI/Units/targetButtonHovered.png",
+                "TargetButtonIdle": "ZonedTextures/UI/Units/targetButtonIdle.png"
             }
         }
     }

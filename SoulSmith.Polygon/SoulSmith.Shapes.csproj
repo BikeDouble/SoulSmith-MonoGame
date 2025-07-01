@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SoulSmith.Collections\SoulSmith.Collections.csproj" />
     <ProjectReference Include="..\SoulSmith.Core\SoulSmith.Core.csproj" />
     <ProjectReference Include="..\SoulSmith.Vector\SoulSmith.Vector.csproj" />
   </ItemGroup>

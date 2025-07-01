@@ -27,11 +27,11 @@ public class UnitUI : CanvasObject
 	public UnitUI() :
 		this(null,//MasterAssetLoader.GetFont(GameManager.UIFONTNAME), TODO fix fonts
 			AssetManager.Instance.GetZonedTexture2D("ZonedTextures/UI/Units/MoveButton"),
-            null,
-            null) //TODO make new target button textures and zones
+			AssetManager.Instance.GetZonedTexture2D("ZonedTextures/UI/Units/TargetButtonIdle"),
+            AssetManager.Instance.GetZonedTexture2D("ZonedTextures/UI/Units/TargetButtonHovered")) 
 	{ }
 
-	public UnitUI(SpriteFont font, IReadOnlyTrackedAsset<ZonedResource> moveButton, IReadOnlyTrackedAsset<ZonedResource> targetButton, IReadOnlyTrackedAsset<ZonedResource> targetButtonHovered)
+	public UnitUI(SpriteFont font, IReadOnlyTrackedAsset<ZonedResource> moveButton, IReadOnlyTrackedAsset<ZonedResource> targetButtonIdle, IReadOnlyTrackedAsset<ZonedResource> targetButtonHovered)
 		: base(new Position(0, 0, 1, 1, 0, 5))
 	{
 		_font = font;
@@ -44,7 +44,7 @@ public class UnitUI : CanvasObject
         _healthBar = new UnitUIHealthBar(_font, healthBarPosition);
         AddChild(_healthBar);
 
-        _targetButton = new ButtonObject(targetButton, targetButtonHovered);
+        _targetButton = new ButtonObject(targetButtonIdle, targetButtonHovered);
 		_targetButton.Hide();
         _targetButton.ButtonPressedEventHandler += OnTargetButtonPressed;
         AddChild(_targetButton);
@@ -86,12 +86,12 @@ public class UnitUI : CanvasObject
 	// Modifier related functions
 	//
 
-	public void OnModifierAdded(Modifier modifier)
+	public void OnModifierAdded(IModifier modifier)
 	{
 		_modifierDisplay.OnModifierAdded(modifier);
 	}
 
-	public void OnModifierRemoved(Modifier modifier)
+	public void OnModifierRemoved(IModifier modifier)
 	{
 		_modifierDisplay.OnModifierRemoved(modifier);
 	}

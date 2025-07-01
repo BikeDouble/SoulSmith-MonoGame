@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DynamicExpresso.Core" Version="2.19.2" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.3" />
   </ItemGroup>
 

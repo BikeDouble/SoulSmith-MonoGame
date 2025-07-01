@@ -12,7 +12,7 @@ using SoulSmith.Templates;
 using SoulSmith.Collections;
 
 namespace SoulSmith.Combat;
-public class CombatManager : CanvasObject
+public class CombatManager : CanvasObject, IReadOnlyCombat
 {
 	//This team always goes first in the round
 	private const int TEAMGOESFIRSTINDEX = 1;
@@ -136,8 +136,10 @@ public class CombatManager : CanvasObject
 	// Getters
 	//
 
-	private CombatTeam GetEnemyTeam(CombatTeam callingTeam)
+	private CombatTeam GetEnemyTeam(IReadOnlyCombatTeam callingTeam)
 	{
+		if (callingTeam == null) return null;
+
 		foreach (CombatTeam team in _teams)
 		{
 			if (team != callingTeam)
@@ -148,7 +150,17 @@ public class CombatManager : CanvasObject
 		return null;
 	}
 
-	private CombatTeam GetComputerTeam()
+	public IReadOnlyCombatTeam GetEnemyReadOnlyTeam(IReadOnlyCombatTeam callingTeam)
+	{
+		return GetEnemyTeam(callingTeam);
+    }
+
+    public IReadOnlyCombatTeam GetEnemyReadOnlyTeam(IReadOnlyUnit callingUnit)
+    {
+		return GetEnemyTeam(GetTeamWithUnit(callingUnit));
+    }
+
+    private CombatTeam GetComputerTeam()
 	{
 		foreach (CombatTeam team in _teams)
 		{
@@ -189,7 +201,20 @@ public class CombatManager : CanvasObject
 		return null;
 	}
 
-	private ReadOnlyCollection<Unit> GetAllActiveUnits()
+    public IReadOnlyCombatTeam GetReadOnlyTeamWithUnit(IReadOnlyUnit unit)
+    {
+        foreach (CombatTeam team in _teams)
+        {
+            if (team.ContainsUnit(unit))
+            {
+                return team;
+            }
+        }
+
+        return null;
+    }
+
+    private ReadOnlyCollection<Unit> GetAllActiveUnits()
 	{
 		List<Unit> units = new List<Unit>();
 		foreach (CombatTeam team in _teams)
@@ -198,6 +223,16 @@ public class CombatManager : CanvasObject
 		}
 		return units.AsReadOnly();
 	}
+
+	public ReadOnlyCollection<IReadOnlyUnit> GetAllActiveUnitsAsReadOnly()
+	{
+        List<IReadOnlyUnit> units = new List<IReadOnlyUnit>();
+        foreach (CombatTeam team in _teams)
+        {
+            units.AddRange(team.GetActiveUnitsAsReadOnly());
+        }
+        return units.AsReadOnly();
+    }
 
 	//
 	// Combat Processing

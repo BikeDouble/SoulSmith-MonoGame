@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SoulSmith.Core;
 using System.Text.Json.Serialization;
 using System.Text.Json;
@@ -14,7 +9,11 @@ namespace SoulSmith.Shapes
     [JsonConverter(typeof(IZoneJsonConverter))]
     public interface IZone
     {
-        public bool Contains(Vector2 point, IReadOnlyPosition transformation);
+        public bool ContainsGlobal(Vector2 point, IReadOnlyPosition transformation);
+        public bool ContainsLocal(Vector2 point);
+        public Vector2 GetRandomLocalPoint();
+        public Vector2 GetRandomGlobalPoint(IReadOnlyPosition transformation);
+        public float GetAreaLocal();
     }
 
     public class IZoneJsonConverter : JsonConverter<IZone>

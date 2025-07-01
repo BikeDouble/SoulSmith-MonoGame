@@ -25,7 +25,7 @@ public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
 
     private double _animationTime = -1;
 
-    public UnitSprite(IReadOnlyTrackedAsset<ZonedResource> sprite, double animationDesyncFactor) : base(null, sprite)
+    public UnitSprite(IReadOnlyTrackedAsset<IDrawableResource> sprite, double animationDesyncFactor) : base(null, sprite)
     {
         //TODO implement animationDesyncFactor
     }

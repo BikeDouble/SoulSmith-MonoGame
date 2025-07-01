@@ -14,7 +14,7 @@ using SoulSmith.Input;
 
 namespace SoulSmith.Object
 {
-    public class SoulSmithObject : IDeepCloneable, IReadOnlySoulSmithObject, IDrawPacketGenerator, IDisposable
+    public class SoulSmithObject : IDeepCloneable, IReadOnlySoulSmithObject, ISoulSmithObject, IDrawPacketGenerator, IDisposable
     {
         private List<SoulSmithObject> _children;
 

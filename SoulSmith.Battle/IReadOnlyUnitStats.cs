@@ -13,5 +13,11 @@ namespace SoulSmith.Battle
         int GetBaseStat(StatType stat);
         int CombatPosition { get; }
         int TimeOnBoard { get; }
+        int MaxHealth { get; }
+        int CurHealth { get; }
+        int Attack { get; }
+        int Defense { get; }
+        int CurDecay { get; }
+        int DecayRate { get; }
     }
 }

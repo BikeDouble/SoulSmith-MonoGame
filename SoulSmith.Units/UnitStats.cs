@@ -16,7 +16,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	private StatsList _statsList;
 
 	private int _combatPosition;
-	private List<Modifier> _modifiers = new List<Modifier>();
+	private List<IModifier> _modifiers = new List<IModifier>();
 	private int _timeOnBoard = -1;
 
 	public UnitStats()
@@ -91,9 +91,9 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
     private List<StatModifier> GetRelevantStatModifiers(StatType stat)
     {
         List<StatModifier> modifiers = new List<StatModifier>();
-        foreach (Modifier modifier in _modifiers)
+        foreach (IModifier modifier in _modifiers)
         {
-            StatModifier statModifier = modifier.GetStatModifier(stat);
+            StatModifier statModifier = modifier.GetStatModifier();
             if (statModifier.Stat == stat)
             {
                 modifiers.Add(statModifier);
@@ -141,7 +141,11 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	public event EventHandler<ModifierAddOrRemoveEventArgs> ModifierAddEventHandler;
 
-	private void AddModifier(Modifier modifier)
+	/// <summary>
+	/// Adds modifier to list and links events to this UnitStats object
+	/// </summary>
+	/// <param name="modifier"></param>
+	private void AddModifier(IModifier modifier)
 	{
         _modifiers.Add(modifier);
 		modifier.RemoveModifierEventHandler += RemoveModifier;
@@ -153,13 +157,13 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		ModifierAddEventHandler?.Invoke(this, e);
     }
 
-	private List<Modifier> _modifiersToBeRemoved = new List<Modifier>();
+	private List<IModifier> _modifiersToBeRemoved = new List<IModifier>();
 
 	public event EventHandler<ModifierAddOrRemoveEventArgs> ModifierRemoveEventHandler;
 
 	private void RemoveModifier(object sender, RemoveModifierEventArgs e)
 	{
-		Modifier modifier = e.Modifier;
+		IModifier modifier = e.Modifier;
         modifier.RemoveModifierEventHandler -= RemoveModifier;
         modifier.EnqueueEffectInputEventHandler -= EnqueueEffectInput;
 		_modifiersToBeRemoved.Add(modifier);
@@ -172,7 +176,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	private void ClearModifiersToBeRemovedList()
 	{
-		foreach (Modifier modifier in _modifiersToBeRemoved)
+		foreach (IModifier modifier in _modifiersToBeRemoved)
 		{
 			_modifiers.Remove(modifier);
 		}
@@ -284,7 +288,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         {
             result = ExecuteHealingEffect(request);
         }
-        else if (request.ModifierTemplate != null)
+        else if (request.Modifier != null)
 		{
 			result = ExecuteModifierEffect(request);
 		}
@@ -308,7 +312,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	public void ReceiveEffectResult(EffectResult result)
 	{
-		foreach (Modifier modifier in _modifiers) 
+		foreach (IModifier modifier in _modifiers) 
 		{
 			modifier.ProcessEffectResult(result);
 		}
@@ -324,7 +328,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 				DecrementTimeOnBoard();
 		}
 
-		foreach (Modifier modifier in _modifiers)
+		foreach (IModifier modifier in _modifiers)
 		{
 			modifier.InterceptEffectRequest(request);
 		}
@@ -396,33 +400,26 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	private EffectResult ExecuteModifierEffect(EffectRequest request)
 	{
+		if (request.Modifier == null) return null;
+
 		EffectResult result = new EffectResult();
-		
-		result.ModifierApplied = ApplyModifier(request.ModifierTemplate, request.ModifierArgs);
+
+		ApplyModifier(request.Modifier, request.Sender);
+
+		result.ModifierApplied = request.Modifier;
 
 		return result;
 	}
 
-	private Modifier ApplyModifier(ModifierTemplateWithArgs templateWithArgs, IReadOnlyUnit sender = null)
+	private void ApplyModifier(IModifier modifier, IReadOnlyUnit sender)
 	{
-		return ApplyModifier(templateWithArgs.Template, templateWithArgs.Args, sender);
-	}
-
-	private Modifier ApplyModifier(ModifierTemplate template, 
-		ReadOnlyDictionary<ModifierFloatArgType, float> args,
-		IReadOnlyUnit sender = null)
-	{
-		if (template == null) return null;
+		if (modifier == null) return;
 
 		if (sender == null) sender = (IReadOnlyUnit)GetParent();
 
-        Modifier modifier = template.InstantiateAndApply(
-            (IReadOnlyUnit)GetParent(),
-            sender,
-            args);
         AddModifier(modifier);
 
-		return modifier;
+		modifier.ApplyModifier(sender, (IReadOnlyUnit)this.GetParent());
     }
 
 	private EffectResult ExecuteTriggerEffect(EffectRequest request)
@@ -437,6 +434,12 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	public ReadOnlyDictionary<StatType, int> StatsList { get { return _statsList.StatsDict; } }
     public int CombatPosition { get { return _combatPosition; } set { _combatPosition = value; } }
 	public int TimeOnBoard { get { return _timeOnBoard; } }
+	public int MaxHealth { get { return GetModStat(StatType.MaxHealth); } }
+    public int CurHealth { get { return GetModStat(StatType.CurHealth); } }
+    public int Attack { get { return GetModStat(StatType.Attack); } }
+    public int Defense { get { return GetModStat(StatType.Defense); } }
+    public int DecayRate { get { return GetModStat(StatType.DecayRate); } }
+    public int CurDecay { get { return GetModStat(StatType.CurDecay); } }
 }
 
 public class SendEffectEventArgs : EventArgs
@@ -457,5 +460,5 @@ public class UnitDeathCallArgs : EventArgs
 
 public class ModifierAddOrRemoveEventArgs
 {
-	public Modifier Modifier;
+	public IModifier Modifier;
 }

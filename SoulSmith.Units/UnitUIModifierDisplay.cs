@@ -18,11 +18,11 @@ public class UnitUIModifierDisplay : CanvasObject
     public static ReadOnlyCollection<Vector2> IconPositions = GenerateIconPositions();
 
     // Children
-    private Dictionary<Modifier, CanvasObject> _displayedIcons;
+    private Dictionary<IModifier, CanvasObject> _displayedIcons;
 
     public UnitUIModifierDisplay() 
     {
-        _displayedIcons = new Dictionary<Modifier, CanvasObject>();
+        _displayedIcons = new Dictionary<IModifier, CanvasObject>();
     }
 
     public static ReadOnlyCollection<Vector2> GenerateIconPositions()
@@ -44,7 +44,7 @@ public class UnitUIModifierDisplay : CanvasObject
         return iconPositions.AsReadOnly();
     }
 
-    public void OnModifierRemoved(Modifier modifier)
+    public void OnModifierRemoved(IModifier modifier)
     {
         CanvasObject removedIcon = _displayedIcons.GetValueOrDefault(modifier);
 
@@ -61,7 +61,7 @@ public class UnitUIModifierDisplay : CanvasObject
         //TODO
     }
 
-    public void OnModifierAdded(Modifier modifier)
+    public void OnModifierAdded(IModifier modifier)
     {
         CanvasObject addedIcon = modifier.Icon as CanvasObject;
 
