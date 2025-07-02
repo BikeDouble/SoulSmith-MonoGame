@@ -12,7 +12,7 @@ using SoulSmith.Asset;
 using System.Text.Json;
 using System.IO;
 using SoulSmith.Templates;
-using SoulSmith.Move;
+using SoulSmith.Battle.Move;
 
 namespace SoulSmith_MonoGame
 {
@@ -95,7 +95,7 @@ namespace SoulSmith_MonoGame
         {
             GraphicsDevice.Clear(Color.LightGray);
 
-            _root.CollectDrawPackets(new Position(0, 0, 1, 1, 0), Vector4.Zero, _renderQueue);
+            _root.CollectDrawPackets(new Position(0, 0, 1, 1, 0), new Vector4(255, 255, 255, 255), _renderQueue);
 
             _renderQueue.Draw(_spriteBatch, _graphics.GraphicsDevice);
 

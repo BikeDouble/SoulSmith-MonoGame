@@ -142,7 +142,7 @@ public class MoveSelector : IMoveSelector //TODO rework move selection
 		return _moveInput.Move;
 	}
 	
-	public IReadOnlyUnit GetUser()
+	public IReadOnlyUnit GetSender()
 	{
 		return _moveInput.Sender;
 	}
@@ -185,7 +185,7 @@ public class MoveSelector : IMoveSelector //TODO rework move selection
 				return viableTargets;
 			case MoveTargetingStyle.Ally:
 				viableTargets = Team.GetReadOnlyUnits();
-				viableTargets.Remove(GetUser());
+				viableTargets.Remove(GetSender());
 				return viableTargets;
 			case MoveTargetingStyle.Enemy:
 				viableTargets = EnemyTeam.GetReadOnlyUnits();

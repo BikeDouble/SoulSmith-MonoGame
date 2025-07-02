@@ -22,9 +22,10 @@ namespace SoulSmith.Asset
 
         }
 
-        public IReadOnlyTrackedAsset<IAsset> GetAsset()
+        public IReadOnlyTrackedAsset<T> GetTrackedIAsset<T>() where T : IAsset
         {
-            return new TrackedAsset<IAsset>(_asset, _counter);
+            T assetAsT = (T)_asset;
+            return new TrackedAsset<T>(assetAsT, _counter);
         }
 
         public int ReferenceCount { get { return _counter.Count; } }

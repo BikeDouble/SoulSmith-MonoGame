@@ -1,8 +1,8 @@
 ﻿using System;
+using SoulSmith.Battle;
 using System.Collections.ObjectModel;
-using SoulSmith.Battle.Effect;
 
-namespace SoulSmith.Effect
+namespace SoulSmith.Battle.Effect
 {
     public struct EffectInput
     {

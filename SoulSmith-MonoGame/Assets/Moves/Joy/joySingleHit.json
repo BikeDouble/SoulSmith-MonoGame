@@ -8,7 +8,7 @@
     },
     "Effects": [   
         {
-            "Type": "HitDamageFormulaEffect",
+            "Type": "HitDamageFormula",
             "Effect": {
                 "Formula": "sender.Attack * 1",
                 "Visualization": {

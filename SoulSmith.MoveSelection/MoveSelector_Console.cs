@@ -49,7 +49,7 @@ public class MoveSelector_Console : MoveSelector
 	
 	public override void SelectMove()
 	{
-		IReadOnlyUnit userUnit = GetUser();
+		IReadOnlyUnit userUnit = GetSender();
         ReadOnlyCollection<Move> moveSet = userUnit.MoveSet;
         if (moveSet.Count == 0)
         {

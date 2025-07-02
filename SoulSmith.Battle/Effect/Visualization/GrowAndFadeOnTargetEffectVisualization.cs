@@ -1,10 +1,9 @@
 ﻿using SoulSmith.Asset;
-using SoulSmith.Battle;
 using SoulSmith.Drawing;
 using SoulSmith.Object.Canvas;
 using Microsoft.Xna.Framework;
 
-namespace SoulSmith.Effect.Visualization
+namespace SoulSmith.Battle.Effect.Visualization
 {
     public class GrowAndFadeOnTargetEffectVisualization : EffectVisualization
     {
@@ -47,7 +46,7 @@ namespace SoulSmith.Effect.Visualization
 
             _growAndFader.ChangeTintAdditive(0, 0, 0, alphaChange);
 
-            Vector2 curScale = ((_endScale - _startScale) * progress) + _startScale;
+            Vector2 curScale = (_endScale - _startScale) * progress + _startScale;
 
             _growAndFader.SetScale(curScale);
         }

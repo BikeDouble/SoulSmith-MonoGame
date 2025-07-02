@@ -23,7 +23,7 @@ namespace SoulSmith.Drawing
                     null,
                     new Color(tint),
                     position.Rotation,
-                    new Vector2(0, 0),
+                    Origin,
                     position.ScaleVector,
                     SpriteEffects.None,
                     0f);
@@ -33,5 +33,9 @@ namespace SoulSmith.Drawing
         {
             _texture.Dispose();
         }
+
+        public int Width { get { return _texture.Width; } }
+        public int Height { get { return _texture.Height; } }
+        public Vector2 Origin { get { return new Vector2(_texture.Width / 2, _texture.Height / 2); } }
     }
 }

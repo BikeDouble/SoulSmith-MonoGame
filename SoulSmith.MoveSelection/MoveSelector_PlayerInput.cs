@@ -33,7 +33,7 @@ public class MoveSelector_PlayerInput : MoveSelector
 	public override void SelectTarget()
 	{
 		MoveTargetingStyle targetingStyle = GetMove().TargetingStyle;
-		ShowTargetSelectUI(targetingStyle, GetUser());
+		ShowTargetSelectUI(targetingStyle, GetSender());
 	}
 	
 	//
@@ -51,4 +51,6 @@ public class MoveSelector_PlayerInput : MoveSelector
 		SetTarget(target);
 		ReturnMoveInputToCombatManager();
 	}
+
+    public override bool PlayerControlled { get { return true; } }
 }

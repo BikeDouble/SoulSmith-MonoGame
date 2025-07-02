@@ -1,7 +1,7 @@
 {
     "Moves": {
         "Joy": {
-            "SingleHit": 
+            "SingleHit": "Moves/Joy/joySingleHit.json"
         }
     },
     "SpawnLists": {

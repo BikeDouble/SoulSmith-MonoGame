@@ -19,7 +19,7 @@ namespace SoulSmith.Core
             Coordinates = coordinates;
         }
 
-        public Position(Position other)
+        public Position(IReadOnlyPosition other)
         {
             if (other == null)
                 return;

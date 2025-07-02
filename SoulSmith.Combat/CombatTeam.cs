@@ -3,8 +3,9 @@ using System.Diagnostics;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Drawing;
 using SoulSmith.Battle;
-using SoulSmith.Battle.Effect;
+using SoulSmith.Battle.Move;
 using SoulSmith.Units;
+using SoulSmith.Battle.Effect;
 
 namespace SoulSmith.Combat;
 public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam

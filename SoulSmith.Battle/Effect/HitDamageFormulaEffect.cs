@@ -2,10 +2,9 @@
 using SoulSmith.Battle;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using SoulSmith.Effect.Visualization;
-using SoulSmith.Battle.Effect;
+using SoulSmith.Battle.Effect.Visualization;
 
-namespace SoulSmith.Effect
+namespace SoulSmith.Battle.Effect
 {
     [JsonConverter(typeof(HitDamageFormulaEffectJsonConverter))]
     public class HitDamageFormulaEffect : VisualizedEffect, IEffect 
@@ -33,6 +32,8 @@ namespace SoulSmith.Effect
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
+            reader.Read();
+
             EffectVisualization visualization = null;
             string formula = string.Empty;
             bool gainDecay = true;
@@ -54,6 +55,7 @@ namespace SoulSmith.Effect
                         break;
                     case "Visualization":
                         visualization = JsonSerializer.Deserialize<EffectVisualization>(ref reader, options);
+                        reader.Read();
                         break;
                     case "GainDecay":
                         if (!((reader.TokenType == JsonTokenType.True) || (reader.TokenType == JsonTokenType.False))) throw new JsonException("Expected boolean");

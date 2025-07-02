@@ -30,10 +30,7 @@ namespace SoulSmith.Emotion {
         {
             Color _color = new Color(245, 188, 0, 255);
 
-            List<ModifierTemplateWithArgs> mofifierTemplates = new();
-            Dictionary<ModifierFloatArgType, float> modArgs = new();
-            modArgs.TryAdd(ModifierFloatArgType.StatType, (float)StatType.Attack);
-            modArgs.TryAdd(ModifierFloatArgType.StatPercent, 0.2f);
+            List<IModifier> mofifierTemplates = new();
             /*ModifierTemplateWithArgs modifierTemplate = new ModifierTemplateWithArgs( //TODO
                 MasterAssetLoader.GetModifierTemplate(EffectOnHitModifierTemplates.JOYESSENCEDAMAGEONHITNAME),
                 modArgs);

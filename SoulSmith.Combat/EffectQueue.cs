@@ -1,11 +1,10 @@
 using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Effect;
 using SoulSmith.Battle.Effect.Visualization;
 using SoulSmith.Object.Canvas;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using SoulSmith.Collections;
-using SoulSmith.Battle.Effect;
-using EffectDeprecated = SoulSmith.Battle.Effect.EffectDeprecated;
 using SoulSmith.Units;
 using SoulSmith.Battle;
 using SoulSmith.Object;
@@ -20,14 +19,14 @@ public class EffectQueue : CanvasObject
     private DropOutStack<(EffectRequest, EffectResult)> _effectHistory; //Effect history is pushed after effect is processed
     private DropOutStack<MoveInput> _moveHistory; //Move history is pushed after move is queued
     private bool _processingEnabled = true;
-    private IReadOnlyUnit _lastMoveTarget;
-    private EffectDeprecated _moveBeginEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnMoveBegin, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private EffectDeprecated _moveEndEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnMoveEnd, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private EffectDeprecated _roundBeginEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnRoundBegin, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private EffectDeprecated _roundEndEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnRoundEnd, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private EffectDeprecated _turnBeginEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnTurnBegin, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private EffectDeprecated _turnEndEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnTurnEnd, EffectTargetingStyle.PredeterminedGlobalTrigger));
-    private EffectDeprecated _unitDeathEffect = EffectDeprecated.InstantiateNakedEffect(EffectTemplate.Trigger(EffectTrigger.OnUnitDeath, EffectTargetingStyle.PredeterminedGlobalTrigger));
+    private IReadOnlyCombat _parentCombat;
+    private GlobalTriggerEffect _moveBeginEffect = new GlobalTriggerEffect(EffectTrigger.OnMoveBegin);
+    private GlobalTriggerEffect _moveEndEffect = new GlobalTriggerEffect(EffectTrigger.OnMoveEnd);
+    private GlobalTriggerEffect _roundBeginEffect = new GlobalTriggerEffect(EffectTrigger.OnRoundBegin);
+    private GlobalTriggerEffect _roundEndEffect = new GlobalTriggerEffect(EffectTrigger.OnRoundEnd);
+    private GlobalTriggerEffect _turnBeginEffect = new GlobalTriggerEffect(EffectTrigger.OnTurnBegin);
+    private GlobalTriggerEffect _turnEndEffect = new GlobalTriggerEffect(EffectTrigger.OnTurnEnd);
+    private GlobalTriggerEffect _unitDeathEffect = new GlobalTriggerEffect(EffectTrigger.OnUnitDeath);
 
     public readonly struct QueuedEffect
     {
@@ -43,8 +42,9 @@ public class EffectQueue : CanvasObject
         public EffectResult ParentEffectResult { get; }
     }
 
-    public EffectQueue()
+    public EffectQueue(IReadOnlyCombat parentCombat)
     {
+        _parentCombat = parentCombat;
         Initialize();
     }
 
@@ -60,6 +60,7 @@ public class EffectQueue : CanvasObject
         base.Process(delta);
         RemoveVisualizationsInList();
     }
+
     public void OnTurnBegin()
     {
         EnqueueEffect(new EffectInput(_turnBeginEffect, null, null));
@@ -123,49 +124,21 @@ public class EffectQueue : CanvasObject
             return;
         }
 
-        if ((effectInput.Sender == null)
-            && (effectInput.Effect.TargetingStyle != EffectTargetingStyle.PredeterminedGlobalTrigger))
-        {
-            Trace.TraceError("Effect input missing sender");
-            return;
-        }
-
-        if ((effectInput.Target == null)
-            && (effectInput.Effect.TargetingStyle != EffectTargetingStyle.PredeterminedGlobalTrigger))
-        {
-            Trace.TraceError("Effect input missing target");
-            return;
-        }
-
-        if ((effectInput.Effect.TargetingStyle != EffectTargetingStyle.PredeterminedGlobalTrigger)
-            && (!effectInput.Sender.InCombat))
-        {
-            Trace.TraceError("Effect sender no longer in combat");
-            return;
-        }
-
-        if ((effectInput.Effect.TargetingStyle != EffectTargetingStyle.PredeterminedGlobalTrigger)
-            && (!effectInput.Target.InCombat))
-        {
-            Trace.TraceError("Effect target no longer in combat");
-            return;
-        }
-
-        ProcessEffect(effectInput);
+        SendEffectRequestFromInput(effectInput);
     }
 
     public void EnqueueMove(MoveInput moveInput)
     {
-        ReadOnlyCollection<EffectDeprecated> effects = moveInput.Move.Effects;
+        ReadOnlyCollection<IEffect> effects = moveInput.Move.Effects;
         IReadOnlyUnit sender = moveInput.Sender;
-        _lastMoveTarget = moveInput.Target;
+        IReadOnlyUnit target = moveInput.Target;
 
-        EnqueueEffect(new EffectInput(_moveBeginEffect, sender, _lastMoveTarget));
-        foreach (EffectDeprecated effect in effects)
+        EnqueueEffect(new EffectInput(_moveBeginEffect, sender, target));
+        foreach (IEffect effect in effects)
         {
-            EnqueueEffect(new EffectInput(effect, sender, _lastMoveTarget), null, null, UNIVERSALMOVEEFFECTDELAY);
+            EnqueueEffect(new EffectInput(effect, sender, target), null, null, UNIVERSALMOVEEFFECTDELAY);
         }
-        EnqueueEffect(new EffectInput(_moveEndEffect, sender, _lastMoveTarget));
+        EnqueueEffect(new EffectInput(_moveEndEffect, sender, target));
 
         _moveHistory.Push(moveInput);
     }
@@ -182,28 +155,6 @@ public class EffectQueue : CanvasObject
             return;
         }
 
-        if ((effectInput.Sender == null) 
-            && (effectInput.Effect.TargetingStyle != EffectTargetingStyle.PredeterminedGlobalTrigger))
-        {
-            Trace.TraceError("Effect input missing sender");
-            return;
-        }
-
-        if (effectInput.Effect.TargetingStyle != EffectTargetingStyle.PredeterminedGlobalTrigger) 
-            effectInput.Target = DetermineTarget(effectInput, parentEffectRequest);
-
-        if ((effectInput.Target == null) 
-            && (effectInput.Effect.TargetingStyle != EffectTargetingStyle.PredeterminedGlobalTrigger))
-        {
-            Trace.TraceError("Could not determine effect target");
-            return;
-        }
-
-        if (effectInput.Effect.SwapSenderAndTarget)
-        {
-            effectInput.SwapSenderAndTarget();
-        }
-
         QueuedEffect queuedEffect = new QueuedEffect(effectInput, parentEffectResult, additionalDelay);
         EffectVisualization visualization = queuedEffect.VisualizationListener.Visualization;
         
@@ -212,7 +163,7 @@ public class EffectQueue : CanvasObject
             AddChild(visualization);
         }
         
-        if (effectInput.Effect.RequiresPriority)
+        if (effectInput.EnqueueWithPriority)
         {
             _priorityQueue.Enqueue(queuedEffect);
         }
@@ -233,25 +184,6 @@ public class EffectQueue : CanvasObject
         return nextQueuedEffect.VisualizationListener.ReadyForExecute;
     }
 
-    private IReadOnlyUnit DetermineTarget(EffectInput effectInput, EffectRequest parentEffectResult)
-    {
-        switch (effectInput.Effect.TargetingStyle) 
-        {
-            case EffectTargetingStyle.MoveTarget:
-                return _lastMoveTarget;
-            case EffectTargetingStyle.Self:
-                return effectInput.Sender;
-            case EffectTargetingStyle.ParentTarget:
-                return parentEffectResult.Target;
-            case EffectTargetingStyle.ParentSender:
-                return parentEffectResult.Sender;
-            case EffectTargetingStyle.PredeterminedGlobalTrigger:
-                return effectInput.Target;
-            default:
-                return null;
-        }
-    }
-
     public bool IsEmpty()
     {
         int totalCount = _queue.Count + _priorityQueue.Count;
@@ -261,25 +193,18 @@ public class EffectQueue : CanvasObject
     //
     // Effect processing
     //
-    public event EventHandler<ExecuteGlobalTriggerEffectEventArgs> ExecuteGlobalTriggerEffectEventHandler;
+    public event EventHandler<SenderlessEffectEventArgs> ExecuteSenderlessEffectEventHandler;
 
-    public void ProcessEffect(EffectInput effectInput, EffectResult parentEffectResult = null)
+    public void SendEffectRequestFromInput(EffectInput effectInput, EffectResult parentEffectResult = null)
     {
-        GenerateEffectRequestArgs args = new GenerateEffectRequestArgs();
-        args.ParentEffectResult = parentEffectResult;
-        args.Target = effectInput.Target;
-        args.Sender = effectInput.Sender;
-        args.ChildEffects = effectInput.Effect.ChildEffects;
-        args.SpecialArgs = effectInput.SpecialArgs;
-
-        if (effectInput.Effect.TargetingStyle == EffectTargetingStyle.PredeterminedGlobalTrigger)
+        if (effectInput.Sender == null)
         {
-            EffectRequest request = effectInput.Effect.GenerateEffectRequest(args);
+            EffectRequest request = effectInput.Effect.GenerateEffectRequest(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult);
 
-            ExecuteGlobalTriggerEffectEventArgs e = new();
+            SenderlessEffectEventArgs e = new();
             e.EffectRequest = request;
 
-            ExecuteGlobalTriggerEffectEventHandler?.Invoke(this, e);
+            ExecuteSenderlessEffectEventHandler?.Invoke(this, e);
         }
         else
         {
@@ -290,18 +215,23 @@ public class EffectQueue : CanvasObject
                 Trace.TraceError("EffectQueue: Sender could not be cast as Unit");
             }
 
-            senderAsUnit.Stats.SendEffect(effectInput.Effect.GenerateEffectRequest(args));
+            senderAsUnit.Stats.SendEffect(effectInput.Effect.GenerateEffectRequest(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult));
         }
     }
 
+    /// <summary>
+    /// Receives request and result of executed effect and enqueues its immediate after effects, with priority.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="result"></param>
     public void ResolveEffect(EffectRequest request, EffectResult result)
     {
-        if (request.ChildEffects != null)
+        if (request.ImmediateAfterEffects != null)
         {
-            foreach (EffectDeprecated childEffect in request.ChildEffects)
+            foreach (IEffect immediateAfterEffect in request.ImmediateAfterEffects)
             {
-                EffectInput childEffectInput = new EffectInput(childEffect, request.Sender);
-                EnqueueEffect(childEffectInput, request, result);
+                EffectInput immediateAfterEffectInput = new EffectInput(immediateAfterEffect, request.Sender, request.Target, true);
+                EnqueueEffect(immediateAfterEffectInput, request, result);
             }
         }
 
@@ -351,7 +281,7 @@ public class EffectQueue : CanvasObject
     }
 }
 
-public class ExecuteGlobalTriggerEffectEventArgs : EventArgs
+public class SenderlessEffectEventArgs : EventArgs
 {
     public EffectRequest EffectRequest { get; set; }
 }

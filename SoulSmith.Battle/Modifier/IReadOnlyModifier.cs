@@ -1,6 +1,6 @@
 ﻿
 
-namespace SoulSmith.Effect.Modifier
+namespace SoulSmith.Battle.Modifier
 {
     public interface IReadOnlyModifier
     {

@@ -1,12 +1,12 @@
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using SoulSmith.Battle.Effect;
 using SoulSmith.Collections;
 using SoulSmith.Core;
 using SoulSmith.Asset;
-using SoulSmith.Battle.Effect;
 
-namespace SoulSmith.Move
+namespace SoulSmith.Battle.Move
 {
     [JsonConverter(typeof(MoveJsonConverter))]
     public class Move : IAsset
@@ -46,11 +46,11 @@ namespace SoulSmith.Move
             {
                 string fullMoveKey = "Moves/" + movePaths[i];
 
-                Move curMove = (Move)AssetManager.Instance.GetMove(fullMoveKey);
+                Move curMove = (Move)AssetManager.Instance.GetMove<Move>(fullMoveKey);
 
                 if (curMove == null) throw new ArgumentNullException(nameof(curMove));
 
-                moves[i] = curMove;
+                moves.Add(curMove);
 
             }
 
@@ -63,6 +63,8 @@ namespace SoulSmith.Move
         public override Move Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
+
+            reader.Read();
 
             string name = string.Empty;
             string localizationKey = string.Empty;
@@ -96,21 +98,27 @@ namespace SoulSmith.Move
                         var optionsLocVars = new JsonSerializerOptions();
                         optionsLocVars.Converters.Add(new LocalizationVariablesJsonConverter());
                         localizationVariables = JsonSerializer.Deserialize<Dictionary<string, string>>(ref reader, optionsLocVars);
+                        reader.Read();
                         break;
                     case "EmotionTag":
                         emotionTag = JsonSerializer.Deserialize<EmotionTag.EmotionTag>(ref reader, options);
+                        reader.Read();
                         break;
                     case "Effects":
                         effects = JsonSerializer.Deserialize<IEffect[]>(ref reader, options);
+                        reader.Read();
                         break;
                     case "TargetingStyle":
                         targetingStyle = JsonSerializer.Deserialize<MoveTargetingStyle>(ref reader, options);
+                        reader.Read();
                         break;
                     default:
                         reader.Skip();
                         break;
                 }
             }
+
+            reader.Read();
 
             return new Move(name, description, targetingStyle, emotionTag, effects);
         }

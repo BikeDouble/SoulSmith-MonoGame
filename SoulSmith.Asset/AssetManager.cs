@@ -56,9 +56,9 @@ namespace SoulSmith.Asset
             _unitTemplateLoader = loader;
         }
 
-        public IReadOnlyTrackedAsset<IAsset> GetUnitTemplate(string key) //TODO eliminate UnitTemplate
+        public IReadOnlyTrackedAsset<T> GetUnitTemplate<T>(string key) where T : IAsset //TODO eliminate UnitTemplate
         {
-            if (_unitTemplateCache.Contains(key)) return _unitTemplateCache.GetAsset(key);
+            if (_unitTemplateCache.Contains(key)) return _unitTemplateCache.GetAsset<T>(key);
 
             if (!_manifest.ContainsKey(key)) return null;
 
@@ -72,7 +72,7 @@ namespace SoulSmith.Asset
 
             _unitTemplateCache.CacheAsset(key, template);
 
-            return _unitTemplateCache.GetAsset(key);
+            return _unitTemplateCache.GetAsset<T>(key);
         }
 
         public void RegisterTextureLoader(IGraphicsAssetLoader loader)
@@ -80,9 +80,9 @@ namespace SoulSmith.Asset
             _textureLoader = loader;
         }
 
-        public IReadOnlyTrackedAsset<IAsset> GetTexture2D(string key)
+        public IReadOnlyTrackedAsset<T> GetTexture2D<T>(string key) where T : IAsset
         {
-            if (_textureCache.Contains(key)) return _textureCache.GetAsset(key);
+            if (_textureCache.Contains(key)) return _textureCache.GetAsset<T>(key);
 
             if (!_manifest.ContainsKey(key)) return null;
 
@@ -94,7 +94,7 @@ namespace SoulSmith.Asset
 
             _textureCache.CacheAsset(key, resource);
 
-            return _textureCache.GetAsset(key);
+            return _textureCache.GetAsset<T>(key);
         }
 
         public void RegisterZonedTextureLoader(IGraphicsAssetLoader loader)
@@ -102,9 +102,9 @@ namespace SoulSmith.Asset
             _zonedTextureLoader = loader;
         }
 
-        public IReadOnlyTrackedAsset<IAsset> GetZonedTexture2D(string key)
+        public IReadOnlyTrackedAsset<T> GetZonedTexture2D<T>(string key) where T : IAsset
         {
-            if (_zonedTextureCache.Contains(key)) return _zonedTextureCache.GetAsset(key);
+            if (_zonedTextureCache.Contains(key)) return _zonedTextureCache.GetAsset<T>(key);
 
             if (!_manifest.ContainsKey(key)) return null;
 
@@ -116,20 +116,20 @@ namespace SoulSmith.Asset
 
             _zonedTextureCache.CacheAsset(key, resource);
 
-            return _zonedTextureCache.GetAsset(key);
+            return _zonedTextureCache.GetAsset<T>(key);
         }
 
         public void RegisterMoveLoader(IBasicAssetLoader loader) { _moveLoader = loader; }
 
-        public IAsset GetMove(string key)
+        public T GetMove<T>(string key) where T : IAsset
         {
-            if (!_manifest.ContainsKey(key)) return null;
+            if (!_manifest.ContainsKey(key)) return default(T);
 
             string filePath = FILEPREFIX + _manifest[key];
 
             if (_moveLoader == null) throw new Exception("Move loader not registered");
-
-            IAsset move = _moveLoader.Load(filePath);
+            
+            T move = (T)_moveLoader.Load(filePath);
 
             return move;
         }

@@ -1,10 +1,7 @@
+using SoulSmith.Battle.Modifier;
 
-using SoulSmith.Battle;
-using SoulSmith.Effect.Modifier;
-using System;
-
-namespace SoulSmith.Effect;
-public partial class EffectResult 
+namespace SoulSmith.Battle.Effect;
+public partial class EffectResult
 {
     public int EffectiveDamage = 0;
     public DamageType DamageType;

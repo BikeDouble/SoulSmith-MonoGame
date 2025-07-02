@@ -1,13 +1,8 @@
-
-using System;
-using Microsoft.Xna.Framework;
-using MonoGame.Extended.Graphics;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Battle;
 using SoulSmith.Asset;
 using SoulSmith.Drawing;
+using Microsoft.Xna.Framework;
 
 namespace SoulSmith.Units;
 public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
@@ -23,10 +18,14 @@ public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
     public const double HURTANIMATIONDURATION = 2;
     public const double DEATHANIMATIONDURATION = 2;
 
+    public const float WIDTHSCALE = 0.8f;
+    public const float HEIGHTSCALE = 0.8f;
+
     private double _animationTime = -1;
 
     public UnitSprite(IReadOnlyTrackedAsset<IDrawableResource> sprite, double animationDesyncFactor) : base(null, sprite)
     {
+        this.Scale(new Vector2(WIDTHSCALE, HEIGHTSCALE));
         //TODO implement animationDesyncFactor
     }
 

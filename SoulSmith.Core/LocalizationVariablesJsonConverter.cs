@@ -15,13 +15,17 @@ namespace SoulSmith.Core
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
+            reader.Read();
+
             Dictionary<string, string> variables = new Dictionary<string, string>();
+
+            string propertyName = string.Empty;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
                 if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Expected property name");
 
-                string propertyName = reader.GetString();
+                propertyName = reader.GetString();
 
                 reader.Read();
 

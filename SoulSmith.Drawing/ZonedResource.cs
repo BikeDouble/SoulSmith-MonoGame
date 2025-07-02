@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
+using SoulSmith.Asset;
 using SoulSmith.Core;
 using SoulSmith.Shapes;
 
 namespace SoulSmith.Drawing
 {
-    public class ZonedResource : IZone, IDrawableResource
+    public class ZonedResource : IZone, IDrawableResource, IAsset
     {
         private IZone _clickZone;
         private IDrawableResource _resource;
@@ -24,7 +25,35 @@ namespace SoulSmith.Drawing
         {
             if (_clickZone == null) return false;
 
-            return _clickZone.ContainsGlobal(point, transformation);
+            Position newTransformation = new Position(transformation);
+
+            newTransformation.Translate(Origin * transformation.ScaleVector * -1);
+
+            return _clickZone.ContainsGlobal(point, newTransformation);
+        }
+
+        public bool ContainsLocal(Vector2 point)
+        {
+            if (_clickZone == null) { return false; }
+
+            Position originTransformation = new Position(Origin * -1);
+
+            return _clickZone.ContainsGlobal(point, originTransformation);
+        }
+
+        public Vector2 GetRandomLocalPoint()
+        {
+            return _clickZone.GetRandomLocalPoint();
+        }
+
+        public Vector2 GetRandomGlobalPoint(IReadOnlyPosition position)
+        {
+            return _clickZone.GetRandomGlobalPoint(position);
+        }
+
+        public float GetAreaLocal()
+        {
+            return _clickZone.GetAreaLocal();
         }
 
         public void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch)
@@ -36,5 +65,9 @@ namespace SoulSmith.Drawing
         {
             _resource.Dispose();
         }
+
+        public int Width { get { return _resource.Width; } }
+        public int Height { get { return _resource.Height; } }
+        public Vector2 Origin { get { return _resource.Origin; } }
     }
 }

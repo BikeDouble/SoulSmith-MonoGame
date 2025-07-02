@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using SoulSmith.Object.Canvas;
-using SoulSmith.Battle.Move;
 using SoulSmith.UnitStats;
-using SoulSmith.Battle.Modifier;
 using SoulSmith.Battle;
-using SoulSmith.Battle.Effect;
-using System.Collections;
-using SoulSmith.EmotionTag;
+using SoulSmith.Battle.Move;
 using SoulSmith.Core;
 using SoulSmith.Templates;
 using SoulSmith.Asset;
 using SoulSmith.Shapes;
+using SoulSmith.Drawing;
+using SoulSmith.Battle.Effect;
 
 namespace SoulSmith.Units;
 public class Unit : CanvasObject, IReadOnlyUnit
@@ -36,7 +32,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		new StatsList(template.StatsList),
 		Move.GenerateMoveList(template.MoveSetWeightedList, template.MaxMoveCount),
         new UnitSprite(
-			AssetManager.Instance.GetTexture2D(template.SpriteName), //TODO 
+			AssetManager.Instance.GetTexture2D<DrawableResource_Texture2D>(template.SpriteName), 
 			Rand.RandDoubleAroundOne(UnitSprite.ANIMATIONDESYNCFACTORRADIUS)), 
 		new UnitUI(),
 		template.Emotion,
@@ -46,7 +42,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 
 	public Unit(
 		StatsList statsList,
-		ReadOnlyCollection<Move> moveSet,
+		IEnumerable<Move> moveSet,
 		UnitSprite sprite,
 		UnitUI uI,
 		EmotionTag.EmotionTag emotion,
@@ -64,7 +60,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		AddChild(_uI);
         _uI?.Update(_stats);
 
-        _moveSet = moveSet;
+        _moveSet = new ReadOnlyCollection<Move>(moveSet.ToList());
 		_emotion = emotion;
 		_friendlyName = friendlyName;
 		_timeOnBoard = timeOnBoard;
@@ -92,11 +88,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 
     private void EnqueueEffectInput(object sender, EnqueueEffectInputEventArgs e)
 	{
-		if (e.EffectInput.Sender == null)
-		{
-			e.EffectInput.Sender = this;
-		}
-
 		EnqueueEffectInputEventHandler(this, e);
 	}
 
@@ -254,7 +245,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	}
 
     public bool InCombat { get { return _inCombat; } }
-	public IReadOnlyUnitStats Stats { get { return _stats; } }
+	public IReadOnlyUnitStats ReadOnlyStats { get { return _stats; } }
+	public UnitStats Stats { get { return _stats; } }
 	public ReadOnlyDictionary<StatType, int> StatsList { get { return _stats.StatsList; } }
 	public ReadOnlyCollection<Move> MoveSet { get { return _moveSet; } }
 	public int CombatPosition { get { return _combatPosition; } set { _combatPosition = value; } }

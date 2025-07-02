@@ -1,27 +1,25 @@
-using SoulSmith.Battle;
-
-namespace SoulSmith.Effect.Visualization;
+namespace SoulSmith.Battle.Effect.Visualization;
 public class EffectVisualizationListener
 {
     // Proxy for EffectVisualization and EffectQueue
     private EffectVisualization _visualization;
     private bool _readyForExecute = true;
 
-    public EffectVisualizationListener(EffectInput input, double additionalDelay)
+    public EffectVisualizationListener(EffectInput input, double delay)
     {
         EffectVisualization visualization = input.Effect.CloneVisualization();
         if (visualization == null)
         {
-            if (additionalDelay > 0)
+            if (delay > 0)
             {
-                StartTimerVisualization(additionalDelay);
+                StartTimerVisualization(delay);
             }
             return;
         }
         BeginVisualization(input.Sender,
                            input.Target,
                            visualization,
-                           TODO + additionalDelay);
+                           delay);
     }
 
     public void BeginVisualization(IReadOnlyUnit user,
@@ -42,7 +40,7 @@ public class EffectVisualizationListener
 
     private void StartTimerVisualization(double time)
     {
-        EffectVisualization emptyVis = new EffectVisualization(null, null, null, (float)time);
+        EffectVisualization emptyVis = new EffectVisualization((float)time, 0, (float)time);
 
         BeginVisualization(null, null, emptyVis, 0);
     }
@@ -54,5 +52,5 @@ public class EffectVisualizationListener
     }
 
     public EffectVisualization Visualization { get { return _visualization; } }
-    public bool ReadyForExecute {  get { return _readyForExecute; } }
+    public bool ReadyForExecute { get { return _readyForExecute; } }
 }

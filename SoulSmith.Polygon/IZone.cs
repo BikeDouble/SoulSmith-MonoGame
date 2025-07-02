@@ -20,8 +20,8 @@ namespace SoulSmith.Shapes
     {
         public override IZone? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            PolygonJsonConverter polygonConverter = new PolygonJsonConverter();
-            return polygonConverter.Read(ref reader, typeToConvert, options);
+            Polygon polygon = JsonSerializer.Deserialize<Polygon>(ref reader, options);
+            return polygon;
 
             //TODO implement circles
         }

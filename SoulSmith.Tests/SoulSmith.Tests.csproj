@@ -18,6 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SoulSmith.Asset\SoulSmith.Asset.csproj" />
+    <ProjectReference Include="..\SoulSmith.Polygon\SoulSmith.Shapes.csproj" />
+    <ProjectReference Include="..\SoulSmith.Vector\SoulSmith.Vector.csproj" />
   </ItemGroup>
 
 </Project>

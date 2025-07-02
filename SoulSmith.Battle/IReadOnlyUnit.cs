@@ -1,30 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Shapes;
 using SoulSmith.UnitStats;
+using SoulSmith.Battle.Move;
 
-namespace SoulSmith.Battle
+namespace SoulSmith.Battle;
+
+public interface IReadOnlyUnit : IReadOnlyCanvasObject
 {
-    public interface IReadOnlyUnit : IReadOnlyCanvasObject
-    {
-        ReadOnlyDictionary<StatType, int> StatsList { get; }
-        bool InCombat { get; }
-        int GetModStat(StatType stat);
-        int GetBaseStat(StatType stat);
-        ReadOnlyCollection<Move.Move> MoveSet { get; }
-        string FriendlyName { get; }
-        IZone HitZone { get; }
-        IZone FireZone { get; }
-        int MaxHealth { get; }
-        int CurHealth { get; }
-        int Attack { get; }
-        int Defense { get; }
-        int CurDecay { get; }
-        int DecayRate { get; }
-    }
+    ReadOnlyDictionary<StatType, int> StatsList { get; }
+    bool InCombat { get; }
+    int GetModStat(StatType stat);
+    int GetBaseStat(StatType stat);
+    ReadOnlyCollection<Move.Move> MoveSet { get; }
+    string FriendlyName { get; }
+    IZone HitZone { get; }
+    IZone FireZone { get; }
+    int MaxHealth { get; }
+    int CurHealth { get; }
+    int Attack { get; }
+    int Defense { get; }
+    int CurDecay { get; }
+    int DecayRate { get; }
 }

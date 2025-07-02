@@ -272,6 +272,8 @@ namespace SoulSmith.Shapes
 
         private void Translate(Vector2 translation)
         {
+            if (translation == Vector2.Zero) return;
+
             for (int i = 0; i < _vertices.Count; i++)
             {
                 _vertices[i] = _vertices[i] + translation;
@@ -280,6 +282,8 @@ namespace SoulSmith.Shapes
 
         private void Scale(Vector2 scale)
         {
+            if (scale == Vector2.One) return;
+
             // Flip traversal direction if multiplied by one-dimension negative scale
             if ((scale.X < 0) ^ (scale.Y < 0))
             {
@@ -294,11 +298,13 @@ namespace SoulSmith.Shapes
 
         private void Rotate(float rotation, Vector2? origin = null)
         {
+            if (rotation == 0) return;
+
             Vector2 originVal = origin ?? Vector2.Zero;
 
             for (int i = 0; i < _vertices.Count; i++)
             {
-                _vertices[i] = Position.RotatePointAroundPoint(originVal, _vertices[i], rotation);
+                _vertices[i] = Position.RotatePointAroundPoint(_vertices[i], originVal, rotation);
             }
         }
     }

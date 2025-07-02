@@ -27,7 +27,7 @@ public class ScissorRect : CanvasObject
         _height = height;
     }
 
-    public override void CollectDrawPackets(Position absolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
+    public override void CollectDrawPackets(IReadOnlyPosition absolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
     {
         Position newPosition = new Position(absolutePosition);
         newPosition.Transform(Position);

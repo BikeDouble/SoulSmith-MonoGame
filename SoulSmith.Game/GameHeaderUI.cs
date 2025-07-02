@@ -11,6 +11,7 @@ using SoulSmith.Object.Canvas;
 namespace SoulSmith.Game;
 public class GameHeaderUI : CanvasObject
 {
+    // Children
     private ButtonObject _unitInventoryButton;
 
     public const string BUTTONIDLERESOURCENAME = "GameHeaderButtonIdle";
@@ -21,10 +22,10 @@ public class GameHeaderUI : CanvasObject
 
     public GameHeaderUI() 
     {
-        _unitInventoryButton = new ButtonObject(null, //TODO
+        /*_unitInventoryButton = new ButtonObject(null, //TODO
             null, 
             new Position(INVENTORYBUTTONPOSITIONX, INVENTORYBUTTONPOSITIONY));
-        AddChild(_unitInventoryButton);
+        AddChild(_unitInventoryButton);*/
     }
 
 }

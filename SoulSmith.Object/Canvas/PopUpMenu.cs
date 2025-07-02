@@ -27,7 +27,7 @@ public class PopUpMenu : CanvasObject
         base.Process(delta);
     }
 
-    public override void CollectInputPackets(Position parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
+    public override void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
     {
         Position newPosition = absolutePosition;
 

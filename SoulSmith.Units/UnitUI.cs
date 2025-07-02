@@ -14,26 +14,33 @@ using SoulSmith.UnitStats;
 
 namespace SoulSmith.Units;
 public class UnitUI : CanvasObject
-{ 
+{
+	public const float TARGETBUTTONWIDTHSCALE = 0.35f;
+	public const float TARGETBUTTONHEIGHTSCALE = 0.35f;
+
 	//Children
 	private UnitUIMoveMenu _moveMenu;
 	private UnitUIHealthBar _healthBar;
 	private UnitUIModifierDisplay _modifierDisplay;
 	private UnitUITimeOnBoardDisplay _timeOnBoardDisplay = null;
 	private ButtonObject _targetButton;
-	private readonly SpriteFont _font;
 
+	private readonly SpriteFont _font;
 
 	public UnitUI() :
 		this(null,//MasterAssetLoader.GetFont(GameManager.UIFONTNAME), TODO fix fonts
-			AssetManager.Instance.GetZonedTexture2D("ZonedTextures/UI/Units/MoveButton"),
-			AssetManager.Instance.GetZonedTexture2D("ZonedTextures/UI/Units/TargetButtonIdle"),
-            AssetManager.Instance.GetZonedTexture2D("ZonedTextures/UI/Units/TargetButtonHovered")) 
+			AssetManager.Instance.GetZonedTexture2D<ZonedResource>("ZonedTextures/UI/Units/MoveButton"),
+            AssetManager.Instance.GetZonedTexture2D<ZonedResource>("ZonedTextures/UI/Units/TargetButtonIdle"),
+            AssetManager.Instance.GetZonedTexture2D<ZonedResource>("ZonedTextures/UI/Units/TargetButtonHovered")) 
 	{ }
 
 	public UnitUI(SpriteFont font, IReadOnlyTrackedAsset<ZonedResource> moveButton, IReadOnlyTrackedAsset<ZonedResource> targetButtonIdle, IReadOnlyTrackedAsset<ZonedResource> targetButtonHovered)
 		: base(new Position(0, 0, 1, 1, 0, 5))
 	{
+		if (moveButton == null) throw new ArgumentNullException(nameof(moveButton));
+		if (targetButtonIdle == null) throw new ArgumentNullException(nameof(targetButtonIdle));
+		if (targetButtonHovered == null) throw new ArgumentNullException(nameof(targetButtonHovered));
+
 		_font = font;
 
         _moveMenu = new UnitUIMoveMenu(_font, moveButton);
@@ -47,6 +54,7 @@ public class UnitUI : CanvasObject
         _targetButton = new ButtonObject(targetButtonIdle, targetButtonHovered);
 		_targetButton.Hide();
         _targetButton.ButtonPressedEventHandler += OnTargetButtonPressed;
+		_targetButton.Scale(new Microsoft.Xna.Framework.Vector2(TARGETBUTTONWIDTHSCALE, TARGETBUTTONHEIGHTSCALE));
         AddChild(_targetButton);
 
 		_modifierDisplay = new UnitUIModifierDisplay();

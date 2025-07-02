@@ -55,9 +55,9 @@ namespace SoulSmith.Asset
             return _cache.ContainsKey(key);
         }
 
-        public IReadOnlyTrackedAsset<IAsset> GetAsset(string key)
+        public IReadOnlyTrackedAsset<T> GetAsset<T>(string key) where T : IAsset
         {
-            return _cache[key]?.GetAsset();
+            return _cache[key]?.GetTrackedIAsset<T>();
         }        
     }
 }

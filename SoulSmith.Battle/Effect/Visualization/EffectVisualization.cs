@@ -1,9 +1,9 @@
-
-
-using SoulSmith.Battle;
 using SoulSmith.Object.Canvas;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
-namespace SoulSmith.Effect.Visualization;
+namespace SoulSmith.Battle.Effect.Visualization;
+[JsonConverter(typeof(EffectVisualizationJsonConverter))]
 public class EffectVisualization : CanvasObject
 {
     private float _totalLifespan = 3f; //Time in seconds before visualization automatically completes
@@ -52,15 +52,15 @@ public class EffectVisualization : CanvasObject
         ReadyEffectEventHandler?.Invoke(this, e);
     }
 
-    public virtual void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0f)
+    public virtual void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float additionalDelay = 0f)
     {
         _sender = sender;
         _target = target;
 
         _elapsedLifespan = 0;
 
-        _delay = delay;
-        
+        _delay += additionalDelay;
+
         if (_delay > 0)
             Hide();
     }
@@ -120,6 +120,54 @@ public class EffectVisualization : CanvasObject
     protected IReadOnlyUnit Target { get { return _target; } }
 }
 
+public class EffectVisualizationJsonConverter : JsonConverter<EffectVisualization>
+{
+    public override EffectVisualization Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
+
+        reader.Read();
+
+        if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Expected property name");
+
+        if (reader.GetString() != "Type") throw new JsonException("Expected type of EffectVisualization");
+
+        reader.Read();
+
+        if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected name of EffectVisualization type");
+
+        string visType = reader.GetString();
+
+        reader.Read();
+
+        if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Expected property name");
+
+        if (reader.GetString() != "Visualization") throw new JsonException("Expected visualization");
+
+        reader.Read();
+
+        if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of object");
+
+        EffectVisualization value = null;
+
+        switch (visType)
+        {
+            case "DirectMissile":
+                value = JsonSerializer.Deserialize<DirectMissileEffectVisualization>(ref reader, options);
+                reader.Read();
+                break;
+            default:
+                throw new JsonException($"Unexpected type {visType}. Type is either misspelled or does not exist.");
+        }
+
+        return value;
+    }
+
+    public override void Write(Utf8JsonWriter writer, EffectVisualization value, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
+}
 public class ReadyEffectEventArgs : EventArgs
 {
 

@@ -12,6 +12,8 @@ public class UnitUIMoveButton : ButtonObject
 {
 	private const float IDLEDIMNESSMULT = 0.8f;
 	private const float HOVERSIZEMOD = 1.1f;
+	private const float WIDTHSCALE = 0.35f;
+	private const float HEIGHTSCALE = 0.35f;
 
 	private CanvasObject _label;
 
@@ -20,12 +22,6 @@ public class UnitUIMoveButton : ButtonObject
 	private Color _hoverColor = Color.Gray;
 	private static Position _hoverTransformation = new Position(0, 0, HOVERSIZEMOD, HOVERSIZEMOD);
 	private static Position _unhoverTransformation = new Position(0, 0, 1 / HOVERSIZEMOD, 1 / HOVERSIZEMOD);
-
-	public UnitUIMoveButton() : base()
-	{
-		_label = new CanvasObject();
-		AddChild( _label );
-	}
 
 	public UnitUIMoveButton(
 		SpriteFont font, 
@@ -37,6 +33,7 @@ public class UnitUIMoveButton : ButtonObject
 	{
         _label = new CanvasObject(font, "O");
         AddChild(_label);
+		this.Scale(new Vector2(WIDTHSCALE, HEIGHTSCALE));
     }
 
 	public void UpdateButtonWithMove(Move move)

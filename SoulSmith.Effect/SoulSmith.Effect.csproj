@@ -10,6 +10,7 @@
     <ProjectReference Include="..\SoulSmith.Battle\SoulSmith.Battle.csproj" />
     <ProjectReference Include="..\SoulSmith.Collections\SoulSmith.Collections.csproj" />
     <ProjectReference Include="..\SoulSmith.Core\SoulSmith.Core.csproj" />
+    <ProjectReference Include="..\SoulSmith.Move\SoulSmith.Move.csproj" />
     <ProjectReference Include="..\SoulSmith.Object\SoulSmith.Object.csproj" />
   </ItemGroup>
 

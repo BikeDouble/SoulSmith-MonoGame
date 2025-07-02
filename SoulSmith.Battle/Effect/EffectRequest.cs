@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using SoulSmith.Battle;
-using SoulSmith.Effect.Modifier;
+using SoulSmith.Battle.Modifier;
 
-namespace SoulSmith.Effect;
+namespace SoulSmith.Battle.Effect;
 public class EffectRequest
 {
     public EffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target)
@@ -16,10 +11,10 @@ public class EffectRequest
         RawHealing = 0;
         Modifier = null;
         Trigger = EffectTrigger.None;
-        ChildEffects = null;
+        ImmediateAfterEffects = null;
     }
 
-    public EffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, EffectTrigger trigger, IEnumerable<IEffect> childEffects = null)
+    public EffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, EffectTrigger trigger, IEnumerable<IEffect> immediateAfterEffects = null)
     {
         Sender = sender;
         Target = target;
@@ -27,10 +22,10 @@ public class EffectRequest
         RawHealing = 0;
         Modifier = null;
         Trigger = trigger;
-        ChildEffects = childEffects?.ToList();
+        ImmediateAfterEffects = immediateAfterEffects?.ToList();
     }
 
-    public EffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, DamageType damageType, int rawDamage, bool gainDecay = true, IEnumerable<IEffect> childEffects = null)
+    public EffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, DamageType damageType, int rawDamage, bool gainDecay = true, IEnumerable<IEffect> immediateAfterEffects = null)
     {
         Sender = sender;
         Target = target;
@@ -39,11 +34,11 @@ public class EffectRequest
         DamageType = damageType;
         Modifier = null;
         Trigger = EffectTrigger.None;
-        ChildEffects = childEffects?.ToList();
+        ImmediateAfterEffects = immediateAfterEffects?.ToList();
         GainDecay = gainDecay;
     }
 
-    public EffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, int rawHealing, IEnumerable<IEffect> childEffects = null)
+    public EffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, int rawHealing, IEnumerable<IEffect> immediateAfterEffects = null)
     {
         Sender = sender;
         Target = target;
@@ -51,7 +46,7 @@ public class EffectRequest
         RawHealing = rawHealing;
         Modifier = null;
         Trigger = EffectTrigger.None;
-        ChildEffects = childEffects?.ToList();
+        ImmediateAfterEffects = immediateAfterEffects?.ToList();
         GainDecay = false;
     }
 
@@ -59,7 +54,7 @@ public class EffectRequest
         IReadOnlyUnit sender,
         IReadOnlyUnit target,
         IModifier modifier,
-        IEnumerable<IEffect> childEffects = null)
+        IEnumerable<IEffect> immediateAfterEffects = null)
     {
         Sender = sender;
         Target = target;
@@ -67,7 +62,7 @@ public class EffectRequest
         RawHealing = 0;
         Modifier = modifier;
         Trigger = EffectTrigger.None;
-        ChildEffects = childEffects?.ToList();
+        ImmediateAfterEffects = immediateAfterEffects?.ToList();
     }
 
     public IReadOnlyUnit Sender { get; set; }
@@ -78,5 +73,5 @@ public class EffectRequest
     public bool GainDecay { get; set; }
     public IModifier Modifier { get; set; }
     public EffectTrigger Trigger { get; set; }
-    public List<IEffect> ChildEffects { get; set; }
+    public List<IEffect> ImmediateAfterEffects { get; set; }
 }

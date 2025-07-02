@@ -8,6 +8,9 @@ namespace SoulSmith.Drawing
     {
         public void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch);
         public void UpdateState(string newState) { }
+        public Vector2 Origin { get; }
+        public int Width { get; }
+        public int Height { get; }
     }
 }
 

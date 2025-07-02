@@ -200,7 +200,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         _tint += change;
     }
 
-    public override void CollectDrawPackets(Position absolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
+    public override void CollectDrawPackets(IReadOnlyPosition absolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
     {
         tint += _tint;
 
@@ -227,9 +227,9 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         base.CollectDrawPackets(absolutePosition, tint, renderQueue, scissorRect);
     }
 
-    public override void CollectInputPackets(Position parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
+    public override void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
     {
-        Position newPosition = absolutePosition;
+        Position newPosition = absolutePosition; //TODO investigate, rework
 
         if (newPosition == null)
         {
@@ -319,7 +319,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
 
     public bool Visible { get { return _visible; } }
     public IReadOnlyPosition Position { get { return _position; } }
-    protected virtual IDrawableResource Resource { get { return _drawableResource.Value; } }
+    protected virtual IDrawableResource Resource { get { return _drawableResource?.Value; } }
 }
 
 public class GetGlobalPositionEventArgs : EventArgs

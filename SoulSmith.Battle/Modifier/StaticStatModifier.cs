@@ -1,8 +1,8 @@
-﻿using SoulSmith.Battle;
+﻿using SoulSmith.Battle.Effect;
 using SoulSmith.Object.Canvas;
 using SoulSmith.UnitStats;
 
-namespace SoulSmith.Effect.Modifier
+namespace SoulSmith.Battle.Modifier
 {
     public class StaticStatModifier : IModifier
     {

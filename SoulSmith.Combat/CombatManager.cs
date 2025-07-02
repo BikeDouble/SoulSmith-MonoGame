@@ -6,10 +6,11 @@ using Microsoft.Xna.Framework.Graphics;
 using SoulSmith.Units;
 using SoulSmith.Battle;
 using SoulSmith.Battle.Move;
-using SoulSmith.Battle.Effect;
 using SoulSmith.Asset;
 using SoulSmith.Templates;
 using SoulSmith.Collections;
+using SoulSmith.Battle.Effect;
+using SoulSmith.Drawing;
 
 namespace SoulSmith.Combat;
 public class CombatManager : CanvasObject, IReadOnlyCombat
@@ -104,8 +105,8 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
     {
         if (_effectQueue == null)
         {
-            _effectQueue = new EffectQueue();
-			_effectQueue.ExecuteGlobalTriggerEffectEventHandler += ExecuteGlobalTriggerEffect;
+            _effectQueue = new EffectQueue(this);
+			_effectQueue.ExecuteSenderlessEffectEventHandler += ExecuteGlobalTriggerEffect;
         }
 
         AddChild(_effectQueue);
@@ -255,7 +256,8 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 				//if (!team.PlayerControlled) unitName = "animatedScrap";
 				for (int i = 0; i < 3; i++)
 				{
-					IReadOnlyTrackedAsset<UnitTemplate> templateAsset = AssetManager.Instance.GetUnitTemplate(unitName);
+                    IReadOnlyTrackedAsset<UnitTemplate> templateAsset = AssetManager.Instance.GetUnitTemplate<UnitTemplate>(unitName);
+                    if (templateAsset == null) throw new ArgumentNullException(nameof(templateAsset));
                     Unit unit = new Unit(templateAsset.Value);
 					team.AssignUnitToPosition(unit, i);
 				}
@@ -447,7 +449,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	}
 
 	// Listens to effect queue
-	private void ExecuteGlobalTriggerEffect(object sender, ExecuteGlobalTriggerEffectEventArgs e)
+	private void ExecuteGlobalTriggerEffect(object sender, SenderlessEffectEventArgs e)
 	{
 		ExecuteEffectInternal(e.EffectRequest);
 	}

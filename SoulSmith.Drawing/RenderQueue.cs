@@ -1,13 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.Shapes;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Linq;
-using System.Net.Sockets;
+﻿using Microsoft.Xna.Framework.Graphics;
 using SoulSmith.Core;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
@@ -15,7 +6,6 @@ namespace SoulSmith.Drawing
 {
     public class RenderQueue : IAddOnly<DrawPacket> //TODO change input in CollectDrawPackets
     {
-        private bool drawScissorRect = true;
         private List<DrawPacket> _packets = new List<DrawPacket>();
         private RasterizerState _scissorState = new RasterizerState { ScissorTestEnable = true };
 
@@ -32,17 +22,10 @@ namespace SoulSmith.Drawing
             {
                 CheckAndUpdateScissorRect(spriteBatch, graphics, packet.ScissorRect);
 
-                if (drawScissorRect) DrawScissorRect(graphics.ScissorRectangle, spriteBatch);
-
                 DrawDrawPacket(packet, spriteBatch);
             }
 
             spriteBatch.End();
-        }
-
-        private void DrawScissorRect(Rectangle rect, SpriteBatch spriteBatch)
-        {
-            spriteBatch.DrawRectangle(rect, Microsoft.Xna.Framework.Color.White);
         }
 
         private void CheckAndUpdateScissorRect(SpriteBatch spriteBatch, GraphicsDevice graphics, Rectangle? newScissorRect)

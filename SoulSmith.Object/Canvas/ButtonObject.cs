@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework;
-using MonoGame.Extended.Input;
-using Microsoft.Xna.Framework.Graphics;
-using System.Runtime.CompilerServices;
-using SoulSmith.Input;
+﻿using SoulSmith.Input;
 using SoulSmith.Drawing;
 using SoulSmith.Core;
 using SoulSmith.Asset;
@@ -37,7 +27,7 @@ public class ButtonObject : CanvasObject_MultipleResources
         base.Process(delta);
     }
 
-    public override void CollectInputPackets(Position parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
+    public override void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
     {
         Position newPosition = absolutePosition;
 

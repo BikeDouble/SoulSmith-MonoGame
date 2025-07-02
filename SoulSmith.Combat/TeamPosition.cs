@@ -1,5 +1,4 @@
 using SoulSmith.Units;
-using SoulSmith.Battle.Modifier;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Battle.Effect;
 

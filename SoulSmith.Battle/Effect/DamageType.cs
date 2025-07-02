@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SoulSmith.Effect
+namespace SoulSmith.Battle.Effect
 {
     public enum DamageType
     {

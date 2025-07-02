@@ -26,10 +26,8 @@
     <ProjectReference Include="..\SoulSmith.Asset\SoulSmith.Asset.csproj" />
     <ProjectReference Include="..\SoulSmith.Core\SoulSmith.Core.csproj" />
     <ProjectReference Include="..\SoulSmith.Drawing\SoulSmith.Drawing.csproj" />
-    <ProjectReference Include="..\SoulSmith.Effect\SoulSmith.Effect.csproj" />
     <ProjectReference Include="..\SoulSmith.Game\SoulSmith.Game.csproj" />
     <ProjectReference Include="..\SoulSmith.Input\SoulSmith.Input.csproj" />
-    <ProjectReference Include="..\SoulSmith.Move\SoulSmith.Move.csproj" />
     <ProjectReference Include="..\SoulSmith.Object\SoulSmith.Object.csproj" />
     <ProjectReference Include="..\SoulSmith.Polygon\SoulSmith.Shapes.csproj" />
     <ProjectReference Include="..\SoulSmith.Units\SoulSmith.Units.csproj" />

@@ -8,9 +8,9 @@ namespace SoulSmith.Emotion
     public class Emotion
     {
         public Color Color { get; }
-        public ReadOnlyCollection<ModifierTemplateWithArgs> PermanentModifiers { get; }
+        public ReadOnlyCollection<IModifier> PermanentModifiers { get; }
 
-        public Emotion(Color color, List<ModifierTemplateWithArgs> permanentModifiers = null)
+        public Emotion(Color color, List<IModifier> permanentModifiers = null)
         {
             Color = color;
 
