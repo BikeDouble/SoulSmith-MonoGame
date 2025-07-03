@@ -6,7 +6,7 @@
     },
     "SpawnLists": {
         "Area1": {
-            "Passive1": "WeightedLists/SpawnLists/Area1/area1Passive1.json"
+            "Passive1": "SpawnLists/Area1/area1Passive1.json"
         }
     },
     "Textures": {

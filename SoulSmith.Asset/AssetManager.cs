@@ -158,7 +158,7 @@ namespace SoulSmith.Asset
 
             JsonSerializerOptions optionsWithWeightedListConverter = new JsonSerializerOptions();
             optionsWithWeightedListConverter.Converters.Add(new SoulSmithWeightedListJsonConverter<T>());
-            SoulSmithWeightedList<T> list = JsonSerializer.Deserialize<SoulSmithWeightedList<T>>(filepath, optionsWithWeightedListConverter);
+            SoulSmithWeightedList<T> list = JsonSerializer.Deserialize<SoulSmithWeightedList<T>>(fileString, optionsWithWeightedListConverter);
 
             return list;
         }

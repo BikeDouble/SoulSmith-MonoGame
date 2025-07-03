@@ -14,23 +14,16 @@ namespace SoulSmith.Battle.Effect.Visualization
         private CanvasObject _missile;
         private Vector2 _startPoint;
         private Vector2 _endPoint;
+        private string _missileResourceKey;
 
         public DirectMissileEffectVisualization(string missileResourceKey,
             float lifespan,
             float effectActivationTimer = -1,
-            float delay = 0f) : base(lifespan, effectActivationTimer, delay)
+            float baseDelay = 0f) : base(lifespan, effectActivationTimer, baseDelay)
         {
+            _missileResourceKey = missileResourceKey;
             IReadOnlyTrackedAsset<DrawableResource_Texture2D> missileAsset = AssetManager.Instance.GetTexture2D<DrawableResource_Texture2D>(missileResourceKey);
             _missile = new CanvasObject(null, missileAsset);
-            AddChild(_missile);
-        }
-
-        public DirectMissileEffectVisualization(IReadOnlyTrackedAsset<IDrawableResource> missileResource,
-            float lifespan,
-            float effectActivationTimer = -1,
-            float delay = 0f) : base(lifespan, effectActivationTimer, delay)
-        {
-            _missile = new CanvasObject(null, missileResource);
             AddChild(_missile);
         }
 
@@ -38,11 +31,25 @@ namespace SoulSmith.Battle.Effect.Visualization
         {
             base.BeginVisualization(sender, target, delay);
 
-            _startPoint = Sender.HitZone.GetRandomGlobalPoint(Sender.GetGlobalPosition());
+            if (Sender.FireZone != null)
+            {
+                _startPoint = Sender.FireZone.GetRandomGlobalPoint(Sender.GetGlobalPosition());
+            }
+            else
+            {
+                _startPoint = Sender.GetGlobalPosition().Coordinates;
+            }
 
             _missile.Set(_startPoint);
 
-            _endPoint = Target.HitZone.GetRandomGlobalPoint(Target.GetGlobalPosition());
+            if (Target.HitZone != null)
+            {
+                _endPoint = Target.HitZone.GetRandomGlobalPoint(Target.GetGlobalPosition());
+            }
+            else
+            {
+                _endPoint = Target.GetGlobalPosition().Coordinates;
+            }
         }
 
         protected override void EnabledProcess(double delta)
@@ -54,6 +61,11 @@ namespace SoulSmith.Battle.Effect.Visualization
             Vector2 desiredPosition = _startPoint + (float)interpolant * difference;
 
             _missile.Set(desiredPosition);
+        }
+
+        public override EffectVisualization CloneVisualization()
+        {
+            return new DirectMissileEffectVisualization(_missileResourceKey, TotalLifespan, EffectActivationTimer, BaseDelay);
         }
     }
 

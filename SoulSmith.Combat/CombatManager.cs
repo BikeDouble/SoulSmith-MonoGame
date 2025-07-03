@@ -31,7 +31,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	private int _turnCount = 0;
 	private int _consecutivePassedTurns = 0;
 	private int _roundCount = 0;
-	private int _currentArea = 0;
+	private int _currentArea = 1;
 	private bool _awaitingMoveInput;
 
 	public CombatManager(IMoveSelector playerMoveSelector, IMoveSelector enemyMoveSelector)
@@ -299,7 +299,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 			TeamPosition position = positions[i];
             if (!position.ContainsUnit)
             {
-				string unitTemplateName = MasterSpawnList.SelectPassiveSpawn(0, _currentArea); //TODO implement difficulty
+				string unitTemplateName = MasterSpawnList.SelectPassiveSpawn(1, _currentArea); //TODO implement difficulty
 				if (!(unitTemplateName is null))
 					SpawnUnitAtPosition(enemyTeam, i, unitTemplateName);
 				enemiesSpawned++;

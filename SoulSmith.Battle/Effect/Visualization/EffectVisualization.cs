@@ -11,6 +11,7 @@ public class EffectVisualization : CanvasObject
     private float _effectActivationTimer = -1;
     private bool _enabled = false;
     private float _delay = 0f;
+    private float _baseDelay = 0f;
     private IReadOnlyUnit _sender = null;
     private IReadOnlyUnit _target = null;
 
@@ -25,6 +26,7 @@ public class EffectVisualization : CanvasObject
         _elapsedLifespan = lifespan;
         _effectActivationTimer = effectActivationTimer;
         _delay = delay;
+        _baseDelay = delay;
     }
 
     public override void Process(double delta)
@@ -114,6 +116,7 @@ public class EffectVisualization : CanvasObject
     protected float TotalLifespan { get { return _totalLifespan; } }
     protected float ElapsedLifespan { get { return _elapsedLifespan; } }
     protected float Delay { get { return _delay; } }
+    protected float BaseDelay { get { return _baseDelay; } }
     protected bool Enabled { get { return _enabled; } }
     protected float EffectActivationTimer { get { return _effectActivationTimer; } }
     protected IReadOnlyUnit Sender { get { return _sender; } }

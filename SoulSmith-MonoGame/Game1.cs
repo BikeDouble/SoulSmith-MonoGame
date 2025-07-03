@@ -58,7 +58,7 @@ namespace SoulSmith_MonoGame
             _assetManager = new(content, graphicsDevice, JsonSerializer.Deserialize<AssetManifest>(File.ReadAllText(ASSETMANIFESTPATH)));
             _assetManager.RegisterUnitTemplateLoader(new UnitTemplateLoader());
             _assetManager.RegisterTextureLoader(new DrawableResource_Texture2DLoader());
-            _assetManager.RegisterZonedTextureLoader(new ZonedTextureLoader());
+            _assetManager.RegisterZonedTextureLoader(new ZonedResourceLoader());
             _assetManager.RegisterMoveLoader(new MoveLoader());
         }
 

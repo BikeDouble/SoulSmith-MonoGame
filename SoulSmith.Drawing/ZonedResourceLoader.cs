@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Drawing
 {
-    public class ZonedTextureLoader : IGraphicsAssetLoader
+    public class ZonedResourceLoader : IGraphicsAssetLoader
     {
         public IAsset Load(string path, GraphicsDevice graphics = null)
         {
