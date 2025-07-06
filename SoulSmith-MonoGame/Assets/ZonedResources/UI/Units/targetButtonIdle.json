@@ -1,0 +1,34 @@
+{
+    "DrawableResource": {
+        "Type": "Texture",
+        "Key": "Textures/UI/Units/TargetButtonIdle"
+    },
+    "Zone": {
+        "Vertices": [
+            {
+                "X": 182,
+                "Y": 127
+            },
+            {
+                "X": 329,
+                "Y": 127
+            },
+            {
+                "X": 402,
+                "Y": 254
+            },
+            {
+                "X": 329,
+                "Y": 381
+            },
+            {
+                "X": 182,
+                "Y": 381
+            },
+            {
+                "X": 109,
+                "Y": 254
+            }
+        ]
+    }
+}

@@ -26,7 +26,7 @@ public class PopUpMenu : CanvasObject
     {
         base.Process(delta);
     }
-
+    
     public override void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
     {
         Position newPosition = absolutePosition;
@@ -39,7 +39,7 @@ public class PopUpMenu : CanvasObject
 
         if (Visible)
         {
-            InputPacket packet = CreateInputPacket(ProcessInput, newPosition, true);
+            InputPacket packet = CreateInputPacket(ProcessInput, newPosition, (ZonedResource)Resource, true);
             inputQueue.Add(packet);
         }
 

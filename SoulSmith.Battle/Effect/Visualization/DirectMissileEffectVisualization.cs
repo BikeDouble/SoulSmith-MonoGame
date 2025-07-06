@@ -22,7 +22,7 @@ namespace SoulSmith.Battle.Effect.Visualization
             float baseDelay = 0f) : base(lifespan, effectActivationTimer, baseDelay)
         {
             _missileResourceKey = missileResourceKey;
-            IReadOnlyTrackedAsset<DrawableResource_Texture2D> missileAsset = AssetManager.Instance.GetTexture2D<DrawableResource_Texture2D>(missileResourceKey);
+            IAssetWrapper<Texture2DResource> missileAsset = AssetManager.Instance.GetTexture2DResource<Texture2DResource>(missileResourceKey);
             _missile = new CanvasObject(null, missileAsset);
             AddChild(_missile);
         }

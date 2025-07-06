@@ -16,19 +16,7 @@ namespace SoulSmith.Drawing
         {
             if (!File.Exists(path)) return null;
 
-            Texture2D texture = Texture2D.FromFile(graphics, path);
-
-            if (texture == null) return null;
-
-            string metaFilepath = AssetManager.GetMetaFilepathFromFilepath(path, "json"); 
-
-            if (!File.Exists(metaFilepath)) return null;
-
-            IZone zone = JsonSerializer.Deserialize<IZone>(File.ReadAllText(metaFilepath));
-
-            if (zone == null) return null;
-
-            ZonedResource resource = new ZonedResource(zone, new DrawableResource_Texture2D(texture));
+            ZonedResource resource = JsonSerializer.Deserialize<ZonedResource>(File.ReadAllText(path));
 
             return resource;
         }

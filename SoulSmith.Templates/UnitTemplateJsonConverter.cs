@@ -13,7 +13,7 @@ namespace SoulSmith.Templates;
 
 public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
 {
-    public override UnitTemplate Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override UnitTemplate Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) //TODO go straight from json to unit, delete UnitTemplate
     {
         if (reader.TokenType != JsonTokenType.StartObject)
             throw new JsonException("Expected start of an object");
@@ -23,6 +23,7 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
 
         string friendlyName = string.Empty;
         string spriteName = string.Empty;
+        string spriteType = string.Empty;
         int maxHealth = -1;
         int curHealth = -1;
         int curDecay = 0;
@@ -42,8 +43,14 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
                 case "FriendlyName":
                     friendlyName = reader.GetString();
                     break;
-                case "SpriteName":
+                case "Sprite":
+                    reader.Read();
+                    reader.Read();
+                    spriteType = reader.GetString();
+                    reader.Read();
+                    reader.Read();
                     spriteName = reader.GetString();
+                    reader.Read();
                     break;
                 case "MaxHealth":
                     maxHealth = reader.GetInt32();
@@ -98,7 +105,7 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
         statsList.Add(StatType.CurHealth, curHealth);
         statsList.Add(StatType.CurDecay, curDecay);
 
-        UnitTemplate value = new UnitTemplate(statsList, moveSet, emotionTag, timeOnBoard, spriteName, friendlyName);
+        UnitTemplate value = new UnitTemplate(statsList, moveSet, emotionTag, timeOnBoard, spriteName, spriteType, friendlyName);
 
         return value;
     }

@@ -14,7 +14,7 @@ public class UnitUIMoveMenu : CanvasObject
 {
 	private List<UnitUIMoveButton> _moveButtons;
 
-    public UnitUIMoveMenu(SpriteFont font, IReadOnlyTrackedAsset<ZonedResource> moveButtonResource) : base()
+    public UnitUIMoveMenu(SpriteFont font, IAssetWrapper<ZonedResource> moveButtonResource) : base()
     {
 		CreateMoveButtons(font, moveButtonResource);
 		Hide();
@@ -25,7 +25,7 @@ public class UnitUIMoveMenu : CanvasObject
     private const int SPACEBETWEENBUTTONS = 70;
 	private const float MOVEBUTTONSCALE = 1f;
 
-    private void CreateMoveButtons(SpriteFont font, IReadOnlyTrackedAsset<ZonedResource> moveButton)
+    private void CreateMoveButtons(SpriteFont font, IAssetWrapper<ZonedResource> moveButton)
 	{
 		if (_moveButtons != null)
 			return;
@@ -35,11 +35,11 @@ public class UnitUIMoveMenu : CanvasObject
 		CreateMoveButton(0, font, moveButton);
         for (int i = 1; i < 3; i++)
         {
-			CreateMoveButton(i, font, new TrackedAsset<ZonedResource>(moveButton));
+			CreateMoveButton(i, font, moveButton);
         }
     }
 
-	private void CreateMoveButton(int index, SpriteFont font, IReadOnlyTrackedAsset<ZonedResource> moveButton)
+	private void CreateMoveButton(int index, SpriteFont font, IAssetWrapper<ZonedResource> moveButton)
 	{
         Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (index * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE);
         UnitUIMoveButton button = new UnitUIMoveButton(font, moveButton, buttonPosition);

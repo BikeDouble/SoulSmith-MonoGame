@@ -10,21 +10,20 @@ namespace SoulSmith.Object.Canvas;
 public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformable, ICanvasObject
 {
     private bool _visible = true;
-    private string _resourceType = "none";
     private Position _position = null;
     private Vector4 _tint = Vector4.Zero;
-    private IReadOnlyTrackedAsset<IDrawableResource> _drawableResource = null;
+    private IAssetWrapper<IDrawableResource> _wrappedResource = null;
 
     public CanvasObject(
         Position position = null,
-        IReadOnlyTrackedAsset<IDrawableResource> sprite = null,
+        IAssetWrapper<IDrawableResource> sprite = null,
         IEnumerable<SoulSmithObject> children = null) : base(children)
     {
         _position = new Position(position);
 
         if (sprite != null)
         {
-            _drawableResource = sprite;
+            _wrappedResource = sprite;
         }
     }
 
@@ -39,23 +38,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
 
         if (font != null)
         {
-            _drawableResource = null;// new DrawableResource_Text(font, text); TODO fix fonts
-        }
-    }
-
-    public CanvasObject(CanvasObject other) : base(other)
-    {
-        _position = new Position(other._position);
-        _visible = other._visible;
-
-        _drawableResource = new TrackedAsset<IDrawableResource>(other._drawableResource);
-
-        foreach (SoulSmithObject child in Children)
-        {
-            if (child is CanvasObject)
-            {
-                RegisterChildEvents((CanvasObject)child);
-            }
+            _wrappedResource = null;// new DrawableResource_Text(font, text); TODO fix fonts
         }
     }
 
@@ -132,6 +115,13 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
     public void Hide()
     {
         _visible = false;
+    }
+
+    public override void Process(double delta)
+    {
+        base.Process(delta);    
+
+        Resource?.Process(delta);
     }
 
     public void Set(Position position)
@@ -240,20 +230,6 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         base.CollectInputPackets(newPosition, inputQueue);
     }
 
-    public override InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyPosition absPos = null, bool requestHover = false, int priority = 0)
-    {
-        IZone clickZone = Resource as IZone;
-
-        InputPacket packet = new InputPacket(
-            clickZone,
-            func,
-            priority,
-            absPos,
-            requestHover);
-
-        return packet;
-    }
-
     public override void AddChild(SoulSmithObject child)
     {
         if (Children.Contains(child))
@@ -282,7 +258,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
 
     public virtual void UpdateText(string text)
     {
-        if (_drawableResource != null)
+        if (_wrappedResource != null)
         {
             //_drawableResource.UpdateText(text); TODO fix fonts
         }
@@ -307,19 +283,14 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
 
     public override void Dispose()
     {
-        _drawableResource.Dispose();
+        _wrappedResource.Dispose();
 
         base.Dispose();
     }
 
-    public override object DeepClone()
-    {
-        return new CanvasObject(this);
-    }
-
     public bool Visible { get { return _visible; } }
     public IReadOnlyPosition Position { get { return _position; } }
-    protected virtual IDrawableResource Resource { get { return _drawableResource?.Value; } }
+    protected virtual IDrawableResource Resource { get { return _wrappedResource?.Value; } }
 }
 
 public class GetGlobalPositionEventArgs : EventArgs

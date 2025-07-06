@@ -1,4 +1,11 @@
 {
+    "Animations": {
+        "Units": {
+            "Forms": {
+                "Joy": "Animations/Units/Forms/joyForm.json"
+            }
+        }
+    },
     "Moves": {
         "Joy": {
             "SingleHit": "Moves/Joy/joySingleHit.json"
@@ -10,9 +17,18 @@
         }
     },
     "Textures": {
+        "SpriteSheets": {
+            "Units": {
+                "Forms": {
+                    "Joy": "Textures/SpriteSheets/Units/Forms/joyForm.png"
+                }
+            }
+        },
         "UI": {
             "Units": {
-
+                "MoveButton": "Textures/UI/Units/moveButton.png",
+                "TargetButtonHovered": "Textures/UI/Units/targetButtonHovered.png",
+                "TargetButtonIdle": "Textures/UI/Units/targetButtonIdle.png"
             }
         },
         "Units": {
@@ -30,12 +46,12 @@
             "HalfRat": "Units/Enemies/halfRat.json"
         }
     },
-    "ZonedTextures": {
+    "ZonedResources": {
         "UI": {
             "Units": {
-                "MoveButton": "ZonedTextures/UI/Units/moveButton.png",
-                "TargetButtonHovered": "ZonedTextures/UI/Units/targetButtonHovered.png",
-                "TargetButtonIdle": "ZonedTextures/UI/Units/targetButtonIdle.png"
+                "MoveButton": "ZonedResources/UI/Units/moveButton.json",
+                "TargetButtonHovered": "ZonedResources/UI/Units/targetButtonHovered.json",
+                "TargetButtonIdle": "ZonedResources/UI/Units/targetButtonIdle.json"
             }
         }
     }

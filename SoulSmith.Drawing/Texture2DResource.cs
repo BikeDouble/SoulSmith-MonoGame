@@ -6,11 +6,11 @@ using SoulSmith.Core;
 
 namespace SoulSmith.Drawing
 {
-    public class DrawableResource_Texture2D : IDrawableResource
+    public class Texture2DResource : IDrawableResource
     {
         private Texture2D _texture;
 
-        public DrawableResource_Texture2D(Texture2D texture)
+        public Texture2DResource(Texture2D texture)
         {
             _texture = texture;
         }
@@ -28,6 +28,15 @@ namespace SoulSmith.Drawing
                     SpriteEffects.None,
                     0f);
         }
+
+        public void DrawSubsection(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch, Rectangle sourceRect, Vector2? subSectionOrigin)
+        {
+            if ((subSectionOrigin == null) || (!subSectionOrigin.HasValue)) subSectionOrigin = Origin; 
+
+            spriteBatch.Draw(_texture, position.Coordinates, sourceRect, new Color(tint), position.Rotation, subSectionOrigin.Value, position.ScaleVector, SpriteEffects.None, 0f);
+        }
+
+        public void Process(double delta) { }
 
         public void Dispose()
         {

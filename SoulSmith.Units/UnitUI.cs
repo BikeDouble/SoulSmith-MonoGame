@@ -17,9 +17,12 @@ public class UnitUI : CanvasObject
 {
 	public const float TARGETBUTTONWIDTHSCALE = 0.35f;
 	public const float TARGETBUTTONHEIGHTSCALE = 0.35f;
+	public const string MOVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/MoveButton";
+	public const string TARGETBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/TargetButtonIdle";
+    public const string TARGETBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/TargetButtonHovered";
 
-	//Children
-	private UnitUIMoveMenu _moveMenu;
+    //Children
+    private UnitUIMoveMenu _moveMenu;
 	private UnitUIHealthBar _healthBar;
 	private UnitUIModifierDisplay _modifierDisplay;
 	private UnitUITimeOnBoardDisplay _timeOnBoardDisplay = null;
@@ -29,12 +32,12 @@ public class UnitUI : CanvasObject
 
 	public UnitUI() :
 		this(null,//MasterAssetLoader.GetFont(GameManager.UIFONTNAME), TODO fix fonts
-			AssetManager.Instance.GetZonedTexture2D<ZonedResource>("ZonedTextures/UI/Units/MoveButton"),
-            AssetManager.Instance.GetZonedTexture2D<ZonedResource>("ZonedTextures/UI/Units/TargetButtonIdle"),
-            AssetManager.Instance.GetZonedTexture2D<ZonedResource>("ZonedTextures/UI/Units/TargetButtonHovered")) 
+			AssetManager.Instance.GetZonedResource<ZonedResource>(MOVEBUTTONIDLERESOURCEKEY),
+            AssetManager.Instance.GetZonedResource<ZonedResource>(TARGETBUTTONIDLERESOURCEKEY),
+            AssetManager.Instance.GetZonedResource<ZonedResource>(TARGETBUTTONHOVEREDRESOURCEKEY)) 
 	{ }
 
-	public UnitUI(SpriteFont font, IReadOnlyTrackedAsset<ZonedResource> moveButton, IReadOnlyTrackedAsset<ZonedResource> targetButtonIdle, IReadOnlyTrackedAsset<ZonedResource> targetButtonHovered)
+	public UnitUI(SpriteFont font, IAssetWrapper<ZonedResource> moveButton, IAssetWrapper<ZonedResource> targetButtonIdle, IAssetWrapper<ZonedResource> targetButtonHovered)
 		: base(new Position(0, 0, 1, 1, 0, 5))
 	{
 		if (moveButton == null) throw new ArgumentNullException(nameof(moveButton));

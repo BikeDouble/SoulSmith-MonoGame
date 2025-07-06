@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SoulSmith.Object
 {
-    public interface IReadOnlySoulSmithObject : IDeepCloneable
+    public interface IReadOnlySoulSmithObject
     {
 
     }

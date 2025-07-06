@@ -13,6 +13,7 @@ public class UnitTemplate : IAsset
     private IReadOnlySoulSmithWeightedList<string> _moveSetString;
     private EmotionTag.EmotionTag _emotion;
     private string _spriteName;
+    private string _spriteType;
     private int _timeOnBoard;
     private int _maxMoveCount = 3;
     private string _friendlyName;
@@ -22,12 +23,14 @@ public class UnitTemplate : IAsset
                         EmotionTag.EmotionTag emotion,
                         int timeOnBoard,
                         string spriteName,
+                        string spriteType,
                         string friendlyName)
     {
         _statsList = new(statsList);
         _moveSetString = moveSetString;
         _emotion = emotion;
         _spriteName = spriteName;
+        _spriteType = spriteType;
         _friendlyName = friendlyName;
         _timeOnBoard = timeOnBoard;
     }
@@ -38,6 +41,7 @@ public class UnitTemplate : IAsset
     public IReadOnlySoulSmithWeightedList<string> MoveSetWeightedList { get {  return _moveSetString; } }
     public EmotionTag.EmotionTag Emotion { get { return _emotion; } }
     public string SpriteName { get { return _spriteName; } }
+    public string SpriteType { get { return _spriteType; } }
     public int TimeOnBoard { get { return _timeOnBoard; } }
     public string FriendlyName { get { return _friendlyName; } }
     public int MaxMoveCount {  get { return _maxMoveCount; } }

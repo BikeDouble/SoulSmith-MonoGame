@@ -3,7 +3,7 @@ using SoulSmith.Asset;
 
 namespace SoulSmith.Drawing
 {
-    public class DrawableResource_Texture2DLoader : IGraphicsAssetLoader
+    public class Texture2DResourceLoader : IGraphicsAssetLoader
     {
         public IAsset Load(string path, GraphicsDevice graphics)
         {
@@ -13,7 +13,7 @@ namespace SoulSmith.Drawing
 
             if (texture == null) return null;
 
-            DrawableResource_Texture2D resource = new DrawableResource_Texture2D(texture);
+            Texture2DResource resource = new Texture2DResource(texture);
 
             return resource;
         }

@@ -1,0 +1,649 @@
+{
+    "TextureKey": "Textues/SpriteSheets/Units/Forms/Joy",
+    "ClipData": [
+        {
+            "ClipFriendlyName": "idle",
+            "FrameDataName": "idle",
+            "TransitionFrames": [ 0, 30, 60 ]
+        }
+    ],
+    "FrameData": [
+        {
+            "frameY": -21,
+            "y": 904,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 101,
+            "height": 101,
+            "name": "idle_0",
+            "frameX": -21,
+            "x": 855
+        },
+        {
+            "frameY": -16,
+            "y": 792,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 110,
+            "height": 110,
+            "name": "idle_1",
+            "frameX": -16,
+            "x": 855
+        },
+        {
+            "frameY": -12,
+            "y": 257,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 119,
+            "height": 119,
+            "name": "idle_2",
+            "frameX": -12,
+            "x": 1120
+        },
+        {
+            "frameY": -8,
+            "y": 129,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 126,
+            "height": 126,
+            "name": "idle_3",
+            "frameX": -8,
+            "x": 987
+        },
+        {
+            "frameY": -5,
+            "y": 1,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 132,
+            "height": 132,
+            "name": "idle_4",
+            "frameX": -5,
+            "x": 853
+        },
+        {
+            "frameY": -3,
+            "y": 420,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 137,
+            "height": 137,
+            "name": "idle_5",
+            "frameX": -3,
+            "x": 574
+        },
+        {
+            "frameY": -1,
+            "y": 573,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_6",
+            "frameX": -1,
+            "x": 289
+        },
+        {
+            "width": 142,
+            "y": 865,
+            "height": 142,
+            "name": "idle_7",
+            "x": 145
+        },
+        {
+            "width": 142,
+            "y": 433,
+            "height": 142,
+            "name": "idle_8",
+            "x": 145
+        },
+        {
+            "frameY": -1,
+            "y": 857,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_9",
+            "frameX": -1,
+            "x": 289
+        },
+        {
+            "frameY": -3,
+            "y": 1,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 137,
+            "height": 137,
+            "name": "idle_10",
+            "frameX": -3,
+            "x": 714
+        },
+        {
+            "frameY": -2,
+            "y": 1,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 138,
+            "height": 138,
+            "name": "idle_11",
+            "frameX": -2,
+            "x": 574
+        },
+        {
+            "frameY": -1,
+            "y": 715,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_12",
+            "frameX": -1,
+            "x": 289
+        },
+        {
+            "frameY": -1,
+            "y": 287,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 141,
+            "height": 141,
+            "name": "idle_13",
+            "frameX": -1,
+            "x": 289
+        },
+        {
+            "width": 142,
+            "y": 289,
+            "height": 142,
+            "name": "idle_14",
+            "x": 1
+        },
+        {
+            "width": 142,
+            "y": 577,
+            "height": 142,
+            "name": "idle_15",
+            "x": 145
+        },
+        {
+            "width": 142,
+            "y": 865,
+            "height": 142,
+            "name": "idle_16",
+            "x": 1
+        },
+        {
+            "frameY": -1,
+            "y": 144,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 141,
+            "height": 141,
+            "name": "idle_17",
+            "frameX": -1,
+            "x": 289
+        },
+        {
+            "frameY": -1,
+            "y": 1,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_18",
+            "frameX": -1,
+            "x": 432
+        },
+        {
+            "frameY": -2,
+            "y": 853,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 139,
+            "height": 139,
+            "name": "idle_19",
+            "frameX": -2,
+            "x": 714
+        },
+        {
+            "frameY": -3,
+            "y": 140,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 137,
+            "height": 137,
+            "name": "idle_20",
+            "frameX": -3,
+            "x": 714
+        },
+        {
+            "frameY": -1,
+            "y": 711,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_21",
+            "frameX": -1,
+            "x": 573
+        },
+        {
+            "width": 142,
+            "y": 1,
+            "height": 142,
+            "name": "idle_22",
+            "x": 1
+        },
+        {
+            "width": 142,
+            "y": 145,
+            "height": 142,
+            "name": "idle_23",
+            "x": 145
+        },
+        {
+            "frameY": -1,
+            "y": 143,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_24",
+            "frameX": -1,
+            "x": 432
+        },
+        {
+            "frameY": -3,
+            "y": 420,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 137,
+            "height": 137,
+            "name": "idle_25",
+            "frameX": -3,
+            "x": 991
+        },
+        {
+            "frameY": -5,
+            "y": 135,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 132,
+            "height": 132,
+            "name": "idle_26",
+            "frameX": -5,
+            "x": 853
+        },
+        {
+            "frameY": -8,
+            "y": 1,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 126,
+            "height": 126,
+            "name": "idle_27",
+            "frameX": -8,
+            "x": 987
+        },
+        {
+            "frameY": -12,
+            "y": 559,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 119,
+            "height": 119,
+            "name": "idle_28",
+            "frameX": -12,
+            "x": 715
+        },
+        {
+            "frameY": -16,
+            "y": 680,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 110,
+            "height": 110,
+            "name": "idle_29",
+            "frameX": -16,
+            "x": 827
+        },
+        {
+            "frameY": -21,
+            "y": 559,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 101,
+            "height": 101,
+            "name": "idle_30",
+            "frameX": -21,
+            "x": 967
+        },
+        {
+            "frameY": -16,
+            "y": 559,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 110,
+            "height": 110,
+            "name": "idle_31",
+            "frameX": -16,
+            "x": 836
+        },
+        {
+            "frameY": -12,
+            "y": 129,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 119,
+            "height": 119,
+            "name": "idle_32",
+            "frameX": -12,
+            "x": 1243
+        },
+        {
+            "frameY": -8,
+            "y": 129,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 126,
+            "height": 126,
+            "name": "idle_33",
+            "frameX": -8,
+            "x": 1115
+        },
+        {
+            "frameY": -5,
+            "y": 279,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 132,
+            "height": 132,
+            "name": "idle_34",
+            "frameX": -5,
+            "x": 986
+        },
+        {
+            "frameY": -3,
+            "y": 420,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 137,
+            "height": 137,
+            "name": "idle_35",
+            "frameX": -3,
+            "x": 852
+        },
+        {
+            "frameY": -1,
+            "y": 573,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_36",
+            "frameX": -1,
+            "x": 431
+        },
+        {
+            "width": 142,
+            "y": 577,
+            "height": 142,
+            "name": "idle_37",
+            "x": 1
+        },
+        {
+            "width": 142,
+            "y": 1,
+            "height": 142,
+            "name": "idle_38",
+            "x": 145
+        },
+        {
+            "frameY": -1,
+            "y": 857,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_39",
+            "frameX": -1,
+            "x": 431
+        },
+        {
+            "frameY": -3,
+            "y": 281,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 137,
+            "height": 137,
+            "name": "idle_40",
+            "frameX": -3,
+            "x": 574
+        },
+        {
+            "frameY": -2,
+            "y": 141,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 138,
+            "height": 138,
+            "name": "idle_41",
+            "frameX": -2,
+            "x": 574
+        },
+        {
+            "frameY": -1,
+            "y": 715,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_42",
+            "frameX": -1,
+            "x": 431
+        },
+        {
+            "frameY": -1,
+            "y": 1,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 141,
+            "height": 141,
+            "name": "idle_43",
+            "frameX": -1,
+            "x": 289
+        },
+        {
+            "width": 142,
+            "y": 433,
+            "height": 142,
+            "name": "idle_44",
+            "x": 1
+        },
+        {
+            "width": 142,
+            "y": 721,
+            "height": 142,
+            "name": "idle_45",
+            "x": 1
+        },
+        {
+            "width": 142,
+            "y": 721,
+            "height": 142,
+            "name": "idle_46",
+            "x": 145
+        },
+        {
+            "frameY": -1,
+            "y": 430,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 141,
+            "height": 141,
+            "name": "idle_47",
+            "frameX": -1,
+            "x": 289
+        },
+        {
+            "frameY": -1,
+            "y": 285,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_48",
+            "frameX": -1,
+            "x": 432
+        },
+        {
+            "frameY": -2,
+            "y": 853,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 139,
+            "height": 139,
+            "name": "idle_49",
+            "frameX": -2,
+            "x": 573
+        },
+        {
+            "frameY": -3,
+            "y": 281,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 137,
+            "height": 137,
+            "name": "idle_50",
+            "frameX": -3,
+            "x": 713
+        },
+        {
+            "frameY": -1,
+            "y": 569,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_51",
+            "frameX": -1,
+            "x": 573
+        },
+        {
+            "width": 142,
+            "y": 289,
+            "height": 142,
+            "name": "idle_52",
+            "x": 145
+        },
+        {
+            "width": 142,
+            "y": 145,
+            "height": 142,
+            "name": "idle_53",
+            "x": 1
+        },
+        {
+            "frameY": -1,
+            "y": 427,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 140,
+            "height": 140,
+            "name": "idle_54",
+            "frameX": -1,
+            "x": 432
+        },
+        {
+            "frameY": -3,
+            "y": 420,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 137,
+            "height": 137,
+            "name": "idle_55",
+            "frameX": -3,
+            "x": 713
+        },
+        {
+            "frameY": -5,
+            "y": 279,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 132,
+            "height": 132,
+            "name": "idle_56",
+            "frameX": -5,
+            "x": 852
+        },
+        {
+            "frameY": -8,
+            "y": 1,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 126,
+            "height": 126,
+            "name": "idle_57",
+            "frameX": -8,
+            "x": 1115
+        },
+        {
+            "frameY": -12,
+            "y": 1,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 119,
+            "height": 119,
+            "name": "idle_58",
+            "frameX": -12,
+            "x": 1243
+        },
+        {
+            "frameY": -16,
+            "y": 680,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 110,
+            "height": 110,
+            "name": "idle_59",
+            "frameX": -16,
+            "x": 715
+        },
+        {
+            "frameY": -21,
+            "y": 904,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 101,
+            "height": 101,
+            "name": "idle_60",
+            "frameX": -21,
+            "x": 958
+        },
+        {
+            "frameY": -21,
+            "y": 559,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 101,
+            "height": 101,
+            "name": "default_0",
+            "frameX": -21,
+            "x": 1070
+        },
+        {
+            "frameY": -21,
+            "y": 671,
+            "frameWidth": 142,
+            "frameHeight": 142,
+            "width": 101,
+            "height": 101,
+            "name": "default_1",
+            "frameX": -21,
+            "x": 939
+        }
+    ]
+}

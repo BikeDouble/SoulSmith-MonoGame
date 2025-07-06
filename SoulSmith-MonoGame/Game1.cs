@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.IO;
 using SoulSmith.Templates;
 using SoulSmith.Battle.Move;
+using SoulSmith.Drawing.Animation;
 
 namespace SoulSmith_MonoGame
 {
@@ -57,9 +58,10 @@ namespace SoulSmith_MonoGame
         {
             _assetManager = new(content, graphicsDevice, JsonSerializer.Deserialize<AssetManifest>(File.ReadAllText(ASSETMANIFESTPATH)));
             _assetManager.RegisterUnitTemplateLoader(new UnitTemplateLoader());
-            _assetManager.RegisterTextureLoader(new DrawableResource_Texture2DLoader());
+            _assetManager.RegisterTextureLoader(new Texture2DResourceLoader());
             _assetManager.RegisterZonedTextureLoader(new ZonedResourceLoader());
             _assetManager.RegisterMoveLoader(new MoveLoader());
+            _assetManager.RegisterAnimationLoader(new AnimationLoader());
         }
 
         protected override void Update(GameTime gameTime)

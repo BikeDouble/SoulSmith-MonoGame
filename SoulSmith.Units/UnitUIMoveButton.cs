@@ -25,7 +25,7 @@ public class UnitUIMoveButton : ButtonObject
 
 	public UnitUIMoveButton(
 		SpriteFont font, 
-		IReadOnlyTrackedAsset<ZonedResource> resource,
+		IAssetWrapper<ZonedResource> resource,
 		Position position = null) : base(
 			resource, 
 			resource,  

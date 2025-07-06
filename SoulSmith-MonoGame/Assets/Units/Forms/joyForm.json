@@ -1,6 +1,9 @@
 {
     "FriendlyName": "Joy",
-    "SpriteName": "Textures/Units/Forms/JoyV1",
+    "Sprite": {
+        "Type": "Texture",
+        "Key": "Textures/Units/Forms/JoyV1"
+    },
     "MaxHealth": 100,
     "Attack": 120,
     "Defense": 120,
@@ -11,5 +14,5 @@
         }
     ],
     "Emotion": 1,
-    "TimeOnBoard":  -1
+    "TimeOnBoard": -1
 }

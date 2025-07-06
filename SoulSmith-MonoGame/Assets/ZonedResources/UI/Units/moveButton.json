@@ -1,0 +1,26 @@
+{
+    "DrawableResource": {
+        "Type": "Texture",
+        "Key": "Textures/UI/Units/MoveButton"
+    },
+    "Zone": {
+        "Vertices": [
+            {
+                "X": 118,
+                "Y": 170
+            },
+            {
+                "X": 510,
+                "Y": 170
+            },
+            {
+                "X": 392,
+                "Y": 342
+            },
+            {
+                "X": 1,
+                "Y": 342
+            }
+        ]
+    }
+}

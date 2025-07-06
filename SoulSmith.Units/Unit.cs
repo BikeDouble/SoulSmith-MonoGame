@@ -32,7 +32,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		new StatsList(template.StatsList),
 		Move.GenerateMoveList(template.MoveSetWeightedList, template.MaxMoveCount),
         new UnitSprite(
-			AssetManager.Instance.GetTexture2D<DrawableResource_Texture2D>(template.SpriteName), 
+			DrawHelpers.GetDrawableResource(template.SpriteName, template.SpriteType), 
 			Rand.RandDoubleAroundOne(UnitSprite.ANIMATIONDESYNCFACTORRADIUS)), 
 		new UnitUI(),
 		template.Emotion,

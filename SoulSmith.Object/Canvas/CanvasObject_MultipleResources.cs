@@ -12,23 +12,21 @@ using SoulSmith.Asset;
 namespace SoulSmith.Object.Canvas;
 public class CanvasObject_MultipleResources : CanvasObject
 {
-    private ReadOnlyCollection<IReadOnlyTrackedAsset<IDrawableResource>> _drawableResources = null;
+    private ReadOnlyCollection<IAssetWrapper<IDrawableResource>> _drawableResources = null;
     private int _activeResourceIndex = -1;
 
-    public CanvasObject_MultipleResources() : base() { }
-
     public CanvasObject_MultipleResources(
-        IReadOnlyTrackedAsset<IDrawableResource> sprite1,
-        IReadOnlyTrackedAsset<IDrawableResource> sprite2,
+        IAssetWrapper<IDrawableResource> sprite1,
+        IAssetWrapper<IDrawableResource> sprite2,
         Position position = null) : base(position, null)
     {
-        List<IReadOnlyTrackedAsset<IDrawableResource>> drawableResources = new List<IReadOnlyTrackedAsset<IDrawableResource>> { sprite1, sprite2 };
+        List<IAssetWrapper<IDrawableResource>> drawableResources = new List<IAssetWrapper<IDrawableResource>> { sprite1, sprite2 };
         _drawableResources = drawableResources.AsReadOnly();
         _activeResourceIndex = 0;
     }
 
     public CanvasObject_MultipleResources(
-        IEnumerable<IReadOnlyTrackedAsset<IDrawableResource>> sprites,
+        IEnumerable<IAssetWrapper<IDrawableResource>> sprites,
         Position position = null) : base(position, null)
     {
         if (sprites != null && sprites.Count() > 0)
@@ -78,7 +76,7 @@ public class CanvasObject_MultipleResources : CanvasObject
         return _drawableResources[index].Value;
     }
 
-    protected ReadOnlyCollection<IReadOnlyTrackedAsset<IDrawableResource>> Resources { get { return _drawableResources; } }
+    protected ReadOnlyCollection<IAssetWrapper<IDrawableResource>> Resources { get { return _drawableResources; } }
     protected override IDrawableResource Resource { get { return GetResource(_activeResourceIndex); } }
 }
 

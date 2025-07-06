@@ -256,7 +256,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 				//if (!team.PlayerControlled) unitName = "animatedScrap";
 				for (int i = 0; i < 3; i++)
 				{
-                    IReadOnlyTrackedAsset<UnitTemplate> templateAsset = AssetManager.Instance.GetUnitTemplate<UnitTemplate>(unitName);
+                    IAssetWrapper<UnitTemplate> templateAsset = AssetManager.Instance.GetUnitTemplate<UnitTemplate>(unitName);
                     if (templateAsset == null) throw new ArgumentNullException(nameof(templateAsset));
                     Unit unit = new Unit(templateAsset.Value);
 					team.AssignUnitToPosition(unit, i);

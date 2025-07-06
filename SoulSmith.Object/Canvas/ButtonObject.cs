@@ -11,11 +11,9 @@ public class ButtonObject : CanvasObject_MultipleResources
     private int _idleResourceIndex = -1;
     private int _hoveredResourceIndex = -1;
 
-    public ButtonObject() : base() { }
-
     public ButtonObject(
-        IReadOnlyTrackedAsset<ZonedResource> idleResource,
-        IReadOnlyTrackedAsset<ZonedResource> hoveredResource,
+        IAssetWrapper<ZonedResource> idleResource,
+        IAssetWrapper<ZonedResource> hoveredResource,
         Position position = null) : base(idleResource, hoveredResource, position)
     {
         _idleResourceIndex = 0;
@@ -39,7 +37,7 @@ public class ButtonObject : CanvasObject_MultipleResources
 
         if (IsVisible())
         {
-            InputPacket packet = CreateInputPacket(ProcessInputs, newPosition, true);
+            InputPacket packet = CreateInputPacket(ProcessInputs, newPosition, (ZonedResource)Resource, true);
             inputQueue.Add(packet);
         }
 

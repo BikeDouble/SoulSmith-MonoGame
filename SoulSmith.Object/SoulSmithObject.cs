@@ -3,17 +3,13 @@ using System.Collections.ObjectModel;
 using SoulSmith.Core;
 using SoulSmith.Drawing;
 using SoulSmith.Input;
+using SoulSmith.Shapes;
 
 namespace SoulSmith.Object
 {
-    public class SoulSmithObject : IDeepCloneable, IReadOnlySoulSmithObject, ISoulSmithObject, IDrawPacketGenerator, IDisposable
+    public class SoulSmithObject : IReadOnlySoulSmithObject, ISoulSmithObject, IDrawPacketGenerator, IDisposable, IProcessable
     {
         private List<SoulSmithObject> _children;
-
-        public virtual object DeepClone()
-        {
-            return new SoulSmithObject(this);
-        }
 
         public SoulSmithObject()
         {
@@ -24,16 +20,6 @@ namespace SoulSmith.Object
         {
             _children = new List<SoulSmithObject>();
             AddMultipleChildren(children);
-        }
-
-        public SoulSmithObject(SoulSmithObject other)
-        {
-            _children = new();
-
-            foreach (SoulSmithObject child in other._children)
-            {
-                _children.Add((SoulSmithObject)child.DeepClone());
-            }
         }
 
         /// <summary>
@@ -108,10 +94,10 @@ namespace SoulSmith.Object
             }
         }
 
-        public virtual InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyPosition absPos = null, bool requestHover = false, int priority = 0)
+        public virtual InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyPosition absPos = null, IZone clickZone = null, bool requestHover = false, int priority = 0)
         {
             InputPacket packet = new InputPacket(
-                null,
+                clickZone,
                 func,
                 priority,
                 absPos,
