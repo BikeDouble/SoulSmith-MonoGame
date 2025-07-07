@@ -70,7 +70,7 @@ namespace SoulSmith.Drawing.Animation
             reader.Read();
 
             IAssetWrapper<Texture2DResource> wrappedTexture = null;
-            (string ClipFriendlyName, string FrameDataName, int[] TransitionFrames)[] clipsData = null;
+            AnimationClipDeserializationData[] clipsData = null;
             AnimationFrame[] frames = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
@@ -86,12 +86,12 @@ namespace SoulSmith.Drawing.Animation
                     case "Texture":
                     case "TextureKey":
                         string textureKey = reader.GetString();
-                        wrappedTexture = AssetManager.Instance.GetZonedResource<Texture2DResource>(textureKey);
+                        wrappedTexture = AssetManager.Instance.GetTexture2DResource<Texture2DResource>(textureKey);
                         reader.Read();
                         break;
                     case "ClipData":
                     case "ClipsData":
-                        clipsData = JsonSerializer.Deserialize<(string ClipFriendlyName, string FrameDataName, int[] TransitionFrames)[]>(ref reader, options);
+                        clipsData = JsonSerializer.Deserialize<AnimationClipDeserializationData[]>(ref reader, options);
                         reader.Read();
                         break;
                     case "FrameData":
@@ -111,7 +111,7 @@ namespace SoulSmith.Drawing.Animation
 
             Dictionary<string, AnimationClip> clipsDict = new();
 
-            foreach ((string ClipFriendlyName, string FrameDataName, int[] TransitionFrames) clipData in clipsData)
+            foreach (AnimationClipDeserializationData clipData in clipsData)
             {
                 AnimationClip clip = new AnimationClip(frames, clipData.FrameDataName, clipData.TransitionFrames);
                 clipsDict.Add(clipData.ClipFriendlyName, clip);

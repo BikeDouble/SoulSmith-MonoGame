@@ -109,6 +109,6 @@ namespace SoulSmith.Drawing.Animation
 
         public int Height { get { return _frames[0].FrameHeight; } }
         public int Width { get { return _frames[0].FrameWidth; } }
-        public Vector2 Origin { get { return _frames[0].Origin; } }
+        public Vector2 Origin { get { return _frames[0].FrameOrigin; } }
     }
 }

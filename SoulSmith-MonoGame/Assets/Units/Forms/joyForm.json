@@ -1,8 +1,8 @@
 {
     "FriendlyName": "Joy",
     "Sprite": {
-        "Type": "Texture",
-        "Key": "Textures/Units/Forms/JoyV1"
+        "Type": "Animation",
+        "Key": "Animations/Units/Forms/Joy"
     },
     "MaxHealth": 100,
     "Attack": 120,

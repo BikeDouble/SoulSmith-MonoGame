@@ -20,7 +20,8 @@ namespace SoulSmith.Drawing.Animation
         }
 
         public readonly Vector2 FrameTopLeftRelativeToSourceRect;
-        public Vector2 Origin { get { return new Vector2(FrameWidth / 2, FrameHeight / 2); } }
+        public Vector2 FrameOrigin { get { return new Vector2(FrameWidth / 2, FrameHeight / 2); } }
+        public Vector2 SourceOrigin { get { return new Vector2(SourceRect.Width / 2, SourceRect.Height / 2); } }
         public readonly int FrameWidth;
         public readonly int FrameHeight;
         public readonly string DataName;
@@ -28,7 +29,7 @@ namespace SoulSmith.Drawing.Animation
 
         public void DrawFrame(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch, IAssetWrapper<Texture2DResource> texture)
         {
-            texture.Value.DrawSubsection(position, tint, spriteBatch, SourceRect, Origin);
+            texture.Value.DrawSubsection(position, tint, spriteBatch, SourceRect, SourceOrigin);
         }
     }
 
@@ -106,6 +107,11 @@ namespace SoulSmith.Drawing.Animation
                     case "Height":
                         if (reader.TokenType != JsonTokenType.Number) throw new JsonException("Expected number");
                         sourceHeight = reader.GetInt32();
+                        reader.Read();
+                        break;
+                    case "name":
+                        if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
+                        name = reader.GetString();
                         reader.Read();
                         break;
                     default:

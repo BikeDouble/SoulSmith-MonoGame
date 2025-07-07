@@ -18,8 +18,8 @@ public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
     public const double HURTANIMATIONDURATION = 2;
     public const double DEATHANIMATIONDURATION = 2;
 
-    public const float WIDTHSCALE = 0.8f;
-    public const float HEIGHTSCALE = 0.8f;
+    public const float WIDTHSCALE = 1.2f;
+    public const float HEIGHTSCALE = 1.2f;
 
     private double _animationTime = -1;
 
