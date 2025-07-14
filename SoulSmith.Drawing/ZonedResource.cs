@@ -64,9 +64,9 @@ namespace SoulSmith.Drawing
             return _clickZone.GetAreaLocal();
         }
 
-        public void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch)
+        public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch)
         {
-            _resource?.Value?.Draw(position, tint, spriteBatch);
+            _resource?.Value?.Draw(position, color, spriteBatch);
         }
 
         public void Dispose() 

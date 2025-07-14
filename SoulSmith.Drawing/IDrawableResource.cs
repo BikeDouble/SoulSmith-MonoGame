@@ -9,7 +9,7 @@ namespace SoulSmith.Drawing
 {
     public interface IDrawableResource : IAsset, IProcessable
     {
-        public void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch);
+        public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch);
         public void UpdateState(string newState) { }
         public void ChangeSpeed(double speed) { }
         public Vector2 Origin { get; }

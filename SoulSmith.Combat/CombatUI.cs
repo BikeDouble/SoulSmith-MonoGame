@@ -4,23 +4,29 @@ using SoulSmith.Object.Canvas;
 using System;
 using SoulSmith.Drawing;
 using SoulSmith.Core;
+using SoulSmith.Asset;
+using SoulSmith.Drawing.Text;
+using SoulSmith.Units;
 
 namespace SoulSmith.Combat;
 public class CombatUI : CanvasObject
 {
+	public const string FONTKEY = "Fonts/Raleway/Medium";
+
 	//Children
 	private CanvasObject _roundCounter;
 
-	public CombatUI(SpriteFont font) 
+	public CombatUI() 
 	{
-		Initialize(font);
+		Initialize();
 	}
 
-	private void Initialize(SpriteFont font)
+	private void Initialize()
 	{
-		Position roundCounterPosition = new Position(1600/2, 30, 4, 4);
+        Position roundCounterPosition = new Position(1600/2, 30, 4, 4);
 
-		_roundCounter = new CanvasObject(font, null, roundCounterPosition);
+		IAssetWrapper<IDrawableResource> roundCounterText = DrawHelpers.GetDrawableResource(FONTKEY, "simpletextresource");
+		_roundCounter = new CanvasObject(roundCounterPosition, roundCounterText);
 		AddChild(_roundCounter);
 	}
 
@@ -31,6 +37,6 @@ public class CombatUI : CanvasObject
 
 	private void UpdateRoundCounter(int roundNumber)
 	{
-		_roundCounter.UpdateText(roundNumber.ToString());
+		_roundCounter.UpdateResourceState(roundNumber.ToString());
 	}
 }

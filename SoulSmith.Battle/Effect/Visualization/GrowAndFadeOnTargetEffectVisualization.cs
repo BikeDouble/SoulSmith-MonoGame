@@ -44,7 +44,7 @@ namespace SoulSmith.Battle.Effect.Visualization
 
             float alphaChange = -(255f * progress);
 
-            _growAndFader.ChangeTintAdditive(0, 0, 0, alphaChange);
+            _growAndFader.ChangeColorAdditive(0, 0, 0, (int)alphaChange);
 
             Vector2 curScale = (_endScale - _startScale) * progress + _startScale;
 

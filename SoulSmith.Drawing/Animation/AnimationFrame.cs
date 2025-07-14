@@ -27,9 +27,9 @@ namespace SoulSmith.Drawing.Animation
         public readonly string DataName;
         public readonly Rectangle SourceRect;
 
-        public void DrawFrame(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch, IAssetWrapper<Texture2DResource> texture)
+        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, IAssetWrapper<Texture2DResource> texture)
         {
-            texture.Value.DrawSubsection(position, tint, spriteBatch, SourceRect, SourceOrigin);
+            texture.Value.DrawSubsection(position, color, spriteBatch, SourceRect, SourceOrigin);
         }
     }
 

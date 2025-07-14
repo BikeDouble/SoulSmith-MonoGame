@@ -22,6 +22,7 @@ namespace SoulSmith.Asset
         private Cache _zonedTextureCache;
         private Cache _unitTemplateCache;
         private Cache _animationDataCache;
+        private Cache _fontResourceCache;
 
         // Loaders
         private IGraphicsAssetLoader _textureLoader;
@@ -29,6 +30,7 @@ namespace SoulSmith.Asset
         private IBasicAssetLoader _unitTemplateLoader;
         private IBasicAssetLoader _moveLoader;
         private IBasicAssetLoader _animationLoader;
+        private IBasicAssetLoader _fontResourceLoader;
 
         public static void Initialize(ContentManager content, GraphicsDevice graphics, AssetManifest manifest)
         {
@@ -51,6 +53,7 @@ namespace SoulSmith.Asset
             _zonedTextureCache = new Cache();
             _unitTemplateCache = new Cache();
             _animationDataCache = new Cache();
+            _fontResourceCache = new Cache();
         }
 
         public void RegisterUnitTemplateLoader(IBasicAssetLoader loader)
@@ -119,6 +122,25 @@ namespace SoulSmith.Asset
             _zonedTextureCache.CacheAsset(key, resource);
 
             return _zonedTextureCache.GetAsset<T>(key);
+        }
+
+        public void RegisterFontResourceLoader(IBasicAssetLoader loader) { _fontResourceLoader = loader; }
+
+        public IAssetWrapper<T> GetFontResource<T>(string key) where T : IAsset
+        {
+            if (_fontResourceCache.Contains(key)) return _fontResourceCache.GetAsset<T>(key);
+
+            if (!_manifest.ContainsKey(key)) return null;
+
+            string fontFilepath = FILEPREFIX + _manifest[key];
+
+            IAsset resource = _fontResourceLoader.Load(fontFilepath);
+
+            if (resource == null) return null;
+
+            _fontResourceCache.CacheAsset(key, resource);
+
+            return _fontResourceCache.GetAsset<T>(key);
         }
 
         public void RegisterMoveLoader(IBasicAssetLoader loader) { _moveLoader = loader; }

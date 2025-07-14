@@ -8,15 +8,17 @@ using SoulSmith.Drawing;
 using SoulSmith.Core;
 using SoulSmith.Asset;
 using SoulSmith.Object.Canvas;
+using SoulSmith.Drawing.Text;
+using System.Globalization;
 
 namespace SoulSmith.Units;
 public class UnitUIMoveMenu : CanvasObject
 {
 	private List<UnitUIMoveButton> _moveButtons;
 
-    public UnitUIMoveMenu(SpriteFont font, IAssetWrapper<ZonedResource> moveButtonResource) : base()
+    public UnitUIMoveMenu(IAssetWrapper<ZonedResource> moveButtonResource) : base()
     {
-		CreateMoveButtons(font, moveButtonResource);
+		CreateMoveButtons(moveButtonResource);
 		Hide();
     }
 
@@ -25,24 +27,24 @@ public class UnitUIMoveMenu : CanvasObject
     private const int SPACEBETWEENBUTTONS = 70;
 	private const float MOVEBUTTONSCALE = 1f;
 
-    private void CreateMoveButtons(SpriteFont font, IAssetWrapper<ZonedResource> moveButton)
+    private void CreateMoveButtons(IAssetWrapper<ZonedResource> moveButton)
 	{
 		if (_moveButtons != null)
 			return;
 
         _moveButtons = new List<UnitUIMoveButton>();
 
-		CreateMoveButton(0, font, moveButton);
+		CreateMoveButton(0, moveButton);
         for (int i = 1; i < 3; i++)
         {
-			CreateMoveButton(i, font, moveButton);
+			CreateMoveButton(i, moveButton);
         }
     }
 
-	private void CreateMoveButton(int index, SpriteFont font, IAssetWrapper<ZonedResource> moveButton)
+	private void CreateMoveButton(int index, IAssetWrapper<ZonedResource> moveButton)
 	{
-        Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (index * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE);
-        UnitUIMoveButton button = new UnitUIMoveButton(font, moveButton, buttonPosition);
+        Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (index * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE, 0, UnitUIMoveButton.ZVALUE);
+        UnitUIMoveButton button = new UnitUIMoveButton(moveButton, buttonPosition);
         _moveButtons.Add(button);
         AddChild(button);
         button.ButtonPressedEventHandler += OnMoveButtonPressed;

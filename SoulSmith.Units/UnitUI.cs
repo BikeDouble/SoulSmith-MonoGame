@@ -11,6 +11,7 @@ using SoulSmith.Drawing;
 using SoulSmith.Core;
 using SoulSmith.Asset;
 using SoulSmith.UnitStats;
+using SoulSmith.Drawing.Text;
 
 namespace SoulSmith.Units;
 public class UnitUI : CanvasObject
@@ -28,30 +29,25 @@ public class UnitUI : CanvasObject
 	private UnitUITimeOnBoardDisplay _timeOnBoardDisplay = null;
 	private ButtonObject _targetButton;
 
-	private readonly SpriteFont _font;
-
 	public UnitUI() :
-		this(null,//MasterAssetLoader.GetFont(GameManager.UIFONTNAME), TODO fix fonts
-			AssetManager.Instance.GetZonedResource<ZonedResource>(MOVEBUTTONIDLERESOURCEKEY),
+		this(AssetManager.Instance.GetZonedResource<ZonedResource>(MOVEBUTTONIDLERESOURCEKEY),
             AssetManager.Instance.GetZonedResource<ZonedResource>(TARGETBUTTONIDLERESOURCEKEY),
             AssetManager.Instance.GetZonedResource<ZonedResource>(TARGETBUTTONHOVEREDRESOURCEKEY)) 
 	{ }
 
-	public UnitUI(SpriteFont font, IAssetWrapper<ZonedResource> moveButton, IAssetWrapper<ZonedResource> targetButtonIdle, IAssetWrapper<ZonedResource> targetButtonHovered)
+	public UnitUI(IAssetWrapper<ZonedResource> moveButton, IAssetWrapper<ZonedResource> targetButtonIdle, IAssetWrapper<ZonedResource> targetButtonHovered)
 		: base(new Position(0, 0, 1, 1, 0, 5))
 	{
 		if (moveButton == null) throw new ArgumentNullException(nameof(moveButton));
 		if (targetButtonIdle == null) throw new ArgumentNullException(nameof(targetButtonIdle));
 		if (targetButtonHovered == null) throw new ArgumentNullException(nameof(targetButtonHovered));
 
-		_font = font;
-
-        _moveMenu = new UnitUIMoveMenu(_font, moveButton);
+        _moveMenu = new UnitUIMoveMenu(moveButton);
         _moveMenu.MoveButtonPressedEventHandler += OnMoveButtonPressed;
         AddChild(_moveMenu);
 
 		Position healthBarPosition = new Position(0, 120, 1, 1, 0, 0);
-        _healthBar = new UnitUIHealthBar(_font, healthBarPosition);
+        _healthBar = new UnitUIHealthBar(healthBarPosition);
         AddChild(_healthBar);
 
         _targetButton = new ButtonObject(targetButtonIdle, targetButtonHovered);
@@ -83,13 +79,13 @@ public class UnitUI : CanvasObject
 
 		if (timeOnBoard > -1)
 		{
-			if (_timeOnBoardDisplay == null)
+			/*if (_timeOnBoardDisplay == null) //TODO move declaration
 			{
 				_timeOnBoardDisplay = new UnitUITimeOnBoardDisplay(_font);
 				AddChild(_timeOnBoardDisplay);
 			}
 
-			_timeOnBoardDisplay.UpdateText(timeOnBoard.ToString());
+			_timeOnBoardDisplay.UpdateText(timeOnBoard.ToString());*/
 		}
     }
 

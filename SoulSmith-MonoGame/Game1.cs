@@ -14,6 +14,7 @@ using System.IO;
 using SoulSmith.Templates;
 using SoulSmith.Battle.Move;
 using SoulSmith.Drawing.Animation;
+using SoulSmith.Drawing.Text;
 
 namespace SoulSmith_MonoGame
 {
@@ -62,6 +63,7 @@ namespace SoulSmith_MonoGame
             _assetManager.RegisterZonedTextureLoader(new ZonedResourceLoader());
             _assetManager.RegisterMoveLoader(new MoveLoader());
             _assetManager.RegisterAnimationLoader(new AnimationLoader());
+            _assetManager.RegisterFontResourceLoader(new FontResourceLoader());
         }
 
         protected override void Update(GameTime gameTime)
@@ -97,7 +99,7 @@ namespace SoulSmith_MonoGame
         {
             GraphicsDevice.Clear(Color.LightGray);
 
-            _root.CollectDrawPackets(new Position(0, 0, 1, 1, 0), new Vector4(255, 255, 255, 255), _renderQueue);
+            _root.CollectDrawPackets(new Position(0, 0, 1, 1, 0), Color.White, _renderQueue);
 
             _renderQueue.Draw(_spriteBatch, _graphics.GraphicsDevice);
 

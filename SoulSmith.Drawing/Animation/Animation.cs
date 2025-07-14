@@ -26,13 +26,13 @@ namespace SoulSmith.Drawing.Animation
             _wrappedTexture = wrappedTexture;
         }
 
-        public void DrawFrame(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch, string clipName, double timeInClip, double animationSpeed = 1d)
+        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, string clipName, double timeInClip, double animationSpeed = 1d)
         {
             AnimationClip activeClip = _clips[clipName];
 
             if (activeClip == null) activeClip = _clips.FirstOrDefault().Value;
 
-            activeClip.DrawFrame(position, tint, spriteBatch, _wrappedTexture, timeInClip, animationSpeed);
+            activeClip.DrawFrame(position, color, spriteBatch, _wrappedTexture, timeInClip, animationSpeed);
         }
 
         private AnimationClip GetDefaultClip()

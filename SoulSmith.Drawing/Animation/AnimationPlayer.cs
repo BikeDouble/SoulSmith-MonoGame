@@ -22,9 +22,9 @@ namespace SoulSmith.Drawing.Animation
             _currentClipName = _wrappedAnimation.Value.GetDefaultClipName();
         }
 
-        public void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch)
+        public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch)
         {
-            _wrappedAnimation.Value.DrawFrame(position, tint, spriteBatch, _currentClipName, _timeSinceClipChange, _animationSpeed);
+            _wrappedAnimation.Value.DrawFrame(position, color, spriteBatch, _currentClipName, _timeSinceClipChange, _animationSpeed);
         }
 
         public void UpdateState(string newState)

@@ -7,19 +7,24 @@ using SoulSmith.Drawing;
 using SoulSmith.Core;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Battle;
+using SoulSmith.Asset;
+using SoulSmith.Drawing.Text;
 
 namespace SoulSmith.Units;
 public class UnitUIHealthBar : CanvasObject
 {
+	public const string FONTKEY = "Fonts/Raleway/Medium";
+
 	//Children
 	private CanvasObject _backboard;
 	private CanvasObject _background;
 	private CanvasObject _healthbar;
 	private CanvasObject _healthText = null;
 
-	public UnitUIHealthBar(SpriteFont font, Position position = null) : base(position)
+	public UnitUIHealthBar(Position position = null) : base(position)
 	{
-		_healthText = new CanvasObject(font);
+		IAssetWrapper<IDrawableResource> simpleTextInstance = DrawHelpers.GetDrawableResource(FONTKEY, "simpletextresource");
+		_healthText = new CanvasObject(null, simpleTextInstance);
 		AddChild(_healthText);
 	}
 
@@ -27,7 +32,7 @@ public class UnitUIHealthBar : CanvasObject
 	{
 		int curHealth = stats.GetModStat(StatType.CurHealth);
 		int maxHealth = stats.GetModStat(StatType.MaxHealth);
-		string newText = "HP: " + curHealth + " / " + maxHealth;
-		_healthText.UpdateText(newText);
+		string newText = curHealth + "/" + maxHealth;
+		_healthText.UpdateResourceState(newText);
 	}
 }

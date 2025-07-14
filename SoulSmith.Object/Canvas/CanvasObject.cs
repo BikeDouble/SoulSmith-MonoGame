@@ -11,35 +11,25 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
 {
     private bool _visible = true;
     private Position _position = null;
-    private Vector4 _tint = Vector4.Zero;
+    private Color _color = Color.White;
     private IAssetWrapper<IDrawableResource> _wrappedResource = null;
 
     public CanvasObject(
         Position position = null,
-        IAssetWrapper<IDrawableResource> sprite = null,
+        IAssetWrapper<IDrawableResource> drawableResource = null,
         IEnumerable<SoulSmithObject> children = null) : base(children)
     {
         _position = new Position(position);
 
-        if (sprite != null)
+        if (drawableResource != null)
         {
-            _wrappedResource = sprite;
+            _wrappedResource = drawableResource;
         }
     }
 
     public CanvasObject(int x, int y)
     {
         _position = new Position(x, y);
-    }
-
-    public CanvasObject(SpriteFont font, string text = null, Position position = null)
-    {
-        _position = new Position(position);
-
-        if (font != null)
-        {
-            _wrappedResource = null;// new DrawableResource_Text(font, text); TODO fix fonts
-        }
     }
 
     public event EventHandler<GetGlobalPositionEventArgs> GetGlobalPositionEventHandler;
@@ -178,21 +168,19 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         _position.Rotate(rotation, origin);
     }
 
-    public void ChangeTintAdditive(float r, float g, float b, float a)
+    public void ChangeColorAdditive(int r, int g, int b, int a)
     {
-        Vector4 tintChange = new(r, g, b, a);
+        byte newR = (byte)Math.Clamp((int)_color.R + r, 0, 255);
+        byte newG = (byte)Math.Clamp((int)_color.G + g, 0, 255);
+        byte newB = (byte)Math.Clamp((int)_color.B + b, 0, 255);
+        byte newA = (byte)Math.Clamp((int)_color.A + a, 0, 255);
 
-        ChangeTintAdditive(tintChange);
+        _color = new Color(newR, newG, newB, newA);
     }
 
-    public void ChangeTintAdditive(Vector4 change)
+    public override void CollectDrawPackets(IReadOnlyPosition absolutePosition, Color color, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
     {
-        _tint += change;
-    }
-
-    public override void CollectDrawPackets(IReadOnlyPosition absolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
-    {
-        tint += _tint;
+        color *= _color;
 
         Position newPosition;
 
@@ -203,18 +191,18 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
 
         if (resourceToDraw != null && _visible)
         {
-            renderQueue.Add(new DrawPacket(newPosition, tint, Resource, scissorRect));
+            renderQueue.Add(new DrawPacket(newPosition, color, Resource, scissorRect));
         }
 
         if (_visible)
         {
             foreach (SoulSmithObject child in Children)
             {
-                child.CollectDrawPackets(newPosition, tint, renderQueue, scissorRect);
+                child.CollectDrawPackets(newPosition, color, renderQueue, scissorRect);
             }
         }
 
-        base.CollectDrawPackets(absolutePosition, tint, renderQueue, scissorRect);
+        base.CollectDrawPackets(absolutePosition, color, renderQueue, scissorRect);
     }
 
     public override void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
@@ -256,17 +244,9 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         base.RemoveChild(child);
     }
 
-    public virtual void UpdateText(string text)
-    {
-        if (_wrappedResource != null)
-        {
-            //_drawableResource.UpdateText(text); TODO fix fonts
-        }
-    }
-
     public void UpdateResourceState(string newState)
     {
-        Resource.UpdateState(newState);
+        Resource?.UpdateState(newState);
     }
 
     private void RegisterChildEvents(CanvasObject child)

@@ -81,7 +81,7 @@ namespace SoulSmith.Object
             e.Parent = this;
         }
 
-        public virtual void CollectDrawPackets(IReadOnlyPosition parentAbsolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Microsoft.Xna.Framework.Rectangle? scissorRect = null)
+        public virtual void CollectDrawPackets(IReadOnlyPosition parentAbsolutePosition, Color color, IAddOnly<DrawPacket> renderQueue, Microsoft.Xna.Framework.Rectangle? scissorRect = null)
         {
 
         }

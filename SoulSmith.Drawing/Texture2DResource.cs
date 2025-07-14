@@ -15,13 +15,13 @@ namespace SoulSmith.Drawing
             _texture = texture;
         }
 
-        public void Draw(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch)
+        public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
                     _texture,
                     position.Coordinates,
                     null,
-                    new Color(tint),
+                    color,
                     position.Rotation,
                     Origin,
                     position.ScaleVector,
@@ -29,11 +29,11 @@ namespace SoulSmith.Drawing
                     0f);
         }
 
-        public void DrawSubsection(IReadOnlyPosition position, Vector4 tint, SpriteBatch spriteBatch, Rectangle sourceRect, Vector2? subSectionOrigin)
+        public void DrawSubsection(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, Rectangle sourceRect, Vector2? subSectionOrigin)
         {
             if ((subSectionOrigin == null) || (!subSectionOrigin.HasValue)) subSectionOrigin = Origin; 
 
-            spriteBatch.Draw(_texture, position.Coordinates, sourceRect, new Color(tint), position.Rotation, subSectionOrigin.Value, position.ScaleVector, SpriteEffects.None, 0f);
+            spriteBatch.Draw(_texture, position.Coordinates, sourceRect, color, position.Rotation, subSectionOrigin.Value, position.ScaleVector, SpriteEffects.None, 0f);
         }
 
         public void Process(double delta) { }

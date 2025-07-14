@@ -75,7 +75,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
     {
 		SpriteFont spriteFont = null;// MasterAssetLoader.GetFont(GameManager.UIFONTNAME); TODO fix fonts
 
-        _combatUI = new CombatUI(spriteFont);
+        _combatUI = new CombatUI();
         AddChild(_combatUI);
     }
 

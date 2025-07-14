@@ -6,6 +6,11 @@
             }
         }
     },
+    "Fonts": {
+        "Raleway": {
+            "Medium": "Fonts/Raleway/ralewayMedium.ttf"
+        }
+    },
     "Moves": {
         "Joy": {
             "SingleHit": "Moves/Joy/joySingleHit.json"

@@ -4,6 +4,6 @@ namespace SoulSmith.Drawing
 {
     public interface IDrawPacketGenerator
     {
-        public void CollectDrawPackets(IReadOnlyPosition parentAbsolutePosition, Vector4 tint, IAddOnly<DrawPacket> renderQueue, Microsoft.Xna.Framework.Rectangle? scissorRect = null);
+        public void CollectDrawPackets(IReadOnlyPosition parentAbsolutePosition, Color color, IAddOnly<DrawPacket> renderQueue, Microsoft.Xna.Framework.Rectangle? scissorRect = null);
     }
 }

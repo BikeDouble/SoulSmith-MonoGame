@@ -12,7 +12,7 @@ namespace SoulSmith.Drawing
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
             graphics.ScissorRectangle = graphics.Viewport.Bounds;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
 
             if (_packets.Count == 0) return;
 
@@ -63,13 +63,13 @@ namespace SoulSmith.Drawing
 
         private void DrawDrawPacket(DrawPacket packet, SpriteBatch spriteBatch)
         {
-            Vector4 tint = packet.Tint;
+            Color color = packet.Color;
             IReadOnlyPosition position = packet.Position;
             IDrawableResource resourceToDraw = packet.Resource;
 
             if (resourceToDraw != null)
             {
-                resourceToDraw.Draw(position, tint, spriteBatch);
+                resourceToDraw.Draw(position, color, spriteBatch);
             }
         }
 

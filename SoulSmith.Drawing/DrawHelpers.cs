@@ -1,5 +1,6 @@
 ﻿using SoulSmith.Asset;
 using SoulSmith.Drawing.Animation;
+using SoulSmith.Drawing.Text;
 
 namespace SoulSmith.Drawing
 {
@@ -9,6 +10,11 @@ namespace SoulSmith.Drawing
         {
             switch (type.ToLower())
             {
+                case "simpletext":
+                case "simpletextresource":
+                    IAssetWrapper<FontResource> wrappedFontResource = AssetManager.Instance.GetFontResource<FontResource>(key);
+                    IAssetWrapper<SimpleTextInstance> wrappedSimpleText = new UntrackedAssetWrapper<SimpleTextInstance>(new SimpleTextInstance(wrappedFontResource));
+                    return wrappedSimpleText;
                 case "texture":
                 case "texture2d":
                 case "texture2dresource":
