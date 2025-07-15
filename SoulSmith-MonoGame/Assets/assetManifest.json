@@ -14,6 +14,9 @@
     "Moves": {
         "Joy": {
             "SingleHit": "Moves/Joy/joySingleHit.json"
+        },
+        "Typeless": {
+            "AttackBoost": "Moves/Typeless/typelessAttackBoost.json"
         }
     },
     "SpawnLists": {

@@ -4,7 +4,7 @@
     "TargetingStyle": "AllyOrSelf",
     "LocalizationKey": "Move/Modifier/Stat/RoundDuration/Static/Simple/Additive",
     "LocalizationVariables": {
-        "Percent": 30,
+        "Percent": 300,
         "Duration": 4
     },
     "Effects": [   
@@ -12,7 +12,14 @@
             "Type": "SimpleStaticRoundDurationStatModifier",
             "Effect": {
                 "StatType": "attack",
-                "AdditiveMod": 0.3,
+                "AdditiveMod": 3,
+                "Duration": 4,
+                "ModifierAlignment": "buff",
+                "IsModifierVisible": true,
+                "ModifierIconKey": {
+                    "Type": "Texture",
+                    "Key": "Textures/Units/Forms/JoyV1"
+                },
                 "Visualization": {
                     "Type": "DirectMissile",
                     "Visualization": {

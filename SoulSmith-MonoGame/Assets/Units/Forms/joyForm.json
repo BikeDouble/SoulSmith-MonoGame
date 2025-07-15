@@ -4,12 +4,16 @@
         "Type": "Animation",
         "Key": "Animations/Units/Forms/Joy"
     },
-    "MaxHealth": 100,
+    "MaxHealth": 600,
     "Attack": 120,
     "Defense": 120,
     "MoveSet": [
         {
             "Item": "Joy/SingleHit",
+            "Weight": 60
+        },
+        {
+            "Item": "Typeless/AttackBoost",
             "Weight": 60
         }
     ],

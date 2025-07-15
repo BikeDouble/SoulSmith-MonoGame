@@ -6,6 +6,13 @@ namespace SoulSmith.Drawing
 {
     public class DrawHelpers
     {
+        public static IAssetWrapper<IDrawableResource> GetDrawableResource(DrawableResourceKey key)
+        {
+            if (key == null) return null;
+
+            return GetDrawableResource(key.Key, key.Type);
+        }
+
         public static IAssetWrapper<IDrawableResource> GetDrawableResource(string key, string type)
         {
             switch (type.ToLower())

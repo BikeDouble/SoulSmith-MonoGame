@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework;
+using SoulSmith.Asset;
 using SoulSmith.Battle.Modifier;
+using SoulSmith.Drawing;
 using SoulSmith.Object.Canvas;
 
 namespace SoulSmith.Units; 
@@ -14,15 +16,19 @@ public class UnitUIModifierDisplay : CanvasObject
     public const int SPACEBETWEENICONS = 5;
     public const int FIRSTICONX = -(((ICONSIZE * (ICONSPERLINE - 1)) / 2) + (SPACEBETWEENICONS * ((ICONSPERLINE - 1) / 2)));
     public const int FIRSTICONY = 60;
-
-    public static ReadOnlyCollection<Vector2> IconPositions = GenerateIconPositions();
+    public static ReadOnlyCollection<Vector2> IconPositions = null;
 
     // Children
-    private Dictionary<IModifier, CanvasObject> _displayedIcons;
+    private Dictionary<IModifier, UnitUIModifierIcon> _displayedIcons;
 
     public UnitUIModifierDisplay() 
     {
-        _displayedIcons = new Dictionary<IModifier, CanvasObject>();
+        _displayedIcons = new Dictionary<IModifier, UnitUIModifierIcon>();
+
+        if (IconPositions == null)
+        {
+            IconPositions = GenerateIconPositions();
+        }
     }
 
     public static ReadOnlyCollection<Vector2> GenerateIconPositions()
@@ -58,34 +64,50 @@ public class UnitUIModifierDisplay : CanvasObject
     private void RemoveDisplayIcon(CanvasObject removedIcon)
     {
         RemoveChild(removedIcon);
-        //TODO
+        //TODO shift modifier icons
     }
 
     public void OnModifierAdded(IModifier modifier)
     {
-        /*CanvasObject addedIcon = modifier.Icon as CanvasObject; //TODO
-
-        if (addedIcon != null)
+        if (modifier.IsVisible)
         {
-            if (_displayedIcons.TryAdd(modifier, addedIcon))
-                AddDisplayIcon(addedIcon);
-        }*/
+            bool addedSuccessfully = TryAddDisplayIcon(modifier);
+        }
     }
 
-    private void AddDisplayIcon(CanvasObject addedIcon)
+    private UnitUIModifierIcon CreateModifierIcon(IModifier modifier)
     {
-        int positionIndex = _displayedIcons.Count - 1;
+        if (modifier == null || !modifier.IsVisible) return null;
+
+        IAssetWrapper<IDrawableResource> iconResource = DrawHelpers.GetDrawableResource(modifier.IconKey);
+
+        return new UnitUIModifierIcon(new Core.Position(0, 0), iconResource);
+    }
+
+    private bool TryAddDisplayIcon(IModifier modifier)
+    {
+        UnitUIModifierIcon addedIcon = CreateModifierIcon(modifier);
+
+        if (addedIcon == null) return false;
+
+        if (_displayedIcons.ContainsKey(modifier)) return false;
+
+        int iconPositionIndex = _displayedIcons.Count;
+
+        _displayedIcons.Add(modifier, addedIcon);
 
         AddChild(addedIcon);
 
-        if ((positionIndex >= 0) && (positionIndex < IconPositions.Count))
+        if ((iconPositionIndex >= 0) && (iconPositionIndex < IconPositions.Count))
         {
-            addedIcon.Translate(IconPositions[positionIndex]);
+            addedIcon.Translate(IconPositions[iconPositionIndex]);
         }
         else
         {
-            addedIcon.Hide();
+            addedIcon.Hide(); //TODO 
         }
+
+        return true;
     }
 }
 

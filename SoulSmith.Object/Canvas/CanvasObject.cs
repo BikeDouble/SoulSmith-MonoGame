@@ -114,6 +114,30 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         Resource?.Process(delta);
     }
 
+    /// <summary>
+    /// Scales object to a desired size in pixels.
+    /// </summary>
+    /// <param name="desiredSize"></param>
+    /// <param name="preserveRatio"></param>
+    public void ScaleToSetSize(Vector2 desiredSize, bool preserveRatio = true)
+    {
+        if (Resource == null) return;
+
+        Vector2 currentSize = Resource.Size;
+
+        if (currentSize == Vector2.Zero || desiredSize == Vector2.Zero) return;
+
+        Vector2 desiredScale = desiredSize / currentSize;
+
+        if (preserveRatio)
+        {
+            float minScale = Math.Min(desiredScale.X, desiredScale.Y);
+            desiredScale = new Vector2(minScale, minScale);
+        }
+
+        this.SetScale(desiredScale);
+    }
+
     public void Set(Position position)
     {
         if (position == null)

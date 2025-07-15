@@ -45,6 +45,10 @@ namespace SoulSmith.Battle.Effect
                     value = JsonSerializer.Deserialize<HitDamageFormulaEffect>(ref reader, options);
                     reader.Read();
                     break;
+                case "SimpleStaticRoundDurationStatModifier":
+                    value = JsonSerializer.Deserialize<SimpleStaticRoundDurationStatModifierEffect>(ref reader, options);
+                    reader.Read();
+                    break;
                 default:
                     throw new JsonException($"Unexpected type {effectType}. Type is either misspelled or does not exist.");
             }

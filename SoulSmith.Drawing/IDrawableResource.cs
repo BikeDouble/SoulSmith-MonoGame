@@ -15,6 +15,7 @@ namespace SoulSmith.Drawing
         public Vector2 Origin { get; }
         public int Width { get; }
         public int Height { get; }
+        public Vector2 Size { get { return new Vector2(Width, Height); } }
         public double Speed { get { return 1d; } }
     }
 }
