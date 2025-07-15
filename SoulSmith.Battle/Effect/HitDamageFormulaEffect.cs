@@ -7,7 +7,7 @@ using SoulSmith.Battle.Effect.Visualization;
 namespace SoulSmith.Battle.Effect
 {
     [JsonConverter(typeof(HitDamageFormulaEffectJsonConverter))]
-    public class HitDamageFormulaEffect : VisualizedEffect, IEffect 
+    public class HitDamageFormulaEffect : VisualizedEffectBase, IEffect 
     {
         private Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double> _parsedFormula;
         private EffectVisualization _visualiztion = null;

@@ -2,11 +2,11 @@
 
 namespace SoulSmith.Battle.Effect
 {
-    public class VisualizedEffect : IDisposable
+    public class VisualizedEffectBase : IDisposable
     {
         private EffectVisualization _visualization;
 
-        public VisualizedEffect(EffectVisualization visualization) 
+        public VisualizedEffectBase(EffectVisualization visualization) 
         {
             _visualization = visualization;
         }

@@ -1,4 +1,5 @@
 ﻿using SoulSmith.Battle.Effect;
+using SoulSmith.Drawing;
 using SoulSmith.Object.Canvas;
 using SoulSmith.UnitStats;
 using System;
@@ -11,24 +12,29 @@ namespace SoulSmith.Battle.Modifier
 {
     public class Modifier : IModifier
     {
+        public Modifier(ModifierAlignment alignment, bool isVisible = true, DrawableResourceKey iconKey = null)
+        {
+            Alignment = alignment;
+            IsVisible = isVisible;
+            IconKey = iconKey;
+        }
         public virtual void ProcessEffectResult(EffectResult result) { }
         public virtual void InterceptEffectRequest(EffectRequest request) { }
-        public virtual void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host) { }
+        public virtual void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host) 
+        {
+            Applier = applier;
+            Host = host;
+        }
         public virtual StatModifier? GetStatModifier() 
         {
             return null;
         }
-        public IReadOnlyUnit Applier { get; }sdads TODO
-        public IReadOnlyUnit Host { get; }
-        public IReadOnlyCanvasObject Icon { get; }
-        public bool IsVisible { get; }
-
+        public IReadOnlyUnit Applier { get; private set; }
+        public IReadOnlyUnit Host { get; private set; }
+        public bool IsVisible { get; private set; }
+        public DrawableResourceKey IconKey { get; private set; }
+        public ModifierAlignment Alignment { get; private set; }
         public EventHandler<RemoveModifierEventArgs> RemoveModifierEventHandler { get; set; }
-        public event EventHandler<RemoveModifierEventArgs> RemoveModifierEvent
-        {
-            add => RemoveModifierEventHandler += value;
-            remove => RemoveModifierEventHandler -= value;
-        }
         protected void Remove()
         {
             RemoveModifierEventArgs e = new RemoveModifierEventArgs();
@@ -37,11 +43,6 @@ namespace SoulSmith.Battle.Modifier
             RemoveModifierEventHandler?.Invoke(this, e);
         }
         public EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler { get; set; }
-        public event EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEvent
-        {
-            add => EnqueueEffectInputEventHandler += value;
-            remove => EnqueueEffectInputEventHandler -= value;
-        }
         protected void EnqueueEffectInput(EffectInput effectInput)
         {
             EnqueueEffectInputEventArgs e = new();

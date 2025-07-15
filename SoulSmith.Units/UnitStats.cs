@@ -89,11 +89,14 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         List<StatModifier> modifiers = new List<StatModifier>();
         foreach (IModifier modifier in _modifiers)
         {
-            StatModifier statModifier = modifier.GetStatModifier();
-            if (statModifier.Stat == stat)
-            {
-                modifiers.Add(statModifier);
-            }
+            StatModifier? statModifier = modifier.GetStatModifier();
+			if (statModifier.HasValue)
+			{
+				if (statModifier.Value.Stat == stat)
+				{
+					modifiers.Add(statModifier.Value);
+				}
+			}
         }
 
 		return modifiers;

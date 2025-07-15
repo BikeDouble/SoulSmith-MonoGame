@@ -63,13 +63,13 @@ public class UnitUIModifierDisplay : CanvasObject
 
     public void OnModifierAdded(IModifier modifier)
     {
-        CanvasObject addedIcon = modifier.Icon as CanvasObject;
+        /*CanvasObject addedIcon = modifier.Icon as CanvasObject; //TODO
 
         if (addedIcon != null)
         {
             if (_displayedIcons.TryAdd(modifier, addedIcon))
                 AddDisplayIcon(addedIcon);
-        }
+        }*/
     }
 
     private void AddDisplayIcon(CanvasObject addedIcon)

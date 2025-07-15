@@ -1,4 +1,5 @@
 ﻿using SoulSmith.Battle.Effect;
+using SoulSmith.Drawing;
 using SoulSmith.Object.Canvas;
 using SoulSmith.UnitStats;
 
@@ -12,8 +13,11 @@ namespace SoulSmith.Battle.Modifier
         public StatModifier? GetStatModifier();
         public IReadOnlyUnit Applier { get; }
         public IReadOnlyUnit Host { get; }
-        public IReadOnlyCanvasObject Icon { get; }
         public bool IsVisible { get; }
+        public DrawableResourceKey IconKey { get; }
+        public ModifierAlignment Alignment { get; }
+        public EventHandler<RemoveModifierEventArgs> RemoveModifierEventHandler { get; set; }
+        public EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler { get; set; }
     }
 
     public class RemoveModifierEventArgs : EventArgs
