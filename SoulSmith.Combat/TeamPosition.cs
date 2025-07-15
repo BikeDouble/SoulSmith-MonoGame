@@ -1,6 +1,7 @@
 using SoulSmith.Units;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Battle.Effect;
+using SoulSmith.Battle.Effect.Trigger;
 
 namespace SoulSmith.Combat;
 public class TeamPosition : CanvasObject

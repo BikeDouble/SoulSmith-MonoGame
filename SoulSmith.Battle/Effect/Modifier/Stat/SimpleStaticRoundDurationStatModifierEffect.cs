@@ -5,7 +5,7 @@ using SoulSmith.UnitStats;
 using SoulSmith.Battle.Modifier;
 using SoulSmith.Drawing;
 
-namespace SoulSmith.Battle.Effect
+namespace SoulSmith.Battle.Effect.Modifier.Stat
 {
     [JsonConverter(typeof(SimpleStaticRoundDurationStatModifierEffectJsonConverter))]
     public class SimpleStaticRoundDurationStatModifierEffect : VisualizedModifierEffectBase, IEffect 

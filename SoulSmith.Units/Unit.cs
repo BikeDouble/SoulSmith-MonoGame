@@ -9,6 +9,7 @@ using SoulSmith.Asset;
 using SoulSmith.Shapes;
 using SoulSmith.Drawing;
 using SoulSmith.Battle.Effect;
+using SoulSmith.Battle.Effect.Trigger;
 
 namespace SoulSmith.Units;
 public class Unit : CanvasObject, IReadOnlyUnit

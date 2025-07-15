@@ -6,6 +6,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SoulSmith.Battle.Effect.Modifier.Stat;
+using SoulSmith.Battle.Effect.Damage;
 
 namespace SoulSmith.Battle.Effect
 {
@@ -41,8 +43,9 @@ namespace SoulSmith.Battle.Effect
 
             switch (effectType)
             {
-                case "HitDamageFormula":
-                    value = JsonSerializer.Deserialize<HitDamageFormulaEffect>(ref reader, options);
+                case "DamageFormula":
+                case "FormulaDamage":
+                    value = JsonSerializer.Deserialize<FormulaDamageEffect>(ref reader, options);
                     reader.Read();
                     break;
                 case "SimpleStaticRoundDurationStatModifier":

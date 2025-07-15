@@ -1,4 +1,5 @@
 ﻿using SoulSmith.Battle.Effect;
+using SoulSmith.Battle.Effect.Trigger;
 using SoulSmith.Drawing;
 using SoulSmith.Object.Canvas;
 

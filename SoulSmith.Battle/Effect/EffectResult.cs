@@ -1,3 +1,5 @@
+using SoulSmith.Battle.Effect.Damage;
+using SoulSmith.Battle.Effect.Trigger;
 using SoulSmith.Battle.Modifier;
 
 namespace SoulSmith.Battle.Effect;

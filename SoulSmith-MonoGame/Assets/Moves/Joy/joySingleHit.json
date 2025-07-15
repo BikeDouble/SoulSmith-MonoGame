@@ -8,9 +8,10 @@
     },
     "Effects": [   
         {
-            "Type": "HitDamageFormula",
+            "Type": "FormulaDamage",
             "Effect": {
                 "Formula": "sender.Attack * 1",
+                "DamageType": "hit",
                 "Visualization": {
                     "Type": "DirectMissile",
                     "Visualization": {

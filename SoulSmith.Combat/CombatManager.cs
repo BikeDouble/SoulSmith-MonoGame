@@ -11,6 +11,7 @@ using SoulSmith.Templates;
 using SoulSmith.Collections;
 using SoulSmith.Battle.Effect;
 using SoulSmith.Drawing;
+using SoulSmith.Battle.Effect.Trigger;
 
 namespace SoulSmith.Combat;
 public class CombatManager : CanvasObject, IReadOnlyCombat

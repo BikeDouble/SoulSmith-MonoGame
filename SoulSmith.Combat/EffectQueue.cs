@@ -8,6 +8,7 @@ using SoulSmith.Collections;
 using SoulSmith.Units;
 using SoulSmith.Battle;
 using SoulSmith.Object;
+using SoulSmith.Battle.Effect.Trigger;
 
 namespace SoulSmith.Combat;
 public class EffectQueue : CanvasObject

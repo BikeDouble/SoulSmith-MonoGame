@@ -1,34 +1,34 @@
 ﻿using DynamicExpresso;
-using SoulSmith.Battle;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using SoulSmith.Battle.Effect.Visualization;
 
-namespace SoulSmith.Battle.Effect
+namespace SoulSmith.Battle.Effect.Damage
 {
-    [JsonConverter(typeof(HitDamageFormulaEffectJsonConverter))]
-    public class HitDamageFormulaEffect : VisualizedEffectBase, IEffect 
+    [JsonConverter(typeof(FormulaHitDamageEffectJsonConverter))]
+    public class FormulaDamageEffect : VisualizedEffectBase, IEffect 
     {
         private Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double> _parsedFormula;
-        private EffectVisualization _visualiztion = null;
+        private DamageType _damageType = DamageType.Hit;
 
-        public HitDamageFormulaEffect(string formula, bool gainDecay = true, EffectVisualization visualization = null) : base(visualization)
+        public FormulaDamageEffect(string formula, DamageType damageType, EffectVisualization visualization = null) : base(visualization)
         {
             Interpreter interpreter = new Interpreter();
             _parsedFormula = interpreter.ParseAsDelegate<Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double>>(formula, "sender", "target", "combat");
+            _damageType = damageType;
         }
 
         public EffectRequest GenerateEffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, EffectResult parentEffectResult = null)
         {
             double damage = _parsedFormula(sender, target, combat);
 
-            return new EffectRequest(sender, target, DamageType.Hit, (int)damage);
+            return new EffectRequest(sender, target, _damageType, (int)damage);
         }
     }
 
-    public class HitDamageFormulaEffectJsonConverter : JsonConverter<HitDamageFormulaEffect>
+    public class FormulaHitDamageEffectJsonConverter : JsonConverter<FormulaDamageEffect>
     {
-        public override HitDamageFormulaEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override FormulaDamageEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
@@ -36,7 +36,7 @@ namespace SoulSmith.Battle.Effect
 
             EffectVisualization visualization = null;
             string formula = string.Empty;
-            bool gainDecay = true;
+            DamageType damageType = DamageType.Null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -57,9 +57,8 @@ namespace SoulSmith.Battle.Effect
                         visualization = JsonSerializer.Deserialize<EffectVisualization>(ref reader, options);
                         reader.Read();
                         break;
-                    case "GainDecay":
-                        if (!((reader.TokenType == JsonTokenType.True) || (reader.TokenType == JsonTokenType.False))) throw new JsonException("Expected boolean");
-                        gainDecay = reader.GetBoolean();
+                    case "DamageType":
+                        damageType = JsonSerializer.Deserialize<DamageType>(ref reader, options);
                         reader.Read();
                         break;
                     default:
@@ -68,10 +67,10 @@ namespace SoulSmith.Battle.Effect
                 }
             }
 
-            return new HitDamageFormulaEffect(formula, gainDecay, visualization);
+            return new FormulaDamageEffect(formula, damageType, visualization);
         }
 
-        public override void Write(Utf8JsonWriter writer, HitDamageFormulaEffect value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, FormulaDamageEffect value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

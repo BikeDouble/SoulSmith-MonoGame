@@ -5,6 +5,8 @@ using SoulSmith.Battle;
 using SoulSmith.Object;
 using SoulSmith.Battle.Modifier;
 using SoulSmith.Battle.Effect;
+using SoulSmith.Battle.Effect.Damage;
+using SoulSmith.Battle.Effect.Trigger;
 
 namespace SoulSmith.Units;
 public class UnitStats : SoulSmithObject, IReadOnlyUnitStats

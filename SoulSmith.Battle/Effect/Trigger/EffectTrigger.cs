@@ -1,4 +1,4 @@
-﻿namespace SoulSmith.Battle.Effect
+﻿namespace SoulSmith.Battle.Effect.Trigger
 {
     public enum EffectTrigger
     {

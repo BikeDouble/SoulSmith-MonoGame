@@ -1,7 +1,6 @@
-﻿
-using SoulSmith.Battle.Effect.Visualization;
+﻿using SoulSmith.Battle.Effect.Visualization;
 
-namespace SoulSmith.Battle.Effect
+namespace SoulSmith.Battle.Effect.Trigger
 {
     public class GlobalTriggerEffect : IEffect
     {
