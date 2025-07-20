@@ -101,15 +101,6 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		position.AssignUnit(unit);
 	}
 
-	public void ReceiveEffectResult(EffectResult result)
-	{
-		foreach (TeamPosition position in _teamPositions)
-		{
-			position.ReceiveEffectResult(result);
-		}
-	}
-
-
 	//
 	// Listeners
 	//
@@ -426,17 +417,48 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		_moveSelector.SelectMoveInput(thisTeam, enemyTeam);
 	}
 
-    public EffectResult ProcessEffectRequestForUnit(EffectRequest request, Unit unit)
+	public EffectResult ExecuteEffectRequest(EffectRequest request)
+	{
+		IReadOnlyUnit target = request.Target;
+		TeamPosition position = GetPositionWithUnit(target);
+
+		return position?.ExecuteEffectRequest(request);
+	}
+
+    public void ModifyEffectRequest(EffectRequest request)
     {
-		TeamPosition targetPosition = GetPositionWithUnit(unit);
-		if (targetPosition != null)
+        // Requests intercepted in order: sender, sender's team, target's team, target
+        TeamPosition senderPosition = this.GetPositionWithUnit(request.Sender);
+        senderPosition?.ModifyEffectRequest(request);
+
+        foreach (TeamPosition position in _teamPositions)
+        {
+            if ((position.Unit != request.Target) && (position.Unit != request.Sender))
+            {
+                position.ModifyEffectRequest(request);
+            }
+        }
+
+        TeamPosition targetPosition = this.GetPositionWithUnit(request.Target);
+        targetPosition?.ModifyEffectRequest(request);
+    }
+
+    public void ReactToEffectResult(EffectResult result)
+    {
+		// Results intercepted in order: sender, sender's team, target's team, target
+		TeamPosition senderPosition = this.GetPositionWithUnit(result.Sender);
+		senderPosition?.ReactToEffectResult(result);
+
+        foreach (TeamPosition position in _teamPositions)
 		{
-			return targetPosition.ProcessEffectRequest(request);
+			if ((position.Unit != result.Target) && (position.Unit != result.Sender))
+			{
+				position.ReactToEffectResult(result);
+			}
 		}
-		else
-		{
-			return null;
-		}
+
+        TeamPosition targetPosition = this.GetPositionWithUnit(result.Target);
+        targetPosition?.ReactToEffectResult(result);
     }
 
     public bool PlayerControlled { get { return _playerControlled; } }

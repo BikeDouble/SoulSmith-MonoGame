@@ -12,11 +12,11 @@ public class EffectRequest
         RawDamage = 0;
         RawHealing = 0;
         Modifier = null;
-        Trigger = EffectTrigger.None;
+        Trigger = CombatTrigger.None;
         ImmediateAfterEffects = null;
     }
 
-    public EffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, EffectTrigger trigger, IEnumerable<IEffect> immediateAfterEffects = null)
+    public EffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, CombatTrigger trigger, IEnumerable<IEffect> immediateAfterEffects = null)
     {
         Sender = sender;
         Target = target;
@@ -35,7 +35,7 @@ public class EffectRequest
         RawHealing = 0;
         DamageType = damageType;
         Modifier = null;
-        Trigger = EffectTrigger.None;
+        Trigger = CombatTrigger.None;
         ImmediateAfterEffects = immediateAfterEffects?.ToList();
         GainDecay = gainDecay;
     }
@@ -47,7 +47,7 @@ public class EffectRequest
         RawDamage = 0;
         RawHealing = rawHealing;
         Modifier = null;
-        Trigger = EffectTrigger.None;
+        Trigger = CombatTrigger.None;
         ImmediateAfterEffects = immediateAfterEffects?.ToList();
         GainDecay = false;
     }
@@ -63,7 +63,7 @@ public class EffectRequest
         RawDamage = 0;
         RawHealing = 0;
         Modifier = modifier;
-        Trigger = EffectTrigger.None;
+        Trigger = CombatTrigger.None;
         ImmediateAfterEffects = immediateAfterEffects?.ToList();
     }
 
@@ -74,6 +74,6 @@ public class EffectRequest
     public int RawHealing { get; set; }
     public bool GainDecay { get; set; }
     public IModifier Modifier { get; set; }
-    public EffectTrigger Trigger { get; set; }
+    public CombatTrigger Trigger { get; set; }
     public List<IEffect> ImmediateAfterEffects { get; set; }
 }

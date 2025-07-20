@@ -4,9 +4,9 @@ namespace SoulSmith.Battle.Effects.Trigger
 {
     public class GlobalTriggerEffect : IEffect
     {
-        private EffectTrigger _trigger;
+        private CombatTrigger _trigger;
 
-        public GlobalTriggerEffect(EffectTrigger trigger) 
+        public GlobalTriggerEffect(CombatTrigger trigger) 
         {
             _trigger = trigger;
         }

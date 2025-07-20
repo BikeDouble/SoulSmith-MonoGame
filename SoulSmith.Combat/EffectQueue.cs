@@ -14,20 +14,28 @@ namespace SoulSmith.Combat;
 public class EffectQueue : CanvasObject
 {
     public const double UNIVERSALMOVEEFFECTDELAY = UnitSprite.ATTACKANIMATIONDURATION / 2;
+    public static readonly ReadOnlyCollection<Priority> PRIORITYORDER = new ReadOnlyCollection<Priority>(
+        new List<Priority>
+        {
+            Priority.EmotionCombatEntryEffect,
+            Priority.ImmediateAfterEffect,
+            Priority.Reaction,
+            Priority.Common,
+            Priority.ModifierRemoval,
+        });
 
-    private Queue<QueuedEffect> _queue;
-    private Queue<QueuedEffect> _priorityQueue;
+    private Dictionary<Priority, Queue<QueuedEffect>> _priorityQueues = new Dictionary<Priority, Queue<QueuedEffect>>();
     private DropOutStack<(EffectRequest, EffectResult)> _effectHistory; //Effect history is pushed after effect is processed
     private DropOutStack<MoveInput> _moveHistory; //Move history is pushed after move is queued
     private bool _processingEnabled = true;
     private IReadOnlyCombat _parentCombat;
-    private GlobalTriggerEffect _moveBeginEffect = new GlobalTriggerEffect(EffectTrigger.OnMoveBegin);
-    private GlobalTriggerEffect _moveEndEffect = new GlobalTriggerEffect(EffectTrigger.OnMoveEnd);
-    private GlobalTriggerEffect _roundBeginEffect = new GlobalTriggerEffect(EffectTrigger.OnRoundBegin);
-    private GlobalTriggerEffect _roundEndEffect = new GlobalTriggerEffect(EffectTrigger.OnRoundEnd);
-    private GlobalTriggerEffect _turnBeginEffect = new GlobalTriggerEffect(EffectTrigger.OnTurnBegin);
-    private GlobalTriggerEffect _turnEndEffect = new GlobalTriggerEffect(EffectTrigger.OnTurnEnd);
-    private GlobalTriggerEffect _unitDeathEffect = new GlobalTriggerEffect(EffectTrigger.OnUnitDeath);
+    private GlobalTriggerEffect _moveBeginEffect = new GlobalTriggerEffect(CombatTrigger.OnMoveBegin);
+    private GlobalTriggerEffect _moveEndEffect = new GlobalTriggerEffect(CombatTrigger.OnMoveEnd);
+    private GlobalTriggerEffect _roundBeginEffect = new GlobalTriggerEffect(CombatTrigger.OnRoundBegin);
+    private GlobalTriggerEffect _roundEndEffect = new GlobalTriggerEffect(CombatTrigger.OnRoundEnd);
+    private GlobalTriggerEffect _turnBeginEffect = new GlobalTriggerEffect(CombatTrigger.OnTurnBegin);
+    private GlobalTriggerEffect _turnEndEffect = new GlobalTriggerEffect(CombatTrigger.OnTurnEnd);
+    private GlobalTriggerEffect _unitDeathEffect = new GlobalTriggerEffect(CombatTrigger.OnUnitDeath);
 
     public readonly struct QueuedEffect
     {
@@ -51,7 +59,7 @@ public class EffectQueue : CanvasObject
 
     private void Initialize()
     {
-        InitializeQueue();
+        InitializeQueues();
         InitializeHistory();
     }
 
@@ -68,33 +76,35 @@ public class EffectQueue : CanvasObject
 
     public void OnTurnBegin()
     {
-        EnqueueEffect(new EffectInput(_turnBeginEffect, null, null));
+        EnqueueEffect(new EffectInput(_turnBeginEffect, null, null, Priority.Common));
     }
 
     public void OnTurnEnd()
     {
-        EnqueueEffect(new EffectInput(_turnEndEffect, null, null));
+        EnqueueEffect(new EffectInput(_turnEndEffect, null, null, Priority.Common));
     }
 
     public void OnRoundBegin()
     {
-        EnqueueEffect(new EffectInput(_roundBeginEffect, null, null));
+        EnqueueEffect(new EffectInput(_roundBeginEffect, null, null, Priority.Common));
     }
 
     public void OnRoundEnd()
     {
-        EnqueueEffect(new EffectInput(_roundEndEffect, null, null));
+        EnqueueEffect(new EffectInput(_roundEndEffect, null, null, Priority.Common));
     }
 
     public void OnUnitDeath(IReadOnlyUnit killer, IReadOnlyUnit deadUnit, EffectResult killingEffectResult)
     {
-        EnqueueEffect(new EffectInput(_unitDeathEffect, killer, deadUnit), killingEffectResult, UnitSprite.DEATHANIMATIONDURATION);
+        EnqueueEffect(new EffectInput(_unitDeathEffect, killer, deadUnit, Priority.Common), killingEffectResult, UnitSprite.DEATHANIMATIONDURATION);
     }
 
-    private void InitializeQueue() 
+    private void InitializeQueues() 
     {
-        _queue = new Queue<QueuedEffect>();
-        _priorityQueue = new Queue<QueuedEffect>();
+        foreach (Priority priority in PRIORITYORDER)
+        {
+            _priorityQueues[priority] = new Queue<QueuedEffect>();
+        }
     }
 
     private void InitializeHistory()
@@ -107,15 +117,14 @@ public class EffectQueue : CanvasObject
     {
         if (_processingEnabled)
         {
-            if (NextEffectReady(_priorityQueue))
+            foreach (Priority priority in PRIORITYORDER)
             {
-                DequeueAndProcess(_priorityQueue);
-                return true;
-            }
-            else if (NextEffectReady(_queue))
-            {
-                DequeueAndProcess(_queue);
-                return true;
+                Queue<QueuedEffect> queue = _priorityQueues[priority];
+                if (NextEffectReady(queue))
+                {
+                    DequeueAndProcess(queue);
+                    return true;
+                }
             }
         }
 
@@ -142,12 +151,12 @@ public class EffectQueue : CanvasObject
         IReadOnlyUnit sender = moveInput.Sender;
         IReadOnlyUnit target = moveInput.Target;
 
-        EnqueueEffect(new EffectInput(_moveBeginEffect, sender, target));
+        EnqueueEffect(new EffectInput(_moveBeginEffect, sender, target, Priority.Common));
         foreach (IEffect effect in effects)
         {
-            EnqueueEffect(new EffectInput(effect, sender, target), null, UNIVERSALMOVEEFFECTDELAY);
+            EnqueueEffect(new EffectInput(effect, sender, target, Priority.Common), null, UNIVERSALMOVEEFFECTDELAY);
         }
-        EnqueueEffect(new EffectInput(_moveEndEffect, sender, target));
+        EnqueueEffect(new EffectInput(_moveEndEffect, sender, target, Priority.Common));
 
         _moveHistory.Push(moveInput);
     }
@@ -159,8 +168,7 @@ public class EffectQueue : CanvasObject
     {
         if (effectInput.Effect == null)
         {
-            Trace.TraceError("Effects input missing effect");
-            return;
+            throw new ArgumentNullException(nameof(effectInput.Effect), "EffectInput must have a valid effect.");
         }
 
         QueuedEffect queuedEffect = new QueuedEffect(effectInput, parentEffectResult, additionalDelay);
@@ -171,14 +179,14 @@ public class EffectQueue : CanvasObject
             AddChild(visualization);
         }
         
-        if (effectInput.EnqueueWithPriority)
+        Queue<QueuedEffect> queue = _priorityQueues[effectInput.EnqueuePriority];
+
+        if (queue == null)
         {
-            _priorityQueue.Enqueue(queuedEffect);
+            throw new ArgumentException($"No queue found for priority {effectInput.EnqueuePriority}");
         }
-        else
-        {
-            _queue.Enqueue(queuedEffect);
-        }
+
+        queue.Enqueue(queuedEffect);
     }
 
     private bool NextEffectReady(Queue<QueuedEffect> queue)
@@ -194,8 +202,15 @@ public class EffectQueue : CanvasObject
 
     public bool IsEmpty()
     {
-        int totalCount = _queue.Count + _priorityQueue.Count;
-        return (totalCount == 0);
+        foreach (Priority priority in PRIORITYORDER)
+        {
+            int count = _priorityQueues[priority].Count;
+            if (count > 0)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     //
@@ -238,7 +253,7 @@ public class EffectQueue : CanvasObject
         {
             foreach (IEffect immediateAfterEffect in request.ImmediateAfterEffects)
             {
-                EffectInput immediateAfterEffectInput = new EffectInput(immediateAfterEffect, request.Sender, request.Target, true);
+                EffectInput immediateAfterEffectInput = new EffectInput(immediateAfterEffect, request.Sender, request.Target, Priority.ImmediateAfterEffect);
                 EnqueueEffect(immediateAfterEffectInput, result);
             }
         }

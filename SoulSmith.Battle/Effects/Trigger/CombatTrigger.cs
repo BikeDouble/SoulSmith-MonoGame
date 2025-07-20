@@ -1,6 +1,6 @@
 ﻿namespace SoulSmith.Battle.Effects.Trigger
 {
-    public enum EffectTrigger
+    public enum CombatTrigger
     {
         None,
         OnMoveBegin,

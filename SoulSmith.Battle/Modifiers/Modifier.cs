@@ -22,20 +22,20 @@ namespace SoulSmith.Battle.Modifiers
             Name = friendlyName;
             Description = description;
         }
-        public virtual void ProcessEffectResult(EffectResult result) 
+        public virtual void ReactToEffectResult(EffectResult result) 
         {
             if (result == null) return;
             
             switch(DurationStyle)
             {
                 case DurationStyle.Rounds:
-                    if (result.TriggerApplied == Effects.Trigger.EffectTrigger.OnRoundEndModifierDurationTick)
+                    if (result.TriggerApplied == Effects.Trigger.CombatTrigger.OnRoundEndModifierDurationTick)
                     {
                         DecrementDuration();//TODO make sure modifiers removed after all other triggered effects
                     }
                     break;
                 case DurationStyle.HostMoves:
-                    if (result.TriggerApplied == Effects.Trigger.EffectTrigger.OnMoveEnd)
+                    if (result.TriggerApplied == Effects.Trigger.CombatTrigger.OnMoveEnd)
                     {
                         if (result.Sender == Host)
                         {
@@ -53,7 +53,7 @@ namespace SoulSmith.Battle.Modifiers
             if (Duration <= 0) Remove();
         }
 
-        public virtual void InterceptEffectRequest(EffectRequest request) { }
+        public virtual void ModifyEffectRequest(EffectRequest request) { }
         public virtual void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host) 
         {
             Applier = applier;

@@ -136,30 +136,38 @@ public class TeamPosition : CanvasObject
         EnqueueEffectInputEventHandler(this, e);
     }
 
-    public EffectResult ProcessEffectRequest(EffectRequest request)
+	public EffectResult ExecuteEffectRequest(EffectRequest request)
+	{
+		EffectResult result = null;
+
+        if (_containsUnit)
+        {
+            result = _unit.ExecuteEffectRequest(request);
+        }
+
+		return result;
+    }
+
+    public void ModifyEffectRequest(EffectRequest request)
     {
         if (_containsUnit)
 		{
-			if (request.Trigger == EffectTrigger.OnMoveBegin)
-			{
-				if (request.Sender == _unit)
-					_movedThisRound = true;
-			}
-
-			return _unit.ProcessEffectRequest(request);
-		}
-		else
-		{
-			return new EffectResult();
+			_unit.ModifyEffectRequest(request);
 		}
     }
 
-	public void ReceiveEffectResult(EffectResult result)
+	public void ReactToEffectResult(EffectResult result)
 	{
 		if (_containsUnit)
 		{
-			_unit.ReceiveEffectResult(result);
-		}
+			_unit.ReactToEffectResult(result);
+
+            if (result.TriggerApplied == CombatTrigger.OnMoveBegin)
+            {
+                if (result.Sender == _unit)
+                    _movedThisRound = true;
+            }
+        }
 	}
 
     public Unit Unit { get { return _unit; } } //Make sure this contains unit first!

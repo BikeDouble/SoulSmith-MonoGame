@@ -7,8 +7,8 @@ namespace SoulSmith.Battle.Modifiers
 {
     public interface IModifier : IReadOnlyModifier
     {
-        public void ProcessEffectResult(EffectResult result);
-        public void InterceptEffectRequest(EffectRequest request);
+        public void ReactToEffectResult(EffectResult result);
+        public void ModifyEffectRequest(EffectRequest request);
         public void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host);
         public StatModifier? GetStatModifier();
         public IReadOnlyUnit Applier { get; }

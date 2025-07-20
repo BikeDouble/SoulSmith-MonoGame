@@ -23,9 +23,9 @@ namespace SoulSmith.Battle.Modifiers.Effect
             _effect = effect ?? throw new ArgumentNullException(nameof(effect));
         }
 
-        public override void ProcessEffectResult(EffectResult result)
+        public override void ReactToEffectResult(EffectResult result)
         {
-            base.ProcessEffectResult(result);
+            base.ReactToEffectResult(result);
 
             if (result == null) return;
 
@@ -37,7 +37,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
 
             if (result.EffectiveDamage <= 0) return;
 
-            EffectInput effectInput = new EffectInput(_effect, Host, result.Target, true);
+            EffectInput effectInput = new EffectInput(_effect, Host, result.Target, Priority.Reaction);
 
             EnqueueEffectInput(effectInput, result);
         }

@@ -6,18 +6,18 @@ namespace SoulSmith.Battle.Effects
 {
     public struct EffectInput
     {
-        public EffectInput(IEffect effect, IReadOnlyUnit sender, IReadOnlyUnit target, bool enqueueWithPriority = false)
+        public EffectInput(IEffect effect, IReadOnlyUnit sender, IReadOnlyUnit target, Priority enqueuePriority)
         {
             Effect = effect;
             Sender = sender;
             Target = target;
-            EnqueueWithPriority = enqueueWithPriority;
+            EnqueuePriority = enqueuePriority;
         }
 
         public readonly IEffect Effect;
         public readonly IReadOnlyUnit Sender;
         public readonly IReadOnlyUnit Target;
-        public readonly bool EnqueueWithPriority;
+        public readonly Priority EnqueuePriority;
     }
 
     public class EnqueueEffectInputEventArgs : EventArgs

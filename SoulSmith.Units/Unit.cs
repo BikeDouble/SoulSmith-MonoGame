@@ -115,7 +115,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		foreach (IEffect effect in emotion.BattleEntryEffects)
 		{
 			EnqueueEffectInputEventArgs args = new EnqueueEffectInputEventArgs();
-			args.EffectInput = new EffectInput(effect, this, this, true);
+			args.EffectInput = new EffectInput(effect, this, this, Priority.EmotionCombatEntryEffect);
 			EnqueueEffectInput(this, args);
         }
 	}
@@ -126,32 +126,29 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		_combatPosition = -1;
 	}
 
-    public EffectResult ProcessEffectRequest(EffectRequest request)
+    public void ModifyEffectRequest(EffectRequest request)
     {
-		EffectResult result = null;
-
-		_stats.InterceptEffectRequest(request);
-
-        if (request.Sender == this)
-        {
-			if (request.Trigger == EffectTrigger.OnMoveBegin)
-				_sprite.UpdateResourceState(UnitSprite.SPRITEATTACKSTATE);
-        }
-
-		if (request.Target == this)
-		{
-			result = _stats.ExecuteEffect(request);
-		}
-
-		UpdateUI();
-		UpdateSprite();
-
-		return result;
+		_stats.ModifyEffectRequest(request);
     }
 
-	public void ReceiveEffectResult(EffectResult result)
+	public EffectResult ExecuteEffectRequest(EffectRequest request)
 	{
-		_stats.ReceiveEffectResult(result);
+		EffectResult result = null;
+
+		result = _stats.ExecuteEffectRequest(request);
+
+        UpdateUI();
+        UpdateSprite();
+
+        return result;
+	}
+
+	public void ReactToEffectResult(EffectResult result)
+	{
+        if (result.TriggerApplied == CombatTrigger.OnMoveBegin)
+            _sprite.UpdateResourceState(UnitSprite.SPRITEATTACKSTATE);
+
+        _stats.ReactToEffectResult(result);
 	}
 
     public int GetModStat(StatType stat)

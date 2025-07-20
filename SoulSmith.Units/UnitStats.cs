@@ -273,7 +273,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	// Triggers
 	//
 
-    public EffectResult ExecuteEffect(EffectRequest request)
+    public EffectResult ExecuteEffectRequest(EffectRequest request)
     {
 		if (request == null)
 		{
@@ -294,49 +294,35 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		{
 			result = ExecuteModifierEffect(request);
 		}
-		else if (request.Trigger != EffectTrigger.None)
-		{
-			result = ExecuteTriggerEffect(request);
-		}
-
-		if (result == null)
-		{
-            return new EffectResult();
-        }
-		else
-		{
-			result.Sender = request.Sender;
-			result.Target = request.Target;
-			return result;
-		}
 		
+		return result;
     }
 
-	public void ReceiveEffectResult(EffectResult result)
+	public void ReactToEffectResult(EffectResult result)
 	{
 		foreach (IModifier modifier in _modifiers) 
 		{
-			modifier.ProcessEffectResult(result);
+			modifier.ReactToEffectResult(result);
 		}
 
-		ClearModifiersToBeRemovedList();
+        if (result.TriggerApplied == CombatTrigger.OnRoundEnd)
+        {
+            if (_timeOnBoard > -1)
+                DecrementTimeOnBoard();
+        }
+
+        ClearModifiersToBeRemovedList();
 	}
 
-	public void InterceptEffectRequest(EffectRequest request)
+	public void ModifyEffectRequest(EffectRequest request)
 	{
-		if (request.Trigger == EffectTrigger.OnRoundEnd)
-		{
-			if (_timeOnBoard > -1)
-				DecrementTimeOnBoard();
-		}
-
 		foreach (IModifier modifier in _modifiers)
 		{
-			modifier.InterceptEffectRequest(request);
+			modifier.ModifyEffectRequest(request);
 		}
 
-		ClearModifiersToBeRemovedList();
-	}
+        ClearModifiersToBeRemovedList();
+    }
 
 	private void DecrementTimeOnBoard()
 	{
@@ -352,7 +338,6 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	{
 		int hpLoss;
         DamageType damageType = request.DamageType;
-		EffectResult effectResult = new();
 
         switch (damageType)
         {
@@ -377,8 +362,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
             SetStat(StatType.CurDecay, newDecay);
         }
 
-        effectResult.EffectiveDamage = effectiveDamage;
-		effectResult.DamageType = damageType;
+        EffectResult effectResult = new EffectResult(effectiveDamage, damageType, request.Sender, request.Target);
 
         if (newHP <= 0)
             CallForDeath(request.Sender, effectResult);
@@ -388,14 +372,12 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	private EffectResult ExecuteHealingEffect(EffectRequest request)
 	{
-		EffectResult result = new EffectResult();
-
 		int rawHealing = request.RawHealing;
 
 		if (rawHealing == 0) return null;
 
 		int effectiveHealing = GainHP(rawHealing);
-		result.EffectiveHealing = effectiveHealing;
+		EffectResult result = new EffectResult(effectiveHealing, request.Sender, request.Target);
 
 		return result;
 	}
@@ -404,13 +386,11 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	{
 		if (request.Modifier == null) return null;
 
-		EffectResult result = new EffectResult();
-
 		ApplyModifier(request.Modifier, request.Sender);
 
-		result.ModifierApplied = request.Modifier;
+		EffectResult result = new EffectResult(request.Modifier, request.Sender, request.Target);
 
-		return result;
+        return result;
 	}
 
 	private void ApplyModifier(IModifier modifier, IReadOnlyUnit sender)
@@ -423,15 +403,6 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 		modifier.ApplyModifier(sender, (IReadOnlyUnit)this.GetParent());
     }
-
-	private EffectResult ExecuteTriggerEffect(EffectRequest request)
-	{
-        EffectResult result = new EffectResult();
-
-		result.TriggerApplied = request.Trigger;
-
-		return result;
-	}
 
 	public ReadOnlyDictionary<StatType, int> StatsList { get { return _statsList.StatsDict; } }
     public int CombatPosition { get { return _combatPosition; } set { _combatPosition = value; } }
