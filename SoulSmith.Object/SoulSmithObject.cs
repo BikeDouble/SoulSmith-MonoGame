@@ -7,7 +7,7 @@ using SoulSmith.Shapes;
 
 namespace SoulSmith.Object
 {
-    public class SoulSmithObject : IReadOnlySoulSmithObject, ISoulSmithObject, IDrawPacketGenerator, IDisposable, IProcessable
+    public class SoulSmithObject : IReadOnlySoulSmithObject, IDrawPacketGenerator, IDisposable, IProcessable
     {
         private List<SoulSmithObject> _children;
 

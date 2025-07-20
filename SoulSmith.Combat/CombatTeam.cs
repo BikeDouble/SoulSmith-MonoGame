@@ -3,9 +3,9 @@ using System.Diagnostics;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Drawing;
 using SoulSmith.Battle;
-using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Moves;
 using SoulSmith.Units;
-using SoulSmith.Battle.Effect;
+using SoulSmith.Battle.Effects;
 
 namespace SoulSmith.Combat;
 public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
@@ -426,12 +426,12 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		_moveSelector.SelectMoveInput(thisTeam, enemyTeam);
 	}
 
-    public EffectResult ExecuteEffect(EffectRequest request, Unit unit)
+    public EffectResult ProcessEffectRequestForUnit(EffectRequest request, Unit unit)
     {
 		TeamPosition targetPosition = GetPositionWithUnit(unit);
 		if (targetPosition != null)
 		{
-			return targetPosition.ExecuteEffect(request);
+			return targetPosition.ProcessEffectRequest(request);
 		}
 		else
 		{

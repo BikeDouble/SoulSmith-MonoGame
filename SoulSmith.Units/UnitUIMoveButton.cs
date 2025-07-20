@@ -1,12 +1,13 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Moves;
 using SoulSmith.Drawing;
 using SoulSmith.Core;
 using SoulSmith.Asset;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Drawing.Text;
+using SoulSmith.Emotion;
 
 namespace SoulSmith.Units;
 public class UnitUIMoveButton : ButtonObject
@@ -17,10 +18,11 @@ public class UnitUIMoveButton : ButtonObject
 	private const float HOVERSIZEMOD = 1.1f;
 	private const float WIDTHSCALE = 0.35f;
 	private const float HEIGHTSCALE = 0.35f;
-	private const float LABELWIDTHSCALE = 1.5f;
-	private const float LABELHEIGHTSCALE = 1.5f;
+	private const float LABELWIDTHSCALE = 1.3f;
+	private const float LABELHEIGHTSCALE = 1.3f;
+	public const int LABELBRIGHTNESS = 80;
 
-	private CanvasObject _label;
+    private CanvasObject _label;
 
 	private Move _move = null;
 	private Color _idleColor = Color.Gray;
@@ -37,7 +39,7 @@ public class UnitUIMoveButton : ButtonObject
 	{
 		IAssetWrapper<IDrawableResource> textResource = DrawHelpers.GetDrawableResource(LABELFONTKEY, "simpletextresource");
         _label = new CanvasObject(new Position(0, 0, LABELWIDTHSCALE, LABELHEIGHTSCALE, 0, ZVALUE + 1), textResource);
-		_label.ChangeColorAdditive(-255, -255, -255, 0);
+		_label.SetColor(new Color(LABELBRIGHTNESS, LABELBRIGHTNESS, LABELBRIGHTNESS, 255));
         AddChild(_label);
 		_label.UpdateResourceState("0");
 		this.Scale(new Vector2(WIDTHSCALE, HEIGHTSCALE));
@@ -47,25 +49,40 @@ public class UnitUIMoveButton : ButtonObject
 	{		
 		_move = move;
 		SetLabelText(move.FriendlyName);
-		SetEmotionColor(Color.White);//move.EmotionTag.Color); //TODO fix coloring
-	}
+		SetEmotionColor(move.EmotionTag);
+		this.Show();
+		this.SetColor(_idleColor);
+    }
 
-	private void SetEmotionColor(Color color)
+	private void SetEmotionColor(EmotionTag.EmotionTag emotionTag)
 	{
-		_hoverColor = color;
+		Emotion.Emotion emotion = Emotion.Emotion.GetEmotion(emotionTag);
+
+		if (emotion == null) _hoverColor = Color.Gray;
+        else _hoverColor = emotion.Color;
+
 		_idleColor = new Color(
-			(int)(color.R * IDLEDIMNESSMULT), 
-			(int)(color.G * IDLEDIMNESSMULT), 
-			(int)(color.B * IDLEDIMNESSMULT),
-			color.A) ;
-	}
+			(int)(_hoverColor.R * IDLEDIMNESSMULT), 
+			(int)(_hoverColor.G * IDLEDIMNESSMULT), 
+			(int)(_hoverColor.B * IDLEDIMNESSMULT),
+			_hoverColor.A) ;
+
+		this.SetColor(_idleColor);
+    }
 
 	public void UpdateButtonAsEmptySlot()
 	{
-		SetLabelText("Empty");
-		_hoverColor = Color.Gray;
-		_idleColor = Color.Gray;
-	}
+		_move = null;
+        SetLabelText("Empty");
+		_hoverColor = Color.DimGray;
+        _idleColor = new Color(
+            (int)(_hoverColor.R * IDLEDIMNESSMULT),
+            (int)(_hoverColor.G * IDLEDIMNESSMULT),
+            (int)(_hoverColor.B * IDLEDIMNESSMULT),
+            _hoverColor.A);
+        this.SetColor(_idleColor);
+		this.Hide();
+    }
 
     private void SetLabelText(string text)
 	{
@@ -76,14 +93,22 @@ public class UnitUIMoveButton : ButtonObject
 	{
 		base.OnMouseEnter();
 
-		Transform(_hoverTransformation);
-	}
+		if (_move != null)
+		{
+			Transform(_hoverTransformation);
+			this.SetColor(_hoverColor);
+		}
+    }
 
     public override void OnMouseExit()
     {
         base.OnMouseExit();
 
-		Transform(_unhoverTransformation);
+		if (_move != null)
+		{
+			Transform(_unhoverTransformation);
+			this.SetColor(_idleColor);
+		}
     }
 
     public Move Move { get { return _move; } private set { _move = value; } }

@@ -3,10 +3,10 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using SoulSmith.Battle;
 using SoulSmith.Object;
-using SoulSmith.Battle.Modifier;
-using SoulSmith.Battle.Effect;
-using SoulSmith.Battle.Effect.Damage;
-using SoulSmith.Battle.Effect.Trigger;
+using SoulSmith.Battle.Modifiers;
+using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Damage;
+using SoulSmith.Battle.Effects.Trigger;
 
 namespace SoulSmith.Units;
 public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
@@ -221,13 +221,14 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	public event EventHandler<UnitDeathCallArgs> UnitDeathCallEventHandler;
 
-	private void CallForDeath(IReadOnlyUnit killer)
+	private void CallForDeath(IReadOnlyUnit killer, EffectResult killingEffectResult)
 	{
 		UnitDeathCallArgs e = new UnitDeathCallArgs();
 
 		e.Killer = killer;
+		e.KillingEffectResult = killingEffectResult;
 
-		UnitDeathCallEventHandler(this, e);
+        UnitDeathCallEventHandler(this, e);
 	}
 
 	public event EventHandler<SendEffectEventArgs> SendEffectEventHandler;
@@ -343,7 +344,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 		if (_timeOnBoard <= 0)
 		{
-			CallForDeath(null);
+			CallForDeath(null, null);
 		}
 	}
 
@@ -376,13 +377,13 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
             SetStat(StatType.CurDecay, newDecay);
         }
 
-		if (newHP <= 0)
-			CallForDeath(request.Sender);
-
         effectResult.EffectiveDamage = effectiveDamage;
 		effectResult.DamageType = damageType;
 
-		return effectResult;
+        if (newHP <= 0)
+            CallForDeath(request.Sender, effectResult);
+
+        return effectResult;
     }
 
 	private EffectResult ExecuteHealingEffect(EffectRequest request)
@@ -457,6 +458,7 @@ public class UnitDeathCallArgs : EventArgs
 {
 	public IReadOnlyUnit CallingUnit;
 	public IReadOnlyUnit Killer;
+	public EffectResult KillingEffectResult;
 }
 
 public class ModifierAddOrRemoveEventArgs

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework;
 using SoulSmith.Asset;
-using SoulSmith.Battle.Modifier;
+using SoulSmith.Battle.Modifiers;
 using SoulSmith.Drawing;
 using SoulSmith.Object.Canvas;
 

@@ -2,32 +2,19 @@
     "Name": "Strengthen",
     "EmotionTag": 0,
     "TargetingStyle": "AllyOrSelf",
-    "LocalizationKey": "Move/Modifier/Stat/RoundDuration/Static/Simple/Additive",
-    "LocalizationVariables": {
-        "Percent": 300,
-        "Duration": 4
+    "Description": {
+        "LocalizationKey": "Move/Modifier/Stat/RoundDuration/Static/Simple/Additive",
+        "LocalizationVariables": {
+            "Percent": 300,
+            "Duration": 4
+        }
     },
     "Effects": [   
         {
-            "Type": "SimpleStaticRoundDurationStatModifier",
+            "Type": "Modifier",
             "Effect": {
-                "StatType": "attack",
-                "AdditiveMod": 3,
-                "Duration": 4,
-                "ModifierAlignment": "buff",
-                "IsModifierVisible": true,
-                "ModifierIconKey": {
-                    "Type": "Texture",
-                    "Key": "Textures/Units/Forms/JoyV1"
-                },
-                "Visualization": {
-                    "Type": "DirectMissile",
-                    "Visualization": {
-                        "MissileSprite": "Textures/Units/Forms/JoyV1",
-                        "FlightTime": 1,
-                        "Delay": 0
-                    }
-                }
+                "ModifierKey": "Modifiers/Typeless/Stat/Strengthened",
+                "VisualizationKey": "EffectVisualizations/Joy/DirectMissile"
             }
         }
     ]

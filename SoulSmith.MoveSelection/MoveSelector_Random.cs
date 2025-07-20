@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Moves;
 using SoulSmith.Combat;
 using SoulSmith.Core;
 using SoulSmith.Units;

@@ -12,9 +12,12 @@ using SoulSmith.Asset;
 using System.Text.Json;
 using System.IO;
 using SoulSmith.Templates;
-using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Moves;
 using SoulSmith.Drawing.Animation;
 using SoulSmith.Drawing.Text;
+using SoulSmith.Emotion;
+using SoulSmith.Battle.Effects.Visualization.Factory;
+using SoulSmith.Battle.Modifiers;
 
 namespace SoulSmith_MonoGame
 {
@@ -64,6 +67,9 @@ namespace SoulSmith_MonoGame
             _assetManager.RegisterMoveLoader(new MoveLoader());
             _assetManager.RegisterAnimationLoader(new AnimationLoader());
             _assetManager.RegisterFontResourceLoader(new FontResourceLoader());
+            _assetManager.RegisterEmotionLoader(new EmotionLoader());
+            _assetManager.RegisterEffectVisualizationFactoryLoader(new EffectVisualizationFactoryLoader());
+            _assetManager.RegisterModifierFactoryLoader(new ModifierFactoryLoader());
         }
 
         protected override void Update(GameTime gameTime)

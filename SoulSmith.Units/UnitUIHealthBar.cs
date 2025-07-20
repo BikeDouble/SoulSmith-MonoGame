@@ -1,7 +1,7 @@
 
 using System;
 using Microsoft.Xna.Framework.Graphics;
-using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Moves;
 using SoulSmith.UnitStats;
 using SoulSmith.Drawing;
 using SoulSmith.Core;

@@ -1,0 +1,15 @@
+{
+    "Type": "DirectMissile",
+    "Visualization": {
+        "MissileSprite": {
+            "Type": "Animation",
+            "Key": "Animations/Units/Forms/Joy"
+        },
+        "MissileSizeInPixels": {
+            "X": 60,
+            "Y": 60
+        },
+        "FlightTime": 1,
+        "Delay": 0
+    }
+}

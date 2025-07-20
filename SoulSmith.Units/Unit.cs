@@ -2,14 +2,14 @@ using System.Collections.ObjectModel;
 using SoulSmith.Object.Canvas;
 using SoulSmith.UnitStats;
 using SoulSmith.Battle;
-using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Moves;
 using SoulSmith.Core;
 using SoulSmith.Templates;
 using SoulSmith.Asset;
 using SoulSmith.Shapes;
 using SoulSmith.Drawing;
-using SoulSmith.Battle.Effect;
-using SoulSmith.Battle.Effect.Trigger;
+using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Trigger;
 
 namespace SoulSmith.Units;
 public class Unit : CanvasObject, IReadOnlyUnit
@@ -24,7 +24,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	private bool _inCombat = false;
 	private bool _playerControlled = false;
 	private int _combatPosition;
-	private EmotionTag.EmotionTag _emotion;
+	private EmotionTag.EmotionTag _emotionTag;
 	private int _timeOnBoard = -1;
 	private IZone _hitZone = null;
 	private IZone _fireZone = null;
@@ -62,7 +62,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
         _uI?.Update(_stats);
 
         _moveSet = new ReadOnlyCollection<Move>(moveSet.ToList());
-		_emotion = emotion;
+		_emotionTag = emotion;
 		_friendlyName = friendlyName;
 		_timeOnBoard = timeOnBoard;
 
@@ -82,7 +82,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		_stats.SendEffectEventHandler += SendEffect;
         _stats.ModifierAddEventHandler += OnModifierAdded;
         _stats.ModifierRemoveEventHandler += OnModifierRemoved;
-        _stats.LoadEmotionAttributes(_emotion);
+        _stats.LoadEmotionAttributes(_emotionTag);
     }
 
     public event EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler;
@@ -101,15 +101,32 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	{
 		_inCombat = true;
 		_stats.CombatPosition = _combatPosition;
+		EnqueueEmotionCombatEntryEffects();
+    }
+
+	private void EnqueueEmotionCombatEntryEffects()
+	{
+		Emotion.Emotion emotion = Emotion.Emotion.GetEmotion(_emotionTag);
+
+		if (emotion == null) return;
+		if (emotion.BattleEntryEffects == null) return;
+		if (emotion.BattleEntryEffects.Count == 0) return;
+
+		foreach (IEffect effect in emotion.BattleEntryEffects)
+		{
+			EnqueueEffectInputEventArgs args = new EnqueueEffectInputEventArgs();
+			args.EffectInput = new EffectInput(effect, this, this, true);
+			EnqueueEffectInput(this, args);
+        }
 	}
 
-	public void RemoveFromCombat()
+    public void RemoveFromCombat()
 	{
 		_inCombat = false;
 		_combatPosition = -1;
 	}
 
-    public EffectResult ExecuteEffect(EffectRequest request)
+    public EffectResult ProcessEffectRequest(EffectRequest request)
     {
 		EffectResult result = null;
 

@@ -1,5 +1,5 @@
 using System;
-using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Moves;
 using SoulSmith.Combat;
 using SoulSmith.Battle;
 

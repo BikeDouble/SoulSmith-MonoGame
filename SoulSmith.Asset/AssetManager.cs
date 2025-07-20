@@ -29,8 +29,11 @@ namespace SoulSmith.Asset
         private IGraphicsAssetLoader _zonedTextureLoader;
         private IBasicAssetLoader _unitTemplateLoader;
         private IBasicAssetLoader _moveLoader;
+        private IBasicAssetLoader _emotionLoader;
         private IBasicAssetLoader _animationLoader;
         private IBasicAssetLoader _fontResourceLoader;
+        private IBasicAssetLoader _effectVisualizationFactoryLoader;
+        private IBasicAssetLoader _modifierFactoryLoader;
 
         public static void Initialize(ContentManager content, GraphicsDevice graphics, AssetManifest manifest)
         {
@@ -156,6 +159,51 @@ namespace SoulSmith.Asset
             T move = (T)_moveLoader.Load(filePath);
 
             return move;
+        }
+
+        public void RegisterEmotionLoader(IBasicAssetLoader loader) { _emotionLoader = loader; }
+
+        public T GetEmotion<T>(string key) where T : IAsset
+        {
+            if (!_manifest.ContainsKey(key)) return default(T);
+
+            string filePath = FILEPREFIX + _manifest[key];
+
+            if (_emotionLoader == null) throw new Exception("Emotion loader not registered");
+
+            T emotion = (T)_emotionLoader.Load(filePath);
+
+            return emotion;
+        }
+
+        public void RegisterEffectVisualizationFactoryLoader(IBasicAssetLoader loader) { _effectVisualizationFactoryLoader = loader; }
+
+        public T GetEffectVisualizationFactory<T>(string key) where T : IAsset
+        {
+            if (!_manifest.ContainsKey(key)) return default(T);
+
+            string filePath = FILEPREFIX + _manifest[key];
+
+            if (_effectVisualizationFactoryLoader == null) throw new Exception("EffectVisualizationFactory loader not registered");
+
+            T effectVisualizationFactory = (T)_effectVisualizationFactoryLoader.Load(filePath);
+
+            return effectVisualizationFactory;
+        }
+
+        public void RegisterModifierFactoryLoader(IBasicAssetLoader loader) { _modifierFactoryLoader = loader; }
+
+        public T GetModifierFactory<T>(string key) where T : IAsset
+        {
+            if (!_manifest.ContainsKey(key)) return default(T);
+
+            string filePath = FILEPREFIX + _manifest[key];
+
+            if (_modifierFactoryLoader == null) throw new Exception("ModifierFactory loader not registered");
+
+            T modifierFactory = (T)_modifierFactoryLoader.Load(filePath);
+
+            return modifierFactory;
         }
 
         public void RegisterAnimationLoader(IBasicAssetLoader loader) { _animationLoader = loader; }

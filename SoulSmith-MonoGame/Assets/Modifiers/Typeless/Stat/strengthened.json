@@ -1,0 +1,23 @@
+{
+    "Type": "StaticStat",
+    "Modifier": {
+        "StatType": "attack",
+        "AdditiveMod": 3,
+        "Duration": 4,
+        "DurationStyle": "rounds",
+        "Alignment": "buff",
+        "IsModifierVisible": true,
+        "IconKey": {
+            "Type": "Texture",
+            "Key": "Textures/Units/Forms/JoyV1"
+        },
+        "FriendlyName": "Strengthened",
+        "Description": {
+            "LocalizationKey": "Modifiers/Stat/Static/RoundDuration/Attack/Additive",
+            "LocalizationVariables": {
+                "Percent": 300,
+                "Duration": 4
+            }
+        }
+    }
+}

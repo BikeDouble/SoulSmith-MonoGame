@@ -1,6 +1,6 @@
-using SoulSmith.Battle.Move;
-using SoulSmith.Battle.Effect;
-using SoulSmith.Battle.Effect.Visualization;
+using SoulSmith.Battle.Moves;
+using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Visualization;
 using SoulSmith.Object.Canvas;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
@@ -8,7 +8,7 @@ using SoulSmith.Collections;
 using SoulSmith.Units;
 using SoulSmith.Battle;
 using SoulSmith.Object;
-using SoulSmith.Battle.Effect.Trigger;
+using SoulSmith.Battle.Effects.Trigger;
 
 namespace SoulSmith.Combat;
 public class EffectQueue : CanvasObject
@@ -57,7 +57,11 @@ public class EffectQueue : CanvasObject
 
     public override void Process(double delta)
     {
-        CheckAndProcess();
+        bool effectProcessed = CheckAndProcess();
+        while (effectProcessed)
+        {
+            effectProcessed = CheckAndProcess();
+        }
         base.Process(delta);
         RemoveVisualizationsInList();
     }
@@ -82,9 +86,9 @@ public class EffectQueue : CanvasObject
         EnqueueEffect(new EffectInput(_roundEndEffect, null, null));
     }
 
-    public void OnUnitDeath(IReadOnlyUnit killer, IReadOnlyUnit deadUnit)
+    public void OnUnitDeath(IReadOnlyUnit killer, IReadOnlyUnit deadUnit, EffectResult killingEffectResult)
     {
-        EnqueueEffect(new EffectInput(_unitDeathEffect, killer, deadUnit), null, null, UnitSprite.DEATHANIMATIONDURATION);
+        EnqueueEffect(new EffectInput(_unitDeathEffect, killer, deadUnit), killingEffectResult, UnitSprite.DEATHANIMATIONDURATION);
     }
 
     private void InitializeQueue() 
@@ -99,19 +103,23 @@ public class EffectQueue : CanvasObject
         _moveHistory = new DropOutStack<MoveInput>(24);
     }
 
-    private void CheckAndProcess()
+    private bool CheckAndProcess()
     {
         if (_processingEnabled)
         {
             if (NextEffectReady(_priorityQueue))
             {
                 DequeueAndProcess(_priorityQueue);
+                return true;
             }
             else if (NextEffectReady(_queue))
             {
                 DequeueAndProcess(_queue);
+                return true;
             }
         }
+
+        return false;
     }
 
     private void DequeueAndProcess(Queue<QueuedEffect> queue)
@@ -121,7 +129,7 @@ public class EffectQueue : CanvasObject
 
         if (effectInput.Effect == null)
         {
-            Trace.TraceError("Effect input missing effect");
+            Trace.TraceError("Effects input missing effect");
             return;
         }
 
@@ -137,7 +145,7 @@ public class EffectQueue : CanvasObject
         EnqueueEffect(new EffectInput(_moveBeginEffect, sender, target));
         foreach (IEffect effect in effects)
         {
-            EnqueueEffect(new EffectInput(effect, sender, target), null, null, UNIVERSALMOVEEFFECTDELAY);
+            EnqueueEffect(new EffectInput(effect, sender, target), null, UNIVERSALMOVEEFFECTDELAY);
         }
         EnqueueEffect(new EffectInput(_moveEndEffect, sender, target));
 
@@ -146,13 +154,12 @@ public class EffectQueue : CanvasObject
 
     public void EnqueueEffect(
         EffectInput effectInput,
-        EffectRequest parentEffectRequest = null,
         EffectResult parentEffectResult = null,
         double additionalDelay = 0)
     {
         if (effectInput.Effect == null)
         {
-            Trace.TraceError("Effect input missing effect");
+            Trace.TraceError("Effects input missing effect");
             return;
         }
 
@@ -232,7 +239,7 @@ public class EffectQueue : CanvasObject
             foreach (IEffect immediateAfterEffect in request.ImmediateAfterEffects)
             {
                 EffectInput immediateAfterEffectInput = new EffectInput(immediateAfterEffect, request.Sender, request.Target, true);
-                EnqueueEffect(immediateAfterEffectInput, request, result);
+                EnqueueEffect(immediateAfterEffectInput, result);
             }
         }
 

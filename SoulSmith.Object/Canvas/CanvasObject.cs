@@ -7,7 +7,7 @@ using SoulSmith.Asset;
 using SoulSmith.Input;
 
 namespace SoulSmith.Object.Canvas;
-public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformable, ICanvasObject
+public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformable
 {
     private bool _visible = true;
     private Position _position = null;
@@ -200,6 +200,16 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         byte newA = (byte)Math.Clamp((int)_color.A + a, 0, 255);
 
         _color = new Color(newR, newG, newB, newA);
+    }
+
+    public void SetColor(int r, int g, int b, int a)
+    {
+        SetColor(new Color(r, g, b, a));
+    }
+
+    public void SetColor(Color color)
+    {
+        _color = color;
     }
 
     public override void CollectDrawPackets(IReadOnlyPosition absolutePosition, Color color, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)

@@ -1,0 +1,20 @@
+{
+    "Type": "EffectOnHit",
+    "Modifier": {
+        "Effect": {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.3",
+                "DamageType": "essence",
+                "VisualizationKey": "EffectVisualizations/Joy/DirectMissile"
+            }
+        },
+        "DurationStyle": "permanent",
+        "ModifierAlignment": "buff",
+        "IsModifierVisible": true,
+        "ModifierIconKey": {
+            "Type": "Texture",
+            "Key": "Textures/Units/Forms/JoyV1"
+        }
+    }
+}

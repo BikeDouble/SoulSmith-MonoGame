@@ -5,13 +5,13 @@ using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework.Graphics;
 using SoulSmith.Units;
 using SoulSmith.Battle;
-using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Moves;
 using SoulSmith.Asset;
 using SoulSmith.Templates;
 using SoulSmith.Collections;
-using SoulSmith.Battle.Effect;
+using SoulSmith.Battle.Effects;
 using SoulSmith.Drawing;
-using SoulSmith.Battle.Effect.Trigger;
+using SoulSmith.Battle.Effects.Trigger;
 
 namespace SoulSmith.Combat;
 public class CombatManager : CanvasObject, IReadOnlyCombat
@@ -400,7 +400,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	//Listens to both teams
 	private void OnUnitDeathCall(object sender, UnitDeathCallArgs e)
 	{
-		_effectQueue.OnUnitDeath(e.Killer, e.CallingUnit);
+		_effectQueue.OnUnitDeath(e.Killer, e.CallingUnit, e.KillingEffectResult);
 	}
 
 	private void OnShowTargetSelectUI(object sender, ShowTargetSelectUIEventArgs e)
@@ -446,7 +446,8 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	private void OnOfferEffectInput(object sender, EnqueueEffectInputEventArgs e)
 	{
 		EffectInput effectInput = e.EffectInput;
-		_effectQueue.EnqueueEffect(effectInput);
+		EffectResult parentEffectResult = e.ParentEffectResult;
+        _effectQueue.EnqueueEffect(effectInput, parentEffectResult);
 	}
 
 	// Listens to effect queue
@@ -478,11 +479,11 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 
         foreach (Unit unit in allActiveUnits)
         {
-            ExecuteEffectForUnit(request, unit);
+            ProcessEffectRequestForUnit(request, unit);
         }
 
         if (target != null)
-            result = ExecuteEffectForUnit(request, target);
+            result = ProcessEffectRequestForUnit(request, target);
 
         _effectQueue.ResolveEffect(request, result);
 
@@ -515,13 +516,13 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         } 
     }
 
-    private EffectResult ExecuteEffectForUnit(EffectRequest request, Unit unit)
+    private EffectResult ProcessEffectRequestForUnit(EffectRequest request, Unit unit)
 	{
         CombatTeam team = GetTeamWithUnit(unit);
         EffectResult result = null;
 
         if (team != null) 
-			result = team.ExecuteEffect(request, unit);
+			result = team.ProcessEffectRequestForUnit(request, unit);
 
 		return result;
     }

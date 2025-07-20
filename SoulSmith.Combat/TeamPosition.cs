@@ -1,7 +1,7 @@
 using SoulSmith.Units;
 using SoulSmith.Object.Canvas;
-using SoulSmith.Battle.Effect;
-using SoulSmith.Battle.Effect.Trigger;
+using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Trigger;
 
 namespace SoulSmith.Combat;
 public class TeamPosition : CanvasObject
@@ -136,7 +136,7 @@ public class TeamPosition : CanvasObject
         EnqueueEffectInputEventHandler(this, e);
     }
 
-    public EffectResult ExecuteEffect(EffectRequest request)
+    public EffectResult ProcessEffectRequest(EffectRequest request)
     {
         if (_containsUnit)
 		{
@@ -146,7 +146,7 @@ public class TeamPosition : CanvasObject
 					_movedThisRound = true;
 			}
 
-			return _unit.ExecuteEffect(request);
+			return _unit.ProcessEffectRequest(request);
 		}
 		else
 		{

@@ -2,7 +2,7 @@
 using SoulSmith.Object.Canvas;
 using SoulSmith.Shapes;
 using SoulSmith.UnitStats;
-using SoulSmith.Battle.Move;
+using SoulSmith.Battle.Moves;
 
 namespace SoulSmith.Battle;
 
@@ -12,7 +12,7 @@ public interface IReadOnlyUnit : IReadOnlyCanvasObject
     bool InCombat { get; }
     int GetModStat(StatType stat);
     int GetBaseStat(StatType stat);
-    ReadOnlyCollection<Move.Move> MoveSet { get; }
+    ReadOnlyCollection<Moves.Move> MoveSet { get; }
     string FriendlyName { get; }
     IZone HitZone { get; }
     IZone FireZone { get; }

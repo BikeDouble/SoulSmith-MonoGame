@@ -1,0 +1,15 @@
+{
+    "FriendlyName": "Joy",
+    "Tag": 1,
+    "FormKey": "Units/Forms/Joy",
+    "Color": [ 245, 188, 0, 255 ],
+    "CombatEntryEffects": 
+     [
+        {
+            "Type": "Modifier",
+            "Effect": {
+                "ModifierKey": "Modifiers/Joy/Effect/Pop"
+            }
+        }
+    ]
+}

@@ -20,8 +20,4 @@
 	<ProjectReference Include="..\SoulSmith.Collections\SoulSmith.Collections.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Effect\Modifier\OnHit\" />
-  </ItemGroup>
-
 </Project>

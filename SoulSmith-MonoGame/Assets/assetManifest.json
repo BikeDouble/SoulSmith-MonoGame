@@ -6,9 +6,31 @@
             }
         }
     },
+    "EffectVisualizations": {
+        "Joy": {
+            "DirectMissile": "EffectVisualizations/Joy/joyDirectMissile.json"
+        }
+    },
+    "Emotions": {
+        "Single": {
+            "Joy": "Emotions/Single/joy.json"
+        }
+    },
     "Fonts": {
         "Raleway": {
             "Medium": "Fonts/Raleway/ralewayMedium.ttf"
+        }
+    },
+    "Modifiers": {
+        "Joy": {
+            "Effect": {
+                "Pop": "Modifiers/Joy/Effect/joypop.json"
+            }
+        },
+        "Typeless": {
+            "Stat": {
+                "Strengthened": "Modifiers/Typeless/Stat/strengthened.json"
+            }
         }
     },
     "Moves": {
@@ -25,6 +47,11 @@
         }
     },
     "Textures": {
+        "Effects": {
+            "Particles": {
+                "JoyPopStar": "Textures/Effects/Particles/joyPopStar.png"
+            }
+        },
         "SpriteSheets": {
             "Units": {
                 "Forms": {

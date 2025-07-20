@@ -1,0 +1,100 @@
+﻿using SoulSmith.Asset;
+using SoulSmith.Battle.Effects.Visualization.Factory;
+using SoulSmith.Battle.Modifiers.Effect;
+using SoulSmith.Battle.Modifiers.Stat;
+using SoulSmith.Drawing;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+namespace SoulSmith.Battle.Modifiers
+{
+    [JsonConverter(typeof(ModifierFactoryJsonConverter))]
+    public class ModifierFactory : IAsset
+    {
+        public ModifierFactory(int duration, DurationStyle durationStyle, ModifierAlignment modifierAlignment, bool isModifierVisible, DrawableResourceKey modifierIconKey, string friendlyName, string description)
+        {
+            Duration = duration;
+            DurationStyle = durationStyle;
+            ModifierAlignment = modifierAlignment;
+            IsModifierVisible = isModifierVisible;
+            ModifierIconKey = modifierIconKey;
+            FriendlyName = friendlyName ?? "Unnamed";
+            Description = description ?? string.Empty;
+        }
+
+        public int Duration { get; private set; }
+        public DurationStyle DurationStyle { get; private set; }
+        public ModifierAlignment ModifierAlignment { get; private set; }
+        public bool IsModifierVisible { get; private set; }
+        public DrawableResourceKey ModifierIconKey { get; private set; }
+        public string FriendlyName { get; private set; }
+        public string Description { get; private set; }
+        public virtual IModifier CreateModifier()
+        {
+            return null;
+        }
+
+        public void Dispose()
+        {
+            // Dispose logic if needed
+        } 
+    }
+
+    public class ModifierFactoryJsonConverter : JsonConverter<ModifierFactory>
+    {
+        public override ModifierFactory Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
+
+            reader.Read();
+
+            if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Expected property name");
+
+            if (reader.GetString() != "Type") throw new JsonException("Expected type of ModifierFactory");
+
+            reader.Read();
+
+            if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected name of ModifierFactory type");
+
+            string factoryType = reader.GetString();
+
+            reader.Read();
+
+            if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Expected property name");
+
+            if (reader.GetString() != "Modifier") throw new JsonException("Expected ModifierFactory");
+
+            reader.Read();
+
+            if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of object");
+
+            ModifierFactory value = null;
+
+            switch (factoryType)
+            {
+                case "StaticStat":
+                    value = JsonSerializer.Deserialize<StaticStatModifierFactory>(ref reader, options);
+                    reader.Read();
+                    break;
+                case "EffectOnHit":
+                    value = JsonSerializer.Deserialize<EffectOnHitModifierFactory>(ref reader, options);
+                    reader.Read();
+                    break;
+                default:
+                    throw new JsonException($"Unexpected type {factoryType}. Type is either misspelled or does not exist.");
+            }
+
+            return value;
+        }
+
+        public override void Write(Utf8JsonWriter writer, ModifierFactory value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
