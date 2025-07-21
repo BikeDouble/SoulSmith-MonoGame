@@ -20,9 +20,10 @@ public class UnitUIMoveMenu : CanvasObject
     {
 		CreateMoveButtons(moveButtonResource);
 		Hide();
+		this.Scale(new Vector2(0.9f, 0.9f));
     }
 
-	private const int TOPBUTTONX = 200;
+	private const int TOPBUTTONX = 225;
 	private const int TOPBUTTONY = -SPACEBETWEENBUTTONS;
     private const int SPACEBETWEENBUTTONS = 70;
 	private const float MOVEBUTTONSCALE = 1f;

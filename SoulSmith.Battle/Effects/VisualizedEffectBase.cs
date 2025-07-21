@@ -6,10 +6,12 @@ namespace SoulSmith.Battle.Effects
     public class VisualizedEffectBase : IDisposable
     {
         private EffectVisualizationFactory _visualizationFactory;
+        private float _additionalDelay;
 
-        public VisualizedEffectBase(EffectVisualizationFactory visualizationFactory) 
+        public VisualizedEffectBase(EffectVisualizationFactory visualizationFactory, float additionalDelay) 
         {
             _visualizationFactory = visualizationFactory;
+            _additionalDelay = additionalDelay;
         }
 
         public EffectVisualization CreateVisualization()
@@ -21,5 +23,7 @@ namespace SoulSmith.Battle.Effects
         {
             _visualizationFactory?.Dispose();
         }
+
+        public float AdditionalDelay { get { return _additionalDelay; } }
     }
 }

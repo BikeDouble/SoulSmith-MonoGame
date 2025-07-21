@@ -18,8 +18,9 @@ namespace SoulSmith.Battle.Effects.Modifier
 
         public ModifierEffect(
             ModifierFactory modifierFactory,
-            EffectVisualizationFactory visualizationFactory = null
-        ) : base(visualizationFactory)
+            EffectVisualizationFactory visualizationFactory,
+            float additionalDelay
+        ) : base(visualizationFactory, additionalDelay)
         {
             _modifierFactory = modifierFactory;
         }
@@ -42,6 +43,7 @@ namespace SoulSmith.Battle.Effects.Modifier
 
             EffectVisualizationFactory visualizationFactory = null;
             ModifierFactory modifierFactory = null;
+            float additionalDelay = 0f;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -53,6 +55,12 @@ namespace SoulSmith.Battle.Effects.Modifier
 
                 switch (propertyName)
                 {
+                    case "Delay":
+                    case "AdditionalDelay":
+                        if (reader.TokenType != JsonTokenType.Number) throw new JsonException("Expected number");
+                        additionalDelay = reader.GetSingle();
+                        reader.Read();
+                        break;
                     case "ModifierKey":
                     case "ModifierFactoryKey":
                         if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
@@ -82,7 +90,8 @@ namespace SoulSmith.Battle.Effects.Modifier
 
             return new ModifierEffect(
                 modifierFactory,
-                visualizationFactory
+                visualizationFactory,
+                additionalDelay
             );
         }
 

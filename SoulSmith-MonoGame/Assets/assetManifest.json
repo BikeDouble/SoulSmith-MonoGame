@@ -8,7 +8,8 @@
     },
     "EffectVisualizations": {
         "Joy": {
-            "DirectMissile": "EffectVisualizations/Joy/joyDirectMissile.json"
+            "DirectMissile": "EffectVisualizations/Joy/joyDirectMissile.json",
+            "Pop": "EffectVisualizations/Joy/joyPop.json"
         }
     },
     "Emotions": {
@@ -24,7 +25,8 @@
     "Modifiers": {
         "Joy": {
             "Effect": {
-                "Pop": "Modifiers/Joy/Effect/joypop.json"
+                "CheeredOn": "Modifiers/Joy/Effect/cheeredOn.json",
+                "Pop": "Modifiers/Joy/Effect/joyPop.json"
             }
         },
         "Typeless": {
@@ -35,6 +37,8 @@
     },
     "Moves": {
         "Joy": {
+            "CheerOn": "Moves/Joy/cheerOn.json",
+            "DoubleHit": "Moves/Joy/joyDoubleHit.json",
             "SingleHit": "Moves/Joy/joySingleHit.json"
         },
         "Typeless": {
@@ -62,6 +66,7 @@
         "UI": {
             "Units": {
                 "MoveButton": "Textures/UI/Units/moveButton.png",
+                "RetrieveButton": "Textures/UI/Units/retrieveButton.png",
                 "TargetButtonHovered": "Textures/UI/Units/targetButtonHovered.png",
                 "TargetButtonIdle": "Textures/UI/Units/targetButtonIdle.png"
             }

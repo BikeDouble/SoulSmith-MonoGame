@@ -1,0 +1,30 @@
+{
+    "Name": "Chuckle",
+    "EmotionTag": 1,
+    "TargetingStyle": "Enemy",
+    "Description": {
+        "LocalizationKey": "Move/HitDamage/Double/Attack",
+        "LocalizationVariables": {
+            "AttackPercent": 40
+        }
+    },
+    "Effects": [
+        {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.4",
+                "DamageType": "hit",
+                "VisualizationKey": "EffectVisualizations/Joy/DirectMissile"
+            }
+        },
+        {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.4",
+                "DamageType": "hit",
+                "VisualizationKey": "EffectVisualizations/Joy/DirectMissile",
+                "AdditionalDelay": 0.3
+            }
+        }
+    ]
+}

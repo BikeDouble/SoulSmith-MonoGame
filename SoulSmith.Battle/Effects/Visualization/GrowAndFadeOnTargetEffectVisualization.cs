@@ -9,51 +9,61 @@ namespace SoulSmith.Battle.Effects.Visualization
     public class GrowAndFadeOnTargetEffectVisualization : EffectVisualization
     {
         // Children
-        private CanvasObject _growAndFader;
-        private Vector2 _startScale;
-        private Vector2 _endScale;
+        private CanvasObject _particle;
+        private Vector2 _startSize;
+        private Vector2 _endSize;
 
-        public GrowAndFadeOnTargetEffectVisualization(IReadOnlyTrackedAsset<IDrawableResource> missileResource,
+        public GrowAndFadeOnTargetEffectVisualization(DrawableResourceKey particleResourceKey,
+            Vector2 startSize,
+            Vector2 endSize,
             float lifespan,
             float effectActivationTimer = -1,
             float delay = 0f) : base(lifespan, effectActivationTimer, delay)
         {
-            _growAndFader = new CanvasObject(null, missileResource);
-            AddChild(_growAndFader);
+            IAssetWrapper<IDrawableResource> particleAsset = DrawHelpers.GetDrawableResource(particleResourceKey);
+            _particle = new CanvasObject(null, particleAsset);
+            AddChild(_particle);
+            _startSize = startSize;
+            _endSize = endSize;
         }
 
         public override void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0)
         {
             base.BeginVisualization(sender, target, delay);
 
-            Vector2 startPoint = Target.HitZone.GetRandomGlobalPoint(Target.GetGlobalPosition());
+            Vector2 startPoint;
+
+            if (Target.HitZone != null)
+            {
+                startPoint = Target.HitZone.GetRandomGlobalPoint(Target.GetGlobalPosition());
+            }
+            else
+            {
+                startPoint = Target.GetGlobalPosition().Coordinates;
+            }
 
             int rotation = Rand.RandInt(360);
 
-            _growAndFader.Rotate(rotation);
+            _particle.Rotate(rotation);
 
-            _growAndFader.Set(startPoint);
+            _particle.ScaleToSetSize(_startSize);
 
-            _growAndFader.SetScale(Vector2.Zero);
-
-            _startScale = Vector2.Zero;
-
-            _endScale = 4 * _startScale;
+            _particle.SetCoordinates(startPoint);
         }
 
         protected override void EnabledProcess(double delta)
         {
             base.EnabledProcess(delta);
 
-            float progress = (float)(delta / TotalLifespan);
+            float progress = (float)(ElapsedLifespan / TotalLifespan);
 
-            float alphaChange = -(255f * progress);
+            int currentAlpha = 255 - (int)(255 * progress);
 
-            _growAndFader.ChangeColorAdditive(0, 0, 0, (int)alphaChange);
+            _particle.SetColor(255, 255, 255, currentAlpha);
 
-            Vector2 curScale = (_endScale - _startScale) * progress + _startScale;
+            Vector2 curSize = (_endSize - _startSize) * progress + _startSize;
 
-            _growAndFader.SetScale(curScale);
+            _particle.ScaleToSetSize(curSize);
         }
     }
 }

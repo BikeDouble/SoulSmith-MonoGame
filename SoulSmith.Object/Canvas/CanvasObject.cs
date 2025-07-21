@@ -7,7 +7,7 @@ using SoulSmith.Asset;
 using SoulSmith.Input;
 
 namespace SoulSmith.Object.Canvas;
-public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformable
+public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
 {
     private bool _visible = true;
     private Position _position = null;
@@ -123,11 +123,17 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
     {
         if (Resource == null) return;
 
-        Vector2 currentSize = Resource.Size;
+        Vector2 resourceSize = Resource.Size;
 
-        if (currentSize == Vector2.Zero || desiredSize == Vector2.Zero) return;
+        if (resourceSize == Vector2.Zero) return;
 
-        Vector2 desiredScale = desiredSize / currentSize;
+        if (desiredSize == Vector2.Zero)
+        {
+            this.SetScale(Vector2.Zero);
+            return;
+        }
+
+        Vector2 desiredScale = desiredSize / resourceSize;
 
         if (preserveRatio)
         {
@@ -138,17 +144,42 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         this.SetScale(desiredScale);
     }
 
-    public void Set(Position position)
+    public void Set(IReadOnlyPosition position)
     {
         if (position == null)
             return;
 
-        _position.Set(position);
+        this.SetCoordinates(position.Coordinates);
+        this.SetScale(position.ScaleVector);
+        this.SetRotation(position.Rotation);
+        this.SetZ(position.Z);
     }
 
-    public void Set(Vector2 coordinates)
+    public void SetCoordinates(Vector2 coordinates)
     {
-        _position.Set(coordinates);
+        Vector2 difference = coordinates - _position.Coordinates;
+        this.Translate(difference);
+    }
+
+    public void SetZ(int z)
+    {
+        if (z == _position.Z) return;
+        int difference = z - _position.Z;
+        this.ZTranslate(difference);
+    }
+
+    public void SetRotation(float rotation)
+    {
+        if (rotation == _position.Rotation) return;
+        int difference = (int)(rotation - _position.Rotation);
+        this.Rotate(difference);
+    }
+
+    public void SetScale(Vector2 scale)
+    {
+        Vector2 change = scale / _position.ScaleVector;
+
+        this.Scale(change);
     }
 
     public void Transform(IReadOnlyPosition transformation)
@@ -156,7 +187,10 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         if (transformation == null)
             return;
 
-        _position.Transform(transformation);
+        this.Translate(transformation.Coordinates);
+        this.Scale(transformation.ScaleVector);
+        this.Rotate(transformation.Rotation);
+        this.ZTranslate(transformation.Z);
     }
 
     public void Translate(Vector2 translation)
@@ -166,16 +200,30 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         _position.Translate(translation);
     }
 
+    public void ZTranslate(int zTranslation)
+    {
+        if (zTranslation == 0) return;
+        _position.ZTranslate(zTranslation);
+    }
+
     public void Scale(Vector2 scale)
     {
         if (scale == Vector2.One) return;
 
         _position.Scale(scale);
+
+        AdjustChildrenCoordinatesToMatchScale(scale);
     }
 
-    public void SetScale(Vector2 scale)
+    private void AdjustChildrenCoordinatesToMatchScale(Vector2 scale)
     {
-        _position.SetScale(scale);
+        foreach (SoulSmithObject child in Children)
+        {
+            if (child is CanvasObject canvasChild)
+            {
+                canvasChild.SetCoordinates(canvasChild.Position.Coordinates * scale);
+            }
+        }
     }
 
     public void Rotate(float rotation)
@@ -185,11 +233,13 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject, ITransformab
         _position.Rotate(rotation);
     }
 
-    public void Rotate(float rotation, Vector2? origin = null)
+    public void Rotate(float rotation, Vector2 origin)
     {
         if (rotation == 0) return;
 
         _position.Rotate(rotation, origin);
+
+        throw new NotImplementedException();
     }
 
     public void ChangeColorAdditive(int r, int g, int b, int a)

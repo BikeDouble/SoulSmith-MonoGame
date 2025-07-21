@@ -22,5 +22,7 @@ namespace SoulSmith.Battle.Effects.Trigger
         }
 
         public void Dispose() { }
+
+        public float AdditionalDelay { get { return 0f; } }
     }
 }

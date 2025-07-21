@@ -9,10 +9,12 @@ using SoulSmith.Units;
 using SoulSmith.Battle;
 using SoulSmith.Object;
 using SoulSmith.Battle.Effects.Trigger;
+using SoulSmith.Core;
 
 namespace SoulSmith.Combat;
 public class EffectQueue : CanvasObject
 {
+    public const int EFFECTVISUALIZATIONZVALUE = (int)ZLayer.EffectVisualization;
     public const double UNIVERSALMOVEEFFECTDELAY = UnitSprite.ATTACKANIMATIONDURATION / 2;
     public static readonly ReadOnlyCollection<Priority> PRIORITYORDER = new ReadOnlyCollection<Priority>(
         new List<Priority>
@@ -55,6 +57,7 @@ public class EffectQueue : CanvasObject
     {
         _parentCombat = parentCombat;
         Initialize();
+        this.SetZ(EFFECTVISUALIZATIONZVALUE);
     }
 
     private void Initialize()
@@ -235,7 +238,7 @@ public class EffectQueue : CanvasObject
 
             if (senderAsUnit == null)
             {
-                Trace.TraceError("EffectQueue: Sender could not be cast as Unit");
+                Trace.TraceError("EffectQueue: Sender could not be cast as UnitSprite");
             }
 
             senderAsUnit.Stats.SendEffect(effectInput.Effect.GenerateEffectRequest(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult));

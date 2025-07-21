@@ -2,7 +2,7 @@
 
 namespace SoulSmith.Core
 {
-    public class Position : IReadOnlyPosition, ITransformable
+    public class Position : IReadOnlyPosition
     {
         public Position(int x = 0, int y = 0, float width = 1f, float height = 1f, float rotation = 0f, int z = 0)
         {
@@ -77,7 +77,7 @@ namespace SoulSmith.Core
         {
             Vector2 originVal = origin ?? Vector2.Zero;
 
-            Coordinates = RotatePointAroundPoint(Coordinates, originVal, rotation);
+            if (originVal != Vector2.Zero) Coordinates = RotatePointAroundPoint(Coordinates, originVal, rotation);
 
             Rotation += rotation;
         }
@@ -94,17 +94,19 @@ namespace SoulSmith.Core
             return newRelativePos + origin;
         }
 
-        public void Set(Position transformation)
-        {
-            ScaleVector = transformation.ScaleVector;
-            Coordinates = transformation.Coordinates;
-            Rotation = transformation.Rotation;
-            Z = transformation.Z;
-        }
-
-        public void Set(Vector2 coordinates)
+        public void SetCoordinates(Vector2 coordinates)
         {
             Coordinates = coordinates;
+        }
+
+        public void SetZ(int z)
+        {
+            Z = z;
+        }
+
+        public void SetRotation(float rotation)
+        {
+            Rotation = rotation;
         }
 
         public const float MAXROTATION = (float)(Math.PI * 2);

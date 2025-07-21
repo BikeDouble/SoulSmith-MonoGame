@@ -13,7 +13,7 @@ namespace SoulSmith.Units;
 public class UnitUIMoveButton : ButtonObject
 {
     public const string LABELFONTKEY = "Fonts/Raleway/Medium";
-	public const int ZVALUE = 10;
+	public const int ZVALUE = (int)ZLayer.UnitMoveButton;
     private const float IDLEDIMNESSMULT = 0.8f;
 	private const float HOVERSIZEMOD = 1.1f;
 	private const float WIDTHSCALE = 0.35f;

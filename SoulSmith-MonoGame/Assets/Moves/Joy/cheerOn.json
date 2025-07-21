@@ -1,0 +1,21 @@
+{
+    "Name": "Cheer On",
+    "EmotionTag": 1,
+    "TargetingStyle": "Ally",
+    "Description": {
+        "LocalizationKey": "Move/Modifier/CheerOn",
+        "LocalizationVariables": {
+            "Percent": 30,
+            "Duration": 2
+        }
+    },
+    "Effects": [   
+        {
+            "Type": "Modifier",
+            "Effect": {
+                "ModifierKey": "Modifiers/Joy/Effect/CheeredOn",
+                "VisualizationKey": "EffectVisualizations/Joy/DirectMissile"
+            }
+        }
+    ]
+}

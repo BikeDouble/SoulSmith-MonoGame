@@ -8,5 +8,6 @@ namespace SoulSmith.Battle.Effects
     {
         public EffectRequest GenerateEffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, EffectResult parentEffectResult = null);
         public Visualization.EffectVisualization CreateVisualization();
+        public float AdditionalDelay { get; }
     }
 }

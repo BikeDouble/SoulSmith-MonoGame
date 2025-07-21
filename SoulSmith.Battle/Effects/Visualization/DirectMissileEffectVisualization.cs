@@ -44,7 +44,7 @@ namespace SoulSmith.Battle.Effects.Visualization
                 _startPoint = Sender.GetGlobalPosition().Coordinates;
             }
 
-            _missile.Set(_startPoint);
+            _missile.SetCoordinates(_startPoint);
 
             if (_missileSizeInPixels.HasValue) _missile.ScaleToSetSize(_missileSizeInPixels.Value);
 
@@ -66,7 +66,7 @@ namespace SoulSmith.Battle.Effects.Visualization
             Vector2 difference = _endPoint - _startPoint;
             Vector2 desiredPosition = _startPoint + (float)interpolant * difference;
 
-            _missile.Set(desiredPosition);
+            _missile.SetCoordinates(desiredPosition);
         }
     }
 }

@@ -86,7 +86,7 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 	{
 		if (unit == null)
 		{
-			Trace.TraceError("Unit assigned to team is null.");
+			Trace.TraceError("UnitSprite assigned to team is null.");
 			return;
 		}
 

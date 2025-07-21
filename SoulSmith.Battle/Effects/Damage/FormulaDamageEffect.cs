@@ -13,7 +13,7 @@ namespace SoulSmith.Battle.Effects.Damage
         private Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double> _parsedFormula;
         private DamageType _damageType = DamageType.Hit;
 
-        public FormulaDamageEffect(string formula, DamageType damageType, EffectVisualizationFactory visualizationFactory = null) : base(visualizationFactory)
+        public FormulaDamageEffect(string formula, DamageType damageType, EffectVisualizationFactory visualizationFactory, float additionalDelay) : base(visualizationFactory, additionalDelay)
         {
             Interpreter interpreter = new Interpreter();
             _parsedFormula = interpreter.ParseAsDelegate<Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double>>(formula, "sender", "target", "combat");
@@ -38,6 +38,7 @@ namespace SoulSmith.Battle.Effects.Damage
 
             EffectVisualizationFactory visualizationFactory = null;
             string formula = string.Empty;
+            float additionalDelay = 0f;
             DamageType damageType = DamageType.Null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
@@ -50,6 +51,12 @@ namespace SoulSmith.Battle.Effects.Damage
 
                 switch (propertyName)
                 {
+                    case "Delay":
+                    case "AdditionalDelay":
+                        if (reader.TokenType != JsonTokenType.Number) throw new JsonException("Expected number");
+                        additionalDelay = reader.GetSingle();
+                        reader.Read();
+                        break;
                     case "Formula":
                         if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
                         formula = reader.GetString();
@@ -77,7 +84,7 @@ namespace SoulSmith.Battle.Effects.Damage
             if (string.IsNullOrEmpty(formula)) throw new JsonException("Formula cannot be null or empty");
             if (damageType == DamageType.Null) throw new JsonException("DamageType cannot be Null");
 
-            return new FormulaDamageEffect(formula, damageType, visualizationFactory);
+            return new FormulaDamageEffect(formula, damageType, visualizationFactory, additionalDelay);
         }
 
         public override void Write(Utf8JsonWriter writer, FormulaDamageEffect value, JsonSerializerOptions options)

@@ -13,7 +13,11 @@
             "Weight": 60
         },
         {
-            "Item": "Typeless/AttackBoost",
+            "Item": "Joy/DoubleHit",
+            "Weight": 60
+        },
+        {
+            "Item": "Joy/CheerOn",
             "Weight": 60
         }
     ],

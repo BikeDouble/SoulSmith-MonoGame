@@ -7,6 +7,7 @@ public class EffectVisualizationListener
 
     public EffectVisualizationListener(EffectInput input, double delay)
     {
+        delay += input.Effect.AdditionalDelay;
         EffectVisualization visualization = input.Effect.CreateVisualization();
         if (visualization == null)
         {
