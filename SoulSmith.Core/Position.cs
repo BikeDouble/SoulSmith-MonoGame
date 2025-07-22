@@ -12,6 +12,8 @@ namespace SoulSmith.Core
             Y = y;
             Rotation = rotation;
             Z = z;
+            if (Width == 0f) Width = MINIMUMSCALE;
+            if (Height == 0f) Height = MINIMUMSCALE;
         }
 
         public Position(Vector2 coordinates)
@@ -28,21 +30,8 @@ namespace SoulSmith.Core
             Coordinates = other.Coordinates;
             Rotation = other.Rotation;
             Z = other.Z;
-        }
-
-        public Position(float[] positionArgs)
-        {
-            if ((positionArgs != null) && (positionArgs.Length >= 5))
-            {
-                Coordinates = new Vector2(positionArgs[0], positionArgs[1]);
-                ScaleVector = new Vector2(positionArgs[2], positionArgs[3]);
-                Rotation = (float)((float)(positionArgs[4] / 180) * Math.PI);
-
-                if (positionArgs.Length >= 6)
-                {
-                    Z = (int)positionArgs[5];
-                }
-            }
+            if (Width == 0f) Width = MINIMUMSCALE;
+            if (Height == 0f) Height = MINIMUMSCALE;
         }
 
         public void Transform(IReadOnlyPosition transformation)
@@ -74,11 +63,15 @@ namespace SoulSmith.Core
         public void Scale(Vector2 scale)
         {
             ScaleVector *= scale;
+            if (Width == 0f) Width = MINIMUMSCALE;
+            if (Height == 0f) Height = MINIMUMSCALE;
         }
 
         public void SetScale(Vector2 scale)
         {
             ScaleVector = scale;
+            if (Width == 0f) Width = MINIMUMSCALE;
+            if (Height == 0f) Height = MINIMUMSCALE;
         }
 
         public void Rotate(float rotation, Vector2? origin = null)
@@ -118,6 +111,7 @@ namespace SoulSmith.Core
         }
 
         public const float MAXROTATION = (float)(Math.PI * 2);
+        public const float MINIMUMSCALE = 0.0001f;
 
         private Vector2 _scale = Vector2.One;
         private Vector2 _coordinates = Vector2.Zero;
