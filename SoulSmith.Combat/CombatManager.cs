@@ -98,7 +98,6 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
             team.ShowMoveSelectUIEventHandler += OnShowMoveSelectUI;
             team.ShowTargetSelectUIEventHandler += OnShowTargetSelectUI;
             team.UnitDeathCallEventHandler += OnUnitDeathCall;
-            team.SendEffectEventHandler += ExecuteEffect;
         }
     }
 
@@ -107,7 +106,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         if (_effectQueue == null)
         {
             _effectQueue = new EffectQueue(this);
-			_effectQueue.ExecuteSenderlessEffectEventHandler += ExecuteGlobalTriggerEffect;
+			_effectQueue.ExecuteEffectEventHandler += ExecuteEffect;
         }
 
         AddChild(_effectQueue);
@@ -451,13 +450,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	}
 
 	// Listens to effect queue
-	private void ExecuteGlobalTriggerEffect(object sender, SenderlessEffectEventArgs e)
-	{
-		ProcessEffectRequest(e.EffectRequest);
-	}
-
-	// Listens to effect queue
-	private void ExecuteEffect(object sender, SendEffectEventArgs e)
+	private void ExecuteEffect(object sender, ExecuteEffectEventArgs e)
 	{
 		EffectRequest request = e.EffectRequest;
 

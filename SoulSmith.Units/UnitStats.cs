@@ -231,17 +231,6 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         UnitDeathCallEventHandler(this, e);
 	}
 
-	public event EventHandler<SendEffectEventArgs> SendEffectEventHandler;
-
-	//Sends an effect request up the tree, called by effect queue
-	public void SendEffect(EffectRequest request)
-	{
-		SendEffectEventArgs e = new SendEffectEventArgs();
-		e.EffectRequest = request;
-
-		SendEffectEventHandler(this, e);
-	}
-
 	//
 	// Healing related functions
 	//
@@ -413,11 +402,6 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
     public int Defense { get { return GetModStat(StatType.Defense); } }
     public int DecayRate { get { return GetModStat(StatType.DecayRate); } }
     public int CurDecay { get { return GetModStat(StatType.CurDecay); } }
-}
-
-public class SendEffectEventArgs : EventArgs
-{
-	public EffectRequest EffectRequest;
 }
 
 public class UpdateUIEventArgs : EventArgs

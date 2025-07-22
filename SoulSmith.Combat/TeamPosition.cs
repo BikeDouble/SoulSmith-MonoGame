@@ -31,7 +31,6 @@ public class TeamPosition : CanvasObject
         _unit.OfferTargetEventHandler += OnOfferTarget;
         _unit.EnqueueEffectInputEventHandler += EnqueueEffect;
         _unit.UnitDeathCallEventHandler += OnUnitDeathCall;
-        _unit.SendEffectEventHandler += SendEffect;
 		AddChild(unit);
 
         _unit.OnJoinCombat();
@@ -98,14 +97,6 @@ public class TeamPosition : CanvasObject
     private void OnOfferTarget(object sender, TargetButtonPressedEventArgs args)
 	{
 		OfferTargetEventHandler(this, args);
-	}
-
-	public event EventHandler<SendEffectEventArgs> SendEffectEventHandler;
-
-	//Connected to Unit
-	private void SendEffect(object sender, SendEffectEventArgs e)
-	{
-		SendEffectEventHandler(this, e);
 	}
 
 	public event EventHandler<UnitDeathCallArgs> UnitDeathCallEventHandler;

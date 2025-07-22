@@ -219,30 +219,16 @@ public class EffectQueue : CanvasObject
     //
     // Effect processing
     //
-    public event EventHandler<SenderlessEffectEventArgs> ExecuteSenderlessEffectEventHandler;
+    public event EventHandler<ExecuteEffectEventArgs> ExecuteEffectEventHandler;
 
     public void SendEffectRequestFromInput(EffectInput effectInput, EffectResult parentEffectResult = null)
     {
-        if (effectInput.Sender == null)
-        {
-            EffectRequest request = effectInput.Effect.GenerateEffectRequest(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult);
+        EffectRequest request = effectInput.Effect.GenerateEffectRequest(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult);
 
-            SenderlessEffectEventArgs e = new();
-            e.EffectRequest = request;
+        ExecuteEffectEventArgs e = new();
+        e.EffectRequest = request;
 
-            ExecuteSenderlessEffectEventHandler?.Invoke(this, e);
-        }
-        else
-        {
-            Unit senderAsUnit = effectInput.Sender as Unit; //TODO make typesafe
-
-            if (senderAsUnit == null)
-            {
-                Trace.TraceError("EffectQueue: Sender could not be cast as UnitSprite");
-            }
-
-            senderAsUnit.Stats.SendEffect(effectInput.Effect.GenerateEffectRequest(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult));
-        }
+        ExecuteEffectEventHandler?.Invoke(this, e);
     }
 
     /// <summary>
@@ -307,7 +293,7 @@ public class EffectQueue : CanvasObject
     }
 }
 
-public class SenderlessEffectEventArgs : EventArgs
+public class ExecuteEffectEventArgs : EventArgs
 {
     public EffectRequest EffectRequest { get; set; }
 }

@@ -63,7 +63,6 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 			position.OfferTargetEventHandler += OnOfferTarget;
 			position.EnqueueEffectInputEventHandler += EnqueueEffectInput;
 			position.UnitDeathCallEventHandler += OnUnitDeathCall;
-			position.SendEffectEventHandler += SendEffect;
 		}
 	}
 
@@ -73,14 +72,6 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
     {
         EnqueueEffectInputEventHandler(this, e);
     }
-
-	public event EventHandler<SendEffectEventArgs> SendEffectEventHandler;
-
-	//Connected to team positions, sends up
-	private void SendEffect(object sender, SendEffectEventArgs e)
-	{
-		SendEffectEventHandler(this, e);
-	}
 
 	public void AssignUnitToPosition(Unit unit, int positionIndex)
 	{

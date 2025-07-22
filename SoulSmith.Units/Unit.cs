@@ -79,7 +79,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	{
 		_stats.UnitDeathCallEventHandler += EmitUnitDeathCallSignal;
 		_stats.EnqueueEffectInputEventHandler += EnqueueEffectInput;
-		_stats.SendEffectEventHandler += SendEffect;
         _stats.ModifierAddEventHandler += OnModifierAdded;
         _stats.ModifierRemoveEventHandler += OnModifierRemoved;
         _stats.LoadEmotionAttributes(_emotionTag);
@@ -230,16 +229,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		args.Target = this;
 		OfferTargetEventHandler?.Invoke(this, args);
 	}
-
-    public event EventHandler<SendEffectEventArgs> SendEffectEventHandler;
-
-    //Listens to stats SendEffectRequest
-    private void SendEffect(object sender, SendEffectEventArgs e)
-    {
-		EffectRequest request = e.EffectRequest;
-
-		SendEffectEventHandler?.Invoke(this, e);
-    }
 
 	private void OnModifierAdded(object sender, ModifierAddOrRemoveEventArgs e)
 	{
