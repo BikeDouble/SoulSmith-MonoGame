@@ -50,7 +50,11 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         if (e == null)
             return;
 
-        e.Position += _position;
+        Position newPosition = new Position();
+        newPosition.TransformInContext(e.Position, this.Position);
+        newPosition.Transform(this.Position);
+
+        e.Position = newPosition;
 
         GetGlobalPositionEventHandler?.Invoke(this, e);
     }
@@ -60,7 +64,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         if (Resource is null)
             return false;
 
-        IZone zone = Resource as IZone;
+        IMultiZone zone = Resource as IMultiZone;
 
         if (zone == null) return false;
 
@@ -211,19 +215,6 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         if (scale == Vector2.One) return;
 
         _position.Scale(scale);
-
-        AdjustChildrenCoordinatesToMatchScale(scale);
-    }
-
-    private void AdjustChildrenCoordinatesToMatchScale(Vector2 scale)
-    {
-        foreach (SoulSmithObject child in Children)
-        {
-            if (child is CanvasObject canvasChild)
-            {
-                canvasChild.SetCoordinates(canvasChild.Position.Coordinates * scale);
-            }
-        }
     }
 
     public void Rotate(float rotation)
@@ -269,7 +260,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         Position newPosition;
 
         newPosition = new Position(absolutePosition);
-        newPosition.Transform(_position);
+        newPosition.TransformInContext(Position, absolutePosition);
 
         IDrawableResource resourceToDraw = Resource;
 
@@ -289,15 +280,14 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         base.CollectDrawPackets(absolutePosition, color, renderQueue, scissorRect);
     }
 
-    public override void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
+    public override void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue)
     {
-        Position newPosition = absolutePosition; //TODO investigate, rework
+        Position newPosition;
 
-        if (newPosition == null)
-        {
-            newPosition = new Position(parentAbsolutePosition);
-            newPosition.Transform(_position);
-        }
+        newPosition = new Position(parentAbsolutePosition);
+        newPosition.TransformInContext(_position, parentAbsolutePosition);
+
+        this.CollectInputPacketsInternal(newPosition, inputQueue);
 
         base.CollectInputPackets(newPosition, inputQueue);
     }

@@ -13,14 +13,14 @@ using SoulSmith.Shapes;
 namespace SoulSmith.Drawing
 {
     [JsonConverter(typeof(ZonedResourceJsonConverter))]
-    public class ZonedResource : IZone, IDrawableResource, IAsset
+    public class ZonedResource : IZonedResource, IMultiZone, IAsset
     {
-        private IZone _clickZone;
+        private IZone _zone;
         private IAssetWrapper<IDrawableResource> _resource;
 
-        public ZonedResource(IZone clickZone, IAssetWrapper<IDrawableResource> resource)
+        public ZonedResource(IZone zone, IAssetWrapper<IDrawableResource> resource) //TODO add multizone support
         {
-            _clickZone = clickZone;
+            _zone = zone;
             _resource = resource;
         }
         
@@ -31,37 +31,82 @@ namespace SoulSmith.Drawing
 
         public bool ContainsGlobal(Vector2 point, IReadOnlyPosition transformation = null)
         {
-            if (_clickZone == null) return false;
+            return ContainsGlobal(point, transformation, string.Empty);
+        }
+
+        public bool ContainsGlobal(Vector2 point, IReadOnlyPosition transformation, string zoneKey)
+        {
+            if (_zone == null) return false;
 
             Position newTransformation = new Position(transformation);
 
             newTransformation.Translate(Origin * transformation.ScaleVector * -1);
 
-            return _clickZone.ContainsGlobal(point, newTransformation);
+            return _zone.ContainsGlobal(point, newTransformation);
         }
 
         public bool ContainsLocal(Vector2 point)
         {
-            if (_clickZone == null) { return false; }
+            return ContainsLocal(point, string.Empty);
+        }
+
+        public bool ContainsLocal(Vector2 point, string zoneKey)
+        {
+            if (_zone == null) { return false; }
 
             Position originTransformation = new Position(Origin * -1);
 
-            return _clickZone.ContainsGlobal(point, originTransformation);
+            return _zone.ContainsGlobal(point, originTransformation);
         }
 
         public Vector2 GetRandomLocalPoint()
         {
-            return _clickZone.GetRandomLocalPoint();
+            return GetRandomLocalPoint(string.Empty);
+        }
+
+        public Vector2 GetRandomLocalPoint(string zoneKey)
+        {
+            return _zone.GetRandomLocalPoint();
         }
 
         public Vector2 GetRandomGlobalPoint(IReadOnlyPosition position)
         {
-            return _clickZone.GetRandomGlobalPoint(position);
+            return GetRandomGlobalPoint(position, string.Empty);
+        }
+
+        public Vector2 GetRandomGlobalPoint(IReadOnlyPosition position, string zoneKey)
+        {
+            return _zone.GetRandomGlobalPoint(position);
         }
 
         public float GetAreaLocal()
         {
-            return _clickZone.GetAreaLocal();
+            return GetAreaLocal(string.Empty);
+        }
+
+        public float GetAreaLocal(string zoneKey)
+        {
+            return _zone.GetAreaLocal();
+        }
+
+        public float GetHeightLocal()
+        {
+            return GetHeightLocal(string.Empty);
+        }
+
+        public float GetHeightLocal(string zoneKey)
+        {
+            return _zone.GetHeightLocal();
+        }
+
+        public float GetWidthLocal()
+        {
+            return GetWidthLocal(string.Empty);
+        }
+
+        public float GetWidthLocal(string zoneKey)
+        {
+            return _zone.GetWidthLocal();
         }
 
         public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch)

@@ -1,0 +1,26 @@
+{
+    "DrawableResource": {
+        "Type": "Texture",
+        "Key": "Textures/UI/Units/RetrieveButton"
+    },
+    "Zone": {
+        "Vertices": [
+            {
+                "X": 59,
+                "Y": 203
+            },
+            {
+                "X": 453,
+                "Y": 203
+            },
+            {
+                "X": 379,
+                "Y": 308
+            },
+            {
+                "X": 133,
+                "Y": 308
+            }
+        ]
+    }
+}

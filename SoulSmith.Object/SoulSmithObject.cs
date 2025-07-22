@@ -7,7 +7,7 @@ using SoulSmith.Shapes;
 
 namespace SoulSmith.Object
 {
-    public class SoulSmithObject : IReadOnlySoulSmithObject, IDrawPacketGenerator, IDisposable, IProcessable
+    public class SoulSmithObject : IReadOnlySoulSmithObject, IDrawPacketGenerator, IInputPacketGenerator, IDisposable, IProcessable
     {
         private List<SoulSmithObject> _children;
 
@@ -81,23 +81,39 @@ namespace SoulSmith.Object
             e.Parent = this;
         }
 
-        public virtual void CollectDrawPackets(IReadOnlyPosition parentAbsolutePosition, Color color, IAddOnly<DrawPacket> renderQueue, Microsoft.Xna.Framework.Rectangle? scissorRect = null)
+        public virtual void CollectDrawPackets(IReadOnlyPosition absolutePosition, Color color, IAddOnly<DrawPacket> renderQueue, Microsoft.Xna.Framework.Rectangle? scissorRect = null)
         {
 
         }
 
-        public virtual void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null) //TODO investigate absolutePosition
-        { //TODO make IInputPacketGenerator
+        /// <summary>
+        /// Collects input packets for input queue.
+        /// </summary>
+        /// <param name="absolutePosition">Already processed by CanvasObject.CollectInputPackets. </param>
+        /// <param name="inputQueue"></param>
+        public virtual void CollectInputPackets(IReadOnlyPosition absolutePosition, IAddOnly<InputPacket> inputQueue) 
+        { 
             foreach (SoulSmithObject child in Children)
             {
-                child.CollectInputPackets(parentAbsolutePosition, inputQueue);
+                child.CollectInputPackets(absolutePosition, inputQueue);
             }
         }
 
-        public virtual InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyPosition absPos = null, IZone clickZone = null, bool requestHover = false, int priority = 0)
+        /// <summary>
+        /// For input packet logic to be performed after CanvasObject calculates absolute position
+        /// </summary>
+        /// <param name="absolutePosition"></param>
+        /// <param name="inputQueue"></param>
+        protected virtual void CollectInputPacketsInternal(IReadOnlyPosition absolutePosition, IAddOnly<InputPacket> inputQueue)
+        {
+
+        }
+
+        public virtual InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyPosition absPos = null, IMultiZone clickZone = null, string zoneKey = "", bool requestHover = false, int priority = 0)
         {
             InputPacket packet = new InputPacket(
                 clickZone,
+                zoneKey,
                 func,
                 priority,
                 absPos,

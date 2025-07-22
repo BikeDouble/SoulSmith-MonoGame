@@ -18,7 +18,6 @@ public class UnitUI : CanvasObject
 {
 	public const float TARGETBUTTONWIDTHSCALE = 0.35f;
 	public const float TARGETBUTTONHEIGHTSCALE = 0.35f;
-	public const string MOVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/MoveButton";
 	public const string TARGETBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/TargetButtonIdle";
     public const string TARGETBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/TargetButtonHovered";
 
@@ -30,20 +29,19 @@ public class UnitUI : CanvasObject
 	private ButtonObject _targetButton;
 
 	public UnitUI() :
-		this(AssetManager.Instance.GetZonedResource<ZonedResource>(MOVEBUTTONIDLERESOURCEKEY),
-            AssetManager.Instance.GetZonedResource<ZonedResource>(TARGETBUTTONIDLERESOURCEKEY),
+		this(AssetManager.Instance.GetZonedResource<ZonedResource>(TARGETBUTTONIDLERESOURCEKEY),
             AssetManager.Instance.GetZonedResource<ZonedResource>(TARGETBUTTONHOVEREDRESOURCEKEY)) 
 	{ }
 
-	public UnitUI(IAssetWrapper<ZonedResource> moveButton, IAssetWrapper<ZonedResource> targetButtonIdle, IAssetWrapper<ZonedResource> targetButtonHovered)
+	public UnitUI(IAssetWrapper<ZonedResource> targetButtonIdle, IAssetWrapper<ZonedResource> targetButtonHovered)
 		: base(new Position(0, 0, 1, 1, 0, 5))
 	{
-		if (moveButton == null) throw new ArgumentNullException(nameof(moveButton));
 		if (targetButtonIdle == null) throw new ArgumentNullException(nameof(targetButtonIdle));
 		if (targetButtonHovered == null) throw new ArgumentNullException(nameof(targetButtonHovered));
 
-        _moveMenu = new UnitUIMoveMenu(moveButton);
+		_moveMenu = new UnitUIMoveMenu();
         _moveMenu.MoveButtonPressedEventHandler += OnMoveButtonPressed;
+		_moveMenu.RetrieveButtonPressedEventHandler += OnRetrieveButtonPressed;
         AddChild(_moveMenu);
 
 		Position healthBarPosition = new Position(0, 120, 1, 1, 0, 0);
@@ -141,16 +139,24 @@ public class UnitUI : CanvasObject
 	//Listens to moveMenu
 	public void OnMoveButtonPressed(object sender, MoveButtonPressedEventArgs e)
 	{
-		MoveButtonPressedEventHandler(this, e);
+		MoveButtonPressedEventHandler?.Invoke(this, e);
 	}
 
-	public event EventHandler<TargetButtonPressedEventArgs> TargetButtonPressedEventHandler;
+	public event EventHandler<RetrieveButtonPressedEventArgs> RetrieveButtonPressedEventHandler;
+
+    //Listens to retrieve button
+    public void OnRetrieveButtonPressed(object sender, RetrieveButtonPressedEventArgs e)
+	{
+		RetrieveButtonPressedEventHandler?.Invoke(this, e);
+	}
+
+    public event EventHandler<TargetButtonPressedEventArgs> TargetButtonPressedEventHandler;
 	
 	private void OnTargetButtonPressed(object sender, ButtonPressedEventArgs e)
 	{
 		TargetButtonPressedEventArgs args = new();
 
-		TargetButtonPressedEventHandler(this, args);
+		TargetButtonPressedEventHandler?.Invoke(this, args);
 	}
 	
 	//

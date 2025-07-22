@@ -41,5 +41,15 @@ namespace SoulSmith.Shapes
         {
             return 1;
         }
+
+        public float GetHeightLocal()
+        {
+            return 1;
+        }
+
+        public float GetWidthLocal()
+        {
+            return 1;
+        }
     }
 }

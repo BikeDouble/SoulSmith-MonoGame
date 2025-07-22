@@ -1,12 +1,13 @@
-﻿using System;
+﻿using SoulSmith.Asset;
+using SoulSmith.Core;
+using SoulSmith.Drawing;
+using SoulSmith.Input;
+using SoulSmith.Shapes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SoulSmith.Input;
-using SoulSmith.Drawing;
-using SoulSmith.Core;
-using SoulSmith.Asset;
 
 namespace SoulSmith.Object.Canvas;
 /// <summary>
@@ -14,6 +15,8 @@ namespace SoulSmith.Object.Canvas;
 /// </summary>
 public class PopUpMenu : CanvasObject
 {
+    public const string POPUPMENUZONEKEY = "menuzone";
+
     public PopUpMenu() : base() { }
 
     public PopUpMenu(
@@ -27,23 +30,15 @@ public class PopUpMenu : CanvasObject
         base.Process(delta);
     }
     
-    public override void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
+    protected override void CollectInputPacketsInternal(IReadOnlyPosition absolutePosition, IAddOnly<InputPacket> inputQueue)
     {
-        Position newPosition = absolutePosition;
-
-        if (newPosition == null)
-        {
-            newPosition = new Position(parentAbsolutePosition);
-            newPosition.Transform(Position);
-        }
-
         if (Visible)
         {
-            InputPacket packet = CreateInputPacket(ProcessInput, newPosition, (ZonedResource)Resource, true);
+            InputPacket packet = CreateInputPacket(ProcessInput, absolutePosition, (IMultiZone)Resource, POPUPMENUZONEKEY, true);
             inputQueue.Add(packet);
         }
 
-        base.CollectInputPackets(newPosition, inputQueue);
+        base.CollectInputPacketsInternal(absolutePosition, inputQueue);
     }
 
     private InputPacketFuncOutput ProcessInput(InputPacketFuncInput funcInput)

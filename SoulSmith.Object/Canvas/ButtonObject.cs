@@ -2,10 +2,12 @@
 using SoulSmith.Drawing;
 using SoulSmith.Core;
 using SoulSmith.Asset;
+using SoulSmith.Shapes;
 
 namespace SoulSmith.Object.Canvas;
 public class ButtonObject : CanvasObject_MultipleResources
 {
+    public const string CLICKZONEKEY = "clickzone";
     public event EventHandler<ButtonPressedEventArgs> ButtonPressedEventHandler;
     private bool _hovered = false;
     private int _idleResourceIndex = -1;
@@ -25,23 +27,15 @@ public class ButtonObject : CanvasObject_MultipleResources
         base.Process(delta);
     }
 
-    public override void CollectInputPackets(IReadOnlyPosition parentAbsolutePosition, IAddOnly<InputPacket> inputQueue, Position absolutePosition = null)
+    protected override void CollectInputPacketsInternal(IReadOnlyPosition absolutePosition, IAddOnly<InputPacket> inputQueue)
     {
-        Position newPosition = absolutePosition;
-
-        if (newPosition == null)
-        {
-            newPosition = new Position(parentAbsolutePosition);
-            newPosition.Transform(Position);
-        }
-
         if (IsVisible())
         {
-            InputPacket packet = CreateInputPacket(ProcessInputs, newPosition, (ZonedResource)Resource, true);
+            InputPacket packet = CreateInputPacket(ProcessInputs, absolutePosition, (IMultiZone)Resource, CLICKZONEKEY, true);
             inputQueue.Add(packet);
         }
 
-        base.CollectInputPackets(newPosition, inputQueue);
+        base.CollectInputPacketsInternal(absolutePosition, inputQueue);
     }
 
     private InputPacketFuncOutput ProcessInputs(InputPacketFuncInput funcInput)

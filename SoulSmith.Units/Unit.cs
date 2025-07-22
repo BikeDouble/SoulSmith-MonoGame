@@ -26,8 +26,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	private int _combatPosition;
 	private EmotionTag.EmotionTag _emotionTag;
 	private int _timeOnBoard = -1;
-	private IZone _hitZone = null;
-	private IZone _fireZone = null;
+	private IMultiZone _hitZone = null;
+	private IMultiZone _fireZone = null;
 
 	public Unit(UnitTemplate template) : this(
 		new StatsList(template.StatsList),
@@ -217,16 +217,18 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	private void OnMoveButtonPressed(object sender, MoveButtonPressedEventArgs args)
 	{
 		args.Sender = this;
-		OfferMoveAndUserEventHandler(this, args);
+		OfferMoveAndUserEventHandler?.Invoke(this, args);
 	}
 
-	public event EventHandler<TargetButtonPressedEventArgs> OfferTargetEventHandler;
+	public event EventHandler<RetrieveButtonPressedEventArgs> RetrieveButtonPressedEventHandler;
+
+    public event EventHandler<TargetButtonPressedEventArgs> OfferTargetEventHandler;
 
 	//Listens to UI TargetButtonPressed
 	private void OnTargetButtonPressed(object sender, TargetButtonPressedEventArgs args)
 	{
 		args.Target = this;
-		OfferTargetEventHandler(this, args);
+		OfferTargetEventHandler?.Invoke(this, args);
 	}
 
     public event EventHandler<SendEffectEventArgs> SendEffectEventHandler;
@@ -236,7 +238,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
     {
 		EffectRequest request = e.EffectRequest;
 
-		SendEffectEventHandler(this, e);
+		SendEffectEventHandler?.Invoke(this, e);
     }
 
 	private void OnModifierAdded(object sender, ModifierAddOrRemoveEventArgs e)
@@ -269,8 +271,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	public UnitUI UI { get { return _uI; } }
 	public UnitSprite Sprite { get { return _sprite; } }
 	public string FriendlyName { get { return _friendlyName; } }
-	public IZone HitZone { get { return _hitZone; } }
-	public IZone FireZone { get { return _fireZone; } }
+	public IMultiZone HitZone { get { return _hitZone; } }
+	public IMultiZone FireZone { get { return _fireZone; } }
     public int MaxHealth { get { return _stats.GetModStat(StatType.MaxHealth); } }
     public int CurHealth { get { return _stats.GetModStat(StatType.CurHealth); } }
     public int Attack { get { return _stats.GetModStat(StatType.Attack); } }

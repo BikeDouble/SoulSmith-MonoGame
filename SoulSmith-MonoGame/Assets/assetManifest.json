@@ -90,6 +90,7 @@
         "UI": {
             "Units": {
                 "MoveButton": "ZonedResources/UI/Units/moveButton.json",
+                "RetrieveButton": "ZonedResources/UI/Units/retrieveButton.json",
                 "TargetButtonHovered": "ZonedResources/UI/Units/targetButtonHovered.json",
                 "TargetButtonIdle": "ZonedResources/UI/Units/targetButtonIdle.json"
             }

@@ -12,6 +12,8 @@ using SoulSmith.Emotion;
 namespace SoulSmith.Units;
 public class UnitUIMoveButton : ButtonObject
 {
+    public const string MOVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/MoveButton";
+    public const string RETRIEVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/RetrieveButton";
     public const string LABELFONTKEY = "Fonts/Raleway/Medium";
 	public const int ZVALUE = (int)ZLayer.UnitMoveButton;
     private const float IDLEDIMNESSMULT = 0.8f;
@@ -21,20 +23,23 @@ public class UnitUIMoveButton : ButtonObject
 	private const float LABELWIDTHSCALE = 1.3f;
 	private const float LABELHEIGHTSCALE = 1.3f;
 	public const int LABELBRIGHTNESS = 80;
+    private static Position _hoverTransformation = new Position(0, 0, HOVERSIZEMOD, HOVERSIZEMOD);
+    private static Position _unhoverTransformation = new Position(0, 0, 1 / HOVERSIZEMOD, 1 / HOVERSIZEMOD);
 
+	// Children
     private CanvasObject _label;
 
 	private Move _move = null;
 	private Color _idleColor = Color.Gray;
 	private Color _hoverColor = Color.Gray;
-	private static Position _hoverTransformation = new Position(0, 0, HOVERSIZEMOD, HOVERSIZEMOD);
-	private static Position _unhoverTransformation = new Position(0, 0, 1 / HOVERSIZEMOD, 1 / HOVERSIZEMOD);
+	private bool _isRetrieveButton = false;
 
 	public UnitUIMoveButton(
-		IAssetWrapper<ZonedResource> resource,
-		Position position = null) : base(
-			resource, 
-			resource,  
+        IAssetWrapper<ZonedResource> idleResource,
+        IAssetWrapper<ZonedResource> hoveredResource,
+        Position position = null) : base(
+            idleResource,
+			hoveredResource,
 			position) 
 	{
 		IAssetWrapper<IDrawableResource> textResource = DrawHelpers.GetDrawableResource(LABELFONTKEY, "simpletextresource");
@@ -46,13 +51,24 @@ public class UnitUIMoveButton : ButtonObject
     }
 
 	public void UpdateButtonWithMove(Move move)
-	{		
+	{
+		_isRetrieveButton = false;
 		_move = move;
 		SetLabelText(move.FriendlyName);
 		SetEmotionColor(move.EmotionTag);
 		this.Show();
 		this.SetColor(_idleColor);
     }
+
+	public void UpdateButtonAsRetrieve()
+	{
+		_isRetrieveButton = true;
+		_move = null;
+		SetLabelText("Retrieve");
+		SetEmotionColor(EmotionTag.EmotionTag.Typeless);
+		this.Show();
+		this.SetColor(_idleColor);
+	}
 
 	private void SetEmotionColor(EmotionTag.EmotionTag emotionTag)
 	{
@@ -72,6 +88,7 @@ public class UnitUIMoveButton : ButtonObject
 
 	public void UpdateButtonAsEmptySlot()
 	{
+		_isRetrieveButton = false;
 		_move = null;
         SetLabelText("Empty");
 		_hoverColor = Color.DimGray;
@@ -93,7 +110,7 @@ public class UnitUIMoveButton : ButtonObject
 	{
 		base.OnMouseEnter();
 
-		if (_move != null)
+		if ((_move != null) || (_isRetrieveButton))
 		{
 			Transform(_hoverTransformation);
 			this.SetColor(_hoverColor);
@@ -104,8 +121,8 @@ public class UnitUIMoveButton : ButtonObject
     {
         base.OnMouseExit();
 
-		if (_move != null)
-		{
+		if ((_move != null) || (_isRetrieveButton))
+        {
 			Transform(_unhoverTransformation);
 			this.SetColor(_idleColor);
 		}

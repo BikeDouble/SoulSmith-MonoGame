@@ -14,6 +14,8 @@ namespace SoulSmith.Shapes
         public Vector2 GetRandomLocalPoint();
         public Vector2 GetRandomGlobalPoint(IReadOnlyPosition transformation);
         public float GetAreaLocal();
+        public float GetHeightLocal();
+        public float GetWidthLocal();
     }
 
     public class IZoneJsonConverter : JsonConverter<IZone>

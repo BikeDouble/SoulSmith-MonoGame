@@ -112,6 +112,22 @@ namespace SoulSmith.Shapes
             return MathF.Abs(signedArea);
         }
 
+        public float GetHeightLocal()
+        {
+            if (_vertices.Count < 2) return 0;
+            float minY = _vertices.Min(v => v.Y);
+            float maxY = _vertices.Max(v => v.Y);
+            return maxY - minY;
+        }
+
+        public float GetWidthLocal()
+        {
+            if (_vertices.Count < 2) return 0;
+            float minX = _vertices.Min(v => v.X);
+            float maxX = _vertices.Max(v => v.X);
+            return maxX - minX;
+        }
+
         private float GetSignedAreaLocal()
         {
             // Shoelace Theorem

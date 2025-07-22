@@ -22,7 +22,8 @@ public enum InputType
 /// </summary>
 public class InputPacket
 {
-    private IZone _clickZone;
+    private IMultiZone _clickZone;
+    private string _zoneKey;
     private InputPacketFunc _func;
     private int _priority;
     private int _z;
@@ -30,7 +31,8 @@ public class InputPacket
     private IReadOnlyPosition _position;
 
     public InputPacket(
-        IZone clickZone,
+        IMultiZone clickZone,
+        string zoneKey,
         InputPacketFunc func,
         int priority,
         IReadOnlyPosition position = null,
@@ -50,14 +52,17 @@ public class InputPacket
         {
             _z = 0;
         }
+
+        _zoneKey = zoneKey;
     }
 
-    public IZone Zone { get {  return _clickZone; } }
+    public IMultiZone Zone { get {  return _clickZone; } }
     public InputPacketFunc Func { get { return _func; } }
     public int Z { get { return _z; } }
     public int Priority { get { return _priority; } }  
     public bool RequestHover { get { return _requestHover; } }
     public IReadOnlyPosition Position { get { return _position; } }
+    public string ZoneKey { get { return _zoneKey; } }
 }
 
 public class InputPacketFuncInput

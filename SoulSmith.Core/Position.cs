@@ -53,6 +53,14 @@ namespace SoulSmith.Core
             ZTranslate(transformation.Z);
         }
 
+        public void TransformInContext(IReadOnlyPosition transformation, IReadOnlyPosition context)
+        {
+            Scale(transformation.ScaleVector);
+            Translate(transformation.Coordinates * context.ScaleVector); //TODO account for context rotation?
+            Rotate(transformation.Rotation);
+            ZTranslate(transformation.Z);
+        }
+
         public void Translate(Vector2 translation)
         {
             Coordinates += translation;
