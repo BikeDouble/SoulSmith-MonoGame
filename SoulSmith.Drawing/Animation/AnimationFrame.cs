@@ -3,6 +3,7 @@ using SoulSmith.Core;
 using SoulSmith.Asset;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using SoulSmith.Drawing.Textures;
 
 namespace SoulSmith.Drawing.Animation
 {
@@ -21,15 +22,34 @@ namespace SoulSmith.Drawing.Animation
 
         public readonly Vector2 FrameTopLeftRelativeToSourceRect;
         public Vector2 FrameOrigin { get { return new Vector2(FrameWidth / 2, FrameHeight / 2); } }
-        public Vector2 SourceOrigin { get { return new Vector2(SourceRect.Width / 2, SourceRect.Height / 2); } }
+        public Vector2 SourceCenterOrigin { get { return new Vector2(SourceRect.Width / 2, SourceRect.Height / 2); } }
+        public Vector2 SourceTopLeftOrigin { get { return FrameTopLeftRelativeToSourceRect; } }
+        public Vector2 SourceBottomMiddleOrigin { get { return new Vector2(FrameTopLeftRelativeToSourceRect.X + FrameWidth / 2, FrameTopLeftRelativeToSourceRect.Y + FrameHeight); } }
         public readonly int FrameWidth;
         public readonly int FrameHeight;
         public readonly string DataName;
         public readonly Rectangle SourceRect;
 
-        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, IAssetWrapper<Texture2DResource> texture)
+        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, IAssetWrapper<Texture2DResource> texture, OriginPlacement originPlacement = OriginPlacement.Center)
         {
-            texture.Value.DrawSubsection(position, color, spriteBatch, SourceRect, SourceOrigin);
+            Vector2 origin;
+
+            switch (originPlacement)
+            {
+                case OriginPlacement.Center:
+                    origin = SourceCenterOrigin;
+                    break;
+                case OriginPlacement.TopLeft:
+                    origin = SourceTopLeftOrigin;
+                    break;
+                case OriginPlacement.BottomMiddle:
+                    origin = SourceBottomMiddleOrigin;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(originPlacement), originPlacement, null);
+            }
+
+            texture.Value.DrawSubsection(position, color, spriteBatch, SourceRect, origin);
         }
     }
 
@@ -41,15 +61,15 @@ namespace SoulSmith.Drawing.Animation
 
             reader.Read();
 
-            int sourceX = 0;
-            int sourceY = 0;
-            int originX = 0;
-            int originY = 0;
-            int frameWidth = 0;
-            int frameHeight = 0;
-            int sourceWidth = 0;
-            int sourceHeight = 0;
-            string name = string.Empty;
+            int? sourceX = null;
+            int? sourceY = null;
+            int? originX = null;
+            int? originY = null;
+            int? frameWidth = null;
+            int? frameHeight = null;
+            int? sourceWidth = null;
+            int? sourceHeight = null;
+            string? name = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -120,7 +140,18 @@ namespace SoulSmith.Drawing.Animation
                 }
             }
 
-            return new AnimationFrame(sourceX, sourceY, originX, originY, sourceWidth, sourceHeight, frameWidth, frameHeight, name);
+            if (originX == null) originX = 0;
+            if (originY == null) originY = 0;
+            if (frameWidth == null) frameWidth = sourceWidth;
+            if (frameHeight == null) frameHeight = sourceHeight;
+
+            if (!sourceX.HasValue || !sourceY.HasValue || !sourceWidth.HasValue || !sourceHeight.HasValue ||
+                string.IsNullOrEmpty(name))
+            {
+                throw new JsonException("Missing required properties for AnimationFrame");
+            }
+
+            return new AnimationFrame(sourceX.Value, sourceY.Value, originX.Value, originY.Value, sourceWidth.Value, sourceHeight.Value, frameWidth.Value, frameHeight.Value, name);
         }
 
         public override void Write(Utf8JsonWriter writer, AnimationFrame value, JsonSerializerOptions options)

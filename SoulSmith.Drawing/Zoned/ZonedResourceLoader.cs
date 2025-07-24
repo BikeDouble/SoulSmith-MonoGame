@@ -8,11 +8,11 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SoulSmith.Drawing
+namespace SoulSmith.Drawing.Zoned
 {
-    public class ZonedResourceLoader : IGraphicsAssetLoader
+    public class ZonedResourceLoader : IBasicAssetLoader
     {
-        public IAsset Load(string path, GraphicsDevice graphics = null)
+        public IDisposable Load(string path)
         {
             if (!File.Exists(path)) return null;
 

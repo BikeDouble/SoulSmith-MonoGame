@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SoulSmith.Drawing
+namespace SoulSmith.Drawing.Zoned
 {
     public interface IZonedResource : IDrawableResource, IMultiZone
     {

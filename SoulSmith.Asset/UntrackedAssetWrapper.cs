@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Asset
 {
-    public class UntrackedAssetWrapper<T> : IAssetWrapper<T> where T : IAsset
+    public class UntrackedAssetWrapper<T> : IAssetWrapper<T> where T : IDisposable
     {
         private T _value;
 

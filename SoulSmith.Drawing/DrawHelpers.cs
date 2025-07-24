@@ -1,6 +1,10 @@
-﻿using SoulSmith.Asset;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SoulSmith.Asset;
 using SoulSmith.Drawing.Animation;
 using SoulSmith.Drawing.Text;
+using SoulSmith.Drawing.Textures;
+using SoulSmith.Drawing.Zoned;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SoulSmith.Drawing
 {
@@ -25,7 +29,9 @@ namespace SoulSmith.Drawing
                 case "texture":
                 case "texture2d":
                 case "texture2dresource":
-                    return AssetManager.Instance.GetTexture2DResource<Texture2DResource>(key);
+                    IAssetWrapper<Texture2D> texture = AssetManager.Instance.GetTexture2D<Texture2D>(key);
+                    Texture2DResource resource = new Texture2DResource(texture);
+                    return new UntrackedAssetWrapper<Texture2DResource>(resource);
                 case "animation":
                     IAssetWrapper<Animation.Animation> wrappedAnimation = AssetManager.Instance.GetAnimation<Animation.Animation>(key);
                     IAssetWrapper<AnimationPlayer> wrappedAnimationPlayer = new UntrackedAssetWrapper<AnimationPlayer>(new AnimationPlayer(wrappedAnimation));

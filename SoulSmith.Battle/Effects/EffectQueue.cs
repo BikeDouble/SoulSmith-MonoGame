@@ -1,28 +1,29 @@
 using SoulSmith.Battle.Moves;
-using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Visualization;
 using SoulSmith.Object.Canvas;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using SoulSmith.Collections;
-using SoulSmith.Units;
-using SoulSmith.Battle;
 using SoulSmith.Object;
 using SoulSmith.Battle.Effects.Trigger;
 using SoulSmith.Core;
 
-namespace SoulSmith.Combat;
+namespace SoulSmith.Battle.Effects;
 public class EffectQueue : CanvasObject
 {
     public const int EFFECTVISUALIZATIONZVALUE = (int)ZLayer.EffectVisualization;
-    public const double UNIVERSALMOVEEFFECTDELAY = UnitSprite.ATTACKANIMATIONDURATION / 2;
+    public const double ATTACKANIMATIONDURATION = 2;
+    public const double DEATHANIMATIONDURATION = 2;
+    public const double UNIVERSALMOVEEFFECTDELAY = ATTACKANIMATIONDURATION / 2;
     public static readonly ReadOnlyCollection<Priority> PRIORITYORDER = new ReadOnlyCollection<Priority>(
         new List<Priority>
         {
+            Priority.NonMoveCombatTrigger,
             Priority.EmotionCombatEntryEffect,
             Priority.ImmediateAfterEffect,
+            Priority.SelfReaction,
             Priority.Reaction,
-            Priority.Common,
+            Priority.Move,
             Priority.ModifierRemoval,
         });
 
@@ -37,7 +38,8 @@ public class EffectQueue : CanvasObject
     private GlobalTriggerEffect _roundEndEffect = new GlobalTriggerEffect(CombatTrigger.OnRoundEnd);
     private GlobalTriggerEffect _turnBeginEffect = new GlobalTriggerEffect(CombatTrigger.OnTurnBegin);
     private GlobalTriggerEffect _turnEndEffect = new GlobalTriggerEffect(CombatTrigger.OnTurnEnd);
-    private GlobalTriggerEffect _unitDeathEffect = new GlobalTriggerEffect(CombatTrigger.OnUnitDeath);
+    public static readonly GlobalTriggerEffect UNITDEATHEFFECT = new GlobalTriggerEffect(CombatTrigger.OnUnitDeath);
+    public static readonly GlobalTriggerEffect UNITRETREATEFFECT = new GlobalTriggerEffect(CombatTrigger.OnUnitRetreat);
 
     public readonly struct QueuedEffect
     {
@@ -79,27 +81,32 @@ public class EffectQueue : CanvasObject
 
     public void OnTurnBegin()
     {
-        EnqueueEffect(new EffectInput(_turnBeginEffect, null, null, Priority.Common));
+        EnqueueEffect(new EffectInput(_turnBeginEffect, null, null, Priority.NonMoveCombatTrigger));
     }
 
     public void OnTurnEnd()
     {
-        EnqueueEffect(new EffectInput(_turnEndEffect, null, null, Priority.Common));
+        EnqueueEffect(new EffectInput(_turnEndEffect, null, null, Priority.NonMoveCombatTrigger));
     }
 
     public void OnRoundBegin()
     {
-        EnqueueEffect(new EffectInput(_roundBeginEffect, null, null, Priority.Common));
+        EnqueueEffect(new EffectInput(_roundBeginEffect, null, null, Priority.NonMoveCombatTrigger));
     }
 
     public void OnRoundEnd()
     {
-        EnqueueEffect(new EffectInput(_roundEndEffect, null, null, Priority.Common));
+        EnqueueEffect(new EffectInput(_roundEndEffect, null, null, Priority.NonMoveCombatTrigger));
     }
 
     public void OnUnitDeath(IReadOnlyUnit killer, IReadOnlyUnit deadUnit, EffectResult killingEffectResult)
     {
-        EnqueueEffect(new EffectInput(_unitDeathEffect, killer, deadUnit, Priority.Common), killingEffectResult, UnitSprite.DEATHANIMATIONDURATION);
+        EnqueueEffect(new EffectInput(UNITDEATHEFFECT, killer, deadUnit, Priority.NonMoveCombatTrigger), killingEffectResult, DEATHANIMATIONDURATION);
+    }
+
+    public void OnUnitRetreat(IReadOnlyUnit retreatingUnit)
+    {
+        EnqueueEffect(new EffectInput(UNITRETREATEFFECT, null, retreatingUnit, Priority.NonMoveCombatTrigger));
     }
 
     private void InitializeQueues() 
@@ -154,12 +161,12 @@ public class EffectQueue : CanvasObject
         IReadOnlyUnit sender = moveInput.Sender;
         IReadOnlyUnit target = moveInput.Target;
 
-        EnqueueEffect(new EffectInput(_moveBeginEffect, sender, target, Priority.Common));
+        EnqueueEffect(new EffectInput(_moveBeginEffect, sender, target, Priority.Move));
         foreach (IEffect effect in effects)
         {
-            EnqueueEffect(new EffectInput(effect, sender, target, Priority.Common), null, UNIVERSALMOVEEFFECTDELAY);
+            EnqueueEffect(new EffectInput(effect, sender, target, Priority.Move), null, UNIVERSALMOVEEFFECTDELAY);
         }
-        EnqueueEffect(new EffectInput(_moveEndEffect, sender, target, Priority.Common));
+        EnqueueEffect(new EffectInput(_moveEndEffect, sender, target, Priority.Move));
 
         _moveHistory.Push(moveInput);
     }

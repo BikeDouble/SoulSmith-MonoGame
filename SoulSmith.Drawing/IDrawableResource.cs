@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace SoulSmith.Drawing
 {
-    public interface IDrawableResource : IAsset, IProcessable
+    public interface IDrawableResource : IDisposable, IProcessable
     {
         public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch);
         public void UpdateState(string newState) { }
@@ -17,6 +17,7 @@ namespace SoulSmith.Drawing
         public int Height { get; }
         public Vector2 Size { get { return new Vector2(Width, Height); } }
         public double Speed { get { return 1d; } }
+        public OriginPlacement OriginPlacement { get; set; } 
     }
 }
 

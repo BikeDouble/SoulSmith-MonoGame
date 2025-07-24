@@ -10,7 +10,7 @@ namespace SoulSmith.Emotion
 {
     public class EmotionLoader : IBasicAssetLoader
     {
-        public IAsset Load(string path)
+        public IDisposable Load(string path)
         {
             if (!File.Exists(path)) return null;
 

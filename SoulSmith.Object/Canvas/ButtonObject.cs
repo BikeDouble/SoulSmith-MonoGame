@@ -1,8 +1,8 @@
 ﻿using SoulSmith.Input;
-using SoulSmith.Drawing;
 using SoulSmith.Core;
 using SoulSmith.Asset;
 using SoulSmith.Shapes;
+using SoulSmith.Drawing.Zoned;
 
 namespace SoulSmith.Object.Canvas;
 public class ButtonObject : CanvasObject_MultipleResources

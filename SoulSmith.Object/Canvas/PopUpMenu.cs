@@ -1,6 +1,6 @@
 ﻿using SoulSmith.Asset;
 using SoulSmith.Core;
-using SoulSmith.Drawing;
+using SoulSmith.Drawing.Zoned;
 using SoulSmith.Input;
 using SoulSmith.Shapes;
 using System;

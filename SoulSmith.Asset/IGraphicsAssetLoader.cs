@@ -9,6 +9,6 @@ namespace SoulSmith.Asset
 {
     public interface IGraphicsAssetLoader
     {
-        public IAsset Load(string path, GraphicsDevice graphics);
+        public IDisposable Load(string path, GraphicsDevice graphics);
     }
 }

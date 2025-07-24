@@ -11,7 +11,7 @@ namespace SoulSmith.Emotion
 {
 
     [JsonConverter(typeof(EmotionJsonConverter))]
-    public class Emotion : IAsset
+    public class Emotion : IDisposable
     {
         private static Dictionary<EmotionTag.EmotionTag, Emotion> _emotionCache = new Dictionary<EmotionTag.EmotionTag, Emotion>();
         public EmotionTag.EmotionTag EmotionTag { get; }

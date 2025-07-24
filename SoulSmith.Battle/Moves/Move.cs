@@ -9,7 +9,7 @@ using SoulSmith.Asset;
 namespace SoulSmith.Battle.Moves
 {
     [JsonConverter(typeof(MoveJsonConverter))]
-    public class Move : IAsset
+    public class Move : IDisposable
     {
         public Move(string friendlyName, string description, MoveTargetingStyle targetingStyle, EmotionTag.EmotionTag emotionTag, IList<IEffect> effects)
         {

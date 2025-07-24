@@ -43,7 +43,7 @@ namespace SoulSmith.Asset
             return toRemove.Count;
         }
 
-        public void CacheAsset(string name, IAsset asset)
+        public void CacheAsset(string name, IDisposable asset)
         {
             if (_cache.ContainsKey(name)) return;
 
@@ -55,7 +55,7 @@ namespace SoulSmith.Asset
             return _cache.ContainsKey(key);
         }
 
-        public IReadOnlyTrackedAsset<T> GetAsset<T>(string key) where T : IAsset
+        public IReadOnlyTrackedAsset<T> GetAsset<T>(string key) where T : IDisposable
         {
             return _cache[key]?.GetTrackedIAsset<T>();
         }        

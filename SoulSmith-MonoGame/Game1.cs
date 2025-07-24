@@ -18,6 +18,8 @@ using SoulSmith.Drawing.Text;
 using SoulSmith.Emotion;
 using SoulSmith.Battle.Effects.Visualization.Factory;
 using SoulSmith.Battle.Modifiers;
+using SoulSmith.Drawing.Textures;
+using SoulSmith.Drawing.Zoned;
 
 namespace SoulSmith_MonoGame
 {
@@ -62,7 +64,7 @@ namespace SoulSmith_MonoGame
         {
             _assetManager = new(content, graphicsDevice, JsonSerializer.Deserialize<AssetManifest>(File.ReadAllText(ASSETMANIFESTPATH)));
             _assetManager.RegisterUnitTemplateLoader(new UnitTemplateLoader());
-            _assetManager.RegisterTextureLoader(new Texture2DResourceLoader());
+            _assetManager.RegisterTextureLoader(new Texture2DLoader());
             _assetManager.RegisterZonedTextureLoader(new ZonedResourceLoader());
             _assetManager.RegisterMoveLoader(new MoveLoader());
             _assetManager.RegisterAnimationLoader(new AnimationLoader());

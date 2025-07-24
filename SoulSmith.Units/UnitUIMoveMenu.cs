@@ -3,8 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using SoulSmith.Asset;
 using SoulSmith.Battle.Moves;
 using SoulSmith.Core;
-using SoulSmith.Drawing;
 using SoulSmith.Drawing.Text;
+using SoulSmith.Drawing.Zoned;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Shapes;
 using System;
@@ -23,10 +23,11 @@ public class UnitUIMoveMenu : CanvasObject
     {
 		CreateMoveButtons();
 		Hide();
-		this.Scale(new Vector2(0.85f, 0.85f));
+		this.Scale(new Vector2(SCALE, SCALE));
     }
 
-	private const int TOPBUTTONX = 225;
+	public const float SCALE = 0.9f;
+    private const int TOPBUTTONX = 225;
 	private const int TOPBUTTONY = -SPACEBETWEENBUTTONS;
     private const int SPACEBETWEENBUTTONS = 70;
 	private const float MOVEBUTTONSCALE = 1f;

@@ -77,7 +77,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 
 	private void InitializeStats()
 	{
-		_stats.UnitDeathCallEventHandler += EmitUnitDeathCallSignal;
+		_stats.UnitDeathCallEventHandler += CallForDeath;
 		_stats.EnqueueEffectInputEventHandler += EnqueueEffectInput;
         _stats.ModifierAddEventHandler += OnModifierAdded;
         _stats.ModifierRemoveEventHandler += OnModifierRemoved;
@@ -162,14 +162,24 @@ public class Unit : CanvasObject, IReadOnlyUnit
 
 	public event EventHandler<UnitDeathCallArgs> UnitDeathCallEventHandler;
 
-	private void EmitUnitDeathCallSignal(object sender, UnitDeathCallArgs e)
+	private void CallForDeath(object sender, UnitDeathCallArgs e)
 	{
 		UnitDeathCallEventHandler(this, e);
 
 		_sprite.UpdateResourceState(UnitSprite.SPRITEDEATHSTATE);
 	}
 
-	private void UpdateSprite()
+	public event EventHandler<UnitRetreatCallArgs> UnitRetreatCallEventHandler;
+
+	private void OnRetrieveButtonPressed(object sender, RetrieveButtonPressedEventArgs e)
+	{
+		UnitRetreatCallArgs args = new UnitRetreatCallArgs();
+		args.RetreatingUnit = this;
+		args.FromRetrieveButton = true;
+        UnitRetreatCallEventHandler?.Invoke(this, args);
+	}
+
+    private void UpdateSprite()
 	{
 		if (_sprite != null)
 		{
@@ -191,7 +201,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	private void InitializeUI()
 	{ 
 		_uI.MoveButtonPressedEventHandler += OnMoveButtonPressed;
-		_uI.TargetButtonPressedEventHandler += OnTargetButtonPressed;
+		_uI.RetrieveButtonPressedEventHandler += OnRetrieveButtonPressed;
+        _uI.TargetButtonPressedEventHandler += OnTargetButtonPressed;
 
 		_uI.Update(_stats);
 		_uI.UpdateMoveMenu(_moveSet); 
@@ -218,8 +229,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		args.Sender = this;
 		OfferMoveAndUserEventHandler?.Invoke(this, args);
 	}
-
-	public event EventHandler<RetrieveButtonPressedEventArgs> RetrieveButtonPressedEventHandler;
 
     public event EventHandler<TargetButtonPressedEventArgs> OfferTargetEventHandler;
 
@@ -256,7 +265,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	public ReadOnlyDictionary<StatType, int> StatsList { get { return _stats.StatsList; } }
 	public ReadOnlyCollection<Move> MoveSet { get { return _moveSet; } }
 	public int CombatPosition { get { return _combatPosition; } set { _combatPosition = value; } }
-	public bool PlayerControlled { get { return _playerControlled; } set { _playerControlled = value; } }
 	public UnitUI UI { get { return _uI; } }
 	public UnitSprite Sprite { get { return _sprite; } }
 	public string FriendlyName { get { return _friendlyName; } }
@@ -268,4 +276,10 @@ public class Unit : CanvasObject, IReadOnlyUnit
     public int Defense { get { return _stats.GetModStat(StatType.Defense); } }
     public int DecayRate { get { return _stats.GetModStat(StatType.DecayRate); } }
     public int CurDecay { get { return _stats.GetModStat(StatType.CurDecay); } }
+}
+
+public class UnitRetreatCallArgs : EventArgs
+{
+	public bool FromRetrieveButton { get; set; }
+    public Unit RetreatingUnit { get; set; }
 }

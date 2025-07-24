@@ -10,11 +10,15 @@ using SoulSmith.Battle.Effects;
 namespace SoulSmith.Combat;
 public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 {
-	private IMoveSelector _moveSelector = null;
+	public const int BACKUNITSDISTANCEFROMSCREENEDGE = 150;
+	public const int FRONTUNITSDISTANCEFROMSCREENEDGE = 300;
+	public const int YOFFSET = 50;
+
+    private IMoveSelector _moveSelector = null;
 	private bool _playerControlled;
 	private List<TeamPosition> _teamPositions = new List<TeamPosition>();
 
-	public CombatTeam(IMoveSelector moveSelector)
+	public CombatTeam(IMoveSelector moveSelector) : base(new Core.Position(0, YOFFSET))
 	{
 		_moveSelector = moveSelector;
 
@@ -43,27 +47,27 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		{
 			if (_playerControlled)
 			{
-				_teamPositions.Add(new TeamPosition(100, Window.WINDOWHEIGHT / 4));
-				_teamPositions.Add(new TeamPosition(200, Window.WINDOWHEIGHT / 2));
-				_teamPositions.Add(new TeamPosition(100, 3 * Window.WINDOWHEIGHT / 4));
+				_teamPositions.Add(new TeamPosition(BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4));
+				_teamPositions.Add(new TeamPosition(FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2));
+				_teamPositions.Add(new TeamPosition(BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4));
 			}
 			else
 			{
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - 100, Window.WINDOWHEIGHT / 4));
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - 200, Window.WINDOWHEIGHT / 2));
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - 100, 3 * Window.WINDOWHEIGHT / 4));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4));
 			}
         }
 
 		foreach (TeamPosition position in _teamPositions)
 		{
 			AddChild(position);
-			position.PlayerControlled = _playerControlled;
 			position.OfferMoveAndUserEventHandler += OnOfferMoveAndUser;
 			position.OfferTargetEventHandler += OnOfferTarget;
 			position.EnqueueEffectInputEventHandler += EnqueueEffectInput;
 			position.UnitDeathCallEventHandler += OnUnitDeathCall;
-		}
+			position.UnitRetreatCallEventHandler += OnUnitRetreatCall;
+        }
 	}
 
     public event EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler;
@@ -103,7 +107,14 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		UnitDeathCallEventHandler(this, e);
 	}
 
-	public void OnBeginRound()
+    public event EventHandler<UnitRetreatCallArgs> UnitRetreatCallEventHandler;
+
+    private void OnUnitRetreatCall(object sender, UnitRetreatCallArgs e)
+    {
+        UnitRetreatCallEventHandler?.Invoke(this, e);
+    }
+
+    public void OnBeginRound()
 	{
 		foreach (TeamPosition position in _teamPositions)
 		{

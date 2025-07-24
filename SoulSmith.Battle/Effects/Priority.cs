@@ -8,10 +8,12 @@ namespace SoulSmith.Battle.Effects
 {
     public enum Priority
     {
-        Common,
+        Move,
         ModifierRemoval,
+        SelfReaction,
         Reaction,
         ImmediateAfterEffect,
-        EmotionCombatEntryEffect
+        EmotionCombatEntryEffect,
+        NonMoveCombatTrigger
     }
 }

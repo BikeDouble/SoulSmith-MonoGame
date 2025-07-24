@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace SoulSmith.Templates;
 [JsonConverter(typeof(UnitTemplateJsonConverter))]
-public class UnitTemplate : IAsset
+public class UnitTemplate : IDisposable
 {
 
     private ReadOnlyDictionary<StatType, int> _statsList;

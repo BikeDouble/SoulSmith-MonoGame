@@ -12,7 +12,7 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
 {
     public class EffectVisualizationFactoryLoader : IBasicAssetLoader
     {
-        public IAsset Load(string path)
+        public IDisposable Load(string path)
         {
             if (!File.Exists(path)) return null;
 

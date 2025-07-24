@@ -3,6 +3,7 @@ using SoulSmith.Battle;
 using SoulSmith.Asset;
 using SoulSmith.Drawing;
 using Microsoft.Xna.Framework;
+using SoulSmith.Battle.Effects;
 
 namespace SoulSmith.Units;
 public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
@@ -14,9 +15,9 @@ public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
     public const string SPRITEHURTSTATE = "hurt";
     public const string SPRITEDEATHSTATE = "death";
 
-    public const double ATTACKANIMATIONDURATION = 2;
+    public const double ATTACKANIMATIONDURATION = EffectQueue.ATTACKANIMATIONDURATION;
     public const double HURTANIMATIONDURATION = 2;
-    public const double DEATHANIMATIONDURATION = 2;
+    public const double DEATHANIMATIONDURATION = EffectQueue.DEATHANIMATIONDURATION;
 
     public const float WIDTHSCALE = 1.2f;
     public const float HEIGHTSCALE = 1.2f;

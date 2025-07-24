@@ -35,9 +35,26 @@ namespace SoulSmith.Drawing.Text
             _wrappedFont?.Dispose();
         }
 
+        private Vector2 GetOriginInternal()
+        {
+            switch (OriginPlacement)
+            {
+                case OriginPlacement.TopLeft:
+                    return Vector2.Zero;
+                case OriginPlacement.Center:
+                    return _wrappedFont.Value.MeasureString(_text) / 2;
+                case OriginPlacement.BottomMiddle:
+                    Vector2 size = _wrappedFont.Value.MeasureString(_text);
+                    return new Vector2(size.X / 2, size.Y);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(OriginPlacement), OriginPlacement, "Invalid origin placement specified.");
+            }
+        }
+
         public void Process(double delta) { }
 
-        public Vector2 Origin { get { return _wrappedFont.Value.MeasureString(_text)/2; } }
+        public Vector2 Origin { get { return GetOriginInternal(); } }
+        public OriginPlacement OriginPlacement { get; set; } = OriginPlacement.Center;
         public int Width { get { return (int)_wrappedFont.Value.MeasureString(_text).X; } }
         public int Height { get { return (int)_wrappedFont.Value.MeasureString(_text).Y; } }
     }

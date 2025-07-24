@@ -12,7 +12,7 @@ namespace SoulSmith.Battle.Modifiers
 {
     public class ModifierFactoryLoader : IBasicAssetLoader
     {
-        public IAsset Load(string path)
+        public IDisposable Load(string path)
         {
             if (!File.Exists(path)) return null;
 

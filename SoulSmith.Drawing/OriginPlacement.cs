@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SoulSmith.Asset
+namespace SoulSmith.Drawing
 {
-    public interface IAsset : IDisposable
+    public enum OriginPlacement
     {
+        Center,
+        TopLeft,
+        BottomMiddle
     }
 }

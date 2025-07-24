@@ -1,6 +1,7 @@
 using SoulSmith.Battle.Effects.Damage;
 using SoulSmith.Battle.Effects.Trigger;
 using SoulSmith.Battle.Modifiers;
+using SoulSmith.Core;
 
 namespace SoulSmith.Battle.Effects;
 public class EffectRequest
@@ -73,7 +74,7 @@ public class EffectRequest
     public DamageType DamageType { get; set; }
     public int RawHealing { get; set; }
     public bool GainDecay { get; set; }
-    public IModifier Modifier { get; set; }
-    public CombatTrigger Trigger { get; set; }
-    public List<IEffect> ImmediateAfterEffects { get; set; }
+    public IModifier Modifier { get; }
+    public CombatTrigger Trigger { get; }
+    public List<IEffect> ImmediateAfterEffects { get; }
 }

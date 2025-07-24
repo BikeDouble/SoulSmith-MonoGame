@@ -37,7 +37,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
 
             if (result.EffectiveDamage <= 0) return;
 
-            EffectInput effectInput = new EffectInput(_effect, Host, result.Target, Priority.Reaction);
+            EffectInput effectInput = new EffectInput(_effect, Host, result.Target, Priority.SelfReaction);
 
             EnqueueEffectInput(effectInput, result);
         }

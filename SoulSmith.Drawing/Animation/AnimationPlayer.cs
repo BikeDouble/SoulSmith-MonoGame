@@ -20,11 +20,12 @@ namespace SoulSmith.Drawing.Animation
         {
             _wrappedAnimation = wrappedAnimation;
             _currentClipName = _wrappedAnimation.Value.GetDefaultClipName();
+            OriginPlacement = OriginPlacement.Center;
         }
 
         public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch)
         {
-            _wrappedAnimation.Value.DrawFrame(position, color, spriteBatch, _currentClipName, _timeSinceClipChange, _animationSpeed);
+            _wrappedAnimation.Value.DrawFrame(position, color, spriteBatch, _currentClipName, _timeSinceClipChange, _animationSpeed, OriginPlacement);
         }
 
         public void UpdateState(string newState)
@@ -55,5 +56,6 @@ namespace SoulSmith.Drawing.Animation
         public int Height { get { return _wrappedAnimation.Value.Height; } }
         public int Width { get { return _wrappedAnimation.Value.Width; } }
         public Vector2 Origin { get { return _wrappedAnimation.Value.Origin; } }
+        public OriginPlacement OriginPlacement { get; set; }
     }
 }

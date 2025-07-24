@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using SoulSmith.Asset;
 using SoulSmith.Core;
+using SoulSmith.Drawing.Textures;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -70,10 +71,10 @@ namespace SoulSmith.Drawing.Animation
             return (name, frameIdx);
         }
 
-        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, IAssetWrapper<Texture2DResource> texture, double timeInClip, double animationSpeed = 1d)
+        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, IAssetWrapper<Texture2DResource> texture, double timeInClip, double animationSpeed = 1d, OriginPlacement originPlacement = OriginPlacement.Center)
         {
             AnimationFrame activeFrame = GetActiveFrame(timeInClip, animationSpeed);
-            activeFrame.DrawFrame(position, color, spriteBatch, texture);
+            activeFrame.DrawFrame(position, color, spriteBatch, texture, originPlacement);
         }
 
         public bool IsTransitionReady(double timeInClip, double animationSpeed = 1d)

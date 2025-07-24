@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Asset
 {
-    internal class CachedAsset : IDisposable
+    internal class CachedAsset : System.IDisposable
     {
-        private IAsset _asset;
+        private IDisposable _asset;
         private AssetCounter _counter;
 
-        public CachedAsset(IAsset asset)
+        public CachedAsset(IDisposable asset)
         {
             _asset = asset;
             _counter = new AssetCounter();
@@ -22,7 +22,7 @@ namespace SoulSmith.Asset
 
         }
 
-        public IReadOnlyTrackedAsset<T> GetTrackedIAsset<T>() where T : IAsset
+        public IReadOnlyTrackedAsset<T> GetTrackedIAsset<T>() where T : IDisposable
         {
             T assetAsT = (T)_asset;
             return new TrackedAsset<T>(assetAsT, _counter);

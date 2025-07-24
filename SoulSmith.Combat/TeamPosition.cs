@@ -10,12 +10,6 @@ public class TeamPosition : CanvasObject
 
 	private bool _movedThisRound = false;
 	private bool _containsUnit = false;
-	private bool _playerControlled;
-
-    public TeamPosition() : base()
-    {
-		
-    }
 
     public TeamPosition(int x, int y) : base(x, y)
     {
@@ -26,12 +20,12 @@ public class TeamPosition : CanvasObject
     {
         _unit = unit;
         _containsUnit = true;
-        _unit.PlayerControlled = _playerControlled;
         _unit.OfferMoveAndUserEventHandler += OnOfferMoveAndUser;
         _unit.OfferTargetEventHandler += OnOfferTarget;
         _unit.EnqueueEffectInputEventHandler += EnqueueEffect;
         _unit.UnitDeathCallEventHandler += OnUnitDeathCall;
-		AddChild(unit);
+		_unit.UnitRetreatCallEventHandler += OnUnitRetreatCall;
+        AddChild(unit);
 
         _unit.OnJoinCombat();
     }
@@ -107,10 +101,22 @@ public class TeamPosition : CanvasObject
 
 		UnitDeathCallEventHandler(this, e);
 	}
-	
-	public void OnUnitLeaveCombat()
+
+    public event EventHandler<UnitRetreatCallArgs> UnitRetreatCallEventHandler;
+
+    private void OnUnitRetreatCall(object sender, UnitRetreatCallArgs e)
+    {
+        UnitRetreatCallEventHandler?.Invoke(this, e);
+    }
+
+    public void OnUnitLeaveCombat()
 	{
-		_containsUnit = false;
+        _unit.OfferMoveAndUserEventHandler -= OnOfferMoveAndUser;
+        _unit.OfferTargetEventHandler -= OnOfferTarget;
+        _unit.EnqueueEffectInputEventHandler -= EnqueueEffect;
+        _unit.UnitDeathCallEventHandler -= OnUnitDeathCall;
+        _unit.UnitRetreatCallEventHandler -= OnUnitRetreatCall;
+        _containsUnit = false;
 		RemoveChild(_unit);
 		_unit = null;
 	}
@@ -164,5 +170,4 @@ public class TeamPosition : CanvasObject
     public Unit Unit { get { return _unit; } } //Make sure this contains unit first!
 	public bool ContainsUnit {  get { return _containsUnit; } }
 	public bool MovedThisRound { get { return _movedThisRound; } set { _movedThisRound = value; } }
-	public bool PlayerControlled { get { return _playerControlled; } set { _playerControlled = value; } }
 }

@@ -7,11 +7,11 @@ using SoulSmith.Battle.Modifiers;
 using SoulSmith.Battle.Moves;
 using SoulSmith.Battle;
 using SoulSmith.Object.Canvas;
-using SoulSmith.Drawing;
 using SoulSmith.Core;
 using SoulSmith.Asset;
 using SoulSmith.UnitStats;
 using SoulSmith.Drawing.Text;
+using SoulSmith.Drawing.Zoned;
 
 namespace SoulSmith.Units;
 public class UnitUI : CanvasObject

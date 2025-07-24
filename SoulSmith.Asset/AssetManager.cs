@@ -26,7 +26,7 @@ namespace SoulSmith.Asset
 
         // Loaders
         private IGraphicsAssetLoader _textureLoader;
-        private IGraphicsAssetLoader _zonedTextureLoader;
+        private IBasicAssetLoader _zonedTextureLoader;
         private IBasicAssetLoader _unitTemplateLoader;
         private IBasicAssetLoader _moveLoader;
         private IBasicAssetLoader _emotionLoader;
@@ -64,7 +64,7 @@ namespace SoulSmith.Asset
             _unitTemplateLoader = loader;
         }
 
-        public IAssetWrapper<T> GetUnitTemplate<T>(string key) where T : IAsset //TODO eliminate UnitTemplate
+        public IAssetWrapper<T> GetUnitTemplate<T>(string key) where T : IDisposable //TODO eliminate UnitTemplate
         {
             if (_unitTemplateCache.Contains(key)) return _unitTemplateCache.GetAsset<T>(key);
 
@@ -74,7 +74,7 @@ namespace SoulSmith.Asset
 
             if (_unitTemplateLoader == null) throw new Exception("UnitTemplate loader not registered");
 
-            IAsset template = _unitTemplateLoader.Load(filePath);
+            IDisposable template = _unitTemplateLoader.Load(filePath);
 
             if (template == null) return null;
 
@@ -88,7 +88,7 @@ namespace SoulSmith.Asset
             _textureLoader = loader;
         }
 
-        public IAssetWrapper<T> GetTexture2DResource<T>(string key) where T : IAsset
+        public IAssetWrapper<T> GetTexture2D<T>(string key) where T : IDisposable
         {
             if (_textureCache.Contains(key)) return _textureCache.GetAsset<T>(key);
 
@@ -96,7 +96,7 @@ namespace SoulSmith.Asset
 
             string filepath = FILEPREFIX + _manifest[key];
 
-            IAsset resource = _textureLoader.Load(filepath, _graphics);
+            IDisposable resource = _textureLoader.Load(filepath, _graphics);
 
             if (resource == null) return null;
 
@@ -105,12 +105,12 @@ namespace SoulSmith.Asset
             return _textureCache.GetAsset<T>(key);
         }
 
-        public void RegisterZonedTextureLoader(IGraphicsAssetLoader loader)
+        public void RegisterZonedTextureLoader(IBasicAssetLoader loader)
         {
             _zonedTextureLoader = loader;
         }
 
-        public IAssetWrapper<T> GetZonedResource<T>(string key) where T : IAsset
+        public IAssetWrapper<T> GetZonedResource<T>(string key) where T : IDisposable
         {
             if (_zonedTextureCache.Contains(key)) return _zonedTextureCache.GetAsset<T>(key);
 
@@ -118,7 +118,7 @@ namespace SoulSmith.Asset
 
             string textureFilepath = FILEPREFIX + _manifest[key];
 
-            IAsset resource = _zonedTextureLoader.Load(textureFilepath, _graphics);
+            IDisposable resource = _zonedTextureLoader.Load(textureFilepath);
 
             if (resource == null) return null;
 
@@ -129,7 +129,7 @@ namespace SoulSmith.Asset
 
         public void RegisterFontResourceLoader(IBasicAssetLoader loader) { _fontResourceLoader = loader; }
 
-        public IAssetWrapper<T> GetFontResource<T>(string key) where T : IAsset
+        public IAssetWrapper<T> GetFontResource<T>(string key) where T : IDisposable
         {
             if (_fontResourceCache.Contains(key)) return _fontResourceCache.GetAsset<T>(key);
 
@@ -137,7 +137,7 @@ namespace SoulSmith.Asset
 
             string fontFilepath = FILEPREFIX + _manifest[key];
 
-            IAsset resource = _fontResourceLoader.Load(fontFilepath);
+            IDisposable resource = _fontResourceLoader.Load(fontFilepath);
 
             if (resource == null) return null;
 
@@ -148,7 +148,7 @@ namespace SoulSmith.Asset
 
         public void RegisterMoveLoader(IBasicAssetLoader loader) { _moveLoader = loader; }
 
-        public T GetMove<T>(string key) where T : IAsset
+        public T GetMove<T>(string key) where T : IDisposable
         {
             if (!_manifest.ContainsKey(key)) return default(T);
 
@@ -163,7 +163,7 @@ namespace SoulSmith.Asset
 
         public void RegisterEmotionLoader(IBasicAssetLoader loader) { _emotionLoader = loader; }
 
-        public T GetEmotion<T>(string key) where T : IAsset
+        public T GetEmotion<T>(string key) where T : IDisposable
         {
             if (!_manifest.ContainsKey(key)) return default(T);
 
@@ -178,7 +178,7 @@ namespace SoulSmith.Asset
 
         public void RegisterEffectVisualizationFactoryLoader(IBasicAssetLoader loader) { _effectVisualizationFactoryLoader = loader; }
 
-        public T GetEffectVisualizationFactory<T>(string key) where T : IAsset
+        public T GetEffectVisualizationFactory<T>(string key) where T : IDisposable
         {
             if (!_manifest.ContainsKey(key)) return default(T);
 
@@ -193,7 +193,7 @@ namespace SoulSmith.Asset
 
         public void RegisterModifierFactoryLoader(IBasicAssetLoader loader) { _modifierFactoryLoader = loader; }
 
-        public T GetModifierFactory<T>(string key) where T : IAsset
+        public T GetModifierFactory<T>(string key) where T : IDisposable
         {
             if (!_manifest.ContainsKey(key)) return default(T);
 
@@ -208,7 +208,7 @@ namespace SoulSmith.Asset
 
         public void RegisterAnimationLoader(IBasicAssetLoader loader) { _animationLoader = loader; }
 
-        public IAssetWrapper<T> GetAnimation<T>(string key) where T : IAsset
+        public IAssetWrapper<T> GetAnimation<T>(string key) where T : IDisposable
         {
             if (!_manifest.ContainsKey(key)) return null;
 

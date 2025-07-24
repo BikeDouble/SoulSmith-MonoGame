@@ -8,6 +8,7 @@ using SoulSmith.Asset;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Drawing.Text;
 using SoulSmith.Emotion;
+using SoulSmith.Drawing.Zoned;
 
 namespace SoulSmith.Units;
 public class UnitUIMoveButton : ButtonObject

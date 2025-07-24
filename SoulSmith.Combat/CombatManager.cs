@@ -34,8 +34,9 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	private int _roundCount = 0;
 	private int _currentArea = 1;
 	private bool _awaitingMoveInput;
+	private List<Unit> _retreatingUnits = new List<Unit>();
 
-	public CombatManager(IMoveSelector playerMoveSelector, IMoveSelector enemyMoveSelector)
+    public CombatManager(IMoveSelector playerMoveSelector, IMoveSelector enemyMoveSelector)
 	{
         Initialize(playerMoveSelector, enemyMoveSelector);
 	}
@@ -98,6 +99,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
             team.ShowMoveSelectUIEventHandler += OnShowMoveSelectUI;
             team.ShowTargetSelectUIEventHandler += OnShowTargetSelectUI;
             team.UnitDeathCallEventHandler += OnUnitDeathCall;
+			team.UnitRetreatCallEventHandler += OnUnitRetreatCall;
         }
     }
 
@@ -116,8 +118,9 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	{
 		if (!_awaitingMoveInput && _effectQueue.IsEmpty())
 		{
-			ReadOnlyCollection<Unit> units = GetAllActiveUnits();
-			_effectQueue.OnTurnEnd();
+			foreach (Unit unit in _retreatingUnits) RetreatUnit(unit);
+            _retreatingUnits.Clear();
+            _effectQueue.OnTurnEnd();
 			_effectQueue.OnTurnBegin();
 			BeginTurn();
 		}
@@ -397,12 +400,26 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	}
 
 	//Listens to both teams
-	private void OnUnitDeathCall(object sender, UnitDeathCallArgs e)
+	private void OnUnitDeathCall(object sender, UnitDeathCallArgs e) 
 	{
 		_effectQueue.OnUnitDeath(e.Killer, e.CallingUnit, e.KillingEffectResult);
 	}
 
-	private void OnShowTargetSelectUI(object sender, ShowTargetSelectUIEventArgs e)
+	private void OnUnitRetreatCall(object sender, UnitRetreatCallArgs e)
+	{
+		if (e.FromRetrieveButton)
+		{
+            _consecutivePassedTurns = 0;
+            _awaitingMoveInput = false;
+        }
+		_effectQueue.OnUnitRetreat(e.RetreatingUnit);
+        foreach (CombatTeam team in _teams)
+        {
+            team.HideMoveSelectUI();
+        }
+    }
+
+    private void OnShowTargetSelectUI(object sender, ShowTargetSelectUIEventArgs e)
 	{
 		MoveTargetingStyle targetingStyle = e.TargetingStyle;
 		IReadOnlyUnit unitSender = e.Sender;
@@ -473,6 +490,10 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
             {
                 KillUnit(result.Target);
             }
+			else if (result.TriggerApplied == CombatTrigger.OnUnitRetreat)
+            {
+                _retreatingUnits.Add((Unit)result.Target);
+            }
         }
     }
 
@@ -537,6 +558,22 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         {
             InsertUnitToInventory((Unit)unit);
         } 
+    }
+
+    private void RetreatUnit(IReadOnlyUnit unit)
+    {
+        if (unit == null) return;
+
+        if (!unit.InCombat) return;
+
+        CombatTeam team = GetTeamWithUnit(unit);
+
+        team.RemoveUnitFromCombat(unit);
+
+        if (team.PlayerControlled)
+        {
+            InsertUnitToInventory((Unit)unit);
+        }
     }
 
     private void GiveEffectResultToTeams(EffectResult result)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Asset
 {
-    public interface IAssetWrapper<out T> : IDisposable where T : IAsset
+    public interface IAssetWrapper<out T> : System.IDisposable where T : IDisposable
     {
         T Value { get; }
     }

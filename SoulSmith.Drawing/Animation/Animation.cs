@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using SoulSmith.Asset;
 using SoulSmith.Core;
+using SoulSmith.Drawing.Textures;
 using SoulSmith.Shapes;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 namespace SoulSmith.Drawing.Animation
 {
     [JsonConverter(typeof(AnimationDataJsonConverter))]
-    public class Animation : IAsset, IDisposable
+    public class Animation : IDisposable
     {
         public const int FRAMESPERSECOND = 60;
 
@@ -26,13 +27,13 @@ namespace SoulSmith.Drawing.Animation
             _wrappedTexture = wrappedTexture;
         }
 
-        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, string clipName, double timeInClip, double animationSpeed = 1d)
+        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, string clipName, double timeInClip, double animationSpeed = 1d, OriginPlacement originPlacement = OriginPlacement.Center)
         {
             AnimationClip activeClip = _clips[clipName];
 
             if (activeClip == null) activeClip = _clips.FirstOrDefault().Value;
 
-            activeClip.DrawFrame(position, color, spriteBatch, _wrappedTexture, timeInClip, animationSpeed);
+            activeClip.DrawFrame(position, color, spriteBatch, _wrappedTexture, timeInClip, animationSpeed, originPlacement);
         }
 
         private AnimationClip GetDefaultClip()
@@ -86,7 +87,7 @@ namespace SoulSmith.Drawing.Animation
                     case "Texture":
                     case "TextureKey":
                         string textureKey = reader.GetString();
-                        wrappedTexture = AssetManager.Instance.GetTexture2DResource<Texture2DResource>(textureKey);
+                        wrappedTexture = DrawHelpers.GetDrawableResource(textureKey, "Texture2DResource") as IAssetWrapper<Texture2DResource>;
                         reader.Read();
                         break;
                     case "ClipData":

@@ -9,6 +9,6 @@ namespace SoulSmith.Asset
 {
     public interface IBasicAssetLoader
     {
-        public IAsset Load(string path);
+        public IDisposable Load(string path);
     }
 }

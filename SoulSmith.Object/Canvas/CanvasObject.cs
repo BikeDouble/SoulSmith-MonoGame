@@ -12,7 +12,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
     private bool _visible = true;
     private Position _position = null;
     private Color _color = Color.White;
-    private IAssetWrapper<IDrawableResource> _wrappedResource = null;
+    private IAssetWrapper<IDrawableResource> _drawableResource = null;
 
     public CanvasObject(
         Position position = null,
@@ -23,7 +23,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
 
         if (drawableResource != null)
         {
-            _wrappedResource = drawableResource;
+            _drawableResource = drawableResource;
         }
     }
 
@@ -337,14 +337,14 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
 
     public override void Dispose()
     {
-        _wrappedResource.Dispose();
+        _drawableResource.Dispose();
 
         base.Dispose();
     }
 
     public bool Visible { get { return _visible; } }
     public IReadOnlyPosition Position { get { return _position; } }
-    protected virtual IDrawableResource Resource { get { return _wrappedResource?.Value; } }
+    protected virtual IDrawableResource Resource { get { return _drawableResource?.Value; } }
 }
 
 public class GetGlobalPositionEventArgs : EventArgs

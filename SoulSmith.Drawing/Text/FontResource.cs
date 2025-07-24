@@ -5,7 +5,7 @@ using SoulSmith.Core;
 
 namespace SoulSmith.Drawing.Text
 {
-    public class FontResource : IAsset, IFontResource
+    public class FontResource : IFontResource
     {
         public const int STANDARDFONTSIZE = 48;
 

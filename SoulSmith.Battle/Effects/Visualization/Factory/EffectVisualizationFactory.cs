@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SoulSmith.Battle.Effects.Visualization.Factory
 {
     [JsonConverter(typeof(EffectVisualizationFactoryJsonConverter))]
-    public class EffectVisualizationFactory : IAsset
+    public class EffectVisualizationFactory : IDisposable
     {
         private float _lifespan;
         private float _effectActivationTimer;

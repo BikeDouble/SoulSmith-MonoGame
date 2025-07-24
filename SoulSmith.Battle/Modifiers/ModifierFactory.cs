@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace SoulSmith.Battle.Modifiers
 {
     [JsonConverter(typeof(ModifierFactoryJsonConverter))]
-    public class ModifierFactory : IAsset
+    public class ModifierFactory : IDisposable
     {
         public ModifierFactory(int duration, DurationStyle durationStyle, ModifierAlignment modifierAlignment, bool isModifierVisible, DrawableResourceKey modifierIconKey, string friendlyName, string description)
         {

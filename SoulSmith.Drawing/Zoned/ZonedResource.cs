@@ -10,10 +10,10 @@ using SoulSmith.Asset;
 using SoulSmith.Core;
 using SoulSmith.Shapes;
 
-namespace SoulSmith.Drawing
+namespace SoulSmith.Drawing.Zoned
 {
     [JsonConverter(typeof(ZonedResourceJsonConverter))]
-    public class ZonedResource : IZonedResource, IMultiZone, IAsset
+    public class ZonedResource : IZonedResource, IMultiZone, IDisposable
     {
         private IZone _zone;
         private IAssetWrapper<IDrawableResource> _resource;
@@ -122,6 +122,7 @@ namespace SoulSmith.Drawing
         public int Width { get { return _resource.Value.Width; } }
         public int Height { get { return _resource.Value.Height; } }
         public Vector2 Origin { get { return _resource.Value.Origin; } }
+        public OriginPlacement OriginPlacement { get; set; } = OriginPlacement.Center; //TODO: Make this configurable
     }
 
     public class ZonedResourceJsonConverter : JsonConverter<ZonedResource>

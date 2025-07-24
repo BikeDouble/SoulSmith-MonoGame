@@ -10,6 +10,7 @@
         OnRoundEnd,
         OnRoundBegin,
         OnRoundEndModifierDurationTick,
-        OnUnitDeath
+        OnUnitDeath,
+        OnUnitRetreat
     }
 }
