@@ -6,11 +6,11 @@ using SoulSmith.Core;
 
 namespace SoulSmith.Drawing.Textures
 {
-    public class Texture2DResource : IDrawableResource
+    public class Texture2DInstance : IDrawableResource
     {
         private IAssetWrapper<Texture2D> _wrappedTexture;
 
-        public Texture2DResource(IAssetWrapper<Texture2D> texture)
+        public Texture2DInstance(IAssetWrapper<Texture2D> texture)
         {
             _wrappedTexture = texture;
         }

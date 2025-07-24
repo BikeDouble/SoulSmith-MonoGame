@@ -11,7 +11,7 @@ public class UnitUITimeOnBoardDisplay : CanvasObject
     public const int ROUNDSONBOARDCOUNTERY = -90;
 
     public UnitUITimeOnBoardDisplay(
-        IAssetWrapper<IDrawableResource> textResource) : base( 
+        IDrawableResource textResource) : base( 
             new Position(0, -70),
             textResource)
     {}

@@ -79,7 +79,7 @@ public class UnitUIModifierDisplay : CanvasObject
     {
         if (modifier == null || !modifier.IsVisible) return null;
 
-        IAssetWrapper<IDrawableResource> iconResource = DrawHelpers.GetDrawableResource(modifier.IconKey);
+        IDrawableResource iconResource = DrawHelpers.GetDrawableResource(modifier.IconKey);
 
         return new UnitUIModifierIcon(new Core.Position(0, 0), iconResource);
     }

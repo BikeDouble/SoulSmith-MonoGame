@@ -23,7 +23,7 @@ public class UnitUIHealthBar : CanvasObject
 
 	public UnitUIHealthBar(Position position = null) : base(position)
 	{
-		IAssetWrapper<IDrawableResource> simpleTextInstance = DrawHelpers.GetDrawableResource(FONTKEY, "simpletextresource");
+		IDrawableResource simpleTextInstance = DrawHelpers.GetDrawableResource(FONTKEY, "simpletextresource");
 		_healthText = new CanvasObject(null, simpleTextInstance);
 		AddChild(_healthText);
 	}

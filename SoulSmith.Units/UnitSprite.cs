@@ -24,7 +24,7 @@ public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
 
     private double _animationTime = -1;
 
-    public UnitSprite(IAssetWrapper<IDrawableResource> sprite, double animationDesyncFactor) : base(null, sprite)
+    public UnitSprite(IDrawableResource sprite, double animationDesyncFactor) : base(null, sprite)
     {
         this.Scale(new Vector2(WIDTHSCALE, HEIGHTSCALE));
         //TODO implement animationDesyncFactor

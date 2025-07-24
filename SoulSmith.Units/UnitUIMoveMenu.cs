@@ -52,8 +52,8 @@ public class UnitUIMoveMenu : CanvasObject
 	private void CreateMoveButton(int index)
 	{
         Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (index * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE, 0, UnitUIMoveButton.ZVALUE);
-		IAssetWrapper<ZonedResource> idleResource = AssetManager.Instance.GetZonedResource<ZonedResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
-		IAssetWrapper<ZonedResource> hoveredResource = AssetManager.Instance.GetZonedResource<ZonedResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
+		ZonedDrawableResource idleResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
+		ZonedDrawableResource hoveredResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
         UnitUIMoveButton button = new UnitUIMoveButton(idleResource, hoveredResource, buttonPosition);
         _moveButtons.Add(button);
         AddChild(button);
@@ -69,8 +69,8 @@ public class UnitUIMoveMenu : CanvasObject
 			MOVEBUTTONSCALE, 
 			0, 
 			UnitUIMoveButton.ZVALUE);
-        IAssetWrapper<ZonedResource> idleResource = AssetManager.Instance.GetZonedResource<ZonedResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
-        IAssetWrapper<ZonedResource> hoveredResource = AssetManager.Instance.GetZonedResource<ZonedResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResource idleResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResource hoveredResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
         UnitUIMoveButton button = new UnitUIMoveButton(idleResource, hoveredResource, buttonPosition);
 		_retrieveButton = button;
         AddChild(button);
@@ -80,14 +80,14 @@ public class UnitUIMoveMenu : CanvasObject
     // Calculates the Y offset for the retrieve button to keep the space between buttons consistent and visually appealing
     private int CalculateRetrieveButtonYOffset()
 	{
-        IAssetWrapper<ZonedResource> moveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
-        IAssetWrapper<ZonedResource> retrieveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResource moveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResource retrieveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
         if (moveButtonTexture == null) throw new ArgumentNullException(nameof(moveButtonTexture));
         if (retrieveButtonTexture == null) throw new ArgumentNullException(nameof(retrieveButtonTexture));
 
 		float moveButtonHeightScale = _moveButtons[0].Position.ScaleVector.Y;
-		float moveButtonHeight = moveButtonTexture.Value.GetHeightLocal(ButtonObject.CLICKZONEKEY);
-		float retrieveButtonHeight = retrieveButtonTexture.Value.GetHeightLocal(ButtonObject.CLICKZONEKEY);
+		float moveButtonHeight = moveButtonTexture.GetHeightLocal(ButtonObject.CLICKZONEKEY);
+		float retrieveButtonHeight = retrieveButtonTexture.GetHeightLocal(ButtonObject.CLICKZONEKEY);
         int gapSize = SPACEBETWEENBUTTONS - (int)(moveButtonHeight * moveButtonHeightScale);
 		int spaceBetweenMoveAndRetrieveButtons = gapSize + (int)((moveButtonHeight + retrieveButtonHeight) * moveButtonHeightScale / 2);
 
@@ -100,14 +100,14 @@ public class UnitUIMoveMenu : CanvasObject
 	// Calculates the X offset for the retrieve button to keep the buttons left aligned
 	private int CalculateRetrieveButtonXOffset()
 	{
-        IAssetWrapper<ZonedResource> moveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
-        IAssetWrapper<ZonedResource> retrieveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResource moveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResource retrieveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
         if (moveButtonTexture == null) throw new ArgumentNullException(nameof(moveButtonTexture));
         if (retrieveButtonTexture == null) throw new ArgumentNullException(nameof(retrieveButtonTexture));
 
         float moveButtonWidthScale = _moveButtons[0].Position.ScaleVector.X;
-        float moveButtonWidth = moveButtonTexture.Value.GetWidthLocal(ButtonObject.CLICKZONEKEY);
-        float retrieveButtonWidth = retrieveButtonTexture.Value.GetWidthLocal(ButtonObject.CLICKZONEKEY);
+        float moveButtonWidth = moveButtonTexture.GetWidthLocal(ButtonObject.CLICKZONEKEY);
+        float retrieveButtonWidth = retrieveButtonTexture.GetWidthLocal(ButtonObject.CLICKZONEKEY);
 		int leftMovement = (int)((retrieveButtonWidth - moveButtonWidth) * moveButtonWidthScale / 2);
 
         moveButtonTexture.Dispose();

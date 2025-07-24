@@ -14,8 +14,8 @@ public class ButtonObject : CanvasObject_MultipleResources
     private int _hoveredResourceIndex = -1;
 
     public ButtonObject(
-        IAssetWrapper<ZonedResource> idleResource,
-        IAssetWrapper<ZonedResource> hoveredResource,
+        ZonedDrawableResource idleResource,
+        ZonedDrawableResource hoveredResource,
         Position position = null) : base(idleResource, hoveredResource, position)
     {
         _idleResourceIndex = 0;
@@ -91,8 +91,8 @@ public class ButtonObject : CanvasObject_MultipleResources
         ButtonPressedEventHandler?.Invoke(this, e);
     }
 
-    protected ZonedResource IdleResource { get { return GetResource(_idleResourceIndex) as ZonedResource; } }
-    protected ZonedResource HoveredResource { get { return GetResource(_hoveredResourceIndex) as ZonedResource; } }
+    protected ZonedDrawableResource IdleResource { get { return GetResource(_idleResourceIndex) as ZonedDrawableResource; } }
+    protected ZonedDrawableResource HoveredResource { get { return GetResource(_hoveredResourceIndex) as ZonedDrawableResource; } }
 }
 
 public class ButtonPressedEventArgs : EventArgs

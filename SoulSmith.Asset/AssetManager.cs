@@ -19,7 +19,6 @@ namespace SoulSmith.Asset
 
         // Cached data
         private Cache _textureCache;
-        private Cache _zonedTextureCache;
         private Cache _unitTemplateCache;
         private Cache _animationDataCache;
         private Cache _fontResourceCache;
@@ -53,7 +52,6 @@ namespace SoulSmith.Asset
         private void InitializeCaches()
         {
             _textureCache = new Cache();
-            _zonedTextureCache = new Cache();
             _unitTemplateCache = new Cache();
             _animationDataCache = new Cache();
             _fontResourceCache = new Cache();
@@ -110,21 +108,15 @@ namespace SoulSmith.Asset
             _zonedTextureLoader = loader;
         }
 
-        public IAssetWrapper<T> GetZonedResource<T>(string key) where T : IDisposable
+        public T GetZonedResource<T>(string key) where T : IDisposable
         {
-            if (_zonedTextureCache.Contains(key)) return _zonedTextureCache.GetAsset<T>(key);
-
-            if (!_manifest.ContainsKey(key)) return null;
+            if (!_manifest.ContainsKey(key)) return default(T);
 
             string textureFilepath = FILEPREFIX + _manifest[key];
 
-            IDisposable resource = _zonedTextureLoader.Load(textureFilepath);
+            T resource = (T)_zonedTextureLoader.Load(textureFilepath);
 
-            if (resource == null) return null;
-
-            _zonedTextureCache.CacheAsset(key, resource);
-
-            return _zonedTextureCache.GetAsset<T>(key);
+            return resource;
         }
 
         public void RegisterFontResourceLoader(IBasicAssetLoader loader) { _fontResourceLoader = loader; }

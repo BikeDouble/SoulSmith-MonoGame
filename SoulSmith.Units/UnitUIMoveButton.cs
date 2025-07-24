@@ -36,14 +36,14 @@ public class UnitUIMoveButton : ButtonObject
 	private bool _isRetrieveButton = false;
 
 	public UnitUIMoveButton(
-        IAssetWrapper<ZonedResource> idleResource,
-        IAssetWrapper<ZonedResource> hoveredResource,
+        ZonedDrawableResource idleResource,
+        ZonedDrawableResource hoveredResource,
         Position position = null) : base(
             idleResource,
 			hoveredResource,
 			position) 
 	{
-		IAssetWrapper<IDrawableResource> textResource = DrawHelpers.GetDrawableResource(LABELFONTKEY, "simpletextresource");
+		IDrawableResource textResource = DrawHelpers.GetDrawableResource(LABELFONTKEY, "simpletextresource");
         _label = new CanvasObject(new Position(0, 0, LABELWIDTHSCALE, LABELHEIGHTSCALE, 0, ZVALUE + 1), textResource);
 		_label.SetColor(new Color(LABELBRIGHTNESS, LABELBRIGHTNESS, LABELBRIGHTNESS, 255));
         AddChild(_label);

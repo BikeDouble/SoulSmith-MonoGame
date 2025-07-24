@@ -30,7 +30,7 @@ namespace SoulSmith.Drawing.Animation
         public readonly string DataName;
         public readonly Rectangle SourceRect;
 
-        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, IAssetWrapper<Texture2DResource> texture, OriginPlacement originPlacement = OriginPlacement.Center)
+        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, Texture2DInstance textureInstance, OriginPlacement originPlacement = OriginPlacement.Center)
         {
             Vector2 origin;
 
@@ -49,7 +49,7 @@ namespace SoulSmith.Drawing.Animation
                     throw new ArgumentOutOfRangeException(nameof(originPlacement), originPlacement, null);
             }
 
-            texture.Value.DrawSubsection(position, color, spriteBatch, SourceRect, origin);
+            textureInstance.DrawSubsection(position, color, spriteBatch, SourceRect, origin);
         }
     }
 

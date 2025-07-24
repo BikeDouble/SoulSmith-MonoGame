@@ -21,7 +21,7 @@ public class PopUpMenu : CanvasObject
 
     public PopUpMenu(
         Position position = null,
-        IReadOnlyTrackedAsset<ZonedResource> sprite = null,
+        ZonedDrawableResource sprite = null,
         IEnumerable<SoulSmithObject> children = null) : base(position, sprite, children)
     { }
 

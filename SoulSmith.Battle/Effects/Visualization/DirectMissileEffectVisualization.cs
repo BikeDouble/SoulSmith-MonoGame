@@ -25,7 +25,7 @@ namespace SoulSmith.Battle.Effects.Visualization
         {
             _missileSizeInPixels = missileSizeInPixels;
             _missileResourceKey = missileResourceKey;
-            IAssetWrapper<IDrawableResource> missileAsset = DrawHelpers.GetDrawableResource(_missileResourceKey);
+            IDrawableResource missileAsset = DrawHelpers.GetDrawableResource(_missileResourceKey);
 
             _missile = new CanvasObject(null, missileAsset);
             AddChild(_missile);

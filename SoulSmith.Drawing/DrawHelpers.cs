@@ -10,36 +10,37 @@ namespace SoulSmith.Drawing
 {
     public class DrawHelpers
     {
-        public static IAssetWrapper<IDrawableResource> GetDrawableResource(DrawableResourceKey key)
+        public static IDrawableResource GetDrawableResource(DrawableResourceKey key)
         {
             if (key == null) return null;
 
             return GetDrawableResource(key.Key, key.Type);
         }
 
-        public static IAssetWrapper<IDrawableResource> GetDrawableResource(string key, string type)
+        public static IDrawableResource GetDrawableResource(string key, string type)
         {
             switch (type.ToLower())
             {
                 case "simpletext":
                 case "simpletextresource":
                     IAssetWrapper<FontResource> wrappedFontResource = AssetManager.Instance.GetFontResource<FontResource>(key);
-                    IAssetWrapper<SimpleTextInstance> wrappedSimpleText = new UntrackedAssetWrapper<SimpleTextInstance>(new SimpleTextInstance(wrappedFontResource));
-                    return wrappedSimpleText;
+                    SimpleTextInstance simpleText = new SimpleTextInstance(wrappedFontResource);
+                    return simpleText;
                 case "texture":
                 case "texture2d":
                 case "texture2dresource":
+                case "texture2dinstance":
                     IAssetWrapper<Texture2D> texture = AssetManager.Instance.GetTexture2D<Texture2D>(key);
-                    Texture2DResource resource = new Texture2DResource(texture);
-                    return new UntrackedAssetWrapper<Texture2DResource>(resource);
+                    Texture2DInstance resource = new Texture2DInstance(texture);
+                    return resource;
                 case "animation":
                     IAssetWrapper<Animation.Animation> wrappedAnimation = AssetManager.Instance.GetAnimation<Animation.Animation>(key);
-                    IAssetWrapper<AnimationPlayer> wrappedAnimationPlayer = new UntrackedAssetWrapper<AnimationPlayer>(new AnimationPlayer(wrappedAnimation));
-                    return wrappedAnimationPlayer;
+                    AnimationPlayer animationPlayer = new AnimationPlayer(wrappedAnimation);
+                    return animationPlayer;
                 case "zonedtexture":
                 case "zoned":
                 case "zonedtexture2d":
-                    return AssetManager.Instance.GetZonedResource<ZonedResource>(key);
+                    return AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(key);
                 default:
                     throw new ArgumentException($"Invalid drawable resource type: {type}");
             }

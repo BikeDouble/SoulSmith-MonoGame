@@ -8,7 +8,7 @@ namespace SoulSmith.Units
 {
     public class UnitUIModifierIcon : CanvasObject
     {
-        public UnitUIModifierIcon(Position position, IAssetWrapper<IDrawableResource> wrappedResource) : base(position, wrappedResource)
+        public UnitUIModifierIcon(Position position, IDrawableResource wrappedResource) : base(position, wrappedResource)
         {
             ScaleToSetSize(new Vector2(UnitUIModifierDisplay.ICONSIZE, UnitUIModifierDisplay.ICONSIZE), true);
         }

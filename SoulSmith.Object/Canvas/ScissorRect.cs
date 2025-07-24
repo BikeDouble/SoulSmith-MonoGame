@@ -20,7 +20,7 @@ public class ScissorRect : CanvasObject
         Position position,
         int width,
         int height,
-        IReadOnlyTrackedAsset<IDrawableResource> sprite = null,
+        IDrawableResource sprite = null,
         IEnumerable<SoulSmithObject> children = null) : base(position, sprite, children)
     {
         _width = width;

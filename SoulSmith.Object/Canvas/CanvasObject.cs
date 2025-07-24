@@ -12,11 +12,11 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
     private bool _visible = true;
     private Position _position = null;
     private Color _color = Color.White;
-    private IAssetWrapper<IDrawableResource> _drawableResource = null;
+    private IDrawableResource _drawableResource = null;
 
     public CanvasObject(
         Position position = null,
-        IAssetWrapper<IDrawableResource> drawableResource = null,
+        IDrawableResource drawableResource = null,
         IEnumerable<SoulSmithObject> children = null) : base(children)
     {
         _position = new Position(position);
@@ -344,7 +344,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
 
     public bool Visible { get { return _visible; } }
     public IReadOnlyPosition Position { get { return _position; } }
-    protected virtual IDrawableResource Resource { get { return _drawableResource?.Value; } }
+    protected virtual IDrawableResource Resource { get { return _drawableResource; } }
 }
 
 public class GetGlobalPositionEventArgs : EventArgs

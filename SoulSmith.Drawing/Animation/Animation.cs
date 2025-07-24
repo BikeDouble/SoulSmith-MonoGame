@@ -19,12 +19,12 @@ namespace SoulSmith.Drawing.Animation
         public const int FRAMESPERSECOND = 60;
 
         private IDictionary<string, AnimationClip> _clips;
-        private IAssetWrapper<Texture2DResource> _wrappedTexture;
+        private Texture2DInstance _textureInstance;
 
-        public Animation(IDictionary<string, AnimationClip> clips, IAssetWrapper<Texture2DResource> wrappedTexture)
+        public Animation(IDictionary<string, AnimationClip> clips, Texture2DInstance wrappedTexture)
         {
             _clips = clips;
-            _wrappedTexture = wrappedTexture;
+            _textureInstance = wrappedTexture;
         }
 
         public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, string clipName, double timeInClip, double animationSpeed = 1d, OriginPlacement originPlacement = OriginPlacement.Center)
@@ -33,7 +33,7 @@ namespace SoulSmith.Drawing.Animation
 
             if (activeClip == null) activeClip = _clips.FirstOrDefault().Value;
 
-            activeClip.DrawFrame(position, color, spriteBatch, _wrappedTexture, timeInClip, animationSpeed, originPlacement);
+            activeClip.DrawFrame(position, color, spriteBatch, _textureInstance, timeInClip, animationSpeed, originPlacement);
         }
 
         private AnimationClip GetDefaultClip()
@@ -54,7 +54,7 @@ namespace SoulSmith.Drawing.Animation
         public void Dispose()
         {
             _clips.Clear();
-            _wrappedTexture.Dispose();
+            _textureInstance.Dispose();
         }
 
         public int Height { get { return GetDefaultClip().Height; } }
@@ -70,7 +70,7 @@ namespace SoulSmith.Drawing.Animation
 
             reader.Read();
 
-            IAssetWrapper<Texture2DResource> wrappedTexture = null;
+            Texture2DInstance textureInstance = null;
             AnimationClipDeserializationData[] clipsData = null;
             AnimationFrame[] frames = null;
 
@@ -87,7 +87,7 @@ namespace SoulSmith.Drawing.Animation
                     case "Texture":
                     case "TextureKey":
                         string textureKey = reader.GetString();
-                        wrappedTexture = DrawHelpers.GetDrawableResource(textureKey, "Texture2DResource") as IAssetWrapper<Texture2DResource>;
+                        textureInstance = DrawHelpers.GetDrawableResource(textureKey, "Texture2DInstance") as Texture2DInstance;
                         reader.Read();
                         break;
                     case "ClipData":
@@ -106,7 +106,7 @@ namespace SoulSmith.Drawing.Animation
                 }
             }
 
-            if (wrappedTexture == null) throw new ArgumentNullException(nameof(wrappedTexture));
+            if (textureInstance == null) throw new ArgumentNullException(nameof(textureInstance));
             if (frames == null) throw new ArgumentNullException(nameof(frames));
             if (clipsData == null) throw new ArgumentNullException(nameof(clipsData));
 
@@ -118,7 +118,7 @@ namespace SoulSmith.Drawing.Animation
                 clipsDict.Add(clipData.ClipFriendlyName, clip);
             }
 
-            return new Animation(clipsDict, wrappedTexture);
+            return new Animation(clipsDict, textureInstance);
         }
 
         public override void Write(Utf8JsonWriter writer, Animation value, JsonSerializerOptions options)

@@ -71,10 +71,10 @@ namespace SoulSmith.Drawing.Animation
             return (name, frameIdx);
         }
 
-        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, IAssetWrapper<Texture2DResource> texture, double timeInClip, double animationSpeed = 1d, OriginPlacement originPlacement = OriginPlacement.Center)
+        public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, Texture2DInstance textureInstance, double timeInClip, double animationSpeed = 1d, OriginPlacement originPlacement = OriginPlacement.Center)
         {
             AnimationFrame activeFrame = GetActiveFrame(timeInClip, animationSpeed);
-            activeFrame.DrawFrame(position, color, spriteBatch, texture, originPlacement);
+            activeFrame.DrawFrame(position, color, spriteBatch, textureInstance, originPlacement);
         }
 
         public bool IsTransitionReady(double timeInClip, double animationSpeed = 1d)

@@ -13,12 +13,12 @@ using SoulSmith.Shapes;
 namespace SoulSmith.Drawing.Zoned
 {
     [JsonConverter(typeof(ZonedResourceJsonConverter))]
-    public class ZonedResource : IZonedResource, IMultiZone, IDisposable
+    public class ZonedDrawableResource : IZonedResource, IMultiZone, IDisposable
     {
         private IZone _zone;
-        private IAssetWrapper<IDrawableResource> _resource;
+        private IDrawableResource _resource;
 
-        public ZonedResource(IZone zone, IAssetWrapper<IDrawableResource> resource) //TODO add multizone support
+        public ZonedDrawableResource(IZone zone, IDrawableResource resource) //TODO add multizone support
         {
             _zone = zone;
             _resource = resource;
@@ -26,7 +26,7 @@ namespace SoulSmith.Drawing.Zoned
         
         public void Process(double delta)
         {
-            _resource?.Value?.Process(delta);
+            _resource?.Process(delta);
         }
 
         public bool ContainsGlobal(Vector2 point, IReadOnlyPosition transformation = null)
@@ -111,7 +111,7 @@ namespace SoulSmith.Drawing.Zoned
 
         public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch)
         {
-            _resource?.Value?.Draw(position, color, spriteBatch);
+            _resource?.Draw(position, color, spriteBatch);
         }
 
         public void Dispose() 
@@ -119,21 +119,21 @@ namespace SoulSmith.Drawing.Zoned
             _resource.Dispose();
         }
 
-        public int Width { get { return _resource.Value.Width; } }
-        public int Height { get { return _resource.Value.Height; } }
-        public Vector2 Origin { get { return _resource.Value.Origin; } }
+        public int Width { get { return _resource.Width; } }
+        public int Height { get { return _resource.Height; } }
+        public Vector2 Origin { get { return _resource.Origin; } }
         public OriginPlacement OriginPlacement { get; set; } = OriginPlacement.Center; //TODO: Make this configurable
     }
 
-    public class ZonedResourceJsonConverter : JsonConverter<ZonedResource>
+    public class ZonedResourceJsonConverter : JsonConverter<ZonedDrawableResource>
     {
-        public override ZonedResource Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ZonedDrawableResource Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
             reader.Read();
 
-            IAssetWrapper<IDrawableResource> resource = null;
+            IDrawableResource resource = null;
             IZone zone = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
@@ -152,8 +152,8 @@ namespace SoulSmith.Drawing.Zoned
                         break;
                     case "Resource":
                     case "DrawableResource":
-                        TrackedIDrawableResourceJsonConverter converter = new TrackedIDrawableResourceJsonConverter();
-                        resource = converter.Read(ref reader, typeof(IAssetWrapper<IDrawableResource>), options);
+                        DrawableResourceKey drawableResourceKey = JsonSerializer.Deserialize<DrawableResourceKey>(ref reader, options);
+                        resource = DrawHelpers.GetDrawableResource(drawableResourceKey);
                         reader.Read();
                         break;
                     default:
@@ -162,10 +162,10 @@ namespace SoulSmith.Drawing.Zoned
                 }
             }
 
-            return new ZonedResource(zone, resource);
+            return new ZonedDrawableResource(zone, resource);
         }
 
-        public override void Write(Utf8JsonWriter writer, ZonedResource value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ZonedDrawableResource value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

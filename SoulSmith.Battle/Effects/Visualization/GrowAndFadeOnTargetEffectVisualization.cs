@@ -20,8 +20,8 @@ namespace SoulSmith.Battle.Effects.Visualization
             float effectActivationTimer = -1,
             float delay = 0f) : base(lifespan, effectActivationTimer, delay)
         {
-            IAssetWrapper<IDrawableResource> particleAsset = DrawHelpers.GetDrawableResource(particleResourceKey);
-            _particle = new CanvasObject(null, particleAsset);
+            IDrawableResource particleResource = DrawHelpers.GetDrawableResource(particleResourceKey);
+            _particle = new CanvasObject(null, particleResource);
             AddChild(_particle);
             _startSize = startSize;
             _endSize = endSize;

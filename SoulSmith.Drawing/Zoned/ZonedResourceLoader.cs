@@ -16,7 +16,7 @@ namespace SoulSmith.Drawing.Zoned
         {
             if (!File.Exists(path)) return null;
 
-            ZonedResource resource = JsonSerializer.Deserialize<ZonedResource>(File.ReadAllText(path));
+            ZonedDrawableResource resource = JsonSerializer.Deserialize<ZonedDrawableResource>(File.ReadAllText(path));
 
             return resource;
         }
