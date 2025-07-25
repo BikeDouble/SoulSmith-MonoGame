@@ -35,7 +35,7 @@ namespace SoulSmith.Drawing
                     return resource;
                 case "animation":
                     IAssetWrapper<Animation.Animation> wrappedAnimation = AssetManager.Instance.GetAnimation<Animation.Animation>(key);
-                    AnimationPlayer animationPlayer = new AnimationPlayer(wrappedAnimation);
+                    AnimationInstance animationPlayer = new AnimationInstance(wrappedAnimation);
                     return animationPlayer;
                 case "zonedtexture":
                 case "zoned":

@@ -57,9 +57,13 @@ namespace SoulSmith.Drawing.Animation
             _textureInstance.Dispose();
         }
 
+        public Vector2 GetFrameOrigin(OriginPlacement originPlacement)
+        {
+            return GetDefaultClip().GetFrameOrigin(originPlacement);
+        }
+
         public int Height { get { return GetDefaultClip().Height; } }
         public int Width { get { return GetDefaultClip().Width; } }
-        public Vector2 Origin { get { return GetDefaultClip().Origin; } }
     }
 
     public class AnimationDataJsonConverter : JsonConverter<Animation>

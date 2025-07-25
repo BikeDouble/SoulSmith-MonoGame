@@ -122,7 +122,7 @@ namespace SoulSmith.Drawing.Zoned
         public int Width { get { return _resource.Width; } }
         public int Height { get { return _resource.Height; } }
         public Vector2 Origin { get { return _resource.Origin; } }
-        public OriginPlacement OriginPlacement { get; set; } = OriginPlacement.Center; //TODO: Make this configurable
+        public OriginPlacement OriginPlacement { get { return _resource.OriginPlacement; } set { _resource.OriginPlacement = value; } }
     }
 
     public class ZonedResourceJsonConverter : JsonConverter<ZonedDrawableResource>

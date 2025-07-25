@@ -108,8 +108,18 @@ namespace SoulSmith.Drawing.Animation
             return frameIdx;
         }
 
+        public Vector2 GetFrameOrigin(OriginPlacement placement)
+        {
+            return _frames[0].GetFrameOrigin(placement);
+        }
+
+        public Vector2 GetCurrentFrameSourceOrigin(OriginPlacement placement, double timeInClip, double animationSpeed)
+        {
+            AnimationFrame activeFrame = GetActiveFrame(timeInClip, animationSpeed);
+            return activeFrame.GetSourceOrigin(placement);
+        }
+
         public int Height { get { return _frames[0].FrameHeight; } }
         public int Width { get { return _frames[0].FrameWidth; } }
-        public Vector2 Origin { get { return _frames[0].FrameOrigin; } }
     }
 }

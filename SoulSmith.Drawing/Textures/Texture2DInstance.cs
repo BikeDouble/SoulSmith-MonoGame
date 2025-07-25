@@ -43,10 +43,27 @@ namespace SoulSmith.Drawing.Textures
             _wrappedTexture.Dispose();
         }
 
+        private Vector2 GetOriginInternal()
+        {
+            switch (OriginPlacement)
+            {
+                case OriginPlacement.TopLeft:
+                    return Vector2.Zero;
+                case OriginPlacement.Center:
+                    return new Vector2(Texture.Width / 2, Texture.Height / 2);
+                case OriginPlacement.BottomMiddle:
+                    return new Vector2(Texture.Width / 2, Texture.Height);
+                case OriginPlacement.TopMiddle:
+                    return new Vector2(Texture.Width / 2, 0);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(OriginPlacement), OriginPlacement, "Invalid origin placement specified.");
+            }
+        }
+
         public Texture2D Texture { get { return _wrappedTexture.Value; } }
         public int Width { get { return Texture.Width; } }
         public int Height { get { return Texture.Height; } }
-        public Vector2 Origin { get { return new Vector2(Texture.Width / 2, Texture.Height / 2); } }
+        public Vector2 Origin { get { return GetOriginInternal(); } }
         public OriginPlacement OriginPlacement { get; set; } = OriginPlacement.Center; //TODO: Make this configurable
     }
 }

@@ -9,18 +9,17 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Drawing.Animation
 {
-    public class AnimationPlayer : IDrawableResource
+    public class AnimationInstance : IDrawableResource
     {
         private IAssetWrapper<Animation> _wrappedAnimation;
         private double _timeSinceClipChange = 0;
         private string _currentClipName;
         private double _animationSpeed = 1d;
 
-        public AnimationPlayer(IAssetWrapper<Animation> wrappedAnimation, double animationSpeed = 1d)
+        public AnimationInstance(IAssetWrapper<Animation> wrappedAnimation, double animationSpeed = 1d)
         {
             _wrappedAnimation = wrappedAnimation;
             _currentClipName = _wrappedAnimation.Value.GetDefaultClipName();
-            OriginPlacement = OriginPlacement.Center;
         }
 
         public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch)
@@ -55,7 +54,7 @@ namespace SoulSmith.Drawing.Animation
         public double Speed { get { return _animationSpeed; } }
         public int Height { get { return _wrappedAnimation.Value.Height; } }
         public int Width { get { return _wrappedAnimation.Value.Width; } }
-        public Vector2 Origin { get { return _wrappedAnimation.Value.Origin; } }
-        public OriginPlacement OriginPlacement { get; set; }
+        public Vector2 Origin { get { return _wrappedAnimation.Value.GetFrameOrigin(OriginPlacement); } }
+        public OriginPlacement OriginPlacement { get; set; } = OriginPlacement.Center;
     }
 }

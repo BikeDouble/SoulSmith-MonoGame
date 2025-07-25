@@ -10,6 +10,7 @@ namespace SoulSmith.Drawing
     {
         Center,
         TopLeft,
-        BottomMiddle
+        BottomMiddle,
+        TopMiddle
     }
 }

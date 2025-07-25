@@ -21,10 +21,6 @@ namespace SoulSmith.Drawing.Animation
         }
 
         public readonly Vector2 FrameTopLeftRelativeToSourceRect;
-        public Vector2 FrameOrigin { get { return new Vector2(FrameWidth / 2, FrameHeight / 2); } }
-        public Vector2 SourceCenterOrigin { get { return new Vector2(SourceRect.Width / 2, SourceRect.Height / 2); } }
-        public Vector2 SourceTopLeftOrigin { get { return FrameTopLeftRelativeToSourceRect; } }
-        public Vector2 SourceBottomMiddleOrigin { get { return new Vector2(FrameTopLeftRelativeToSourceRect.X + FrameWidth / 2, FrameTopLeftRelativeToSourceRect.Y + FrameHeight); } }
         public readonly int FrameWidth;
         public readonly int FrameHeight;
         public readonly string DataName;
@@ -32,25 +28,61 @@ namespace SoulSmith.Drawing.Animation
 
         public void DrawFrame(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, Texture2DInstance textureInstance, OriginPlacement originPlacement = OriginPlacement.Center)
         {
-            Vector2 origin;
-
-            switch (originPlacement)
-            {
-                case OriginPlacement.Center:
-                    origin = SourceCenterOrigin;
-                    break;
-                case OriginPlacement.TopLeft:
-                    origin = SourceTopLeftOrigin;
-                    break;
-                case OriginPlacement.BottomMiddle:
-                    origin = SourceBottomMiddleOrigin;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(originPlacement), originPlacement, null);
-            }
+            Vector2 origin = GetSourceOrigin(originPlacement);
 
             textureInstance.DrawSubsection(position, color, spriteBatch, SourceRect, origin);
         }
+
+        public Vector2 GetFrameOrigin(OriginPlacement originPlacement)
+        {
+            switch (originPlacement)
+            {
+                case OriginPlacement.TopLeft:
+                    return Vector2.Zero;
+                case OriginPlacement.Center:
+                    return new Vector2(FrameWidth / 2, FrameHeight / 2);
+                case OriginPlacement.BottomMiddle:
+                    return new Vector2(FrameWidth / 2, FrameHeight);
+                case OriginPlacement.TopMiddle:
+                    return new Vector2(FrameWidth / 2, 0);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(originPlacement), originPlacement, "Invalid origin placement specified.");
+            }
+        }
+
+        public Vector2 GetSourceOrigin(OriginPlacement originPlacement)
+        {
+            switch (originPlacement)
+            {
+                case OriginPlacement.TopLeft:
+                    return FrameTopLeftRelativeToSourceRect;
+                case OriginPlacement.Center:
+                    if (SourceCenterOrigin.HasValue) return SourceCenterOrigin.Value;
+                    SourceCenterOrigin = FindCenterSourceOrigin();
+                    return SourceCenterOrigin.Value;
+                case OriginPlacement.BottomMiddle:
+                    return new Vector2(FrameTopLeftRelativeToSourceRect.X + FrameWidth / 2, FrameTopLeftRelativeToSourceRect.Y + FrameHeight);
+                case OriginPlacement.TopMiddle:
+                    return new Vector2(FrameTopLeftRelativeToSourceRect.X + FrameWidth / 2, FrameTopLeftRelativeToSourceRect.Y);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(originPlacement), originPlacement, "Invalid origin placement specified.");
+            }
+        }
+
+        private Vector2 FindCenterSourceOrigin()
+        {
+            // Consider a source not centered within the frame
+            // If the frame is in the bottom right, the center origin of the frame would be in that sources top left quadrant
+            float leftSpace = -FrameTopLeftRelativeToSourceRect.X;
+            float rightSpace = FrameWidth + FrameTopLeftRelativeToSourceRect.X - SourceRect.Width;
+            float topSpace = -FrameTopLeftRelativeToSourceRect.Y;
+            float bottomSpace = FrameHeight + FrameTopLeftRelativeToSourceRect.Y - SourceRect.Height;
+            float horizDiff = (leftSpace - rightSpace) / 2;
+            float vertDiff = (topSpace - bottomSpace) / 2;
+            return new Vector2(SourceRect.Width / 2 - horizDiff, SourceRect.Height / 2 - vertDiff);
+        }
+
+        private Vector2? SourceCenterOrigin = null; 
     }
 
     public class AnimationFrameJsonConverter : JsonConverter<AnimationFrame>

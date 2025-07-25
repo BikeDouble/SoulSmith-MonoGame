@@ -56,6 +56,10 @@
                 "JoyPopStar": "Textures/Effects/Particles/joyPopStar.png"
             }
         },
+        "SolidColor": {
+            "Black": "Textures/SolidColor/black.png",
+            "Green": "Textures/SolidColor/green.png"
+        },
         "SpriteSheets": {
             "Units": {
                 "Forms": {
