@@ -14,8 +14,8 @@ namespace SoulSmith.Core
         public float Height { get; }
         public Vector2 Coordinates { get; }
         public float Rotation { get; }
-        public int X { get; }
-        public int Y { get; }
+        public float X { get; }
+        public float Y { get; }
         public int Z { get; }
     }
 }

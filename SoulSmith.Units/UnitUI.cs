@@ -12,14 +12,18 @@ using SoulSmith.Asset;
 using SoulSmith.UnitStats;
 using SoulSmith.Drawing.Text;
 using SoulSmith.Drawing.Zoned;
+using System.Numerics;
 
 namespace SoulSmith.Units;
 public class UnitUI : CanvasObject
 {
 	public const float TARGETBUTTONWIDTHSCALE = 0.35f;
 	public const float TARGETBUTTONHEIGHTSCALE = 0.35f;
-	public const string TARGETBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/TargetButtonIdle";
-    public const string TARGETBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/TargetButtonHovered";
+	public const int ZVALUE = (int)ZLayer.UnitUI;
+	public const string TARGETBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/TargetButtonIdle";
+    public const string TARGETBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/Moves/TargetButtonHovered";
+	public readonly static Vector2 HEALTHBAROFFSET = new Vector2(-150, 0);
+	public readonly static Vector2 HEALTHBARSCALE = new Vector2(0.4f, 0.4f);
 
     //Children
     private UnitUIMoveMenu _moveMenu;
@@ -34,7 +38,7 @@ public class UnitUI : CanvasObject
 	{ }
 
 	public UnitUI(ZonedDrawableResource targetButtonIdle, ZonedDrawableResource targetButtonHovered)
-		: base(new Position(0, 0, 1, 1, 0, 5))
+		: base(new Position(0, 0, 1, 1, 0, ZVALUE))
 	{
 		if (targetButtonIdle == null) throw new ArgumentNullException(nameof(targetButtonIdle));
 		if (targetButtonHovered == null) throw new ArgumentNullException(nameof(targetButtonHovered));
@@ -44,7 +48,7 @@ public class UnitUI : CanvasObject
 		_moveMenu.RetrieveButtonPressedEventHandler += OnRetrieveButtonPressed;
         AddChild(_moveMenu);
 
-		Position healthBarPosition = new Position(0, 120, 1, 1, 0, 0);
+		Position healthBarPosition = new Position(HEALTHBAROFFSET.X, HEALTHBAROFFSET.Y, HEALTHBARSCALE.X, HEALTHBARSCALE.Y);
         _healthBar = new UnitUIHealthBar(healthBarPosition);
         AddChild(_healthBar);
 
@@ -65,15 +69,15 @@ public class UnitUI : CanvasObject
 		
 	}
 	
-	public void Update(IReadOnlyUnitStats stats)
+	public void Update(IReadOnlyUnit stats)
 	{
 		UpdateHealthBar(stats);
 		UpdateRoundsOnBoardCounter(stats);
 	}
 
-	private void UpdateRoundsOnBoardCounter(IReadOnlyUnitStats stats)
+	private void UpdateRoundsOnBoardCounter(IReadOnlyUnit unit)
 	{
-		int timeOnBoard = stats.TimeOnBoard;
+		int timeOnBoard = unit.TimeOnBoard;
 
 		if (timeOnBoard > -1)
 		{
@@ -163,9 +167,9 @@ public class UnitUI : CanvasObject
 	// Healthbar related functions
 	//
 	
-	private void UpdateHealthBar(IReadOnlyUnitStats stats)
+	private void UpdateHealthBar(IReadOnlyUnit unit)
 	{
-		_healthBar.Update(stats);
+		_healthBar.Update(unit);
 	}
 
 }

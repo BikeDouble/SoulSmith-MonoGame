@@ -69,10 +69,17 @@
         },
         "UI": {
             "Units": {
-                "MoveButton": "Textures/UI/Units/moveButton.png",
-                "RetrieveButton": "Textures/UI/Units/retrieveButton.png",
-                "TargetButtonHovered": "Textures/UI/Units/targetButtonHovered.png",
-                "TargetButtonIdle": "Textures/UI/Units/targetButtonIdle.png"
+                "HealthBar": {
+                    "Empty": "Textures/UI/Units/HealthBar/healthBarEmpty.png",
+                    "HealthFiller": "Textures/UI/Units/HealthBar/healthBarHealthFiller.png",
+                    "DecayFiller": "Textures/UI/Units/HealthBar/healthBarDecayFiller.png"
+                },
+                "Moves": {
+                    "MoveButton": "Textures/UI/Units/Moves/moveButton.png",
+                    "RetrieveButton": "Textures/UI/Units/Moves/retrieveButton.png",
+                    "TargetButtonHovered": "Textures/UI/Units/Moves/targetButtonHovered.png",
+                    "TargetButtonIdle": "Textures/UI/Units/Moves/targetButtonIdle.png"
+                }
             }
         },
         "Units": {
@@ -93,10 +100,12 @@
     "ZonedResources": {
         "UI": {
             "Units": {
-                "MoveButton": "ZonedResources/UI/Units/moveButton.json",
-                "RetrieveButton": "ZonedResources/UI/Units/retrieveButton.json",
-                "TargetButtonHovered": "ZonedResources/UI/Units/targetButtonHovered.json",
-                "TargetButtonIdle": "ZonedResources/UI/Units/targetButtonIdle.json"
+                "Moves": {
+                    "MoveButton": "ZonedResources/UI/Units/Moves/moveButton.json",
+                    "RetrieveButton": "ZonedResources/UI/Units/Moves/retrieveButton.json",
+                    "TargetButtonHovered": "ZonedResources/UI/Units/Moves/targetButtonHovered.json",
+                    "TargetButtonIdle": "ZonedResources/UI/Units/Moves/targetButtonIdle.json"
+                }
             }
         }
     }

@@ -51,7 +51,7 @@ public class UnitUIMoveMenu : CanvasObject
 
 	private void CreateMoveButton(int index)
 	{
-        Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (index * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE, 0, UnitUIMoveButton.ZVALUE);
+        Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (index * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE, 0);
 		ZonedDrawableResource idleResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
 		ZonedDrawableResource hoveredResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
         UnitUIMoveButton button = new UnitUIMoveButton(idleResource, hoveredResource, buttonPosition);
@@ -67,8 +67,7 @@ public class UnitUIMoveMenu : CanvasObject
 			TOPBUTTONY + (2 * SPACEBETWEENBUTTONS) + RETRIEVEBUTTONYOFFSET, 
 			MOVEBUTTONSCALE, 
 			MOVEBUTTONSCALE, 
-			0, 
-			UnitUIMoveButton.ZVALUE);
+			0);
         ZonedDrawableResource idleResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
         ZonedDrawableResource hoveredResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
         UnitUIMoveButton button = new UnitUIMoveButton(idleResource, hoveredResource, buttonPosition);

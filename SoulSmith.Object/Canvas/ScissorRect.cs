@@ -6,15 +6,17 @@ using System.Linq;
 using SoulSmith.Drawing;
 using SoulSmith.Asset;
 using SoulSmith.Core;
+using SoulSmith.Shapes;
 
 namespace SoulSmith.Object.Canvas;
 /// <summary>
-/// Object to add clipping rectangle to object tree. All children will not be drawn or accept mouse inputs from outside rectangle. Does not support rotation.
+/// Object to add clipping rectangle to draw tree. All children will not be drawn or accept mouse inputs from outside rectangle. Does not support rotation.
 /// </summary>
 public class ScissorRect : CanvasObject
 {
-    private int _width;
-    private int _height;
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public OriginPlacement RectOriginPlacement { get; private set; }
 
     public ScissorRect(
         Position position,
@@ -23,14 +25,14 @@ public class ScissorRect : CanvasObject
         IDrawableResource sprite = null,
         IEnumerable<SoulSmithObject> children = null) : base(position, sprite, children)
     {
-        _width = width;
-        _height = height;
+        Width = width;
+        Height = height;
     }
 
     public override void CollectDrawPackets(IReadOnlyPosition absolutePosition, Color color, IAddOnly<DrawPacket> renderQueue, Rectangle? scissorRect = null)
     {
         Position newPosition = new Position(absolutePosition);
-        newPosition.Transform(Position);
+        newPosition.TransformInContext(Position, absolutePosition);
 
         Rectangle newRectangle = GetAbsoluteRect(newPosition);
 
@@ -42,14 +44,65 @@ public class ScissorRect : CanvasObject
         base.CollectDrawPackets(absolutePosition, color, renderQueue, newRectangle);
     }
 
-    private Rectangle GetAbsoluteRect(IReadOnlyPosition absolutePosition)
+    private Rectangle GetAbsoluteRect(IReadOnlyPosition absolutePosition) //TODO implement 90 degree rotation?
     {
-        return new Rectangle(absolutePosition.X, absolutePosition.Y, (int)(_width * absolutePosition.Width), (int)(_height * absolutePosition.Height));
+        int absRectX = 0;
+        int absRectY = 0;
+        int absWidth = (int)(Width * absolutePosition.Width);
+        int absHeight = (int)(Height * absolutePosition.Height);
+
+        switch (RectOriginPlacement)
+        {
+            case OriginPlacement.Center:
+                absRectX = -(absWidth / 2);
+                absRectY = -(absHeight / 2);
+                break;
+            case OriginPlacement.TopLeft:
+                break;
+            case OriginPlacement.TopMiddle:
+                absRectX = -(absWidth / 2);
+                break;
+            case OriginPlacement.BottomMiddle:
+                absRectX = -(absWidth / 2);
+                absRectY = -absHeight;
+                break;
+            default:
+                throw new NotImplementedException($"Origin placement {RectOriginPlacement.ToString()} not implemented for ScissorRect.");
+        }
+
+        
+        return GetNonNegativeRect(absRectX + (int)absolutePosition.X, absRectY + (int)absolutePosition.Y, absWidth, absHeight);
+    }
+    
+    private Rectangle GetNonNegativeRect(int x, int y, int width, int height)
+    {
+        if (width >= 0 && height >= 0) // Both are positive
+        {
+            return new Rectangle(x, y, width, height);
+        }
+        else if (width >= 0 && height < 0) // Only height is negative
+        {
+            height = -height;
+            return new Rectangle(x, y - height, width, height);
+        }
+        else if (width < 0 && height >= 0) // Only width is negative
+        {
+            width = -width;
+            return new Rectangle(x - width, y, width, height);
+        }
+        else // Both are negative
+        {
+            width = -width;
+            height = -height;
+            return new Rectangle(x - width, y - height, width, height);
+        }
     }
 
-    public Rectangle GetRect()
+    public override void SetOriginPlacement(OriginPlacement originPlacement)
     {
-        return new Rectangle(Position.X, Position.Y, (int)(_width * Position.Width), (int)(_height * Position.Height));
+        base.SetOriginPlacement(originPlacement);
+
+        RectOriginPlacement = originPlacement;
     }
 }
 

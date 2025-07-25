@@ -1,29 +1,21 @@
 {
     "DrawableResource": {
         "Type": "Texture",
-        "Key": "Textures/UI/Units/TargetButtonIdle"
+        "Key": "Textures/UI/Units/Moves/TargetButtonHovered"
     },
     "Zone": {
         "Vertices": [
             {
-                "X": 182,
-                "Y": 127
-            },
-            {
-                "X": 329,
-                "Y": 127
+                "X": 255,
+                "Y": 1
             },
             {
                 "X": 402,
                 "Y": 254
             },
             {
-                "X": 329,
-                "Y": 381
-            },
-            {
-                "X": 182,
-                "Y": 381
+                "X": 255,
+                "Y": 508
             },
             {
                 "X": 109,

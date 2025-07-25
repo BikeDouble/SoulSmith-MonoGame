@@ -13,10 +13,9 @@ using SoulSmith.Drawing.Zoned;
 namespace SoulSmith.Units;
 public class UnitUIMoveButton : ButtonObject
 {
-    public const string MOVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/MoveButton";
-    public const string RETRIEVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/RetrieveButton";
+    public const string MOVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/MoveButton";
+    public const string RETRIEVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/RetrieveButton";
     public const string LABELFONTKEY = "Fonts/Raleway/Medium";
-	public const int ZVALUE = (int)ZLayer.UnitMoveButton;
     private const float IDLEDIMNESSMULT = 0.8f;
 	private const float HOVERSIZEMOD = 1.1f;
 	private const float WIDTHSCALE = 0.35f;
@@ -44,7 +43,7 @@ public class UnitUIMoveButton : ButtonObject
 			position) 
 	{
 		IDrawableResource textResource = DrawHelpers.GetDrawableResource(LABELFONTKEY, "simpletextresource");
-        _label = new CanvasObject(new Position(0, 0, LABELWIDTHSCALE, LABELHEIGHTSCALE, 0, ZVALUE + 1), textResource);
+        _label = new CanvasObject(new Position(0, 0, LABELWIDTHSCALE, LABELHEIGHTSCALE, 0, 1), textResource);
 		_label.SetColor(new Color(LABELBRIGHTNESS, LABELBRIGHTNESS, LABELBRIGHTNESS, 255));
         AddChild(_label);
 		_label.UpdateResourceState("0");

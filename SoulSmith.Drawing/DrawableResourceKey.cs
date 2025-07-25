@@ -10,8 +10,8 @@ namespace SoulSmith.Drawing
     [JsonConverter(typeof(DrawableResourceKeyJsonConverter))]
     public class DrawableResourceKey
     {
-        public string Key { get; set; }
-        public string Type { get; set; }
+        public string Key { get; }
+        public string Type { get; }
         public DrawableResourceKey(string key, string type)
         {
             Key = key;

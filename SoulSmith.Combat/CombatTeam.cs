@@ -10,8 +10,8 @@ using SoulSmith.Battle.Effects;
 namespace SoulSmith.Combat;
 public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 {
-	public const int BACKUNITSDISTANCEFROMSCREENEDGE = 150;
-	public const int FRONTUNITSDISTANCEFROMSCREENEDGE = 300;
+	public const int BACKUNITSDISTANCEFROMSCREENEDGE = 250;
+	public const int FRONTUNITSDISTANCEFROMSCREENEDGE = 400;
 	public const int YOFFSET = 50;
 
     private IMoveSelector _moveSelector = null;
@@ -53,9 +53,9 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 			}
 			else
 			{
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4));
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2));
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4, -1, 1));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2, -1, 1));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4, -1, 1));
 			}
         }
 

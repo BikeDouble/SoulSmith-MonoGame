@@ -4,7 +4,7 @@ namespace SoulSmith.Core
 {
     public class Position : IReadOnlyPosition
     {
-        public Position(int x = 0, int y = 0, float width = 1f, float height = 1f, float rotation = 0f, int z = 0)
+        public Position(float x = 0, float y = 0, float width = 1f, float height = 1f, float rotation = 0f, int z = 0)
         {
             Width = width;
             Height = height;
@@ -141,11 +141,9 @@ namespace SoulSmith.Core
             }
         }
 
-        public int X { get { return (int)Coordinates.X; } private set { _coordinates.X = value; } }
-        public int Y { get { return (int)Coordinates.Y; } private set { _coordinates.Y = value; } }
+        public float X { get { return Coordinates.X; } private set { _coordinates.X = value; } }
+        public float Y { get { return Coordinates.Y; } private set { _coordinates.Y = value; } }
         public int Z { get { return _z; } private set { _z = value; } }
-        public static Position operator +(Position a, Position b)
-           => new Position(a.X + b.X, a.Y + b.Y, a.Width * b.Width, a.Height * b.Height, a.Rotation + b.Rotation, a.Z + b.Z);
     }
 
 

@@ -82,7 +82,8 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
                     moveSet = JsonSerializer.Deserialize<SoulSmithWeightedList<string>>(ref reader, optionsWithWeightedListConverter);
                     break;
                 default:
-                    throw new JsonException($"Unknown property: {propertyName}");
+                    reader.Skip();
+                    break;
             }
             reader.Read();
         }

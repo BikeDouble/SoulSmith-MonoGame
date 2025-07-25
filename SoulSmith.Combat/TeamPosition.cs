@@ -11,7 +11,7 @@ public class TeamPosition : CanvasObject
 	private bool _movedThisRound = false;
 	private bool _containsUnit = false;
 
-    public TeamPosition(int x, int y) : base(x, y)
+    public TeamPosition(float x, float y, float width = 1, float height = 1) : base(new Core.Position(x, y, width, height))
     {
 		
     }

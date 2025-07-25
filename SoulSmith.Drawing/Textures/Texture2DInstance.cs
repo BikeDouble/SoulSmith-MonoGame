@@ -12,11 +12,26 @@ namespace SoulSmith.Drawing.Textures
 
         public Texture2DInstance(IAssetWrapper<Texture2D> texture)
         {
+            if (texture == null)
+            {
+                throw new ArgumentNullException(nameof(texture), "Texture cannot be null.");
+            }
+
+            if (texture.Value == null)
+            {
+                throw new ArgumentException("Wrapped texture must have a valid Texture2D instance.", nameof(texture));
+            }
+
             _wrappedTexture = texture;
         }
 
         public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch)
         {
+            SpriteEffects spriteEffects = GetSpriteEffects(position);
+            Vector2 scaleVector = position.ScaleVector;
+            if (spriteEffects == SpriteEffects.FlipHorizontally) scaleVector.X *= -1;
+            if (spriteEffects == SpriteEffects.FlipVertically) scaleVector.Y *= -1;
+
             spriteBatch.Draw(
                     Texture,
                     position.Coordinates,
@@ -24,16 +39,36 @@ namespace SoulSmith.Drawing.Textures
                     color,
                     position.Rotation,
                     Origin,
-                    position.ScaleVector,
-                    SpriteEffects.None,
+                    scaleVector,
+                    spriteEffects,
                     0f);
         }
 
         public void DrawSubsection(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch, Rectangle sourceRect, Vector2? subSectionOrigin)
         {
-            if (subSectionOrigin == null || !subSectionOrigin.HasValue) subSectionOrigin = Origin; 
+            if (subSectionOrigin == null || !subSectionOrigin.HasValue) subSectionOrigin = Origin;
 
-            spriteBatch.Draw(Texture, position.Coordinates, sourceRect, color, position.Rotation, subSectionOrigin.Value, position.ScaleVector, SpriteEffects.None, 0f);
+            SpriteEffects spriteEffects = GetSpriteEffects(position);
+            Vector2 scaleVector = position.ScaleVector;
+            if (spriteEffects == SpriteEffects.FlipHorizontally) scaleVector.X *= -1;
+            if (spriteEffects == SpriteEffects.FlipVertically) scaleVector.Y *= -1;
+
+            spriteBatch.Draw(Texture, position.Coordinates, sourceRect, color, position.Rotation, subSectionOrigin.Value, scaleVector, spriteEffects, 0f);
+        }
+
+        private SpriteEffects GetSpriteEffects(IReadOnlyPosition position)
+        {
+            if ((position.Width < 0) && (position.Height > 0))
+            {
+                return SpriteEffects.FlipHorizontally;
+            }
+
+            if ((position.Height < 0) && (position.Width > 0))
+            {
+                return SpriteEffects.FlipVertically;
+            }
+
+            return SpriteEffects.None;
         }
 
         public void Process(double delta) { }
@@ -64,6 +99,6 @@ namespace SoulSmith.Drawing.Textures
         public int Width { get { return Texture.Width; } }
         public int Height { get { return Texture.Height; } }
         public Vector2 Origin { get { return GetOriginInternal(); } }
-        public OriginPlacement OriginPlacement { get; set; } = OriginPlacement.Center; //TODO: Make this configurable
+        public OriginPlacement OriginPlacement { get; set; } = OriginPlacement.Center; 
     }
 }

@@ -27,11 +27,6 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         }
     }
 
-    public CanvasObject(int x, int y)
-    {
-        _position = new Position(x, y);
-    }
-
     public event EventHandler<GetGlobalPositionEventArgs> GetGlobalPositionEventHandler;
 
     public Position GetGlobalPosition()
@@ -271,9 +266,11 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
 
         if (_visible)
         {
-            foreach (SoulSmithObject child in Children)
-            {
-                child.CollectDrawPackets(newPosition, color, renderQueue, scissorRect);
+            if (!scissorRect.HasValue || ((scissorRect.Value.X != 0) && (scissorRect.Value.Y != 0))) { // Don't keep drawing if scissor rect has zero width: nothing will be visible
+                foreach (SoulSmithObject child in Children)
+                {
+                    child.CollectDrawPackets(newPosition, color, renderQueue, scissorRect);
+                }
             }
         }
 
@@ -340,6 +337,14 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         _drawableResource.Dispose();
 
         base.Dispose();
+    }
+
+    public virtual void SetOriginPlacement(OriginPlacement originPlacement)
+    {
+        if (Resource != null)
+        {
+            Resource.OriginPlacement = originPlacement;
+        }
     }
 
     public bool Visible { get { return _visible; } }

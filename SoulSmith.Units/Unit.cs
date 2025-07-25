@@ -25,7 +25,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	private bool _playerControlled = false;
 	private int _combatPosition;
 	private EmotionTag.EmotionTag _emotionTag;
-	private int _timeOnBoard = -1;
 	private IMultiZone _hitZone = null;
 	private IMultiZone _fireZone = null;
 
@@ -59,12 +58,11 @@ public class Unit : CanvasObject, IReadOnlyUnit
 
         _uI = uI;
 		AddChild(_uI);
-        _uI?.Update(_stats);
+        _uI?.Update((IReadOnlyUnit)this);
 
         _moveSet = new ReadOnlyCollection<Move>(moveSet.ToList());
 		_emotionTag = emotion;
 		_friendlyName = friendlyName;
-		_timeOnBoard = timeOnBoard;
 
         Initialize();
     }
@@ -192,10 +190,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	//
 	private void UpdateUI()
 	{
-        if (_stats != null)
-        {
-            _uI.Update(_stats);
-        }
+		_uI.Update((IReadOnlyUnit)this);
     }
 
 	private void InitializeUI()
@@ -204,7 +199,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		_uI.RetrieveButtonPressedEventHandler += OnRetrieveButtonPressed;
         _uI.TargetButtonPressedEventHandler += OnTargetButtonPressed;
 
-		_uI.Update(_stats);
+		_uI.Update((IReadOnlyUnit)this);
 		_uI.UpdateMoveMenu(_moveSet); 
 	}
 
@@ -276,6 +271,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
     public int Defense { get { return _stats.GetModStat(StatType.Defense); } }
     public int DecayRate { get { return _stats.GetModStat(StatType.DecayRate); } }
     public int CurDecay { get { return _stats.GetModStat(StatType.CurDecay); } }
+	public int TimeOnBoard { get { return _stats.TimeOnBoard; } }
 }
 
 public class UnitRetreatCallArgs : EventArgs
