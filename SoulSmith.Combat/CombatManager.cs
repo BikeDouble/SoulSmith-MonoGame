@@ -552,11 +552,11 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 
         CombatTeam team = GetTeamWithUnit(unit);
 
-        team.RemoveUnitFromCombat(unit);
+        team.KillUnit(unit);
 
         if (team.PlayerControlled)
         {
-            InsertUnitToInventory((Unit)unit);
+            InsertUnitToInventory((Unit)unit); //TODO type safety
         } 
     }
 
@@ -568,7 +568,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 
         CombatTeam team = GetTeamWithUnit(unit);
 
-        team.RemoveUnitFromCombat(unit);
+        team.RetreatUnit(unit);
 
         if (team.PlayerControlled)
         {

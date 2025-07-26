@@ -14,6 +14,7 @@ namespace SoulSmith.Battle.Effects
         Reaction,
         ImmediateAfterEffect,
         EmotionCombatEntryEffect,
-        NonMoveCombatTrigger
+        NonMoveCombatTrigger,
+        DecayDamage
     }
 }

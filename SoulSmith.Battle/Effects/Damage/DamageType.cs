@@ -12,6 +12,7 @@ namespace SoulSmith.Battle.Effects.Damage
     {
         Null,
         Hit,
-        Essence
+        Essence,
+        Decay
     }
 }

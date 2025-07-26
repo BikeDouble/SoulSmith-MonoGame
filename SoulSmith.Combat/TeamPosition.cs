@@ -30,15 +30,26 @@ public class TeamPosition : CanvasObject
         _unit.OnJoinCombat();
     }
 
-    public void RemoveUnitFromCombat()
+    public void RetreatUnit()
     {
         if (!_containsUnit)
         {
             return;
         }
 
-        _unit.RemoveFromCombat();
+        _unit.OnRetreat();
 		OnUnitLeaveCombat();
+    }
+
+    public void KillUnit()
+    {
+        if (!_containsUnit)
+        {
+            return;
+        }
+
+        _unit.OnDeath();
+        OnUnitLeaveCombat();
     }
 
     //

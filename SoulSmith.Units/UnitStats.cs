@@ -11,11 +11,14 @@ using SoulSmith.Battle.Effects.Trigger;
 namespace SoulSmith.Units;
 public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 {
-	private StatsList _statsList;
+    public const float NATURALDECAYFROMDAMAGERATE = 0.33f;
+
+    private StatsList _statsList;
 
 	private int _combatPosition;
 	private List<IModifier> _modifiers = new List<IModifier>();
 	private int _timeOnBoard = -1;
+	private IEffect _naturalDamageDecayEffect = new NaturalDamageDecayEffect(NATURALDECAYFROMDAMAGERATE);
 
 	public UnitStats()
 	{
@@ -223,13 +226,15 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	private void CallForDeath(IReadOnlyUnit killer, EffectResult killingEffectResult)
 	{
+		SetDeathStats();
+
 		UnitDeathCallArgs e = new UnitDeathCallArgs();
 
 		e.Killer = killer;
 		e.KillingEffectResult = killingEffectResult;
 
         UnitDeathCallEventHandler(this, e);
-	}
+    }
 
 	//
 	// Healing related functions
@@ -273,7 +278,11 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 		if (request.RawDamage != 0)
 		{
-			result = ExecuteDamageEffect(request);
+			if (request.DamageType == DamageType.Decay)
+			{
+				result = ExecuteDecayEffect(request);
+			}
+			else result = ExecuteDamageEffect(request);
 		}
         else if (request.RawHealing != 0)
         {
@@ -300,6 +309,23 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
                 DecrementTimeOnBoard();
         }
 
+		Unit parent = (Unit)this.GetParent(); //TODO type safety
+
+		if (result.Target == parent)
+		{
+			if (result.DamageType == DamageType.Essence || result.DamageType == DamageType.Hit)
+			{
+				if (result.EffectiveDamage > 0)
+				{
+					EnqueueEffectInputEventArgs e = new();
+					EffectInput effectInput = new EffectInput(_naturalDamageDecayEffect, parent, parent, Priority.DecayDamage);
+					e.EffectInput = effectInput;
+					e.ParentEffectResult = result;
+					EnqueueEffectInput(this, e);
+				}
+			}
+		}
+
         ClearModifiersToBeRemovedList();
 	}
 
@@ -319,13 +345,13 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 		if (_timeOnBoard <= 0)
 		{
-			CallForDeath(null, null);
+			CallForDeath(null, null); //TODO make this retreat instead
 		}
 	}
 
 	private EffectResult ExecuteDamageEffect(EffectRequest request)
 	{
-		int hpLoss;
+		int hpLoss = 0;
         DamageType damageType = request.DamageType;
 
         switch (damageType)
@@ -342,21 +368,44 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 		int effectiveDamage = CalculateEffectiveDamage(hpLoss, this);
 
-		int newHP = GetModStat(StatType.CurHealth) - effectiveDamage;
-		SetStat(StatType.CurHealth, newHP);
+		if (effectiveDamage > 0)
+		{
+			int newHP = GetModStat(StatType.CurHealth) - effectiveDamage;
+			SetStat(StatType.CurHealth, newHP);
+		}
 
-        if (request.GainDecay)
+
+		EffectResult effectResult = new EffectResult(effectiveDamage, damageType, request.Sender, request.Target);
+
+		if (GetModStat(StatType.CurHealth) <= 0)
+			CallForDeath(request.Sender, effectResult);
+
+        return effectResult;
+    }
+
+	private EffectResult ExecuteDecayEffect(EffectRequest request)
+	{
+		int decayGain = request.RawDamage;
+
+		int effectiveDecayGain = decayGain * GetModStat(StatType.DecayRate) / 100;
+
+        if (effectiveDecayGain > 0)
         {
-            int newDecay = GetBaseStat(StatType.CurDecay) + ((effectiveDamage * GetModStat(StatType.DecayRate)) / 100);
+            int newDecay = GetBaseStat(StatType.CurDecay) + effectiveDecayGain;
             SetStat(StatType.CurDecay, newDecay);
         }
 
-        EffectResult effectResult = new EffectResult(effectiveDamage, damageType, request.Sender, request.Target);
+        EffectResult effectResult = new EffectResult(effectiveDecayGain, request.DamageType, request.Sender, request.Target);
 
-        if (newHP <= 0)
-            CallForDeath(request.Sender, effectResult);
+        int undecayedHealthRoom = GetModStat(StatType.MaxHealth) - GetModStat(StatType.CurDecay);
 
-        return effectResult;
+		if (GetModStat(StatType.CurHealth) > undecayedHealthRoom)
+		{
+			SetStat(StatType.CurHealth, undecayedHealthRoom);
+            if (GetModStat(StatType.CurHealth) <= 0) CallForDeath(request.Sender, effectResult);
+        }
+
+		return effectResult;
     }
 
 	private EffectResult ExecuteHealingEffect(EffectRequest request)
@@ -391,6 +440,22 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         AddModifier(modifier);
 
 		modifier.ApplyModifier(sender, (IReadOnlyUnit)this.GetParent());
+    }
+
+	public void OnRetreat()
+	{
+		//TODO
+	}
+
+	public void OnDeath()
+	{
+		SetDeathStats();
+	}
+
+	private void SetDeathStats()
+	{
+        SetStat(StatType.CurHealth, 0);
+        SetStat(StatType.CurDecay, GetModStat(StatType.MaxHealth));
     }
 
 	public ReadOnlyDictionary<StatType, int> StatsList { get { return _statsList.StatsDict; } }

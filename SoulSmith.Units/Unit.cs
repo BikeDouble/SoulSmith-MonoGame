@@ -117,10 +117,18 @@ public class Unit : CanvasObject, IReadOnlyUnit
         }
 	}
 
-    public void RemoveFromCombat()
+    public void OnRetreat()
 	{
 		_inCombat = false;
 		_combatPosition = -1;
+		_stats.OnRetreat();
+	}
+
+	public void OnDeath()
+	{
+		_inCombat = false;
+		_combatPosition = -1;
+		_stats.OnDeath();
 	}
 
     public void ModifyEffectRequest(EffectRequest request)
@@ -146,6 +154,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
             _sprite.UpdateResourceState(UnitSprite.SPRITEATTACKSTATE);
 
         _stats.ReactToEffectResult(result);
+
+		UpdateUI();
 	}
 
     public int GetModStat(StatType stat)

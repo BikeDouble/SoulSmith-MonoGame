@@ -400,13 +400,23 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
         return activeUnits;
     }
 
-	public void RemoveUnitFromCombat(IReadOnlyUnit unit)
+	public void RetreatUnit(IReadOnlyUnit unit)
 	{
         TeamPosition position = GetPositionWithUnit(unit);
 
         if (position != null)
         {
-            position.RemoveUnitFromCombat();
+            position.RetreatUnit();
+        }
+    }
+
+	public void KillUnit(IReadOnlyUnit unit)
+	{
+        TeamPosition position = GetPositionWithUnit(unit);
+
+        if (position != null)
+        {
+            position.KillUnit();
         }
     }
 

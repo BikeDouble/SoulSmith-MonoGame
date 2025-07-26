@@ -19,6 +19,7 @@ public class EffectQueue : CanvasObject
         new List<Priority>
         {
             Priority.NonMoveCombatTrigger,
+            Priority.DecayDamage,
             Priority.EmotionCombatEntryEffect,
             Priority.ImmediateAfterEffect,
             Priority.SelfReaction,
@@ -152,7 +153,7 @@ public class EffectQueue : CanvasObject
             return;
         }
 
-        SendEffectRequestFromInput(effectInput);
+        SendEffectRequestFromInput(effectInput, queuedEffect.ParentEffectResult);
     }
 
     public void EnqueueMove(MoveInput moveInput)

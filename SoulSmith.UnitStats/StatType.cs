@@ -5,7 +5,7 @@ namespace SoulSmith.UnitStats
 {
     public static class StatConstants
     {
-        public const int STANDARDDECAYRATE = 33;
+        public const int STANDARDDECAYRATE = 100; //TODO move to UnitStats
     }
 
     public static class StatTypeHelper

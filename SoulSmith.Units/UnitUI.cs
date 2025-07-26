@@ -23,7 +23,7 @@ public class UnitUI : CanvasObject
 	public const string TARGETBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/TargetButtonIdle";
     public const string TARGETBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/Moves/TargetButtonHovered";
 	public readonly static Vector2 HEALTHBAROFFSET = new Vector2(-150, 0);
-	public readonly static Vector2 HEALTHBARSCALE = new Vector2(0.4f, 0.4f);
+	public readonly static Vector2 HEALTHBARSCALE = new Vector2(0.2f, 0.4f);
 
     //Children
     private UnitUIMoveMenu _moveMenu;
