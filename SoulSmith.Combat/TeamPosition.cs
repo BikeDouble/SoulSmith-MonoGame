@@ -2,6 +2,8 @@ using SoulSmith.Units;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Trigger;
+using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Combat;
 public class TeamPosition : CanvasObject
@@ -144,19 +146,19 @@ public class TeamPosition : CanvasObject
         EnqueueEffectInputEventHandler(this, e);
     }
 
-	public EffectResult ExecuteEffectRequest(EffectRequest request)
+	public Result ExecutePayload(Payload payload)
 	{
-		EffectResult result = null;
+		Result result = null;
 
         if (_containsUnit)
         {
-            result = _unit.ExecuteEffectRequest(request);
+            result = _unit.ExecuteEffectRequest(payload);
         }
 
 		return result;
     }
 
-    public void ModifyEffectRequest(EffectRequest request)
+    public void ModifyEffectRequest(Payload request)
     {
         if (_containsUnit)
 		{
@@ -164,21 +166,24 @@ public class TeamPosition : CanvasObject
 		}
     }
 
-	public void ReactToEffectResult(EffectResult result)
+	public void ReactToPayloadResult(Result result)
 	{
 		if (_containsUnit)
 		{
-			_unit.ReactToEffectResult(result);
-
-            if (result.TriggerApplied == CombatTrigger.OnMoveBegin)
+            switch (result)
             {
-                if (result.Sender == _unit)
-                    _movedThisRound = true;
+                case TriggerResult triggerResult:
+                    if (triggerResult.Sender == _unit)
+                        if (triggerResult.Trigger == CombatTrigger.OnMoveBegin)
+                            _movedThisRound = true; //TODO move to unit
+                    break;
             }
+
+            _unit.ReactToPayloadResult(result);
         }
 	}
 
     public Unit Unit { get { return _unit; } } //Make sure this contains unit first!
-	public bool ContainsUnit {  get { return _containsUnit; } }
+	public bool ContainsUnit {  get { return _containsUnit; } } //TODO make this a Unit != null check
 	public bool MovedThisRound { get { return _movedThisRound; } set { _movedThisRound = value; } }
 }

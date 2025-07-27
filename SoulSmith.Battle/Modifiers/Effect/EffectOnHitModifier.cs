@@ -2,6 +2,7 @@
 using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Modifiers;
 using SoulSmith.Battle.Effects.Visualization;
+using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Battle.Modifiers.Effect
 {
@@ -23,23 +24,24 @@ namespace SoulSmith.Battle.Modifiers.Effect
             _effect = effect ?? throw new ArgumentNullException(nameof(effect));
         }
 
-        public override void ReactToEffectResult(EffectResult result)
+        public override void ReactToPayloadResult(Result result)
         {
-            base.ReactToEffectResult(result);
+            base.ReactToPayloadResult(result);
 
-            if (result == null) return;
+            if (result is DamageResult damageResult)
+            {
+                if (damageResult.Sender != this.Host) return;
 
-            if (result.Sender != this.Host) return;
+                if (damageResult.Target == null) return;
 
-            if (result.Target == null) return;
+                if (damageResult.DamageType != Effects.Damage.DamageType.Hit) return;
 
-            if (result.DamageType != Effects.Damage.DamageType.Hit) return;
+                if (damageResult.EffectiveDamage <= 0) return;
 
-            if (result.EffectiveDamage <= 0) return;
+                EffectInput effectInput = new EffectInput(_effect, Host, result.Target, Priority.SelfReaction);
 
-            EffectInput effectInput = new EffectInput(_effect, Host, result.Target, Priority.SelfReaction);
-
-            EnqueueEffectInput(effectInput, result);
+                EnqueueEffectInput(effectInput, result);
+            }
         }
     }
 }

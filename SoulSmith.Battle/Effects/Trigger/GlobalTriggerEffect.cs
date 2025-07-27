@@ -1,4 +1,6 @@
-﻿using SoulSmith.Battle.Effects.Visualization;
+﻿using SoulSmith.Battle.Effects.Results;
+using SoulSmith.Battle.Effects.Visualization;
+using SoulSmith.Battle.Effects.Payloads;
 
 namespace SoulSmith.Battle.Effects.Trigger
 {
@@ -11,9 +13,9 @@ namespace SoulSmith.Battle.Effects.Trigger
             _trigger = trigger;
         }
 
-        public EffectRequest GenerateEffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, EffectResult parentEffectResult = null)
+        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
         {
-            return new EffectRequest(sender, target, _trigger);
+            return new TriggerPayload(sender, target, _trigger);
         }
 
         public EffectVisualization CreateVisualization()

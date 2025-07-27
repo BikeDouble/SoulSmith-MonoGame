@@ -1,12 +1,13 @@
 ﻿using System.Text.Json.Serialization;
-using System.Text.Json;
+using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Battle.Effects
 {
     [JsonConverter(typeof(IEffectJsonConverter))]
     public interface IEffect : IDisposable
     {
-        public EffectRequest GenerateEffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, EffectResult parentEffectResult = null);
+        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null);
         public Visualization.EffectVisualization CreateVisualization();
         public float AdditionalDelay { get; }
     }

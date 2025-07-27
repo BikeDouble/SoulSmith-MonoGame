@@ -1,4 +1,6 @@
 ﻿using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Drawing;
 using SoulSmith.Object.Canvas;
 using SoulSmith.UnitStats;
@@ -7,8 +9,8 @@ namespace SoulSmith.Battle.Modifiers
 {
     public interface IModifier : IReadOnlyModifier
     {
-        public void ReactToEffectResult(EffectResult result);
-        public void ModifyEffectRequest(EffectRequest request);
+        public void ReactToPayloadResult(Result result);
+        public void ModifyPayload(Payload request);
         public void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host);
         public StatModifier? GetStatModifier();
         public IReadOnlyUnit Applier { get; }

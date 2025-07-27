@@ -1,6 +1,7 @@
 ﻿using System;
 using SoulSmith.Battle;
 using System.Collections.ObjectModel;
+using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Battle.Effects
 {
@@ -23,6 +24,6 @@ namespace SoulSmith.Battle.Effects
     public class EnqueueEffectInputEventArgs : EventArgs
     {
         public EffectInput EffectInput;
-        public EffectResult ParentEffectResult = null;
+        public Result ParentEffectResult = null;
     }
 }

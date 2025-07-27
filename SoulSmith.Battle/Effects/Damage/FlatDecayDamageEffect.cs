@@ -1,9 +1,6 @@
-﻿using SoulSmith.Battle.Effects.Visualization.Factory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SoulSmith.Battle.Effects.Results;
+using SoulSmith.Battle.Effects.Visualization.Factory;
+using SoulSmith.Battle.Effects.Payloads;
 
 namespace SoulSmith.Battle.Effects.Damage
 {
@@ -16,11 +13,11 @@ namespace SoulSmith.Battle.Effects.Damage
             _decayDamage = decayDamage;
         }
 
-        public EffectRequest GenerateEffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, EffectResult parentEffectResult = null)
+        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
         {
             int rawDecay = _decayDamage;
 
-            EffectRequest request = new EffectRequest(sender, target, DamageType.Decay, rawDecay);
+            Payload request = new DecayPayload(sender, target, rawDecay, parentEffectResult);
             return request;
         }
     }

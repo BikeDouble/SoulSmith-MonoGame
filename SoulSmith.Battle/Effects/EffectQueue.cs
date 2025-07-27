@@ -7,6 +7,8 @@ using SoulSmith.Collections;
 using SoulSmith.Object;
 using SoulSmith.Battle.Effects.Trigger;
 using SoulSmith.Core;
+using SoulSmith.Battle.Effects.Results;
+using SoulSmith.Battle.Effects.Payloads;
 
 namespace SoulSmith.Battle.Effects;
 public class EffectQueue : CanvasObject
@@ -19,17 +21,18 @@ public class EffectQueue : CanvasObject
         new List<Priority>
         {
             Priority.NonMoveCombatTrigger,
-            Priority.DecayDamage,
+            Priority.NaturalDecayDamage,
             Priority.EmotionCombatEntryEffect,
             Priority.ImmediateAfterEffect,
+            Priority.ModifierRemovalImmediate,
             Priority.SelfReaction,
             Priority.Reaction,
             Priority.Move,
-            Priority.ModifierRemoval,
+            Priority.ModifierRemovalDelayed,
         });
 
     private Dictionary<Priority, Queue<QueuedEffect>> _priorityQueues = new Dictionary<Priority, Queue<QueuedEffect>>();
-    private DropOutStack<(EffectRequest, EffectResult)> _effectHistory; //Effect history is pushed after effect is processed
+    private DropOutStack<(Payload, Result)> _effectHistory; //Effect history is pushed after effect is processed
     private DropOutStack<MoveInput> _moveHistory; //Move history is pushed after move is queued
     private bool _processingEnabled = true;
     private IReadOnlyCombat _parentCombat;
@@ -44,7 +47,7 @@ public class EffectQueue : CanvasObject
 
     public readonly struct QueuedEffect
     {
-        public QueuedEffect(EffectInput input, EffectResult parentEffectResult, double additionalDelay)
+        public QueuedEffect(EffectInput input, Result parentEffectResult, double additionalDelay)
         {
             EffectInput = input;
             VisualizationListener = new EffectVisualizationListener(input, additionalDelay);
@@ -53,7 +56,7 @@ public class EffectQueue : CanvasObject
 
         public EffectInput EffectInput { get; }
         public EffectVisualizationListener VisualizationListener { get; }
-        public EffectResult ParentEffectResult { get; }
+        public Result ParentEffectResult { get; }
     }
 
     public EffectQueue(IReadOnlyCombat parentCombat)
@@ -100,7 +103,7 @@ public class EffectQueue : CanvasObject
         EnqueueEffect(new EffectInput(_roundEndEffect, null, null, Priority.NonMoveCombatTrigger));
     }
 
-    public void OnUnitDeath(IReadOnlyUnit killer, IReadOnlyUnit deadUnit, EffectResult killingEffectResult)
+    public void OnUnitDeath(IReadOnlyUnit killer, IReadOnlyUnit deadUnit, Result killingEffectResult)
     {
         EnqueueEffect(new EffectInput(UNITDEATHEFFECT, killer, deadUnit, Priority.NonMoveCombatTrigger), killingEffectResult, DEATHANIMATIONDURATION);
     }
@@ -120,7 +123,7 @@ public class EffectQueue : CanvasObject
 
     private void InitializeHistory()
     {
-        _effectHistory = new DropOutStack<(EffectRequest, EffectResult)>(50);
+        _effectHistory = new DropOutStack<(Payload, Result)>(50);
         _moveHistory = new DropOutStack<MoveInput>(24);
     }
 
@@ -174,7 +177,7 @@ public class EffectQueue : CanvasObject
 
     public void EnqueueEffect(
         EffectInput effectInput,
-        EffectResult parentEffectResult = null,
+        Result parentEffectResult = null,
         double additionalDelay = 0)
     {
         if (effectInput.Effect == null)
@@ -229,9 +232,9 @@ public class EffectQueue : CanvasObject
     //
     public event EventHandler<ExecuteEffectEventArgs> ExecuteEffectEventHandler;
 
-    public void SendEffectRequestFromInput(EffectInput effectInput, EffectResult parentEffectResult = null)
+    public void SendEffectRequestFromInput(EffectInput effectInput, Result parentEffectResult = null)
     {
-        EffectRequest request = effectInput.Effect.GenerateEffectRequest(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult);
+        Payload request = effectInput.Effect.GeneratePayload(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult);
 
         ExecuteEffectEventArgs e = new();
         e.EffectRequest = request;
@@ -244,7 +247,7 @@ public class EffectQueue : CanvasObject
     /// </summary>
     /// <param name="request"></param>
     /// <param name="result"></param>
-    public void ResolveEffect(EffectRequest request, EffectResult result)
+    public void ResolveEffect(Payload request, Result result)
     {
         if (request.ImmediateAfterEffects != null)
         {
@@ -303,5 +306,5 @@ public class EffectQueue : CanvasObject
 
 public class ExecuteEffectEventArgs : EventArgs
 {
-    public EffectRequest EffectRequest { get; set; }
+    public Payload EffectRequest { get; set; }
 }

@@ -7,6 +7,8 @@ using SoulSmith.Battle.Modifiers;
 using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Damage;
 using SoulSmith.Battle.Effects.Trigger;
+using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Units;
 public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
@@ -199,13 +201,27 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 		int effectiveDamage = damage;
 
-        if (newHealth <= 0)
+        if (newHealth < 0)
         {
 			effectiveDamage += newHealth;
         }
 
 		return effectiveDamage;
 	}
+
+	private static int CalculateEffectiveDecay(int decay, IReadOnlyUnitStats stats)
+	{
+		int newDecay = stats.GetBaseStat(StatType.CurDecay) + decay;
+
+		int effectiveDecay = decay;
+
+		if (newDecay > stats.GetBaseStat(StatType.MaxHealth))
+		{
+			effectiveDecay -= (newDecay - stats.GetBaseStat(StatType.MaxHealth));
+		}
+
+		return effectiveDecay;
+    }
 
     private int StandardDefenseCalculation(int damage, int defense)
     {
@@ -224,7 +240,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	public event EventHandler<UnitDeathCallArgs> UnitDeathCallEventHandler;
 
-	private void CallForDeath(IReadOnlyUnit killer, EffectResult killingEffectResult)
+	private void CallForDeath(IReadOnlyUnit killer, Result killingEffectResult)
 	{
 		SetDeathStats();
 
@@ -236,12 +252,12 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         UnitDeathCallEventHandler(this, e);
     }
 
-	//
-	// Healing related functions
-	//
+    //
+    // Healing related functions
+    //
 
-	// Returns amount of hp actually gained
-	private int GainHP(int healing)
+    // Returns amount of hp actually gained, and sets the current health stat to the new value
+    private int GainHP(int healing)
 	{
 		int newHealth = GetBaseStat(StatType.CurHealth + healing);
 		SetStat(StatType.CurHealth, newHealth);
@@ -267,73 +283,74 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	// Triggers
 	//
 
-    public EffectResult ExecuteEffectRequest(EffectRequest request)
+    public Result ExecutePayload(Payload payload)
     {
-		if (request == null)
+		if (payload == null)
 		{
 			return null;
 		}
 
-		EffectResult result = null;
+		Result result = null;
 
-		if (request.RawDamage != 0)
+		switch (payload)
 		{
-			if (request.DamageType == DamageType.Decay)
-			{
-				result = ExecuteDecayEffect(request);
-			}
-			else result = ExecuteDamageEffect(request);
-		}
-        else if (request.RawHealing != 0)
-        {
-            result = ExecuteHealingEffect(request);
+			case DamagePayload damagePayload:
+				result = ExecuteDamagePayload(damagePayload);
+				break;
+			case DecayPayload decayPayload:
+				result = ExecuteDecayPayload(decayPayload);
+				break;
+			case HealingPayload healingPayload:
+				result = ExecuteHealingPayload(healingPayload);
+				break;
+			case AddModifierPayload addModifierPayload:
+				result = ExecuteAddModifierPayload(addModifierPayload);
+				break;
+			default:
+				throw new NotImplementedException($"Payload type {payload.GetType()} is not implemented in UnitStats.ExecutePayload.");
         }
-        else if (request.Modifier != null)
-		{
-			result = ExecuteModifierEffect(request);
-		}
 		
 		return result;
     }
 
-	public void ReactToEffectResult(EffectResult result)
+	public void ReactToPayloadResult(Result result)
 	{
-		foreach (IModifier modifier in _modifiers) 
+		switch(result)
 		{
-			modifier.ReactToEffectResult(result);
-		}
-
-        if (result.TriggerApplied == CombatTrigger.OnRoundEnd)
-        {
-            if (_timeOnBoard > -1)
-                DecrementTimeOnBoard();
+			case TriggerResult triggerResult:
+				if (triggerResult.Trigger == CombatTrigger.OnRoundEnd)
+					if (_timeOnBoard > -1) 
+						DecrementTimeOnBoard();
+                break;
+			case DamageResult damageResult:
+                Unit parent = (Unit)this.GetParent(); //TODO type safety
+                if (damageResult.Target == parent)
+                {
+                    if (damageResult.EffectiveDamage > 0)
+                    {
+                        EnqueueEffectInputEventArgs e = new();
+                        EffectInput effectInput = new EffectInput(_naturalDamageDecayEffect, parent, parent, Priority.NaturalDecayDamage);
+                        e.EffectInput = effectInput;
+                        e.ParentEffectResult = result;
+                        EnqueueEffectInput(this, e);
+                    }
+                }
+				break;
         }
 
-		Unit parent = (Unit)this.GetParent(); //TODO type safety
-
-		if (result.Target == parent)
+		foreach (IModifier modifier in _modifiers) 
 		{
-			if (result.DamageType == DamageType.Essence || result.DamageType == DamageType.Hit)
-			{
-				if (result.EffectiveDamage > 0)
-				{
-					EnqueueEffectInputEventArgs e = new();
-					EffectInput effectInput = new EffectInput(_naturalDamageDecayEffect, parent, parent, Priority.DecayDamage);
-					e.EffectInput = effectInput;
-					e.ParentEffectResult = result;
-					EnqueueEffectInput(this, e);
-				}
-			}
+			modifier.ReactToPayloadResult(result);
 		}
 
         ClearModifiersToBeRemovedList();
 	}
 
-	public void ModifyEffectRequest(EffectRequest request)
+	public void ModifyPayload(Payload payload)
 	{
 		foreach (IModifier modifier in _modifiers)
 		{
-			modifier.ModifyEffectRequest(request);
+			modifier.ModifyPayload(payload);
 		}
 
         ClearModifiersToBeRemovedList();
@@ -349,18 +366,18 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		}
 	}
 
-	private EffectResult ExecuteDamageEffect(EffectRequest request)
+	private Result ExecuteDamagePayload(DamagePayload payload)
 	{
 		int hpLoss = 0;
-        DamageType damageType = request.DamageType;
+        DamageType damageType = payload.DamageType;
 
         switch (damageType)
         {
             case DamageType.Hit:
-				hpLoss = StandardDefenseCalculation(request.RawDamage, GetModStat(StatType.Defense));
+				hpLoss = StandardDefenseCalculation(payload.RawDamage, GetModStat(StatType.Defense));
                 break;
 			case DamageType.Essence:
-                hpLoss = StandardDefenseCalculation(request.RawDamage, GetModStat(StatType.Defense));
+                hpLoss = StandardDefenseCalculation(payload.RawDamage, GetModStat(StatType.Defense));
                 break;
             default:
 				return null;
@@ -374,59 +391,60 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 			SetStat(StatType.CurHealth, newHP);
 		}
 
-
-		EffectResult effectResult = new EffectResult(effectiveDamage, damageType, request.Sender, request.Target);
+		Result result = new DamageResult(payload.Sender, payload.Target, effectiveDamage, damageType, payload.ParentResult);
 
 		if (GetModStat(StatType.CurHealth) <= 0)
-			CallForDeath(request.Sender, effectResult);
+			CallForDeath(payload.Sender, result);
 
-        return effectResult;
+        return result;
     }
 
-	private EffectResult ExecuteDecayEffect(EffectRequest request)
+	private Result ExecuteDecayPayload(DecayPayload payload)
 	{
-		int decayGain = request.RawDamage;
+		int decayGain = payload.RawDecay;
 
-		int effectiveDecayGain = decayGain * GetModStat(StatType.DecayRate) / 100;
+		int ratedDecayGain = decayGain * GetModStat(StatType.DecayRate) / 100;
 
-        if (effectiveDecayGain > 0)
+		int effectiveDecay = CalculateEffectiveDecay(ratedDecayGain, this);
+
+        if (effectiveDecay > 0)
         {
-            int newDecay = GetBaseStat(StatType.CurDecay) + effectiveDecayGain;
+            int newDecay = GetBaseStat(StatType.CurDecay) + effectiveDecay;
             SetStat(StatType.CurDecay, newDecay);
         }
 
-        EffectResult effectResult = new EffectResult(effectiveDecayGain, request.DamageType, request.Sender, request.Target);
+        Result effectResult = new DecayResult(payload.Sender, payload.Target, effectiveDecay, payload.ParentResult);
 
         int undecayedHealthRoom = GetModStat(StatType.MaxHealth) - GetModStat(StatType.CurDecay);
 
 		if (GetModStat(StatType.CurHealth) > undecayedHealthRoom)
 		{
 			SetStat(StatType.CurHealth, undecayedHealthRoom);
-            if (GetModStat(StatType.CurHealth) <= 0) CallForDeath(request.Sender, effectResult);
+            if (GetModStat(StatType.CurHealth) <= 0) CallForDeath(payload.Sender, effectResult);
         }
 
 		return effectResult;
     }
 
-	private EffectResult ExecuteHealingEffect(EffectRequest request)
+	private Result ExecuteHealingPayload(HealingPayload payload)
 	{
-		int rawHealing = request.RawHealing;
+		int rawHealing = payload.RawHealing;
 
 		if (rawHealing == 0) return null;
 
 		int effectiveHealing = GainHP(rawHealing);
-		EffectResult result = new EffectResult(effectiveHealing, request.Sender, request.Target);
+		Result result = new HealingResult(payload.Sender, payload.Target, effectiveHealing, payload.ParentResult);
 
 		return result;
 	}
 
-	private EffectResult ExecuteModifierEffect(EffectRequest request)
+	private Result ExecuteAddModifierPayload(AddModifierPayload payload)
 	{
-		if (request.Modifier == null) return null;
+		if (payload.Modifier == null) return null;
 
-		ApplyModifier(request.Modifier, request.Sender);
+		ApplyModifier(payload.Modifier, payload.Sender);
 
-		EffectResult result = new EffectResult(request.Modifier, request.Sender, request.Target);
+		Result result = new AddModifierResult(payload.Sender, payload.Target, payload.Modifier, true, payload.ParentResult);
 
         return result;
 	}
@@ -478,7 +496,7 @@ public class UnitDeathCallArgs : EventArgs
 {
 	public IReadOnlyUnit CallingUnit;
 	public IReadOnlyUnit Killer;
-	public EffectResult KillingEffectResult;
+	public Result KillingEffectResult;
 }
 
 public class ModifierAddOrRemoveEventArgs

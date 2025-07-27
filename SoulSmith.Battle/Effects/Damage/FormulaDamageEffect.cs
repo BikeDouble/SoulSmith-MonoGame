@@ -1,6 +1,7 @@
 ﻿using DynamicExpresso;
 using SoulSmith.Asset;
-using SoulSmith.Battle.Effects.Visualization;
+using SoulSmith.Battle.Effects.Results;
+using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Visualization.Factory;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -20,11 +21,11 @@ namespace SoulSmith.Battle.Effects.Damage
             _damageType = damageType;
         }
 
-        public EffectRequest GenerateEffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, EffectResult parentEffectResult = null)
+        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
         {
             double damage = _parsedFormula(sender, target, combat);
 
-            return new EffectRequest(sender, target, _damageType, (int)damage);
+            return new DamagePayload(sender, target, (int)damage, _damageType, parentEffectResult);
         }
     }
 

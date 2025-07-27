@@ -6,6 +6,8 @@ using SoulSmith.Battle;
 using SoulSmith.Battle.Moves;
 using SoulSmith.Units;
 using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Combat;
 public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
@@ -429,15 +431,15 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		_moveSelector.SelectMoveInput(thisTeam, enemyTeam);
 	}
 
-	public EffectResult ExecuteEffectRequest(EffectRequest request)
+	public Result ExecutePayload(Payload payload)
 	{
-		IReadOnlyUnit target = request.Target;
+		IReadOnlyUnit target = payload.Target;
 		TeamPosition position = GetPositionWithUnit(target);
 
-		return position?.ExecuteEffectRequest(request);
+		return position?.ExecutePayload(payload);
 	}
 
-    public void ModifyEffectRequest(EffectRequest request)
+    public void ModifyEffectRequest(Payload request)
     {
         // Requests intercepted in order: sender, sender's team, target's team, target
         TeamPosition senderPosition = this.GetPositionWithUnit(request.Sender);
@@ -455,22 +457,22 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
         targetPosition?.ModifyEffectRequest(request);
     }
 
-    public void ReactToEffectResult(EffectResult result)
+    public void ReactToPayloadResult(Result result)
     {
 		// Results intercepted in order: sender, sender's team, target's team, target
 		TeamPosition senderPosition = this.GetPositionWithUnit(result.Sender);
-		senderPosition?.ReactToEffectResult(result);
+		senderPosition?.ReactToPayloadResult(result);
 
         foreach (TeamPosition position in _teamPositions)
 		{
 			if ((position.Unit != result.Target) && (position.Unit != result.Sender))
 			{
-				position.ReactToEffectResult(result);
+				position.ReactToPayloadResult(result);
 			}
 		}
 
         TeamPosition targetPosition = this.GetPositionWithUnit(result.Target);
-        targetPosition?.ReactToEffectResult(result);
+        targetPosition?.ReactToPayloadResult(result);
     }
 
     public bool PlayerControlled { get { return _playerControlled; } }

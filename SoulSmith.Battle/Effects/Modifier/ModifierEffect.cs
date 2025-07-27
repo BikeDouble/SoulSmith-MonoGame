@@ -1,13 +1,10 @@
-﻿using System.Text.Json.Serialization;
-using System.Text.Json;
-using SoulSmith.Battle.Effects.Visualization;
+﻿using SoulSmith.Asset;
+using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle.Effects.Visualization.Factory;
-using SoulSmith.UnitStats;
 using SoulSmith.Battle.Modifiers;
-using SoulSmith.Drawing;
-using SoulSmith.Battle.Modifiers.Stat;
-using SoulSmith.Asset;
-using System.Runtime;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SoulSmith.Battle.Effects.Modifier
 {
@@ -25,11 +22,11 @@ namespace SoulSmith.Battle.Effects.Modifier
             _modifierFactory = modifierFactory;
         }
 
-        public EffectRequest GenerateEffectRequest(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, EffectResult parentEffectResult = null)
+        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
         {
             IModifier modifier = _modifierFactory.CreateModifier();
 
-            return new EffectRequest(sender, target, modifier);
+            return new AddModifierPayload(sender, target, modifier, parentEffectResult);
         }
     }
 

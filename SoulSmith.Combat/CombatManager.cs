@@ -12,6 +12,8 @@ using SoulSmith.Collections;
 using SoulSmith.Battle.Effects;
 using SoulSmith.Drawing;
 using SoulSmith.Battle.Effects.Trigger;
+using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Combat;
 public class CombatManager : CanvasObject, IReadOnlyCombat
@@ -462,58 +464,61 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	private void OnOfferEffectInput(object sender, EnqueueEffectInputEventArgs e)
 	{
 		EffectInput effectInput = e.EffectInput;
-		EffectResult parentEffectResult = e.ParentEffectResult;
+		Result parentEffectResult = e.ParentEffectResult;
         _effectQueue.EnqueueEffect(effectInput, parentEffectResult);
 	}
 
 	// Listens to effect queue
 	private void ExecuteEffect(object sender, ExecuteEffectEventArgs e)
 	{
-		EffectRequest request = e.EffectRequest;
+		Payload request = e.EffectRequest;
 
 		ProcessEffectRequest(request);
 	}
 
-	private void ProcessEffectRequest(EffectRequest request)
+	private void ProcessEffectRequest(Payload request)
 	{
-		EffectResult result = ExecuteEffectInternal(request);
+		Result result = ExecutePayloadInternal(request);
 		ReactToEffectResult(result);
     }
 
-	private void ReactToEffectResult(EffectResult result)
+	private void ReactToEffectResult(Result result)
 	{
         if (result != null)
         {
             GiveEffectResultToTeams(result);
 
-            if (result.TriggerApplied == CombatTrigger.OnUnitDeath)
-            {
-                KillUnit(result.Target);
-            }
-			else if (result.TriggerApplied == CombatTrigger.OnUnitRetreat)
-            {
-                _retreatingUnits.Add((Unit)result.Target);
-            }
+			if (result is TriggerResult triggerResult)
+			{
+				if (triggerResult.Trigger == CombatTrigger.OnUnitDeath)
+				{
+					KillUnit(triggerResult.Target);
+				}
+				else if (triggerResult.Trigger == CombatTrigger.OnUnitRetreat)
+				{
+					_retreatingUnits.Add((Unit)triggerResult.Target);
+				}
+			}
         }
     }
 
-	private EffectResult ExecuteEffectInternal(EffectRequest request)
+	private Result ExecutePayloadInternal(Payload payload)
 	{
-        if (request.Trigger != CombatTrigger.None) //Combat trigger effects should not be processed as normal effects and should never be modified
+        if (payload is TriggerPayload triggerPayload) //Combat trigger effects should not be processed as normal effects and should never be modified
         {
-            return new EffectResult(request.Trigger, request.Sender, request.Target);
+            return new TriggerResult(payload.Sender, payload.Target, triggerPayload.Trigger);
         }
 
         Unit target = null;
 		Unit sender = null;
 
-		if (request.Target == null) throw new ArgumentNullException(nameof(request.Target), "Effect request must have a target.");
+		if (payload.Target == null) throw new ArgumentNullException(nameof(payload.Target), "Effect payload must have a target.");
 
-        target = (Unit)request.Target; //TODO type safety
+        target = (Unit)payload.Target; //TODO type safety
 
-		if (request.Sender != null)
+		if (payload.Sender != null)
 		{
-			sender = (Unit)request.Sender;
+			sender = (Unit)payload.Sender;
 		}
 
         // Requests intercepted in order: sender, sender's team (may include target), other team, target*
@@ -532,14 +537,14 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 
 		if (firstTeam == null || otherTeam == null) throw new ArgumentException("Invalid teams for effect execution.");
 
-		firstTeam.ModifyEffectRequest(request);
-		otherTeam.ModifyEffectRequest(request);
+		firstTeam.ModifyEffectRequest(payload);
+		otherTeam.ModifyEffectRequest(payload);
 
 		CombatTeam targetTeam = GetTeamWithUnit(target);
 		if (targetTeam == null) throw new ArgumentException("Target team not found for effect execution.");
-		EffectResult result = targetTeam.ExecuteEffectRequest(request);
+		Result result = targetTeam.ExecutePayload(payload);
 
-        _effectQueue.ResolveEffect(request, result);
+        _effectQueue.ResolveEffect(payload, result);
 
         return result;
     }
@@ -576,7 +581,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         }
     }
 
-    private void GiveEffectResultToTeams(EffectResult result)
+    private void GiveEffectResultToTeams(Result result)
 	{
         Unit target = null;
         Unit sender = null;
@@ -613,8 +618,8 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         }
 
 		if (firstTeam == null || secondTeam == null) throw new ArgumentException("Invalid teams for effect result processing.");
-		firstTeam.ReactToEffectResult(result);
-		secondTeam.ReactToEffectResult(result);
+		firstTeam.ReactToPayloadResult(result);
+		secondTeam.ReactToPayloadResult(result);
     }
 
 	private bool IsTurnOver()

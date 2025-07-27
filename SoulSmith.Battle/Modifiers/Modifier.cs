@@ -1,4 +1,6 @@
 ﻿using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Drawing;
 using SoulSmith.Object.Canvas;
 using SoulSmith.UnitStats;
@@ -22,24 +24,30 @@ namespace SoulSmith.Battle.Modifiers
             Name = friendlyName;
             Description = description;
         }
-        public virtual void ReactToEffectResult(EffectResult result) 
+        public virtual void ReactToPayloadResult(Result result) 
         {
             if (result == null) return;
             
             switch(DurationStyle)
             {
                 case DurationStyle.Rounds:
-                    if (result.TriggerApplied == Effects.Trigger.CombatTrigger.OnRoundEndModifierDurationTick)
+                    if (result is TriggerResult triggerResult1)
                     {
-                        DecrementDuration();//TODO make sure modifiers removed after all other triggered effects
+                        if (triggerResult1.Trigger == Effects.Trigger.CombatTrigger.OnRoundEndModifierDurationTick)
+                        {
+                            DecrementDuration();//TODO make sure modifiers removed after all other triggered effects
+                        }
                     }
                     break;
                 case DurationStyle.HostMoves:
-                    if (result.TriggerApplied == Effects.Trigger.CombatTrigger.OnMoveEnd)
+                    if (result is TriggerResult triggerResult2)
                     {
-                        if (result.Sender == Host)
+                        if (triggerResult2.Trigger == Effects.Trigger.CombatTrigger.OnMoveEnd)
                         {
-                            DecrementDuration();
+                            if (result.Sender == Host)
+                            {
+                                DecrementDuration();
+                            }
                         }
                     }
                     break;
@@ -53,7 +61,7 @@ namespace SoulSmith.Battle.Modifiers
             if (Duration <= 0) Remove();
         }
 
-        public virtual void ModifyEffectRequest(EffectRequest request) { }
+        public virtual void ModifyPayload(Payload request) { }
         public virtual void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host) 
         {
             Applier = applier;
@@ -81,7 +89,7 @@ namespace SoulSmith.Battle.Modifiers
             RemoveModifierEventHandler?.Invoke(this, e);
         }
         public EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler { get; set; }
-        protected void EnqueueEffectInput(EffectInput effectInput, EffectResult parentEffectResult = null)
+        protected void EnqueueEffectInput(EffectInput effectInput, Result parentEffectResult = null)
         {
             EnqueueEffectInputEventArgs e = new();
             e.EffectInput = effectInput;

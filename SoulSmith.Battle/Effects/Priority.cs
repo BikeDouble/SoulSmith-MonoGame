@@ -9,12 +9,13 @@ namespace SoulSmith.Battle.Effects
     public enum Priority
     {
         Move,
-        ModifierRemoval,
+        ModifierRemovalDelayed,
+        ModifierRemovalImmediate,
         SelfReaction,
         Reaction,
         ImmediateAfterEffect,
         EmotionCombatEntryEffect,
         NonMoveCombatTrigger,
-        DecayDamage
+        NaturalDecayDamage
     }
 }

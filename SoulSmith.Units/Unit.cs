@@ -10,6 +10,8 @@ using SoulSmith.Shapes;
 using SoulSmith.Drawing;
 using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Trigger;
+using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Units;
 public class Unit : CanvasObject, IReadOnlyUnit
@@ -131,16 +133,16 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		_stats.OnDeath();
 	}
 
-    public void ModifyEffectRequest(EffectRequest request)
+    public void ModifyEffectRequest(Payload request)
     {
-		_stats.ModifyEffectRequest(request);
+		_stats.ModifyPayload(request);
     }
 
-	public EffectResult ExecuteEffectRequest(EffectRequest request)
+	public Result ExecuteEffectRequest(Payload request)
 	{
-		EffectResult result = null;
+		Result result = null;
 
-		result = _stats.ExecuteEffectRequest(request);
+		result = _stats.ExecutePayload(request);
 
         UpdateUI();
         UpdateSprite();
@@ -148,12 +150,18 @@ public class Unit : CanvasObject, IReadOnlyUnit
         return result;
 	}
 
-	public void ReactToEffectResult(EffectResult result)
+	public void ReactToPayloadResult(Result result)
 	{
-        if (result.TriggerApplied == CombatTrigger.OnMoveBegin)
-            _sprite.UpdateResourceState(UnitSprite.SPRITEATTACKSTATE);
+		switch (result)
+		{
+			case TriggerResult triggerResult:
+				if (triggerResult.Sender == this) // Start attack animation if this unit is triggering a move begin
+                    if (triggerResult.Trigger == CombatTrigger.OnMoveBegin) 
+						_sprite.UpdateResourceState(UnitSprite.SPRITEATTACKSTATE);
+                break;
+        }
 
-        _stats.ReactToEffectResult(result);
+        _stats.ReactToPayloadResult(result);
 
 		UpdateUI();
 	}
