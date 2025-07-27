@@ -154,7 +154,6 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	private void AddModifier(IModifier modifier)
 	{
         _modifiers.Add(modifier);
-		modifier.RemoveModifierEventHandler += RemoveModifier;
 		modifier.EnqueueEffectInputEventHandler += EnqueueEffectInput;
 
 		ModifierAddOrRemoveEventArgs e = new();
@@ -170,7 +169,6 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	private void RemoveModifier(object sender, RemoveModifierEventArgs e)
 	{
 		IModifier modifier = e.Modifier;
-        modifier.RemoveModifierEventHandler -= RemoveModifier;
         modifier.EnqueueEffectInputEventHandler -= EnqueueEffectInput;
 		_modifiersToBeRemoved.Add(modifier);
 
@@ -306,7 +304,10 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 			case AddModifierPayload addModifierPayload:
 				result = ExecuteAddModifierPayload(addModifierPayload);
 				break;
-			default:
+			case RemoveModifierPayload removeModifierPayload:
+				result = ExecuteRemoveModifierPayload(removeModifierPayload);
+				break;
+            default:
 				throw new NotImplementedException($"Payload type {payload.GetType()} is not implemented in UnitStats.ExecutePayload.");
         }
 		
@@ -380,7 +381,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
                 hpLoss = StandardDefenseCalculation(payload.RawDamage, GetModStat(StatType.Defense));
                 break;
             default:
-				return null;
+				throw new ArgumentException($"Unknown damage type: {damageType}");
         }
 
 		int effectiveDamage = CalculateEffectiveDamage(hpLoss, this);
@@ -440,7 +441,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	private Result ExecuteAddModifierPayload(AddModifierPayload payload)
 	{
-		if (payload.Modifier == null) return null;
+		if (payload.Modifier == null) throw new ArgumentNullException("Modifier cannot be null.");
 
 		ApplyModifier(payload.Modifier, payload.Sender);
 
@@ -449,11 +450,25 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         return result;
 	}
 
-	private void ApplyModifier(IModifier modifier, IReadOnlyUnit sender)
+    private Result ExecuteRemoveModifierPayload(RemoveModifierPayload payload)
+    {
+        if (payload.Modifier == null) throw new ArgumentException("EnqueueRemove modifier payload does not contain a modifier");
+
+		if (!_modifiers.Contains(payload.Modifier)) return new RemoveModifierResult(payload.Sender, payload.Target, payload.Modifier, false, payload.ParentResult); //Modifier may have been removed already
+
+		RemoveModifierEventArgs e = new RemoveModifierEventArgs();
+		e.Modifier = payload.Modifier;
+
+		RemoveModifier(this, e);
+
+        Result result = new RemoveModifierResult(payload.Sender, payload.Target, payload.Modifier, true, payload.ParentResult);
+
+        return result;
+    }
+
+    private void ApplyModifier(IModifier modifier, IReadOnlyUnit sender)
 	{
 		if (modifier == null) return;
-
-		if (sender == null) sender = (IReadOnlyUnit)GetParent();
 
         AddModifier(modifier);
 

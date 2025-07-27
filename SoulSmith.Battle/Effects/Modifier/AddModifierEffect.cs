@@ -8,12 +8,12 @@ using System.Text.Json.Serialization;
 
 namespace SoulSmith.Battle.Effects.Modifier
 {
-    [JsonConverter(typeof(ModifierEffectJsonConverter))]
-    public class ModifierEffect : VisualizedEffectBase, IEffect
+    [JsonConverter(typeof(AddModifierEffectJsonConverter))]
+    public class AddModifierEffect : VisualizedEffectBase, IEffect
     {
         private ModifierFactory _modifierFactory;
 
-        public ModifierEffect(
+        public AddModifierEffect(
             ModifierFactory modifierFactory,
             EffectVisualizationFactory visualizationFactory,
             float additionalDelay
@@ -30,9 +30,9 @@ namespace SoulSmith.Battle.Effects.Modifier
         }
     }
 
-    public class ModifierEffectJsonConverter : JsonConverter<ModifierEffect>
+    public class AddModifierEffectJsonConverter : JsonConverter<AddModifierEffect>
     {
-        public override ModifierEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override AddModifierEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
@@ -85,14 +85,14 @@ namespace SoulSmith.Battle.Effects.Modifier
                 throw new JsonException("ModifierFactory is required but was not provided.");
             }
 
-            return new ModifierEffect(
+            return new AddModifierEffect(
                 modifierFactory,
                 visualizationFactory,
                 additionalDelay
             );
         }
 
-        public override void Write(Utf8JsonWriter writer, ModifierEffect value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, AddModifierEffect value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

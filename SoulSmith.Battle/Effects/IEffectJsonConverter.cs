@@ -43,7 +43,7 @@ namespace SoulSmith.Battle.Effects
                     reader.Read();
                     break;
                 case "Modifier":
-                    value = JsonSerializer.Deserialize<ModifierEffect>(ref reader, options);
+                    value = JsonSerializer.Deserialize<AddModifierEffect>(ref reader, options);
                     reader.Read();
                     break;
                 default:

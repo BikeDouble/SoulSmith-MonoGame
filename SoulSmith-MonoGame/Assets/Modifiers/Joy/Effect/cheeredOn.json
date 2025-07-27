@@ -9,7 +9,7 @@
                 "VisualizationKey": "EffectVisualizations/Joy/Pop"
             }
         },
-        "Duration":  2,
+        "Duration":  1,
         "DurationStyle": "rounds",
         "ModifierAlignment": "buff",
         "IsModifierVisible": true,
@@ -22,7 +22,7 @@
             "LocalizationKey": "Modifiers/Joy/CheeredOn",
             "LocalizationVariables": {
                 "Percent": 30,
-                "Duration": 4
+                "Duration": 1
             }
         }
     }

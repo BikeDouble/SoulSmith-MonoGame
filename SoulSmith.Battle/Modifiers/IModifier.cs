@@ -1,4 +1,5 @@
 ﻿using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Modifier;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Drawing;
@@ -17,9 +18,11 @@ namespace SoulSmith.Battle.Modifiers
         public IReadOnlyUnit Host { get; }
         public bool IsVisible { get; }
         public DrawableResourceKey IconKey { get; }
+        public DurationStyle DurationStyle { get; }
+        public int Duration { get; }
         public ModifierAlignment Alignment { get; }
-        public EventHandler<RemoveModifierEventArgs> RemoveModifierEventHandler { get; set; }
         public EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler { get; set; }
+        public RemoveModifierEffect RemovalEffect { get; }
         public string Name { get; }
         public string Description { get; }
     }

@@ -1,4 +1,5 @@
 ﻿using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Modifier;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Drawing;
@@ -23,6 +24,7 @@ namespace SoulSmith.Battle.Modifiers
             IconKey = iconKey;
             Name = friendlyName;
             Description = description;
+            RemovalEffect = new RemoveModifierEffect(this, null, 0);
         }
         public virtual void ReactToPayloadResult(Result result) 
         {
@@ -33,9 +35,9 @@ namespace SoulSmith.Battle.Modifiers
                 case DurationStyle.Rounds:
                     if (result is TriggerResult triggerResult1)
                     {
-                        if (triggerResult1.Trigger == Effects.Trigger.CombatTrigger.OnRoundEndModifierDurationTick)
+                        if (triggerResult1.Trigger == Effects.Trigger.CombatTrigger.OnRoundEnd)
                         {
-                            DecrementDuration();//TODO make sure modifiers removed after all other triggered effects
+                            DecrementDuration(result);
                         }
                     }
                     break;
@@ -46,7 +48,7 @@ namespace SoulSmith.Battle.Modifiers
                         {
                             if (result.Sender == Host)
                             {
-                                DecrementDuration();
+                                DecrementDuration(result);
                             }
                         }
                     }
@@ -54,11 +56,11 @@ namespace SoulSmith.Battle.Modifiers
             }
         }
 
-        private void DecrementDuration()
+        private void DecrementDuration(Result parentResult)
         {
             Duration -= 1;
 
-            if (Duration <= 0) Remove();
+            if (Duration <= 0) EnqueueRemove(Priority.ModifierRemovalImmediate, parentResult);
         }
 
         public virtual void ModifyPayload(Payload request) { }
@@ -80,20 +82,18 @@ namespace SoulSmith.Battle.Modifiers
         public ModifierAlignment Alignment { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
-        public EventHandler<RemoveModifierEventArgs> RemoveModifierEventHandler { get; set; }
-        protected void Remove()
+        public RemoveModifierEffect RemovalEffect { get; private set; }
+        protected void EnqueueRemove(Priority priority, Result parentResult)
         {
-            RemoveModifierEventArgs e = new RemoveModifierEventArgs();
-            e.Modifier = this;
-
-            RemoveModifierEventHandler?.Invoke(this, e);
+            EffectInput removeEffectInput = new EffectInput(RemovalEffect, Applier, Host, priority);
+            EnqueueEffectInput(removeEffectInput);
         }
         public EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler { get; set; }
-        protected void EnqueueEffectInput(EffectInput effectInput, Result parentEffectResult = null)
+        protected void EnqueueEffectInput(EffectInput effectInput, Result parentResult = null)
         {
             EnqueueEffectInputEventArgs e = new();
             e.EffectInput = effectInput;
-            e.ParentEffectResult = parentEffectResult;
+            e.ParentEffectResult = parentResult;
 
             EnqueueEffectInputEventHandler(this, e);
         }
