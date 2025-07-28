@@ -15,7 +15,7 @@ namespace SoulSmith.Battle.Modifiers
 {
     public class Modifier : IModifier
     {
-        public Modifier(int duration, DurationStyle durationStyle, ModifierAlignment alignment, bool isVisible = true, DrawableResourceKey iconKey = null, string friendlyName = "Unnamed", string description = "")
+        public Modifier(int duration, DurationStyle durationStyle, ModifierAlignment alignment, bool isVisible = true, string iconKey = null, string friendlyName = "Unnamed", string description = "")
         {
             Duration = duration;
             DurationStyle = durationStyle;
@@ -78,7 +78,7 @@ namespace SoulSmith.Battle.Modifiers
         public IReadOnlyUnit Applier { get; private set; }
         public IReadOnlyUnit Host { get; private set; }
         public bool IsVisible { get; private set; }
-        public DrawableResourceKey IconKey { get; private set; }
+        public string IconKey { get; private set; }
         public ModifierAlignment Alignment { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }

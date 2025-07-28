@@ -13,14 +13,14 @@ namespace SoulSmith.Battle.Effects.Visualization
         private Vector2 _startSize;
         private Vector2 _endSize;
 
-        public GrowAndFadeOnTargetEffectVisualization(DrawableResourceKey particleResourceKey,
+        public GrowAndFadeOnTargetEffectVisualization(string particleResourceKey,
             Vector2 startSize,
             Vector2 endSize,
             float lifespan,
             float effectActivationTimer = -1,
             float delay = 0f) : base(lifespan, effectActivationTimer, delay)
         {
-            IDrawableResource particleResource = DrawHelpers.GetDrawableResource(particleResourceKey);
+            IDrawableResource particleResource = DrawHelpers.GetDrawableResourceInstance(particleResourceKey);
             _particle = new CanvasObject(null, particleResource);
             AddChild(_particle);
             _startSize = startSize;

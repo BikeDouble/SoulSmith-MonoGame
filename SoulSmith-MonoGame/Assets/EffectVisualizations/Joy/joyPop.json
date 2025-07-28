@@ -1,10 +1,7 @@
 {
     "Type": "GrowAndFadeOnTarget",
     "Visualization": {
-        "Sprite": {
-            "Type": "Texture",
-            "Key": "Textures/Effects/Particles/JoyPopStar"
-        },
+        "Sprite": "Textures/Effects/Particles/JoyPopStar",
         "StartSizeInPixels": {
             "X": 0,
             "Y": 0

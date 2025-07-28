@@ -11,18 +11,18 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Object.Canvas;
 /// <summary>
-/// CanvasItem that hides itself if clicked outside of.
+/// ScissorRect that hides itself if clicked outside of and eats mouse hover events.
 /// </summary>
-public class PopUpMenu : CanvasObject
+public class PopUpMenu : ScissorRect
 {
     public const string POPUPMENUZONEKEY = "menuzone";
 
-    public PopUpMenu() : base() { }
-
     public PopUpMenu(
         Position position = null,
+        int width = 0,
+        int height = 0,
         ZonedDrawableResource sprite = null,
-        IEnumerable<SoulSmithObject> children = null) : base(position, sprite, children)
+        IEnumerable<SoulSmithObject> children = null) : base(position, width, height, sprite, children)
     { }
 
     public override void Process(double delta)
@@ -47,13 +47,19 @@ public class PopUpMenu : CanvasObject
 
         if (!inputs.Contains(InputType.MouseHover))
         {
-            if (inputs.Contains(InputType.MouseLeft))
+            if (inputs.Contains(InputType.MouseLeft)) // Clicking outside the menu should not consume the input, but hide the menu.
             {
                 Hide();
             }
         }
+        else
+        {
+            InputPacketFuncOutput output = new InputPacketFuncOutput();
+            output.ConsumedInputs = new List<InputType>{InputType.MouseHover}; // Consume the mouse hover input to prevent it from propagating further.
+            return output;
+        }
 
-        return null;
+            return null;
     }
 }
 

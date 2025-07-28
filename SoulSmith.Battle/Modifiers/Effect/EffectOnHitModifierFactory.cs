@@ -22,7 +22,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
             DurationStyle durationStyle,
             ModifierAlignment alignment,
             bool isVisible,
-            DrawableResourceKey iconKey,
+            string iconKey,
             string friendlyName,
             string description)
             : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description)
@@ -51,7 +51,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
             DurationStyle? durationStyle = null;
             ModifierAlignment? modifierAlignment = null;
             bool? isModifierVisible = null;
-            DrawableResourceKey modifierIconKey = null;
+            string modifierIconKey = null;
             string friendlyName = "Unnamed";
             string description = string.Empty;
 
@@ -90,7 +90,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
                         break;
                     case "ModifierIconKey":
                     case "IconKey":
-                        modifierIconKey = JsonSerializer.Deserialize<DrawableResourceKey>(ref reader, options);
+                        modifierIconKey = reader.GetString();
                         reader.Read();
                         break;
                     case "FriendlyName":

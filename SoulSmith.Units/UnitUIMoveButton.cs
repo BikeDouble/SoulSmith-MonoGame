@@ -42,7 +42,7 @@ public class UnitUIMoveButton : ButtonObject
 			hoveredResource,
 			position) 
 	{
-		IDrawableResource textResource = DrawHelpers.GetDrawableResource(LABELFONTKEY, "simpletextresource");
+		IDrawableResource textResource = DrawHelpers.GetDrawableResourceInstance(LABELFONTKEY);
         _label = new CanvasObject(new Position(0, 0, LABELWIDTHSCALE, LABELHEIGHTSCALE, 0, 1), textResource);
 		_label.SetColor(new Color(LABELBRIGHTNESS, LABELBRIGHTNESS, LABELBRIGHTNESS, 255));
         AddChild(_label);

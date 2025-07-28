@@ -91,7 +91,7 @@ namespace SoulSmith.Drawing.Animation
                     case "Texture":
                     case "TextureKey":
                         string textureKey = reader.GetString();
-                        textureInstance = DrawHelpers.GetDrawableResource(textureKey, "Texture2DInstance") as Texture2DInstance;
+                        textureInstance = DrawHelpers.GetDrawableResourceInstance(textureKey) as Texture2DInstance;
                         reader.Read();
                         break;
                     case "ClipData":

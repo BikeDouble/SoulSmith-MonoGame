@@ -25,7 +25,7 @@ public class CombatUI : CanvasObject
 	{
         Position roundCounterPosition = new Position(1600/2, 30, 4, 4);
 
-		IDrawableResource roundCounterText = DrawHelpers.GetDrawableResource(FONTKEY, "simpletextresource");
+		IDrawableResource roundCounterText = DrawHelpers.GetDrawableResourceInstance(FONTKEY);
 		_roundCounter = new CanvasObject(roundCounterPosition, roundCounterText);
 		AddChild(_roundCounter);
 	}

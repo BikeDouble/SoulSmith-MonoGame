@@ -152,8 +152,8 @@ namespace SoulSmith.Drawing.Zoned
                         break;
                     case "Resource":
                     case "DrawableResource":
-                        DrawableResourceKey drawableResourceKey = JsonSerializer.Deserialize<DrawableResourceKey>(ref reader, options);
-                        resource = DrawHelpers.GetDrawableResource(drawableResourceKey);
+                        string drawableResourceKey = reader.GetString();
+                        resource = DrawHelpers.GetDrawableResourceInstance(drawableResourceKey);
                         reader.Read();
                         break;
                     default:

@@ -3,6 +3,7 @@ using SoulSmith.Object.Canvas;
 using SoulSmith.Shapes;
 using SoulSmith.UnitStats;
 using SoulSmith.Battle.Moves;
+using SoulSmith.Drawing;
 
 namespace SoulSmith.Battle;
 
@@ -13,6 +14,7 @@ public interface IReadOnlyUnit : IReadOnlyCanvasObject
     int GetModStat(StatType stat);
     int GetBaseStat(StatType stat);
     ReadOnlyCollection<Moves.Move> MoveSet { get; }
+    string SpriteKey { get; }
     IReadOnlyUnitStats ReadOnlyStats { get; }
     string FriendlyName { get; }
     IMultiZone HitZone { get; }

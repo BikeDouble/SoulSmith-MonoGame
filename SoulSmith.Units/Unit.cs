@@ -21,7 +21,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	private UnitSprite _sprite;
 	private UnitStats _stats;
 
-	private string _friendlyName;
+	private string _spriteKey;
+    private string _friendlyName;
 	private ReadOnlyCollection<Move> _moveSet;
 	private bool _inCombat = false;
 	private bool _playerControlled = false;
@@ -34,12 +35,13 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		new StatsList(template.StatsList),
 		Move.GenerateMoveList(template.MoveSetWeightedList, template.MaxMoveCount),
         new UnitSprite(
-			DrawHelpers.GetDrawableResource(template.SpriteName, template.SpriteType), 
+			DrawHelpers.GetDrawableResourceInstance(template.SpriteName), 
 			Rand.RandDoubleAroundOne(UnitSprite.ANIMATIONDESYNCFACTORRADIUS)), 
 		new UnitUI(),
 		template.Emotion,
 		template.FriendlyName,
-		template.TimeOnBoard)
+		template.TimeOnBoard,
+		template.SpriteName)
 	{ }
 
 	public Unit(
@@ -49,7 +51,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		UnitUI uI,
 		EmotionTag.EmotionTag emotion,
 		string friendlyName,
-		int timeOnBoard) : base()
+		int timeOnBoard,
+		string spriteKey) : base()
 	{
         _sprite = sprite;
 		_sprite.UpdateResourceState(UnitSprite.SPRITEIDLESTATE);
@@ -290,6 +293,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
     public int DecayRate { get { return _stats.GetModStat(StatType.DecayRate); } }
     public int CurDecay { get { return _stats.GetModStat(StatType.CurDecay); } }
 	public int TimeOnBoard { get { return _stats.TimeOnBoard; } }
+	public string SpriteKey { get { return _spriteKey; } }
 }
 
 public class UnitRetreatCallArgs : EventArgs

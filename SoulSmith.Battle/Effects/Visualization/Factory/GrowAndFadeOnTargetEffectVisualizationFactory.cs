@@ -11,9 +11,9 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
     {
         private Vector2 _startSize;
         private Vector2 _endSize;
-        private DrawableResourceKey _particleResourceKey;
+        private string _particleResourceKey;
 
-        public GrowAndFadeOnTargetEffectVisualizationFactory(DrawableResourceKey particleResourceKey,
+        public GrowAndFadeOnTargetEffectVisualizationFactory(string particleResourceKey,
             Vector2 startSize,
             Vector2 endSize,
             float lifespan,
@@ -42,7 +42,7 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
             float effectActivationDelay = 0f;
             float lifespan = 0f;
             float delay = 0f;
-            DrawableResourceKey particleResourceKey = null;
+            string particleResourceKey = null;
             Vector2 startSize = Vector2.Zero;
             Vector2? endSize = null;
 
@@ -73,8 +73,8 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
                         break;
                     case "ParticleSprite":
                     case "Sprite":
-                        if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of object");
-                        particleResourceKey = JsonSerializer.Deserialize<DrawableResourceKey>(ref reader, options);
+                        if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
+                        particleResourceKey = reader.GetString();
                         reader.Read();
                         break;
                     case "StartSizeInPixels":

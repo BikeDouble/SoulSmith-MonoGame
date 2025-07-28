@@ -17,7 +17,7 @@ namespace SoulSmith.Battle.Modifiers
         public IReadOnlyUnit Applier { get; }
         public IReadOnlyUnit Host { get; }
         public bool IsVisible { get; }
-        public DrawableResourceKey IconKey { get; }
+        public string IconKey { get; }
         public DurationStyle DurationStyle { get; }
         public int Duration { get; }
         public ModifierAlignment Alignment { get; }

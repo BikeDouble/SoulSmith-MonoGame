@@ -1,8 +1,5 @@
 {
-    "DrawableResource": {
-        "Type": "Texture",
-        "Key": "Textures/UI/Units/Moves/MoveButton"
-    },
+    "DrawableResource": "Textures/UI/Units/Moves/MoveButton",
     "Zone": {
         "Vertices": [
             {

@@ -8,14 +8,18 @@ namespace SoulSmith.Game;
 
 using Entry = UnitListUIEntry;
 
-public class UnitListUI : CanvasObject
+public class UnitListUI : PopUpMenu
 {
+    public const int ENTRIESPERPAGE = 5;
+    public const int WIDTH = UnitListUIEntry.WIDTH;
+    public const int HEIGHT = UnitListUIEntry.HEIGHT * ENTRIESPERPAGE;
+
     // Children
     private List<Entry> _entries;
 
-    public UnitListUI()
+    public UnitListUI() : base(null, WIDTH, HEIGHT)
     {
-
+        _entries = new List<Entry>();
     }
 
     private bool AddUnit(Unit unit)
@@ -26,15 +30,6 @@ public class UnitListUI : CanvasObject
         AddChild(entry);
         _entries.Add(entry);
         return true;
-    }
-
-    private bool RemoveUnit(Unit unit)
-    {
-        Entry entry = GetEntryWithUnit(unit);
-
-        if (entry == null) return false;
-
-        return _entries.Remove(entry);
     }
 
     private void SetEntries(IEnumerable<Unit> units)
@@ -81,12 +76,4 @@ public class UnitListUI : CanvasObject
         SetEntries(units);
         Show();
     }
-
-    public void HideUnits()
-    {
-        Hide();
-        Clear();
-    }
-       
-
 }

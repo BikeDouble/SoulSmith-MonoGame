@@ -13,10 +13,7 @@
         "DurationStyle": "rounds",
         "ModifierAlignment": "buff",
         "IsModifierVisible": true,
-        "ModifierIconKey": {
-            "Type": "Texture",
-            "Key": "Textures/Units/Forms/JoyV1"
-        },
+        "ModifierIconKey": "Textures/Units/Forms/JoyV1",
         "FriendlyName": "Cheered On",
         "Description": {
             "LocalizationKey": "Modifiers/Joy/CheeredOn",

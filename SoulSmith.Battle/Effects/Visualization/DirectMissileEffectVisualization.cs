@@ -14,10 +14,10 @@ namespace SoulSmith.Battle.Effects.Visualization
         private CanvasObject _missile;
         private Vector2 _startPoint;
         private Vector2 _endPoint;
-        private DrawableResourceKey _missileResourceKey;
+        private string _missileResourceKey;
         private Vector2? _missileSizeInPixels;
 
-        public DirectMissileEffectVisualization(DrawableResourceKey missileResourceKey,
+        public DirectMissileEffectVisualization(string missileResourceKey,
             float lifespan,
             float effectActivationTimer = -1,
             float baseDelay = 0f,
@@ -25,7 +25,7 @@ namespace SoulSmith.Battle.Effects.Visualization
         {
             _missileSizeInPixels = missileSizeInPixels;
             _missileResourceKey = missileResourceKey;
-            IDrawableResource missileAsset = DrawHelpers.GetDrawableResource(_missileResourceKey);
+            IDrawableResource missileAsset = DrawHelpers.GetDrawableResourceInstance(_missileResourceKey);
 
             _missile = new CanvasObject(null, missileAsset);
             AddChild(_missile);

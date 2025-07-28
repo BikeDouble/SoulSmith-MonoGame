@@ -9,10 +9,10 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
     [JsonConverter(typeof(DirectMissileEffectVisualizationFactoryJsonConverter))]
     public class DirectMissileEffectVisualizationFactory : EffectVisualizationFactory
     {
-        private DrawableResourceKey _missileResourceKey;
+        private string _missileResourceKey;
         private Vector2? _missileSizeInPixels;
 
-        public DirectMissileEffectVisualizationFactory(DrawableResourceKey missileResourceKey,
+        public DirectMissileEffectVisualizationFactory(string missileResourceKey,
             float lifespan,
             float effectActivationTimer = -1,
             float baseDelay = 0f,
@@ -38,7 +38,7 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
 
             float flightTime = 0f;
             float delay = 0f;
-            DrawableResourceKey missileResourceKey = null;
+            string missileResourceKey = null;
             Vector2? missileSizeInPixels = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
@@ -62,8 +62,8 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
                         reader.Read();
                         break;
                     case "MissileSprite":
-                        if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of object");
-                        missileResourceKey = JsonSerializer.Deserialize<DrawableResourceKey>(ref reader, options);
+                        if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
+                        missileResourceKey = reader.GetString();
                         reader.Read();
                         break;
                     case "MissileSizeInPixels":

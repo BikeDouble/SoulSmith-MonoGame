@@ -16,7 +16,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
             DurationStyle durationStyle,
             ModifierAlignment alignment,
             bool isVisible,
-            DrawableResourceKey iconKey,
+            string iconKey,
             string friendlyName,
             string description)
             : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description)

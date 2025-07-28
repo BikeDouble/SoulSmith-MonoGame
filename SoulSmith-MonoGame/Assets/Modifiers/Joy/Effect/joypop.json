@@ -12,9 +12,6 @@
         "DurationStyle": "permanent",
         "ModifierAlignment": "buff",
         "IsModifierVisible": false,
-        "ModifierIconKey": {
-            "Type": "Texture",
-            "Key": "Textures/Units/Forms/JoyV1"
-        }
+        "ModifierIconKey": "Textures/Units/Forms/JoyV1"
     }
 }

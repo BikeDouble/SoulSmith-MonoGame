@@ -10,25 +10,24 @@ namespace SoulSmith.Drawing
 {
     public class DrawHelpers
     {
-        public static IDrawableResource GetDrawableResource(DrawableResourceKey key)
+        public static IDrawableResource GetDrawableResourceInstance(string key)
         {
-            if (key == null) return null;
+            int firstSlash = key.IndexOf('/');
 
-            return GetDrawableResource(key.Key, key.Type);
-        }
+            string type = key.Substring(0, firstSlash);
 
-        public static IDrawableResource GetDrawableResource(string key, string type)
-        {
             IDrawableResource resource = null;
 
             switch (type.ToLower())
             {
+                case "fonts":
                 case "simpletext":
                 case "simpletextresource":
                     IAssetWrapper<FontResource> wrappedFontResource = AssetManager.Instance.GetFontResource<FontResource>(key);
                     SimpleTextInstance simpleText = new SimpleTextInstance(wrappedFontResource);
                     resource = simpleText;
                     break;
+                case "textures":
                 case "texture":
                 case "texture2d":
                 case "texture2dresource":
@@ -36,11 +35,13 @@ namespace SoulSmith.Drawing
                     IAssetWrapper<Texture2D> texture = AssetManager.Instance.GetTexture2D<Texture2D>(key);
                     resource = new Texture2DInstance(texture);
                     break;
+                case "animations":
                 case "animation":
                     IAssetWrapper<Animation.Animation> wrappedAnimation = AssetManager.Instance.GetAnimation<Animation.Animation>(key);
                     AnimationInstance animationPlayer = new AnimationInstance(wrappedAnimation);
                     resource = animationPlayer;
                     break;
+                case "zonedtextures":
                 case "zonedtexture":
                 case "zoned":
                 case "zonedtexture2d":

@@ -14,8 +14,8 @@ public class GameHeaderUI : CanvasObject
     // Children
     private ButtonObject _unitInventoryButton;
 
-    public const string BUTTONIDLERESOURCENAME = "GameHeaderButtonIdle";
-    public const string BUTTONHOVEREDRESOURCENAME = "GameHeaderButtonHovered";
+    //public static DrawableResourceKey UNITINVENTORYBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/MoveButton";
+    //public static DrawableResourceKey UNITINVENTORYBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/Moves/MoveButton";
     public const int INVENTORYBUTTONPOSITIONX = 1000;
     public const int INVENTORYBUTTONPOSITIONY = 50;
 

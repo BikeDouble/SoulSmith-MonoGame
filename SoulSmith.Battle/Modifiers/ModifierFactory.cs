@@ -16,7 +16,7 @@ namespace SoulSmith.Battle.Modifiers
     [JsonConverter(typeof(ModifierFactoryJsonConverter))]
     public class ModifierFactory : IDisposable
     {
-        public ModifierFactory(int duration, DurationStyle durationStyle, ModifierAlignment modifierAlignment, bool isModifierVisible, DrawableResourceKey modifierIconKey, string friendlyName, string description)
+        public ModifierFactory(int duration, DurationStyle durationStyle, ModifierAlignment modifierAlignment, bool isModifierVisible, string modifierIconKey, string friendlyName, string description)
         {
             Duration = duration;
             DurationStyle = durationStyle;
@@ -31,7 +31,7 @@ namespace SoulSmith.Battle.Modifiers
         public DurationStyle DurationStyle { get; private set; }
         public ModifierAlignment ModifierAlignment { get; private set; }
         public bool IsModifierVisible { get; private set; }
-        public DrawableResourceKey ModifierIconKey { get; private set; }
+        public string ModifierIconKey { get; private set; }
         public string FriendlyName { get; private set; }
         public string Description { get; private set; }
         public virtual IModifier CreateModifier()

@@ -15,9 +15,9 @@ namespace SoulSmith.Units;
 public class UnitUIHealthBar : CanvasObject
 {
 	public const string FONTKEY = "Fonts/Raleway/Medium";
-    public readonly static DrawableResourceKey EMPTYBARRESOURCEKEY = new DrawableResourceKey("Textures/UI/Units/HealthBar/Empty", "texture");
-    public readonly static DrawableResourceKey HEALTHFILLERRESOURCEKEY = new DrawableResourceKey("Textures/UI/Units/HealthBar/HealthFiller", "texture");
-    public readonly static DrawableResourceKey DECAYFILLERRESOURCEKEY = new DrawableResourceKey("Textures/UI/Units/HealthBar/DecayFiller", "texture");
+    public readonly static string EMPTYBARRESOURCEKEY = "Textures/UI/Units/HealthBar/Empty";
+    public readonly static string HEALTHFILLERRESOURCEKEY = "Textures/UI/Units/HealthBar/HealthFiller";
+    public readonly static string DECAYFILLERRESOURCEKEY = "Textures/UI/Units/HealthBar/DecayFiller";
     public readonly static Vector2 HEALTHFILLEROFFSET = new Vector2(0, 256);
 	public readonly static Vector2 DECAYFILLEROFFSET = new Vector2(0, -256);
 	public readonly static Vector2 FILLERDIMENSIONS = new Vector2(112, 512);
@@ -30,19 +30,19 @@ public class UnitUIHealthBar : CanvasObject
 	public UnitUIHealthBar(Position position = null) : base(position)
 	{
         //Backboard
-        IDrawableResource emptyBarResource = DrawHelpers.GetDrawableResource(EMPTYBARRESOURCEKEY);
+        IDrawableResource emptyBarResource = DrawHelpers.GetDrawableResourceInstance(EMPTYBARRESOURCEKEY);
         _emptyBar = new CanvasObject(null, emptyBarResource);
 		_emptyBar.SetOriginPlacement(OriginPlacement.Center);
         AddChild(_emptyBar);
 
         // Health Filler
-        IDrawableResource healthFillerResource = DrawHelpers.GetDrawableResource(HEALTHFILLERRESOURCEKEY);
+        IDrawableResource healthFillerResource = DrawHelpers.GetDrawableResourceInstance(HEALTHFILLERRESOURCEKEY);
 		_healthFiller = new ScissorRect(new Position((int)HEALTHFILLEROFFSET.X, (int)HEALTHFILLEROFFSET.Y, 1, 1, 0, 1), (int)FILLERDIMENSIONS.X, (int)FILLERDIMENSIONS.Y, healthFillerResource);
 		_healthFiller.SetOriginPlacement(OriginPlacement.BottomMiddle);
 		AddChild(_healthFiller);
 
         // Decay Filler
-        IDrawableResource decayFillerResource = DrawHelpers.GetDrawableResource(DECAYFILLERRESOURCEKEY);
+        IDrawableResource decayFillerResource = DrawHelpers.GetDrawableResourceInstance(DECAYFILLERRESOURCEKEY);
 		_decayFiller = new ScissorRect(new Position((int)DECAYFILLEROFFSET.X, (int)DECAYFILLEROFFSET.Y, 1, 1, 0, 2), (int)FILLERDIMENSIONS.X, (int)FILLERDIMENSIONS.Y, decayFillerResource);
 		_decayFiller.SetOriginPlacement(OriginPlacement.TopMiddle);
         AddChild(_decayFiller);
