@@ -1,13 +1,11 @@
 ﻿
 using SoulSmith.Units;
-using System.Collections.Generic;
 using SoulSmith.Object.Canvas;
 
 namespace SoulSmith.Game;
 public class UnitInventory : CanvasObject
 {
     private List<Unit> _units = new List<Unit>();
-    private UnitListUI _uI = new();
 
     /// <summary>
     /// Adds a unit to the inventory, does not allow duplicates.
@@ -33,14 +31,13 @@ public class UnitInventory : CanvasObject
     {
         return _units.Remove(unit);
     }
-    
-    /// <summary>
-    /// Show units in the inventory.
-    /// </summary>
-    public void ShowUnits()
-    {
-        _uI.ShowUnits(_units);
-    }
 
+    /// <summary>
+    /// Gets a copy of the list of units in the inventory.
+    /// </summary>
+    /// <returns></returns>
+    public List<Unit> GetUnits() {
+        return new List<Unit>(_units); 
+    }
 }
 

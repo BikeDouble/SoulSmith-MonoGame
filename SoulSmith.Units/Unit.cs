@@ -54,6 +54,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		int timeOnBoard,
 		string spriteKey) : base()
 	{
+		_spriteKey = spriteKey;
+
         _sprite = sprite;
 		_sprite.UpdateResourceState(UnitSprite.SPRITEIDLESTATE);
 		AddChild(sprite);

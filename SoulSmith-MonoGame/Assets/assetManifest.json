@@ -74,6 +74,11 @@
                     "HealthFiller": "Textures/UI/Units/HealthBar/healthBarHealthFiller.png",
                     "DecayFiller": "Textures/UI/Units/HealthBar/healthBarDecayFiller.png"
                 },
+                "List": {
+                    "Backboard": "Textures/UI/Units/List/unitListUIBackboard.png",
+                    "EntryBackboardIdle": "Textures/UI/Units/List/unitListUIEntryBackboardIdle.png",
+                    "EntryBackboardHovered": "Textures/UI/Units/List/unitListUIEntryBackboardHovered.png"
+                },
                 "Moves": {
                     "MoveButton": "Textures/UI/Units/Moves/moveButton.png",
                     "RetrieveButton": "Textures/UI/Units/Moves/retrieveButton.png",
@@ -100,6 +105,11 @@
     "ZonedResources": {
         "UI": {
             "Units": {
+                "List": {
+                    "Backboard": "ZonedResources/UI/Units/List/backboard.json",
+                    "EntryBackboardIdle": "ZonedResources/UI/Units/List/entryBackboardIdle.json",
+                    "EntryBackboardHovered": "ZonedResources/UI/Units/List/entryBackboardHovered.json"
+                },
                 "Moves": {
                     "MoveButton": "ZonedResources/UI/Units/Moves/moveButton.json",
                     "RetrieveButton": "ZonedResources/UI/Units/Moves/retrieveButton.json",

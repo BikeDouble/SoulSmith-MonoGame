@@ -334,7 +334,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
 
     public override void Dispose()
     {
-        _drawableResource.Dispose();
+        _drawableResource?.Dispose();
 
         base.Dispose();
     }

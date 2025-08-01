@@ -12,13 +12,13 @@ using SoulSmith.Shapes;
 
 namespace SoulSmith.Drawing.Zoned
 {
-    [JsonConverter(typeof(ZonedResourceJsonConverter))]
-    public class ZonedDrawableResource : IZonedResource, IMultiZone, IDisposable
+    [JsonConverter(typeof(ZonedDrawableResourceInstanceJsonConverter))]
+    public class ZonedDrawableResourceInstance : IZonedResource, IMultiZone, IDisposable
     {
         private IZone _zone;
         private IDrawableResource _resource;
 
-        public ZonedDrawableResource(IZone zone, IDrawableResource resource) //TODO add multizone support
+        public ZonedDrawableResourceInstance(IZone zone, IDrawableResource resource) //TODO add multizone support
         {
             _zone = zone;
             _resource = resource;
@@ -125,9 +125,9 @@ namespace SoulSmith.Drawing.Zoned
         public OriginPlacement OriginPlacement { get { return _resource.OriginPlacement; } set { _resource.OriginPlacement = value; } }
     }
 
-    public class ZonedResourceJsonConverter : JsonConverter<ZonedDrawableResource>
+    public class ZonedDrawableResourceInstanceJsonConverter : JsonConverter<ZonedDrawableResourceInstance>
     {
-        public override ZonedDrawableResource Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ZonedDrawableResourceInstance Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
@@ -162,10 +162,10 @@ namespace SoulSmith.Drawing.Zoned
                 }
             }
 
-            return new ZonedDrawableResource(zone, resource);
+            return new ZonedDrawableResourceInstance(zone, resource);
         }
 
-        public override void Write(Utf8JsonWriter writer, ZonedDrawableResource value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ZonedDrawableResourceInstance value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

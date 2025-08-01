@@ -40,7 +40,9 @@ public partial class GameManager : CanvasObject
 	{
 		_headerUI = new GameHeaderUI();
 		AddChild(_headerUI);
-	}
+		_headerUI.UnitInventoryButtonPressedEventHandler += OnUnitInventoryButtonPressed;
+		_headerUI.UnitListUIClickedOutsideEventHandler += OnUnitListUIClickedOutside;
+    }
 
 	private void InitializeCamp()
 	{
@@ -93,5 +95,15 @@ public partial class GameManager : CanvasObject
 		_combatManager.BeginRound();
 		_campManager.OnRoundEnd();
 	}
+
+	private void OnUnitInventoryButtonPressed(object sender, UnitInventoryButtonPressedEventArgs e)
+	{
+		_headerUI.ShowUnitInventory(_unitInventory.GetUnits());
+    }
+
+	private void OnUnitListUIClickedOutside(object sender, ButtonPressedEventArgs e)
+	{
+		_headerUI.HideUnitInventory();
+    }
 }
 

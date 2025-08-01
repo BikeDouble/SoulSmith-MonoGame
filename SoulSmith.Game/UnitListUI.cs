@@ -3,32 +3,48 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Units;
+using SoulSmith.Drawing;
+using SoulSmith.Core;
+using Microsoft.Xna.Framework;
 
 namespace SoulSmith.Game;
 
 using Entry = UnitListUIEntry;
 
-public class UnitListUI : PopUpMenu
+public class UnitListUI : CanvasObject
 {
+    public const string BACKBOARDKEY = "ZonedResources/UI/Units/List/Backboard";
     public const int ENTRIESPERPAGE = 5;
     public const int WIDTH = UnitListUIEntry.WIDTH;
     public const int HEIGHT = UnitListUIEntry.HEIGHT * ENTRIESPERPAGE;
 
     // Children
     private List<Entry> _entries;
+    private InverseButton _backboard;
 
-    public UnitListUI() : base(null, WIDTH, HEIGHT)
+    public UnitListUI(Position position) : base(position)
     {
         _entries = new List<Entry>();
+        this.SetOriginPlacement(OriginPlacement.TopLeft);
+
+        _backboard = new InverseButton(new Position(0, 0, 1, 1, 0, -1), BACKBOARDKEY);
+        _backboard.SetOriginPlacement(OriginPlacement.TopLeft);
+        _backboard.ButtonPressedEventHandler += OnClickedOutside;
+        _backboard.ScaleToSetSize(new Vector2(WIDTH, HEIGHT), false);
+        AddChild(_backboard);
     }
 
     private bool AddUnit(Unit unit)
     {
-        if (ContainsUnit(unit)) return false;
+        Entry entry = new Entry(unit, new Position(0, 0, 1, 1, 0, 1));
+        return AddEntry(entry);
+    }
 
-        Entry entry = new Entry(unit);
+    private bool AddEntry(Entry entry)
+    {
         AddChild(entry);
         _entries.Add(entry);
+        entry.EntryPressedEventHandler += OnEntryPressed;
         return true;
     }
 
@@ -41,11 +57,13 @@ public class UnitListUI : PopUpMenu
         }
     }
 
-    private void Clear()
+    public void Clear()
     {
         foreach (Entry entry in _entries)
         {
             RemoveChild(entry);
+            entry.EntryPressedEventHandler -= OnEntryPressed;
+            entry.Dispose();
         }
 
         _entries.Clear();
@@ -69,6 +87,20 @@ public class UnitListUI : PopUpMenu
                 return entry;
         }
         return null;
+    }
+
+    public EventHandler<UnitListUIEntryPressedEventArgs> EntryPressedEventHandler;
+
+    private void OnEntryPressed(object sender, UnitListUIEntryPressedEventArgs args)
+    {
+        EntryPressedEventHandler?.Invoke(this, args);
+    }
+
+    public EventHandler<ButtonPressedEventArgs> ClickedOutsideEventHandler;
+
+    private void OnClickedOutside(object sender, ButtonPressedEventArgs args)
+    {
+        ClickedOutsideEventHandler?.Invoke(this, args);
     }
 
     public void ShowUnits(IEnumerable<Unit> units)

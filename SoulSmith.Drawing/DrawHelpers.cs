@@ -41,11 +41,12 @@ namespace SoulSmith.Drawing
                     AnimationInstance animationPlayer = new AnimationInstance(wrappedAnimation);
                     resource = animationPlayer;
                     break;
+                case "zonedresources":
                 case "zonedtextures":
                 case "zonedtexture":
                 case "zoned":
                 case "zonedtexture2d":
-                    resource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(key);
+                    resource = AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(key);
                     break;
                 default:
                     throw new ArgumentException($"Invalid drawable resource type: {type}");

@@ -55,6 +55,19 @@ public class CanvasObject_MultipleResources : CanvasObject
         return index;
     }
 
+    public override void SetOriginPlacement(OriginPlacement originPlacement)
+    {
+        base.SetOriginPlacement(originPlacement);
+
+        foreach (IDrawableResource resource in _drawableResources)
+        {
+            if (resource != null)
+            {
+                resource.OriginPlacement = originPlacement;
+            }
+        }
+    }
+
     public override void Dispose()
     {
         foreach (var sprite in _drawableResources) { sprite.Dispose(); }

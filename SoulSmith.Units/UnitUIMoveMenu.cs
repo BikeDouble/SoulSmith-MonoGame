@@ -52,8 +52,8 @@ public class UnitUIMoveMenu : CanvasObject
 	private void CreateMoveButton(int index)
 	{
         Position buttonPosition = new Position(TOPBUTTONX, TOPBUTTONY + (index * SPACEBETWEENBUTTONS), MOVEBUTTONSCALE, MOVEBUTTONSCALE, 0);
-		ZonedDrawableResource idleResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
-		ZonedDrawableResource hoveredResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
+		ZonedDrawableResourceInstance idleResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
+		ZonedDrawableResourceInstance hoveredResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
         UnitUIMoveButton button = new UnitUIMoveButton(idleResource, hoveredResource, buttonPosition);
         _moveButtons.Add(button);
         AddChild(button);
@@ -68,8 +68,8 @@ public class UnitUIMoveMenu : CanvasObject
 			MOVEBUTTONSCALE, 
 			MOVEBUTTONSCALE, 
 			0);
-        ZonedDrawableResource idleResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
-        ZonedDrawableResource hoveredResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResourceInstance idleResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResourceInstance hoveredResource = AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
         UnitUIMoveButton button = new UnitUIMoveButton(idleResource, hoveredResource, buttonPosition);
 		_retrieveButton = button;
         AddChild(button);
@@ -79,8 +79,8 @@ public class UnitUIMoveMenu : CanvasObject
     // Calculates the Y offset for the retrieve button to keep the space between buttons consistent and visually appealing
     private int CalculateRetrieveButtonYOffset()
 	{
-        ZonedDrawableResource moveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
-        ZonedDrawableResource retrieveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResourceInstance moveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResourceInstance retrieveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
         if (moveButtonTexture == null) throw new ArgumentNullException(nameof(moveButtonTexture));
         if (retrieveButtonTexture == null) throw new ArgumentNullException(nameof(retrieveButtonTexture));
 
@@ -99,8 +99,8 @@ public class UnitUIMoveMenu : CanvasObject
 	// Calculates the X offset for the retrieve button to keep the buttons left aligned
 	private int CalculateRetrieveButtonXOffset()
 	{
-        ZonedDrawableResource moveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
-        ZonedDrawableResource retrieveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResourceInstance moveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(UnitUIMoveButton.MOVEBUTTONIDLERESOURCEKEY);
+        ZonedDrawableResourceInstance retrieveButtonTexture = AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(UnitUIMoveButton.RETRIEVEBUTTONIDLERESOURCEKEY);
         if (moveButtonTexture == null) throw new ArgumentNullException(nameof(moveButtonTexture));
         if (retrieveButtonTexture == null) throw new ArgumentNullException(nameof(retrieveButtonTexture));
 

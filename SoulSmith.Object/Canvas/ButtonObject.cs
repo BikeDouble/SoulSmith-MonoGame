@@ -3,6 +3,7 @@ using SoulSmith.Core;
 using SoulSmith.Asset;
 using SoulSmith.Shapes;
 using SoulSmith.Drawing.Zoned;
+using SoulSmith.Drawing;
 
 namespace SoulSmith.Object.Canvas;
 public class ButtonObject : CanvasObject_MultipleResources
@@ -14,8 +15,18 @@ public class ButtonObject : CanvasObject_MultipleResources
     private int _hoveredResourceIndex = -1;
 
     public ButtonObject(
-        ZonedDrawableResource idleResource,
-        ZonedDrawableResource hoveredResource,
+        string idleResourceKey,
+        string hoveredResourceKey,
+        Position position = null) : 
+        this(
+            DrawHelpers.GetDrawableResourceInstance(idleResourceKey) as ZonedDrawableResourceInstance,
+            DrawHelpers.GetDrawableResourceInstance(hoveredResourceKey) as ZonedDrawableResourceInstance, 
+            position)
+    { }
+
+    public ButtonObject(
+        ZonedDrawableResourceInstance idleResource,
+        ZonedDrawableResourceInstance hoveredResource,
         Position position = null) : base(idleResource, hoveredResource, position)
     {
         _idleResourceIndex = 0;
@@ -38,23 +49,21 @@ public class ButtonObject : CanvasObject_MultipleResources
         base.CollectInputPacketsInternal(absolutePosition, inputQueue);
     }
 
-    private InputPacketFuncOutput ProcessInputs(InputPacketFuncInput funcInput)
+    private InputPacketFuncOutput ProcessInputs(InputPacketFuncArgs input)
     {
-        IReadOnlyList<InputType> inputTypes = funcInput.Inputs;
+        List<InputType> newlyConsumedInputs = null;
 
-        List<InputType> consumedInputs = null;
-
-        if (inputTypes.Contains(InputType.MouseHover))
+        if (input.IsUsable(InputType.MouseHover))
         {
-            consumedInputs = new List<InputType> { InputType.MouseHover };
+            newlyConsumedInputs = new List<InputType> { InputType.MouseHover };
 
             if (!_hovered)
                 OnMouseEnter();
 
-            if (inputTypes.Contains(InputType.MouseLeft))
+            if (input.IsUsable(InputType.MouseLeftClick))
             {
                 ButtonPressed();
-                consumedInputs.Add(InputType.MouseLeft);
+                newlyConsumedInputs.Add(InputType.MouseLeftClick);
             }
         }
         else
@@ -64,7 +73,7 @@ public class ButtonObject : CanvasObject_MultipleResources
         }
 
         InputPacketFuncOutput output = new InputPacketFuncOutput();
-        output.ConsumedInputs = consumedInputs;
+        output.NewlyConsumedInputs = newlyConsumedInputs;
 
         return output;
     }
@@ -91,8 +100,8 @@ public class ButtonObject : CanvasObject_MultipleResources
         ButtonPressedEventHandler?.Invoke(this, e);
     }
 
-    protected ZonedDrawableResource IdleResource { get { return GetResource(_idleResourceIndex) as ZonedDrawableResource; } }
-    protected ZonedDrawableResource HoveredResource { get { return GetResource(_hoveredResourceIndex) as ZonedDrawableResource; } }
+    protected ZonedDrawableResourceInstance IdleResource { get { return GetResource(_idleResourceIndex) as ZonedDrawableResourceInstance; } }
+    protected ZonedDrawableResourceInstance HoveredResource { get { return GetResource(_hoveredResourceIndex) as ZonedDrawableResourceInstance; } }
 }
 
 public class ButtonPressedEventArgs : EventArgs

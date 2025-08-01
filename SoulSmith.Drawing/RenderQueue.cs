@@ -6,13 +6,15 @@ namespace SoulSmith.Drawing
 {
     public class RenderQueue : IAddOnly<DrawPacket> //TODO change input in CollectDrawPackets
     {
+        public const SpriteSortMode SPRITESORTMODE = SpriteSortMode.Deferred;
+
         private List<DrawPacket> _packets = new List<DrawPacket>();
         private RasterizerState _scissorState = new RasterizerState { ScissorTestEnable = true };
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
             graphics.ScissorRectangle = graphics.Viewport.Bounds;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
+            spriteBatch.Begin(SPRITESORTMODE, BlendState.NonPremultiplied, SamplerState.PointClamp);
 
             if (_packets.Count == 0) return;
 
@@ -51,13 +53,13 @@ namespace SoulSmith.Drawing
             {
                 spriteBatch.End();
                 graphics.ScissorRectangle = graphics.Viewport.Bounds;
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+                spriteBatch.Begin(SPRITESORTMODE, BlendState.NonPremultiplied, SamplerState.PointClamp);
             }
             else
             {
                 spriteBatch.End();
                 graphics.ScissorRectangle = scissorRect;
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, rasterizerState: _scissorState);
+                spriteBatch.Begin(SPRITESORTMODE, BlendState.NonPremultiplied, SamplerState.PointClamp, rasterizerState: _scissorState);
             }
         }
 

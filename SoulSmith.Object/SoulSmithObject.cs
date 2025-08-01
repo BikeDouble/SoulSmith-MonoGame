@@ -109,7 +109,7 @@ namespace SoulSmith.Object
 
         }
 
-        public virtual InputPacket CreateInputPacket(Func<InputPacketFuncInput, InputPacketFuncOutput> func, IReadOnlyPosition absPos = null, IMultiZone clickZone = null, string zoneKey = "", bool requestHover = false, int priority = 0)
+        public virtual InputPacket CreateInputPacket(Func<InputPacketFuncArgs, InputPacketFuncOutput> func, IReadOnlyPosition absPos = null, IMultiZone clickZone = null, string zoneKey = "", bool requestHover = false, int priority = 0)
         {
             InputPacket packet = new InputPacket(
                 clickZone,

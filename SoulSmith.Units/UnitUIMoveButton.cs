@@ -35,8 +35,8 @@ public class UnitUIMoveButton : ButtonObject
 	private bool _isRetrieveButton = false;
 
 	public UnitUIMoveButton(
-        ZonedDrawableResource idleResource,
-        ZonedDrawableResource hoveredResource,
+        ZonedDrawableResourceInstance idleResource,
+        ZonedDrawableResourceInstance hoveredResource,
         Position position = null) : base(
             idleResource,
 			hoveredResource,

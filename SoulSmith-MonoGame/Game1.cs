@@ -30,6 +30,7 @@ namespace SoulSmith_MonoGame
         private SoulSmithObject _root;
         private RenderQueue _renderQueue;
         private InputQueue _inputQueue;
+
         private AssetManager _assetManager;
 
         public static string ASSETMANIFESTPATH = "../../../Assets/assetManifest.json";
@@ -87,21 +88,12 @@ namespace SoulSmith_MonoGame
         {
             _root.CollectInputPackets(new Position(), _inputQueue);
 
-            _inputQueue.Process(GetCurrentInputs());
+            _inputQueue.Process(InputManager.GetCurrentInputs(), new List<InputType>());
 
             _inputQueue.Clear();
         }
 
-        private List<InputType> GetCurrentInputs()
-        {
-            List<InputType> inputs = new List<InputType> { InputType.MouseHover };
-            
-            if (MouseFunctions.IsMouseLeftPressed()) inputs.Add(InputType.MouseLeft);
 
-            if (MouseFunctions.IsMouseRightPressed()) inputs.Add(InputType.MouseRight);
-
-            return inputs;
-        }
 
         protected override void Draw(GameTime gameTime)
         {

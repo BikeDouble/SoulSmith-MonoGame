@@ -8,13 +8,15 @@ using SoulSmith.Core;
 using SoulSmith.Shapes;
 
 namespace SoulSmith.Input;
-using InputPacketFunc = System.Func<InputPacketFuncInput, InputPacketFuncOutput>;
+using InputPacketFunc = System.Func<InputPacketFuncArgs, InputPacketFuncOutput>;
 
 public enum InputType 
 {
     MouseHover,
-    MouseLeft,
-    MouseRight
+    MouseLeftClick,
+    MouseLeftHold,
+    MouseRightClick,
+    MouseRightHold
 }
 
 /// <summary>
@@ -65,13 +67,28 @@ public class InputPacket
     public string ZoneKey { get { return _zoneKey; } }
 }
 
-public class InputPacketFuncInput
+public class InputPacketFuncArgs
 {
-    public IReadOnlyList<InputType> Inputs;
+    public IReadOnlyList<InputType> CapturedInputs;
+    public IReadOnlyList<InputType> ConsumedInputs;
+    public bool IsMouseHovering;
+
+    public bool IsUsable(InputType inputType)
+    {
+        if (inputType == InputType.MouseHover && !IsMouseHovering) return false;
+
+        if (CapturedInputs.Contains(inputType))
+        {
+            if (ConsumedInputs == null) return true;
+            else if (!ConsumedInputs.Contains(inputType)) return true;
+        }
+
+        return false;
+    }
 }
 
 public class InputPacketFuncOutput
 {
-    public IEnumerable<InputType> ConsumedInputs;
+    public IEnumerable<InputType> NewlyConsumedInputs;
 }
 

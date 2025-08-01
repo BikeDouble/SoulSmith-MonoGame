@@ -33,11 +33,11 @@ public class UnitUI : CanvasObject
 	private ButtonObject _targetButton;
 
 	public UnitUI() :
-		this(AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(TARGETBUTTONIDLERESOURCEKEY),
-            AssetManager.Instance.GetZonedResource<ZonedDrawableResource>(TARGETBUTTONHOVEREDRESOURCEKEY)) 
+		this(AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(TARGETBUTTONIDLERESOURCEKEY),
+            AssetManager.Instance.GetZonedResource<ZonedDrawableResourceInstance>(TARGETBUTTONHOVEREDRESOURCEKEY)) 
 	{ }
 
-	public UnitUI(ZonedDrawableResource targetButtonIdle, ZonedDrawableResource targetButtonHovered)
+	public UnitUI(ZonedDrawableResourceInstance targetButtonIdle, ZonedDrawableResourceInstance targetButtonHovered)
 		: base(new Position(0, 0, 1, 1, 0, ZVALUE))
 	{
 		if (targetButtonIdle == null) throw new ArgumentNullException(nameof(targetButtonIdle));
