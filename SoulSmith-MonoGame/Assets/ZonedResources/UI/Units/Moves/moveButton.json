@@ -1,23 +1,31 @@
 {
     "DrawableResource": "Textures/UI/Units/Moves/MoveButton",
-    "Zone": {
-        "Vertices": [
-            {
-                "X": 118,
-                "Y": 170
-            },
-            {
-                "X": 510,
-                "Y": 170
-            },
-            {
-                "X": 392,
-                "Y": 342
-            },
-            {
-                "X": 1,
-                "Y": 342
+    "Zones": [
+        {
+            "Key": "clickbox",
+            "Zone": {
+                "Type": "polygon",
+                "Data": {
+                    "Vertices": [
+                        {
+                            "X": 118,
+                            "Y": 170
+                        },
+                        {
+                            "X": 510,
+                            "Y": 170
+                        },
+                        {
+                            "X": 392,
+                            "Y": 342
+                        },
+                        {
+                            "X": 1,
+                            "Y": 342
+                        }
+                    ]
+                }
             }
-        ]
-    }
+        }
+    ]
 }

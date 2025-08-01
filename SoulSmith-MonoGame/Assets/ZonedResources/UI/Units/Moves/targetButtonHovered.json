@@ -1,23 +1,31 @@
 {
     "DrawableResource": "Textures/UI/Units/Moves/TargetButtonHovered",
-    "Zone": {
-        "Vertices": [
-            {
-                "X": 255,
-                "Y": 1
-            },
-            {
-                "X": 402,
-                "Y": 254
-            },
-            {
-                "X": 255,
-                "Y": 508
-            },
-            {
-                "X": 109,
-                "Y": 254
+    "Zones": [
+        {
+            "Key": "clickbox",
+            "Zone": {
+                "Type": "polygon",
+                "Data": {
+                    "Vertices": [
+                        {
+                            "X": 255,
+                            "Y": 1
+                        },
+                        {
+                            "X": 402,
+                            "Y": 254
+                        },
+                        {
+                            "X": 255,
+                            "Y": 508
+                        },
+                        {
+                            "X": 109,
+                            "Y": 254
+                        }
+                    ]
+                }
             }
-        ]
-    }
+        }
+    ]
 }

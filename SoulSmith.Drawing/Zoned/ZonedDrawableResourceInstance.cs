@@ -15,12 +15,12 @@ namespace SoulSmith.Drawing.Zoned
     [JsonConverter(typeof(ZonedDrawableResourceInstanceJsonConverter))]
     public class ZonedDrawableResourceInstance : IZonedResource, IMultiZone, IDisposable
     {
-        private IZone _zone;
+        private Dictionary<string, IZone> _zones;
         private IDrawableResource _resource;
 
-        public ZonedDrawableResourceInstance(IZone zone, IDrawableResource resource) //TODO add multizone support
+        public ZonedDrawableResourceInstance(IDictionary<string, IZone> zones, IDrawableResource resource) //TODO add multizone support
         {
-            _zone = zone;
+            _zones = new Dictionary<string, IZone>(zones);
             _resource = resource;
         }
         
@@ -36,13 +36,15 @@ namespace SoulSmith.Drawing.Zoned
 
         public bool ContainsGlobal(Vector2 point, IReadOnlyPosition transformation, string zoneKey)
         {
-            if (_zone == null) return false;
+            IZone zone = _zones.ContainsKey(zoneKey) ? _zones[zoneKey] : GetDefaultZone();
+
+            if (zone == null) return false;
 
             Position newTransformation = new Position(transformation);
 
             newTransformation.Translate(Origin * transformation.ScaleVector * -1);
 
-            return _zone.ContainsGlobal(point, newTransformation);
+            return zone.ContainsGlobal(point, newTransformation);
         }
 
         public bool ContainsLocal(Vector2 point)
@@ -52,11 +54,13 @@ namespace SoulSmith.Drawing.Zoned
 
         public bool ContainsLocal(Vector2 point, string zoneKey)
         {
-            if (_zone == null) { return false; }
+            IZone zone = _zones.ContainsKey(zoneKey) ? _zones[zoneKey] : GetDefaultZone();
+
+            if (zone == null) { return false; }
 
             Position originTransformation = new Position(Origin * -1);
 
-            return _zone.ContainsGlobal(point, originTransformation);
+            return zone.ContainsGlobal(point, originTransformation);
         }
 
         public Vector2 GetRandomLocalPoint()
@@ -66,7 +70,9 @@ namespace SoulSmith.Drawing.Zoned
 
         public Vector2 GetRandomLocalPoint(string zoneKey)
         {
-            return _zone.GetRandomLocalPoint();
+            IZone zone = _zones.ContainsKey(zoneKey) ? _zones[zoneKey] : GetDefaultZone();
+
+            return zone.GetRandomLocalPoint();
         }
 
         public Vector2 GetRandomGlobalPoint(IReadOnlyPosition position)
@@ -76,7 +82,9 @@ namespace SoulSmith.Drawing.Zoned
 
         public Vector2 GetRandomGlobalPoint(IReadOnlyPosition position, string zoneKey)
         {
-            return _zone.GetRandomGlobalPoint(position);
+            IZone zone = _zones.ContainsKey(zoneKey) ? _zones[zoneKey] : GetDefaultZone();
+
+            return zone.GetRandomGlobalPoint(position);
         }
 
         public float GetAreaLocal()
@@ -86,7 +94,9 @@ namespace SoulSmith.Drawing.Zoned
 
         public float GetAreaLocal(string zoneKey)
         {
-            return _zone.GetAreaLocal();
+            IZone zone = _zones.ContainsKey(zoneKey) ? _zones[zoneKey] : GetDefaultZone();
+
+            return zone.GetAreaLocal();
         }
 
         public float GetHeightLocal()
@@ -96,7 +106,9 @@ namespace SoulSmith.Drawing.Zoned
 
         public float GetHeightLocal(string zoneKey)
         {
-            return _zone.GetHeightLocal();
+            IZone zone = _zones.ContainsKey(zoneKey) ? _zones[zoneKey] : GetDefaultZone();
+
+            return zone.GetHeightLocal();
         }
 
         public float GetWidthLocal()
@@ -106,7 +118,9 @@ namespace SoulSmith.Drawing.Zoned
 
         public float GetWidthLocal(string zoneKey)
         {
-            return _zone.GetWidthLocal();
+            IZone zone = _zones.ContainsKey(zoneKey) ? _zones[zoneKey] : GetDefaultZone();
+
+            return zone.GetWidthLocal();
         }
 
         public void Draw(IReadOnlyPosition position, Color color, SpriteBatch spriteBatch)
@@ -117,6 +131,12 @@ namespace SoulSmith.Drawing.Zoned
         public void Dispose() 
         {
             _resource.Dispose();
+        }
+
+        private IZone GetDefaultZone()
+        {
+            if (_zones.Count == 0) return null;
+            return _zones.Values.FirstOrDefault();
         }
 
         public int Width { get { return _resource.Width; } }
@@ -134,7 +154,7 @@ namespace SoulSmith.Drawing.Zoned
             reader.Read();
 
             IDrawableResource resource = null;
-            IZone zone = null;
+            Dictionary<string, IZone> zones = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -146,8 +166,10 @@ namespace SoulSmith.Drawing.Zoned
 
                 switch (propertyName)
                 {
-                    case "Zone":
-                        zone = JsonSerializer.Deserialize<IZone>(ref reader, options);
+                    case "Zones":
+                    case "zones":
+                        ZoneDictionaryJsonConverter zoneConverter = new ZoneDictionaryJsonConverter();
+                        zones = zoneConverter.Read(ref reader, typeof(Dictionary<string, IZone>), options);
                         reader.Read();
                         break;
                     case "Resource":
@@ -162,7 +184,10 @@ namespace SoulSmith.Drawing.Zoned
                 }
             }
 
-            return new ZonedDrawableResourceInstance(zone, resource);
+            if (zones == null || zones.Count == 0) throw new JsonException("Zones cannot be null or empty");
+            if (resource == null) throw new JsonException("Resource cannot be null");
+
+            return new ZonedDrawableResourceInstance(zones, resource);
         }
 
         public override void Write(Utf8JsonWriter writer, ZonedDrawableResourceInstance value, JsonSerializerOptions options)

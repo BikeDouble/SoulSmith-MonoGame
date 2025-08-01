@@ -1,23 +1,31 @@
 {
     "DrawableResource": "Textures/UI/Units/List/Backboard",
-    "Zone": {
-        "Vertices": [
-            {
-                "X": 0,
-                "Y": 0
-            },
-            {
-                "X": 128,
-                "Y": 0
-            },
-            {
-                "X": 128,
-                "Y": 320
-            },
-            {
-                "X": 0,
-                "Y": 320
+    "Zones": [
+        {
+            "Key": "clickbox",
+            "Zone": {
+                "Type": "polygon",
+                "Data": {
+                    "Vertices": [
+                        {
+                            "X": 0,
+                            "Y": 0
+                        },
+                        {
+                            "X": 128,
+                            "Y": 0
+                        },
+                        {
+                            "X": 128,
+                            "Y": 320
+                        },
+                        {
+                            "X": 0,
+                            "Y": 320
+                        }
+                    ]
+                }
             }
-        ]
-    }
+        }
+    ]
 }
