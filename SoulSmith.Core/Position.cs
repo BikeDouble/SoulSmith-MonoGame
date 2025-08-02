@@ -95,6 +95,27 @@ namespace SoulSmith.Core
             return newRelativePos + origin;
         }
 
+        public static Vector2 TransformPoint(Vector2 point, IReadOnlyPosition transformation)
+        {
+            Vector2 scaledPos = point * transformation.ScaleVector;
+            Vector2 translatedPos = scaledPos + transformation.Coordinates;
+            float rotation = transformation.Rotation;
+            Vector2 rotatedPos = RotatePointAroundPoint(translatedPos, transformation.Coordinates, rotation);
+            return rotatedPos;
+        }
+
+        public static Vector2 InverseTransformPoint(Vector2 point, IReadOnlyPosition transformation)
+        {
+            float inverseRotation = -transformation.Rotation;
+            Vector2 rotatedPos = RotatePointAroundPoint(point, transformation.Coordinates, inverseRotation);
+
+            Vector2 translatedPos = rotatedPos - transformation.Coordinates;
+
+            Vector2 scaledPos = translatedPos / transformation.ScaleVector;
+
+            return scaledPos;
+        }
+
         public void SetCoordinates(Vector2 coordinates)
         {
             Coordinates = coordinates;

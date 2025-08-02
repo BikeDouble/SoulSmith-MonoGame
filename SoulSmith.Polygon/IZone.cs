@@ -54,11 +54,14 @@ namespace SoulSmith.Shapes
 
             IZone zone;
 
-            switch (typeName)
+            switch (typeName.ToLower())
             {
-                case "Polygon":
                 case "polygon":
                     zone = JsonSerializer.Deserialize<Polygon>(ref reader, options);
+                    reader.Read();
+                    break;
+                case "circle":
+                    zone = JsonSerializer.Deserialize<Circle>(ref reader, options);
                     reader.Read();
                     break;
                 default:

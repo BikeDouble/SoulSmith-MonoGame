@@ -325,7 +325,7 @@ namespace SoulSmith.Shapes
         }
     }
 
-    internal class PolygonJsonConverter : System.Text.Json.Serialization.JsonConverter<Polygon>
+    public class PolygonJsonConverter : System.Text.Json.Serialization.JsonConverter<Polygon>
     {
         public override Polygon Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -391,37 +391,6 @@ namespace SoulSmith.Shapes
         public override void Write(Utf8JsonWriter writer, Polygon value, JsonSerializerOptions options)
         {
             //TODO
-        }
-    }
-
-    internal class ColorConverter : JsonConverter<Color> //TODO remove
-    {
-        public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (reader.TokenType != JsonTokenType.StartArray)
-                throw new JsonException("Expected StartArray token");
-
-            float[] floats = new float[4];
-
-            int i = 0;
-
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonTokenType.EndArray)
-                    break;
-
-                if (reader.TokenType != JsonTokenType.Number)
-                    throw new JsonException("Expected Number");
-
-                floats[i] = reader.GetSingle();
-            }
-
-            return new Color(floats[0], floats[1], floats[2], floats[3]);
-        }
-
-        public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
-        {
-            return; //TODO
         }
     }
 }
