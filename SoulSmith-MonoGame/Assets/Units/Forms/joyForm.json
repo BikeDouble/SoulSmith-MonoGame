@@ -1,8 +1,8 @@
 {
     "FriendlyName": "Joy",
     "Sprite": {
-        "Type": "Animation",
-        "Key": "Animations/Units/Forms/Joy"
+        "Type": "ZonedResource",
+        "Key": "ZonedResources/UnitSprites/Forms/Joy"
     },
     "MaxHealth": 600,
     "Attack": 120,

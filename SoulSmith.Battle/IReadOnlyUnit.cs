@@ -16,9 +16,8 @@ public interface IReadOnlyUnit : IReadOnlyCanvasObject
     ReadOnlyCollection<Moves.Move> MoveSet { get; }
     string SpriteKey { get; }
     IReadOnlyUnitStats ReadOnlyStats { get; }
+    IReadOnlyUnitSprite ReadOnlySprite { get; }
     string FriendlyName { get; }
-    IMultiZone HitZone { get; }
-    IMultiZone FireZone { get; }
     int MaxHealth { get; }
     int CurHealth { get; }
     int Attack { get; }

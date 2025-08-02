@@ -2,12 +2,15 @@
 using SoulSmith.Core;
 using SoulSmith.Vector;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SoulSmith.Shapes
 {
+    [JsonConverter(typeof(CircleJsonConverter))]
     public class Circle : IZone
     {
         private float _radius;
+        private Vector2 _offset;
 
         public Circle(float radius)
         {
@@ -23,7 +26,9 @@ namespace SoulSmith.Shapes
 
         public bool ContainsLocal(Vector2 point)
         {
-            return Math.Pow(point.X, 2) + Math.Pow(point.Y, 2) <= Math.Pow(_radius, 2); 
+            Vector2 newPoint = point - _offset;
+
+            return Math.Pow(newPoint.X, 2) + Math.Pow(newPoint.Y, 2) <= Math.Pow(_radius, 2); 
         }
 
         public Vector2 GetRandomGlobalPoint(IReadOnlyPosition transformation)
@@ -41,6 +46,8 @@ namespace SoulSmith.Shapes
             float y = (float)(Math.Sin(angle) * distanceFromRadius);
 
             Vector2 randomPoint = new Vector2(x, y);
+
+            randomPoint += _offset;
 
             return randomPoint;
         }
@@ -70,6 +77,7 @@ namespace SoulSmith.Shapes
             reader.Read();
 
             float? radius = null;
+            Vector2 offset = Vector2.Zero;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -85,6 +93,12 @@ namespace SoulSmith.Shapes
                     case "diameter":
                         radius = reader.GetSingle() / 2;
                         reader.Read();
+                        break;
+                    case "offset":
+                    case "position":
+                        Vector2JsonConverter vector2JsonConverter = new Vector2JsonConverter();
+                        offset = vector2JsonConverter.Read(ref reader, typeof(Vector2), options);
+                        reader.Read(); 
                         break;
                     default:
                         throw new JsonException($"Unknown property: {propertyName}");

@@ -5,6 +5,9 @@ using System.Text.Json;
 namespace SoulSmith.Battle.Effects.Visualization;
 public class EffectVisualization : CanvasObject
 {
+    public const string FIREZONEZONEKEY = "firezone";
+    public const string HITZONEZONEKEY = "hitzone";
+
     private float _totalLifespan = 3f; //Time in seconds before visualization automatically completes
     private float _elapsedLifespan = 0f;
     private float _effectActivationTimer = -1;

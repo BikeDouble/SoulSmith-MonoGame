@@ -1,10 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using SoulSmith.Drawing;
+﻿using Microsoft.Xna.Framework;
 using SoulSmith.Core;
-using SoulSmith.Shapes;
-using SoulSmith.Asset;
+using SoulSmith.Drawing;
+using SoulSmith.Drawing.Zoned;
 using SoulSmith.Input;
+using SoulSmith.Shapes;
 
 namespace SoulSmith.Object.Canvas;
 public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
@@ -345,6 +344,115 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         {
             Resource.OriginPlacement = originPlacement;
         }
+    }
+
+    //
+    // IMultiZone implementation.
+    //
+
+    public bool ContainsGlobal(Vector2 point, IReadOnlyPosition transformation = null)
+    {
+        return ContainsGlobal(point, transformation, string.Empty);
+    }
+
+    public bool ContainsGlobal(Vector2 point, IReadOnlyPosition transformation, string zoneKey)
+    {
+        if (Resource is ZonedDrawableResourceInstance instance)
+        {
+            return instance.ContainsGlobal(point, transformation, zoneKey);
+        }
+
+        return point == transformation.Coordinates;
+    }
+
+    public bool ContainsLocal(Vector2 point)
+    {
+        return ContainsLocal(point, string.Empty);
+    }
+
+    public bool ContainsLocal(Vector2 point, string zoneKey)
+    {
+        if (Resource is ZonedDrawableResourceInstance instance)
+        {
+            return instance.ContainsLocal(point, zoneKey);
+        }
+
+        return point == Vector2.Zero;
+    }
+
+    public Vector2 GetRandomLocalPoint()
+    {
+        return GetRandomLocalPoint(string.Empty);
+    }
+
+    public Vector2 GetRandomLocalPoint(string zoneKey)
+    {
+        if (Resource is ZonedDrawableResourceInstance instance)
+        {
+            return instance.GetRandomLocalPoint(zoneKey);
+        }
+
+        return Vector2.Zero;
+    }
+
+    public Vector2 GetRandomGlobalPoint(IReadOnlyPosition position)
+    {
+        return GetRandomGlobalPoint(position, string.Empty);
+    }
+
+    public Vector2 GetRandomGlobalPoint(IReadOnlyPosition position, string zoneKey)
+    {
+        if (Resource is ZonedDrawableResourceInstance instance)
+        {
+            return instance.GetRandomGlobalPoint(position, zoneKey);
+        }
+
+        return position.Coordinates;
+    }
+
+    public float GetAreaLocal()
+    {
+        return GetAreaLocal(string.Empty);
+    }
+
+    public float GetAreaLocal(string zoneKey)
+    {
+        if (Resource is ZonedDrawableResourceInstance instance)
+        {
+            return instance.GetAreaLocal(zoneKey);
+        }
+
+        return 0;
+    }
+
+    public float GetHeightLocal()
+    {
+        return GetHeightLocal(string.Empty);
+    }
+
+    public float GetHeightLocal(string zoneKey)
+    {
+        if (Resource is ZonedDrawableResourceInstance instance)
+        {
+            return instance.GetHeightLocal(zoneKey);
+        }
+
+        return 0;
+    }
+
+    public float GetWidthLocal()
+    {
+        return GetWidthLocal(string.Empty);
+    }
+
+    public float GetWidthLocal(string zoneKey)
+    {
+        if (Resource is ZonedDrawableResourceInstance instance)
+        {
+            return instance.GetWidthLocal(zoneKey);
+        }
+
+        return 0;
     }
 
     public bool Visible { get { return _visible; } }

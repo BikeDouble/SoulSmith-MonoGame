@@ -35,27 +35,16 @@ namespace SoulSmith.Battle.Effects.Visualization
         {
             base.BeginVisualization(sender, target, delay);
 
-            if (Sender.FireZone != null)
-            {
-                _startPoint = Sender.FireZone.GetRandomGlobalPoint(Sender.GetGlobalPosition());
-            }
-            else
-            {
-                _startPoint = Sender.GetGlobalPosition().Coordinates;
-            }
+            IReadOnlyCanvasObject senderSprite = sender.ReadOnlySprite;
+
+            _startPoint = senderSprite.GetRandomGlobalPoint(Sender.GetGlobalPosition(), FIREZONEZONEKEY);
 
             _missile.SetCoordinates(_startPoint);
 
             if (_missileSizeInPixels.HasValue) _missile.ScaleToSetSize(_missileSizeInPixels.Value);
 
-            if (Target.HitZone != null)
-            {
-                _endPoint = Target.HitZone.GetRandomGlobalPoint(Target.GetGlobalPosition());
-            }
-            else
-            {
-                _endPoint = Target.GetGlobalPosition().Coordinates;
-            }
+            _endPoint = senderSprite.GetRandomGlobalPoint(Target.GetGlobalPosition(), HITZONEZONEKEY);
+
         }
 
         protected override void EnabledProcess(double delta)

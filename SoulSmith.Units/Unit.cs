@@ -28,8 +28,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	private bool _playerControlled = false;
 	private int _combatPosition;
 	private EmotionTag.EmotionTag _emotionTag;
-	private IMultiZone _hitZone = null;
-	private IMultiZone _fireZone = null;
 
 	public Unit(UnitTemplate template) : this(
 		new StatsList(template.StatsList),
@@ -285,9 +283,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	public int CombatPosition { get { return _combatPosition; } set { _combatPosition = value; } }
 	public UnitUI UI { get { return _uI; } }
 	public UnitSprite Sprite { get { return _sprite; } }
-	public string FriendlyName { get { return _friendlyName; } }
-	public IMultiZone HitZone { get { return _hitZone; } }
-	public IMultiZone FireZone { get { return _fireZone; } }
+	public IReadOnlyUnitSprite ReadOnlySprite { get { return _sprite; } }
+    public string FriendlyName { get { return _friendlyName; } }
     public int MaxHealth { get { return _stats.GetModStat(StatType.MaxHealth); } }
     public int CurHealth { get { return _stats.GetModStat(StatType.CurHealth); } }
     public int Attack { get { return _stats.GetModStat(StatType.Attack); } }

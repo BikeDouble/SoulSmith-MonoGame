@@ -13,7 +13,7 @@ using SoulSmith.Shapes;
 namespace SoulSmith.Drawing.Zoned
 {
     [JsonConverter(typeof(ZonedDrawableResourceInstanceJsonConverter))]
-    public class ZonedDrawableResourceInstance : IZonedResource, IMultiZone, IDisposable
+    public class ZonedDrawableResourceInstance : IMultiZone, IDisposable, IDrawableResource
     {
         private Dictionary<string, IZone> _zones;
         private IDrawableResource _resource;

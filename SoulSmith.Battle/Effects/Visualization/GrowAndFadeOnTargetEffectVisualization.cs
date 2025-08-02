@@ -33,14 +33,9 @@ namespace SoulSmith.Battle.Effects.Visualization
 
             Vector2 startPoint;
 
-            if (Target.HitZone != null)
-            {
-                startPoint = Target.HitZone.GetRandomGlobalPoint(Target.GetGlobalPosition());
-            }
-            else
-            {
-                startPoint = Target.GetGlobalPosition().Coordinates;
-            }
+            IReadOnlyUnitSprite targetSprite = target.ReadOnlySprite;
+
+            startPoint = targetSprite.GetRandomGlobalPoint(Target.GetGlobalPosition(), HITZONEZONEKEY);
 
             int rotation = Rand.RandInt(360);
 
