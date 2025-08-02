@@ -10,6 +10,7 @@ using SoulSmith.Object.Canvas;
 using SoulSmith.Drawing.Zoned;
 using SoulSmith.Units;
 using SoulSmith.Input;
+using SoulSmith.Battle;
 
 namespace SoulSmith.Game;
 public class GameHeaderUI : CanvasObject
@@ -46,6 +47,7 @@ public class GameHeaderUI : CanvasObject
     { 
         _unitListUI = new UnitListUI(new Position(750, 200));
         _unitListUI.ClickedOutsideEventHandler += OnUnitListUIClickedOutside;
+        _unitListUI.EntryPressedEventHandler += OnOnUnitListUIEntryPressed;
         AddChild(_unitListUI);
     }
 
@@ -62,12 +64,19 @@ public class GameHeaderUI : CanvasObject
     private void OnUnitInventoryButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         UnitInventoryButtonPressedEventHandler?.Invoke(this, new UnitInventoryButtonPressedEventArgs()); 
-        _ignoreUnitListUIClickedOutside = true; // Ignore the next ClickedOutside event from the UnitListUI, since it will be triggered by the button press.
     }
 
-    public void ShowUnitInventory(List<Unit> units)
+    public EventHandler<UnitListUIEntryPressedEventArgs> UnitListUIEntryPressedEventHandler;
+
+    private void OnOnUnitListUIEntryPressed(object sender, UnitListUIEntryPressedEventArgs args)
+    {
+        UnitListUIEntryPressedEventHandler?.Invoke(this, args);
+    }
+
+    public void ShowUnitInventory(List<IReadOnlyUnit> units)
     {
         _unitListUI.ShowUnits(units);
+        _ignoreUnitListUIClickedOutside = true; // Ignore the next ClickedOutside event from the UnitListUI, since it will be triggered by the button press.
     }
 
     public void HideUnitInventory()

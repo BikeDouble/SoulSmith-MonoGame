@@ -4,18 +4,34 @@ using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Trigger;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
+using SoulSmith.Battle;
 
 namespace SoulSmith.Combat;
-public class TeamPosition : CanvasObject
+public class TeamPosition : CanvasObject, IReadOnlyTeamPosition
 {
+    public const string DEPLOYUNITBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/TargetButtonIdle";
+    public const string DEPLOYUNITBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/Moves/TargetButtonHovered";
+
+    // Children
 	private Unit _unit;
+    private ButtonObject _deployUnitButton;
 
 	private bool _movedThisRound = false;
 	private bool _containsUnit = false;
+    private readonly bool _playerControlled;
 
-    public TeamPosition(float x, float y, float width = 1, float height = 1) : base(new Core.Position(x, y, width, height))
+    public TeamPosition(float x, float y, bool playerControlled, float width = 1, float height = 1) : base(new Core.Position(x, y, width, height))
     {
-		
+        _playerControlled = playerControlled;
+        InitializeDeployUnitButton();
+    }
+
+    private void InitializeDeployUnitButton()
+    {
+        _deployUnitButton = new ButtonObject(DEPLOYUNITBUTTONIDLERESOURCEKEY, DEPLOYUNITBUTTONHOVEREDRESOURCEKEY);
+        _deployUnitButton.ButtonPressedEventHandler += OnDeployUnitButtonPressed;
+        AddChild(_deployUnitButton);
+        _deployUnitButton.Hide();
     }
 
     public void AssignUnit(Unit unit)
@@ -30,6 +46,7 @@ public class TeamPosition : CanvasObject
         AddChild(unit);
 
         _unit.OnJoinCombat();
+        _deployUnitButton.Hide();
     }
 
     public void RetreatUnit()
@@ -58,12 +75,22 @@ public class TeamPosition : CanvasObject
     // Listeners
     //
 
+    public void ShowDeployUnitUI()
+    {
+        _deployUnitButton.Show();
+    }
+
+    public void HideDeplotUnitButton()
+    {
+        _deployUnitButton.Hide();
+    }
+
     public void ShowMoveSelectUI()
 	{
-		if (!_movedThisRound && _containsUnit)
-		{
-			_unit.ShowMoveSelectUI();
-		}
+        if (_containsUnit)
+        {
+            if (!_movedThisRound) _unit.ShowMoveSelectUI();
+        }
 	}
 	
 	public void HideMoveSelectUI()
@@ -106,6 +133,7 @@ public class TeamPosition : CanvasObject
 		OfferTargetEventHandler(this, args);
 	}
 
+    //Connected to Unit
 	public event EventHandler<UnitDeathCallArgs> UnitDeathCallEventHandler;
 
 	private void OnUnitDeathCall(object sender, UnitDeathCallArgs e)
@@ -115,11 +143,21 @@ public class TeamPosition : CanvasObject
 		UnitDeathCallEventHandler(this, e);
 	}
 
+    //Connected to Unit
     public event EventHandler<UnitRetreatCallArgs> UnitRetreatCallEventHandler;
 
     private void OnUnitRetreatCall(object sender, UnitRetreatCallArgs e)
     {
         UnitRetreatCallEventHandler?.Invoke(this, e);
+    }
+
+    public EventHandler<DeployUnitButtonPressedEventArgs> DeployUnitButtonPressedEventHandler;
+
+    private void OnDeployUnitButtonPressed(object sender, ButtonPressedEventArgs e)
+    {
+        DeployUnitButtonPressedEventArgs e2 = new DeployUnitButtonPressedEventArgs();
+        e2.CallingPosition = this;
+        DeployUnitButtonPressedEventHandler?.Invoke(this, e2);
     }
 
     public void OnUnitLeaveCombat()
@@ -186,4 +224,9 @@ public class TeamPosition : CanvasObject
     public Unit Unit { get { return _unit; } } //Make sure this contains unit first!
 	public bool ContainsUnit {  get { return _containsUnit; } } //TODO make this a Unit != null check
 	public bool MovedThisRound { get { return _movedThisRound; } set { _movedThisRound = value; } }
+}
+
+public class DeployUnitButtonPressedEventArgs : EventArgs
+{
+    public IReadOnlyTeamPosition CallingPosition;
 }

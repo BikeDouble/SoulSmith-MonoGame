@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using SoulSmith.MoveSelection;
 using SoulSmith.Units;
+using SoulSmith.Battle;
 
 namespace SoulSmith.Game;
 public partial class GameManager : CanvasObject
@@ -42,6 +43,7 @@ public partial class GameManager : CanvasObject
 		AddChild(_headerUI);
 		_headerUI.UnitInventoryButtonPressedEventHandler += OnUnitInventoryButtonPressed;
 		_headerUI.UnitListUIClickedOutsideEventHandler += OnUnitListUIClickedOutside;
+		_headerUI.UnitListUIEntryPressedEventHandler += OnUnitListUIEntryPressed;
     }
 
 	private void InitializeCamp()
@@ -57,6 +59,8 @@ public partial class GameManager : CanvasObject
 
 		_combatManager.OfferUnitToInventoryEventHandler += OnOfferUnitToInventory;
 		_combatManager.RoundEndEventHandler += ProcessRoundEnd;
+		_combatManager.GetUnitsInInventoryEventHandler += OnGetUnitsInInventoryInArgs;
+		_combatManager.DeployUnitButtonPressedEventHandler += OnDeployUnitButtonPressed;
         _combatManager.BeginRound();
 	}
 
@@ -96,14 +100,49 @@ public partial class GameManager : CanvasObject
 		_campManager.OnRoundEnd();
 	}
 
+	private void OnGetUnitsInInventoryInArgs(object sender, GetUnitsInInventoryEventArgs e)
+	{
+		e.UnitsInInventory = _unitInventory.GetUnitsAsReadOnly();
+	}
+
 	private void OnUnitInventoryButtonPressed(object sender, UnitInventoryButtonPressedEventArgs e)
 	{
-		_headerUI.ShowUnitInventory(_unitInventory.GetUnits());
+		_headerUI.ShowUnitInventory(_unitInventory.GetUnitsAsReadOnly());
     }
 
 	private void OnUnitListUIClickedOutside(object sender, ButtonPressedEventArgs e)
 	{
 		_headerUI.HideUnitInventory();
+		_positionAwaitingUnit = null;
+    }
+
+	private void OnUnitListUIEntryPressed(object sender, UnitListUIEntryPressedEventArgs e)
+	{
+		if (_positionAwaitingUnit != null)
+		{
+			Unit unit = _unitInventory.GetMatchingUnit(e.Unit);
+
+			if (unit != null)
+			{
+				_combatManager.DeployUnitAtPosition(_positionAwaitingUnit, unit);
+				_unitInventory.RemoveUnit(unit);
+                _positionAwaitingUnit = null;
+				_headerUI.HideUnitInventory();
+            }
+		}
+	}
+
+	private IReadOnlyTeamPosition _positionAwaitingUnit;
+
+    // Listens to combat
+    private void OnDeployUnitButtonPressed(object sender, DeployUnitButtonPressedEventArgs e)
+    {
+		_positionAwaitingUnit = e.CallingPosition;
+
+		if (_positionAwaitingUnit != null)
+		{
+			_headerUI.ShowUnitInventory(_unitInventory.GetUnitsAsReadOnly());
+		}
     }
 }
 

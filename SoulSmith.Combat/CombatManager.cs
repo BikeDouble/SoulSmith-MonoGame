@@ -100,8 +100,10 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
             team.EnqueueEffectInputEventHandler += OnOfferEffectInput;
             team.ShowMoveSelectUIEventHandler += OnShowMoveSelectUI;
             team.ShowTargetSelectUIEventHandler += OnShowTargetSelectUI;
+			team.ShowDeployUnitUIEventHandler += OnShowDeployUnitUI;
             team.UnitDeathCallEventHandler += OnUnitDeathCall;
 			team.UnitRetreatCallEventHandler += OnUnitRetreatCall;
+			team.DeployUnitButtonPressedEventHandler += OnDeployUnitButtonPressed;
         }
     }
 
@@ -206,6 +208,19 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 
 		return null;
 	}
+
+    private CombatTeam GetTeamWithPosition(IReadOnlyTeamPosition position)
+    {
+        foreach (CombatTeam team in _teams)
+        {
+            if (team.ContainsPosition(position))
+            {
+                return team;
+            }
+        }
+
+        return null;
+    }
 
     public IReadOnlyCombatTeam GetReadOnlyTeamWithUnit(IReadOnlyUnit unit)
     {
@@ -321,6 +336,13 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 		//team.AssignUnitToPosition(unit, positionIndex);
 	}
 
+	public void DeployUnitAtPosition(IReadOnlyTeamPosition position, Unit unit) //TODO implement deploy phase
+	{
+		CombatTeam team = GetTeamWithPosition(position);
+
+		team.AssignUnitToPosition(unit, position);
+	}
+
 	//
 	// Turn Processing
 	//
@@ -373,8 +395,19 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 		RoundEndEventHandler(this, e);
 	}
 
-	//Listens to both teams
-	private void OnOfferMoveAndUser(object sender, MoveButtonPressedEventArgs args)
+	public event EventHandler<GetUnitsInInventoryEventArgs> GetUnitsInInventoryEventHandler;
+
+	private List<IReadOnlyUnit> GetUnitsInInventory()
+	{
+		GetUnitsInInventoryEventArgs e = new GetUnitsInInventoryEventArgs();
+
+		GetUnitsInInventoryEventHandler?.Invoke(this, e);
+
+		return e.UnitsInInventory;
+	}
+
+    //Listens to both teams
+    private void OnOfferMoveAndUser(object sender, MoveButtonPressedEventArgs args)
 	{
 		foreach (CombatTeam team in _teams)
 		{
@@ -398,8 +431,21 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	//Listens to both teams
 	private void OnShowMoveSelectUI(object sender, ShowMoveSelectUIEventArgs e)
 	{
-		ActiveTeam.ShowMoveSelectUIOrder();
+		ActiveTeam.ShowMoveSelectUI();
 	}
+
+	//Listens to both teams
+	private void OnShowDeployUnitUI(object sender, ShowDeployUnitUIEventArgs e)
+	{
+        if (ActiveTeam.PlayerControlled)
+        {
+            List<IReadOnlyUnit> unitsInInventory = GetUnitsInInventory();
+            if (unitsInInventory != null && unitsInInventory.Count > 0)
+            {
+                ActiveTeam.ShowDeployUnitUI();
+            }
+        }
+    }
 
 	//Listens to both teams
 	private void OnUnitDeathCall(object sender, UnitDeathCallArgs e) 
@@ -457,7 +503,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 				break;
 		}
 
-		showingTeam.ShowTargetSelectUIOrder(positions);
+		showingTeam.ShowTargetSelectUI(positions);
 	}
 
 	// Listens to both teams
@@ -468,8 +514,16 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         _effectQueue.EnqueueEffect(effectInput, parentEffectResult);
 	}
 
-	// Listens to effect queue
-	private void ExecuteEffect(object sender, ExecuteEffectEventArgs e)
+    public EventHandler<DeployUnitButtonPressedEventArgs> DeployUnitButtonPressedEventHandler;
+
+	// Listenst to both teams
+    private void OnDeployUnitButtonPressed(object sender, DeployUnitButtonPressedEventArgs e)
+    {
+        DeployUnitButtonPressedEventHandler?.Invoke(this, e);
+    }
+
+    // Listens to effect queue
+    private void ExecuteEffect(object sender, ExecuteEffectEventArgs e)
 	{
 		Payload request = e.EffectRequest;
 
@@ -638,4 +692,9 @@ public class OfferUnitToInventoryEventArgs : EventArgs
 public class RoundEndEventArgs : EventArgs
 {
 
+}
+
+public class GetUnitsInInventoryEventArgs : EventArgs
+{
+	public List<IReadOnlyUnit> UnitsInInventory;
 }

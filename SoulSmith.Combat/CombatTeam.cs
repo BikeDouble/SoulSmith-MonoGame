@@ -40,6 +40,7 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		_moveSelector.OfferCompleteMoveInputEventHandler += OnOfferCompleteMoveInput;
 		_moveSelector.ShowMoveSelectUIEventHandler += OnShowMoveSelectUI;
 		_moveSelector.ShowTargetSelectUIEventHandler += OnShowTargetSelectUI;
+		_moveSelector.ShowDeployUnitUIEventHandler += OnShowDeployUnitUI;
 		_moveSelector.OfferPassTurnEventHandler += OnOfferPassTurn;
 	}
 
@@ -49,15 +50,15 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		{
 			if (_playerControlled)
 			{
-				_teamPositions.Add(new TeamPosition(BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4));
-				_teamPositions.Add(new TeamPosition(FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2));
-				_teamPositions.Add(new TeamPosition(BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4));
+				_teamPositions.Add(new TeamPosition(BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4, true));
+				_teamPositions.Add(new TeamPosition(FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2, true));
+				_teamPositions.Add(new TeamPosition(BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4, true));
 			}
 			else
 			{
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4, -1, 1));
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2, -1, 1));
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4, -1, 1));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4, false, -1, 1));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2, false, -1, 1));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4, false, -1, 1));
 			}
         }
 
@@ -66,11 +67,19 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 			AddChild(position);
 			position.OfferMoveAndUserEventHandler += OnOfferMoveAndUser;
 			position.OfferTargetEventHandler += OnOfferTarget;
+			position.DeployUnitButtonPressedEventHandler += OnDeployUnitButtonPressed;
 			position.EnqueueEffectInputEventHandler += EnqueueEffectInput;
 			position.UnitDeathCallEventHandler += OnUnitDeathCall;
 			position.UnitRetreatCallEventHandler += OnUnitRetreatCall;
         }
 	}
+
+    public EventHandler<DeployUnitButtonPressedEventArgs> DeployUnitButtonPressedEventHandler;
+
+    private void OnDeployUnitButtonPressed(object sender, DeployUnitButtonPressedEventArgs e)
+    {
+        DeployUnitButtonPressedEventHandler?.Invoke(this, e);
+    }
 
     public event EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler;
 
@@ -83,20 +92,30 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 	{
 		if (unit == null)
 		{
-			Trace.TraceError("UnitSprite assigned to team is null.");
-			return;
+			throw new ArgumentNullException("Unit cannot be null.");
 		}
 
 		TeamPosition position = _teamPositions[positionIndex];
 
-		if (position.ContainsUnit)
-		{
-			Trace.TraceError("Attempted to assign unit to position that already contains unit.");
-			return;
-		}
-
-		position.AssignUnit(unit);
+		AssignUnitToPosition(unit, position);
 	}
+
+    public void AssignUnitToPosition(Unit unit, IReadOnlyTeamPosition readOnlyPosition)
+    {
+        TeamPosition position = GetMatchingPosition(readOnlyPosition);
+
+        AssignUnitToPosition(unit, position);
+    }
+
+    public void AssignUnitToPosition(Unit unit, TeamPosition position)
+	{
+        if (position.ContainsUnit)
+        {
+            throw new ArgumentException("Position already contains unit.");
+        }
+
+        position.AssignUnit(unit);
+    }
 
 	//
 	// Listeners
@@ -156,7 +175,15 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		ShowTargetSelectUIEventHandler(this, e);
 	}
 
-	public void ShowMoveSelectUIOrder()
+	public event EventHandler<ShowDeployUnitUIEventArgs> ShowDeployUnitUIEventHandler;
+
+	//Listens to msl
+	private void OnShowDeployUnitUI(object sender, ShowDeployUnitUIEventArgs e)
+	{
+		ShowDeployUnitUIEventHandler?.Invoke(this, e);
+	}
+
+	public void ShowMoveSelectUI()
 	{
 		foreach (TeamPosition position in _teamPositions)
 		{
@@ -164,11 +191,19 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		}
 	}
 
-	public void ShowTargetSelectUIOrder(List<int> positionNumbers)
+	public void ShowTargetSelectUI(List<int> positionNumbers)
 	{
 		foreach (int positionNumber in positionNumbers)
 		{
 			_teamPositions[positionNumber].ShowTargetSelectUI();
+		}
+	}
+
+	public void ShowDeployUnitUI()
+	{
+		foreach (TeamPosition position in _teamPositions)
+		{
+			if (!position.ContainsUnit) position.ShowDeployUnitUI();
 		}
 	}
 
@@ -255,11 +290,26 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		return false;
 	}
 
-	/// <summary>
-	/// Returns position that houses the unit, or null if not found
-	/// </summary>
-	/// <param name="unit"></param>
-	/// <returns></returns>
+    /// <summary>
+    /// Returns true iff this team contains specified position
+    /// </summary>
+    /// <param name="readOnlyPosition"></param>
+    /// <returns></returns>
+    public bool ContainsPosition(IReadOnlyTeamPosition readOnlyPosition)
+    {
+        foreach (TeamPosition position in _teamPositions)
+        {
+            if (position == readOnlyPosition) return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Returns position that houses the unit, or null if not found
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <returns></returns>
     public TeamPosition GetPositionWithUnit(IReadOnlyUnit unit)
     {
         foreach (TeamPosition position in _teamPositions)
@@ -314,6 +364,16 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		{
             return position.Unit;
         }
+
+		return null;
+	}
+
+	public TeamPosition GetMatchingPosition(IReadOnlyTeamPosition readOnlyPosition)
+	{
+		foreach (TeamPosition position in _teamPositions)
+		{
+			if (position == readOnlyPosition) return position;
+		}
 
 		return null;
 	}

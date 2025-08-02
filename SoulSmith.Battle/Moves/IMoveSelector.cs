@@ -8,6 +8,8 @@ public interface IMoveSelector
 
     public event EventHandler<ShowTargetSelectUIEventArgs> ShowTargetSelectUIEventHandler;
 
+    public event EventHandler<ShowDeployUnitUIEventArgs> ShowDeployUnitUIEventHandler;
+
     public event EventHandler<OfferPassTurnEventArgs> OfferPassTurnEventHandler;
 
     public void ReceiveSender(IReadOnlyUnit unit);
@@ -38,6 +40,11 @@ public class ShowMoveSelectUIEventArgs : EventArgs
 }
 
 public class OfferPassTurnEventArgs : EventArgs
+{
+
+}
+
+public class ShowDeployUnitUIEventArgs : EventArgs
 {
 
 }

@@ -466,6 +466,17 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         return result;
     }
 
+	private void ClearModifiers() 
+	{
+		foreach (IModifier modifier in _modifiers)
+		{
+            RemoveModifierEventArgs e = new RemoveModifierEventArgs();
+            e.Modifier = modifier;
+
+            RemoveModifier(this, e);
+        }
+	}
+
     private void ApplyModifier(IModifier modifier, IReadOnlyUnit sender)
 	{
 		if (modifier == null) return;
@@ -477,13 +488,14 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	public void OnRetreat()
 	{
-		//TODO
-	}
+        ClearModifiers();
+    }
 
 	public void OnDeath()
 	{
 		SetDeathStats();
-	}
+        ClearModifiers();
+    }
 
 	private void SetDeathStats()
 	{

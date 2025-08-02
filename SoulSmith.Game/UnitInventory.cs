@@ -1,6 +1,7 @@
 ﻿
 using SoulSmith.Units;
 using SoulSmith.Object.Canvas;
+using SoulSmith.Battle;
 
 namespace SoulSmith.Game;
 public class UnitInventory : CanvasObject
@@ -38,6 +39,25 @@ public class UnitInventory : CanvasObject
     /// <returns></returns>
     public List<Unit> GetUnits() {
         return new List<Unit>(_units); 
+    }
+
+    /// <summary>
+    /// Gets a copy of the list of units in the inventory as readonly.
+    /// </summary>
+    /// <returns></returns>
+    public List<IReadOnlyUnit> GetUnitsAsReadOnly()
+    {
+        return new List<IReadOnlyUnit>(_units);
+    }
+
+    public Unit GetMatchingUnit(IReadOnlyUnit readOnlyUnit)
+    {
+        foreach (Unit unit in _units)
+        {
+            if (unit == readOnlyUnit) return unit;
+        }
+
+        return null;
     }
 }
 

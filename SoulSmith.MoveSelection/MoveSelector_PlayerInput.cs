@@ -27,6 +27,7 @@ public class MoveSelector_PlayerInput : MoveSelector
 	public override void SelectMove()
 	{
 		ShowMoveSelectUI();
+		ShowDeployUnitUI();
 	}
 	
 	// Assumes move and user are selected already

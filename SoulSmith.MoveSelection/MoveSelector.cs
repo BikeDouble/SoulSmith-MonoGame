@@ -19,6 +19,8 @@ public class MoveSelector : IMoveSelector //TODO rework move selection
 
     public event EventHandler<ShowTargetSelectUIEventArgs> ShowTargetSelectUIEventHandler;
 
+	public event EventHandler<ShowDeployUnitUIEventArgs> ShowDeployUnitUIEventHandler;
+
 	protected void ShowTargetSelectUI(MoveTargetingStyle targetingStyle, IReadOnlyUnit sender)
 	{
 		ShowTargetSelectUIEventArgs e = new ShowTargetSelectUIEventArgs();
@@ -33,6 +35,12 @@ public class MoveSelector : IMoveSelector //TODO rework move selection
 		ShowMoveSelectUIEventArgs e = new ShowMoveSelectUIEventArgs();
         ShowMoveSelectUIEventHandler(this, e);
     }
+
+	protected void ShowDeployUnitUI()
+	{
+		ShowDeployUnitUIEventArgs e = new ShowDeployUnitUIEventArgs();
+		ShowDeployUnitUIEventHandler(this, e);
+	}
 
     protected void ReturnMoveInputToCombatManager()
 	{
@@ -151,22 +159,6 @@ public class MoveSelector : IMoveSelector //TODO rework move selection
 	{
 		return _moveInput.Target;
 	}
-	
-	/*public Array<TeamPosition> GetPositions()
-	{
-		Team thisTeam = Team;
-		return thisTeam.GetPositions();
-	}
-	
-	public Array<TeamPosition> GetEnemyPositions()
-	{
-		Team thisTeam = Team;
-		CombatManager combatManager = ((CombatManager)thisTeam.GetParent());
-		Team enemyTeam = combatManager.GetEnemyTeam(thisTeam);
-		Array<TeamPosition> enemyPositions = enemyTeam.GetPositions();
-		
-		return enemyPositions;
-	}*/
 	
 	/// <summary>
 	/// Returns list of all viable targets, assuming move and user are already selected.

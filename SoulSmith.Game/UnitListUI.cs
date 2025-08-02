@@ -6,6 +6,7 @@ using SoulSmith.Units;
 using SoulSmith.Drawing;
 using SoulSmith.Core;
 using Microsoft.Xna.Framework;
+using SoulSmith.Battle;
 
 namespace SoulSmith.Game;
 
@@ -34,7 +35,7 @@ public class UnitListUI : CanvasObject
         AddChild(_backboard);
     }
 
-    private bool AddUnit(Unit unit)
+    private bool AddUnit(IReadOnlyUnit unit)
     {
         Entry entry = new Entry(unit, new Position(0, 0, 1, 1, 0, 1));
         return AddEntry(entry);
@@ -48,10 +49,10 @@ public class UnitListUI : CanvasObject
         return true;
     }
 
-    private void SetEntries(IEnumerable<Unit> units)
+    private void SetEntries(IEnumerable<IReadOnlyUnit> units)
     {
         Clear();
-        foreach (Unit unit in units)
+        foreach (IReadOnlyUnit unit in units)
         {
             AddUnit(unit);
         }
@@ -103,7 +104,7 @@ public class UnitListUI : CanvasObject
         ClickedOutsideEventHandler?.Invoke(this, args);
     }
 
-    public void ShowUnits(IEnumerable<Unit> units)
+    public void ShowUnits(IEnumerable<IReadOnlyUnit> units)
     {
         SetEntries(units);
         Show();
