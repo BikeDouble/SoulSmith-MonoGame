@@ -37,7 +37,7 @@ public class UnitListUI : CanvasObject
 
     private bool AddUnit(IReadOnlyUnit unit)
     {
-        Entry entry = new Entry(unit, new Position(0, 0, 1, 1, 0, 1));
+        Entry entry = new Entry(unit, new Position(0, _entries.Count * Entry.HEIGHT, 1, 1, 0, 1));
         return AddEntry(entry);
     }
 

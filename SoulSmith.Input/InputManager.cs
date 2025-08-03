@@ -21,7 +21,12 @@ namespace SoulSmith.Input
                 if (!_mouseLeftClickedLastFrame)
                 {
                     inputs.Add(InputType.MouseLeftClick);
+                    _mouseLeftClickedLastFrame = true;
                 }
+            }
+            else
+            {
+                _mouseLeftClickedLastFrame = false;
             }
 
             if (MouseFunctions.IsMouseRightPressed())
@@ -30,7 +35,12 @@ namespace SoulSmith.Input
                 if (!_mouseRightClickedLastFrame)
                 {
                     inputs.Add(InputType.MouseRightClick);
+                    _mouseRightClickedLastFrame = true;
                 }
+            }
+            else
+            {
+                _mouseRightClickedLastFrame = false;
             }
 
             return inputs;

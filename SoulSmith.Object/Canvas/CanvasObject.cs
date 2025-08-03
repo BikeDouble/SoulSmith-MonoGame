@@ -117,11 +117,11 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
     /// </summary>
     /// <param name="desiredSize"></param>
     /// <param name="preserveRatio"></param>
-    public void ScaleToSetSize(Vector2 desiredSize, bool preserveRatio = true)
+    public void ScaleToSetSize(Vector2 desiredSize, bool preserveRatio = true, Vector2? trueResourceSize = null)
     {
-        if (Resource == null) return;
+        if (Resource == null && !trueResourceSize.HasValue) return;
 
-        Vector2 resourceSize = Resource.Size;
+        Vector2 resourceSize = trueResourceSize ?? Resource.Size;
 
         if (resourceSize == Vector2.Zero) return;
 
