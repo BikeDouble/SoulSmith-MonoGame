@@ -8,7 +8,7 @@ namespace SoulSmith.Drawing
 {
     public class Window
     {
-        public static int WINDOWHEIGHT = 900;
-        public static int WINDOWLENGTH = 1600;
+        public const int WINDOWHEIGHT = 900;
+        public const int WINDOWLENGTH = 1600;
     }
 }

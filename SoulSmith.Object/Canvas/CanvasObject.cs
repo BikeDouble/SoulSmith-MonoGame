@@ -14,6 +14,16 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
     private IDrawableResource _drawableResource = null;
 
     public CanvasObject(
+        string drawableResourceKey,
+        Position position = null,
+        IEnumerable<SoulSmithObject> children = null) : 
+        this(
+            position,
+            DrawHelpers.GetDrawableResourceInstance(drawableResourceKey),
+            children)
+    {}
+
+    public CanvasObject(
         Position position = null,
         IDrawableResource drawableResource = null,
         IEnumerable<SoulSmithObject> children = null) : base(children)

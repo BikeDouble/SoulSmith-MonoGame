@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SoulSmith.Drawing;
-using SoulSmith.Core;
-using SoulSmith.Object.Canvas;
-using SoulSmith.Drawing.Zoned;
-using SoulSmith.Units;
-using SoulSmith.Input;
+﻿using Microsoft.Xna.Framework;
 using SoulSmith.Battle;
+using SoulSmith.Core;
+using SoulSmith.Drawing;
+using SoulSmith.Input;
+using SoulSmith.Object.Canvas;
 
 namespace SoulSmith.Game;
 public class GameHeaderUI : CanvasObject
 {
+    public const string BACKBOARDRESOURCEKEY = "Textures/UI/Units/List/EntryBackboardIdle";
+    public const int HEIGHT = 120;
+
     private bool _ignoreUnitListUIClickedOutside = false;
 
     // Children
+    private CanvasObject _backboard;
     private GameHeaderUnitInventoryUIButton _unitInventoryButton;
     private UnitListUI _unitListUI;
 
@@ -32,8 +29,17 @@ public class GameHeaderUI : CanvasObject
 
     private void Initialize()
     {
+        InitializeBackboard();
         InitializeUnitInventoryButton();
         InitializeUnitListUI();
+    }
+
+    private void InitializeBackboard()
+    {
+        _backboard = new CanvasObject(BACKBOARDRESOURCEKEY, new Position(0, 0, 1, 1, 0, -1));
+        _backboard.ScaleToSetSize(new Vector2(Window.WINDOWLENGTH, HEIGHT), false);
+        _backboard.SetOriginPlacement(OriginPlacement.TopLeft);
+        AddChild(_backboard);
     }
 
     private void InitializeUnitInventoryButton()
@@ -45,9 +51,10 @@ public class GameHeaderUI : CanvasObject
 
     private void InitializeUnitListUI()
     { 
-        _unitListUI = new UnitListUI(new Position(750, 200));
+        _unitListUI = new UnitListUI(new Position((Window.WINDOWLENGTH / 2) - (UnitListUI.WIDTH / 2), HEIGHT));
         _unitListUI.ClickedOutsideEventHandler += OnUnitListUIClickedOutside;
         _unitListUI.EntryPressedEventHandler += OnOnUnitListUIEntryPressed;
+        _unitListUI.Hide();
         AddChild(_unitListUI);
     }
 
