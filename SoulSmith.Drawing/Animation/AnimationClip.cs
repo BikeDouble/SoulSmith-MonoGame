@@ -77,7 +77,7 @@ namespace SoulSmith.Drawing.Animation
             activeFrame.DrawFrame(position, color, spriteBatch, textureInstance, originPlacement);
         }
 
-        public bool IsTransitionReady(double timeInClip, double animationSpeed = 1d)
+        public bool IsOnTransitionFrame(double timeInClip, double animationSpeed = 1d)
         {
             if (_transitionFrameIndices == null) return true;
 

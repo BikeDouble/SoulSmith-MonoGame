@@ -28,7 +28,7 @@ namespace SoulSmith.Drawing.Text
             _wrappedFont.Value.DrawText(postion, color, _text, Origin, spriteBatch);
         }
 
-        public void UpdateState(string newState) { _text = newState; }
+        public void UpdateState(string newState, bool force = false) { _text = newState; }
 
         public void Dispose()
         {

@@ -148,7 +148,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		result = _stats.ExecutePayload(request);
 
         UpdateUI();
-        UpdateSprite();
 
         return result;
 	}
@@ -158,10 +157,21 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		switch (result)
 		{
 			case TriggerResult triggerResult:
-				if (triggerResult.Sender == this) // Start attack animation if this unit is triggering a move begin
-                    if (triggerResult.Trigger == CombatTrigger.OnMoveBegin) 
-						_sprite.UpdateResourceState(UnitSprite.SPRITEATTACKSTATE);
-                break;
+				if (triggerResult.Trigger == CombatTrigger.OnMoveBegin)
+				{
+					if (triggerResult.Sender == this) // Start attack animation if this unit is triggering a move begin
+						_sprite.PlayAttackAnimation();
+				} else if (triggerResult.Trigger == CombatTrigger.OnUnitDeath)
+				{
+					if (triggerResult.Target == this)
+						_sprite.PlayDeathAnimation();
+				}	
+				break;
+			case DamageResult damageResult:
+				if (damageResult.Target == this)
+					if (damageResult.EffectiveDamage > 0)
+						_sprite.PlayHurtAnimation();
+				break;
         }
 
         _stats.ReactToPayloadResult(result);
@@ -196,14 +206,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		args.RetreatingUnit = this;
 		args.FromRetrieveButton = true;
         UnitRetreatCallEventHandler?.Invoke(this, args);
-	}
-
-    private void UpdateSprite()
-	{
-		if (_sprite != null)
-		{
-			_sprite.Update(_stats);
-		}
 	}
 
 	//

@@ -133,6 +133,11 @@ namespace SoulSmith.Drawing.Zoned
             _resource.Dispose();
         }
 
+        public void UpdateState(string newState, bool force = false)
+        {
+            _resource.UpdateState(newState, force);
+        }
+
         private IZone GetDefaultZone()
         {
             if (_zones.Count == 0) return null;

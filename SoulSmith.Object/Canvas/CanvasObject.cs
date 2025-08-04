@@ -324,9 +324,9 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         base.RemoveChild(child);
     }
 
-    public void UpdateResourceState(string newState)
+    public void UpdateResourceState(string newState, bool force = false)
     {
-        Resource?.UpdateState(newState);
+        Resource?.UpdateState(newState, force);
     }
 
     private void RegisterChildEvents(CanvasObject child)

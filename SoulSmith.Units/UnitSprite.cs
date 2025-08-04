@@ -15,14 +15,21 @@ public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
     public const string SPRITEHURTSTATE = "hurt";
     public const string SPRITEDEATHSTATE = "death";
 
+    public const bool FORCEATTACKSTATE = true;
+    public const bool FORCEHURTSTATE = true;
+    public const bool FORCEDEATHSTATE = true;
+
     public const double ATTACKANIMATIONDURATION = EffectQueue.ATTACKANIMATIONDURATION;
-    public const double HURTANIMATIONDURATION = 2;
+    public const double HURTANIMATIONDURATION = 1;
     public const double DEATHANIMATIONDURATION = EffectQueue.DEATHANIMATIONDURATION;
+
+    public const double MINIMUMTIMEBETWEENHURTANIMATIONSTARTS = 0.5d + HURTANIMATIONDURATION; // Hurt animation can look goofy if played directly after itself
 
     public const float WIDTHSCALE = 1.2f;
     public const float HEIGHTSCALE = 1.2f;
 
-    private double _animationTime = -1;
+    private double _timeInAnimation = -1;
+    private double _timeUntilHurtAnimationAllowed = -1;
 
     public UnitSprite(IDrawableResource sprite, double animationDesyncFactor) : base(null, sprite)
     {
@@ -30,38 +37,44 @@ public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
         //TODO implement animationDesyncFactor
     }
 
-    public void Update(IReadOnlyUnitStats stats)
+    public void PlayHurtAnimation()
     {
-        if (stats != null)
+        if (_timeUntilHurtAnimationAllowed <= 0)
         {
-            UpdateHP(stats);
+            _timeUntilHurtAnimationAllowed = MINIMUMTIMEBETWEENHURTANIMATIONSTARTS;
+            UpdateResourceState(SPRITEHURTSTATE, FORCEHURTSTATE);
+            _timeInAnimation = HURTANIMATIONDURATION;
         }
     }
 
-    private void UpdateHP(IReadOnlyUnitStats stats)
+    public void PlayDeathAnimation()
     {
-        /*int curHP = stats.GetModStat(SoulSmithStats.StatType.CurHealth);
-        int maxHP = stats.GetModStat(SoulSmithStats.StatType.MaxHealth);
-        float remainingHPPercent = (float) (curHP / maxHP);
-        List<float> args = new List<float> { remainingHPPercent };
+        UpdateResourceState(SPRITEDEATHSTATE, FORCEDEATHSTATE);
+        _timeInAnimation = DEATHANIMATIONDURATION;
+    }
 
-        foreach (var rule in _hPAffectedTransformationRules)
-        {
-            rule.SetVelocityFuncArgs(args);
-        }*/
+    public void PlayAttackAnimation()
+    {
+        UpdateResourceState(SPRITEATTACKSTATE, FORCEATTACKSTATE);
+        _timeInAnimation = ATTACKANIMATIONDURATION;
     }
 
     public override void Process(double delta)
     {
-        if (_animationTime > 0)
+        if (_timeInAnimation > 0)
         {
-            _animationTime -= delta;
+            _timeInAnimation -= delta;
 
-            if (_animationTime <= 0)
+            if (_timeInAnimation <= 0)
             {
-                UpdateResourceState("idle");
-                _animationTime = 0;
+                UpdateResourceState("idle", true);
+                _timeInAnimation = -1;
             }
+        }
+
+        if (_timeUntilHurtAnimationAllowed > 0)
+        {
+            _timeUntilHurtAnimationAllowed -= delta;
         }
 
         base.Process(delta);

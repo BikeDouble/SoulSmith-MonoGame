@@ -36,6 +36,13 @@ namespace SoulSmith.Drawing.Animation
             activeClip.DrawFrame(position, color, spriteBatch, _textureInstance, timeInClip, animationSpeed, originPlacement);
         }
 
+        public bool IsOnTransitionFrame(string clipName, double timeInClip, double animationSpeed = 1d)
+        {
+            if (!_clips.ContainsKey(clipName)) return true;
+
+            return _clips[clipName].IsOnTransitionFrame(timeInClip, animationSpeed);
+        }
+
         private AnimationClip GetDefaultClip()
         {
             return _clips.FirstOrDefault().Value;
