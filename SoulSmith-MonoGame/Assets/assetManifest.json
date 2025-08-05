@@ -69,6 +69,7 @@
         },
         "UI": {
             "Units": {
+                "DeployButton" : "Textures/UI/Units/deployUnitButton.png",
                 "HealthBar": {
                     "Empty": "Textures/UI/Units/HealthBar/healthBarEmpty.png",
                     "HealthFiller": "Textures/UI/Units/HealthBar/healthBarHealthFiller.png",
@@ -105,6 +106,7 @@
     "ZonedResources": {
         "UI": {
             "Units": {
+                "DeployButton": "ZonedResources/UI/Units/deployUnitButton.json",
                 "List": {
                     "Backboard": "ZonedResources/UI/Units/List/backboard.json",
                     "EntryBackboardIdle": "ZonedResources/UI/Units/List/entryBackboardIdle.json",

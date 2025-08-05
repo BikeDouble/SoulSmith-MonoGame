@@ -5,16 +5,19 @@ using SoulSmith.Battle.Effects.Trigger;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle;
+using System.Numerics;
 
 namespace SoulSmith.Combat;
 public class TeamPosition : CanvasObject, IReadOnlyTeamPosition
 {
-    public const string DEPLOYUNITBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/TargetButtonIdle";
-    public const string DEPLOYUNITBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/Moves/TargetButtonHovered";
+    public const string DEPLOYUNITBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/DeployButton";
+    public const string DEPLOYUNITBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/DeployButton";
+    public const float DEPLOYBUTTONHOVERSIZEMOD = 1.1f;
+    public readonly static Vector2 DEPLOYUNITBUTTONSIZE = new Vector2(160, 160);
 
     // Children
 	private Unit _unit;
-    private ButtonObject _deployUnitButton;
+    private ButtonObject_GrowOnHover _deployUnitButton;
 
 	private bool _movedThisRound = false;
 	private bool _containsUnit = false;
@@ -28,7 +31,8 @@ public class TeamPosition : CanvasObject, IReadOnlyTeamPosition
 
     private void InitializeDeployUnitButton()
     {
-        _deployUnitButton = new ButtonObject(DEPLOYUNITBUTTONIDLERESOURCEKEY, DEPLOYUNITBUTTONHOVEREDRESOURCEKEY);
+        _deployUnitButton = new ButtonObject_GrowOnHover(DEPLOYUNITBUTTONIDLERESOURCEKEY, DEPLOYUNITBUTTONHOVEREDRESOURCEKEY, null, new Vector2(DEPLOYBUTTONHOVERSIZEMOD, DEPLOYBUTTONHOVERSIZEMOD));
+        _deployUnitButton.ScaleToSetSize(DEPLOYUNITBUTTONSIZE, true);
         _deployUnitButton.ButtonPressedEventHandler += OnDeployUnitButtonPressed;
         AddChild(_deployUnitButton);
         _deployUnitButton.Hide();

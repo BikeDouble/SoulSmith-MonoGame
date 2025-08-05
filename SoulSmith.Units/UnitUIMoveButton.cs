@@ -11,20 +11,18 @@ using SoulSmith.Emotion;
 using SoulSmith.Drawing.Zoned;
 
 namespace SoulSmith.Units;
-public class UnitUIMoveButton : ButtonObject
+public class UnitUIMoveButton : ButtonObject_GrowOnHover
 {
     public const string MOVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/MoveButton";
     public const string RETRIEVEBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/RetrieveButton";
     public const string LABELFONTKEY = "Fonts/Raleway/Medium";
     private const float IDLEDIMNESSMULT = 0.8f;
-	private const float HOVERSIZEMOD = 1.1f;
+	public const float HOVERSIZEMOD = 1.1f;
 	private const float WIDTHSCALE = 0.35f;
 	private const float HEIGHTSCALE = 0.35f;
 	private const float LABELWIDTHSCALE = 1.3f;
 	private const float LABELHEIGHTSCALE = 1.3f;
 	public const int LABELBRIGHTNESS = 80;
-    private static Position _hoverTransformation = new Position(0, 0, HOVERSIZEMOD, HOVERSIZEMOD);
-    private static Position _unhoverTransformation = new Position(0, 0, 1 / HOVERSIZEMOD, 1 / HOVERSIZEMOD);
 
 	// Children
     private CanvasObject _label;
@@ -40,7 +38,8 @@ public class UnitUIMoveButton : ButtonObject
         Position position = null) : base(
             idleResource,
 			hoveredResource,
-			position) 
+			position,
+			new Vector2(HOVERSIZEMOD, HOVERSIZEMOD)) 
 	{
 		IDrawableResource textResource = DrawHelpers.GetDrawableResourceInstance(LABELFONTKEY);
         _label = new CanvasObject(new Position(0, 0, LABELWIDTHSCALE, LABELHEIGHTSCALE, 0, 1), textResource);
@@ -52,6 +51,7 @@ public class UnitUIMoveButton : ButtonObject
 
 	public void UpdateButtonWithMove(Move move)
 	{
+		this.EnableGrow();
 		_isRetrieveButton = false;
 		_move = move;
 		SetLabelText(move.FriendlyName);
@@ -62,6 +62,7 @@ public class UnitUIMoveButton : ButtonObject
 
 	public void UpdateButtonAsRetrieve()
 	{
+		this.EnableGrow();
 		_isRetrieveButton = true;
 		_move = null;
 		SetLabelText("Retrieve");
@@ -88,6 +89,7 @@ public class UnitUIMoveButton : ButtonObject
 
 	public void UpdateButtonAsEmptySlot()
 	{
+		this.DisableGrow();
 		_isRetrieveButton = false;
 		_move = null;
         SetLabelText("Empty");
@@ -112,7 +114,6 @@ public class UnitUIMoveButton : ButtonObject
 
 		if ((_move != null) || (_isRetrieveButton))
 		{
-			Transform(_hoverTransformation);
 			this.SetColor(_hoverColor);
 		}
     }
@@ -123,7 +124,6 @@ public class UnitUIMoveButton : ButtonObject
 
 		if ((_move != null) || (_isRetrieveButton))
         {
-			Transform(_unhoverTransformation);
 			this.SetColor(_idleColor);
 		}
     }
