@@ -14,6 +14,8 @@ namespace SoulSmith.Drawing.Text
         private IAssetWrapper<IFontResource> _wrappedFont;
         private string _text = string.Empty;
 
+        public SamplerState SamplerState { get { return SamplerState.LinearClamp; } }
+
         public SimpleTextInstance(IAssetWrapper<IFontResource> font)
         {
             _wrappedFont = font;

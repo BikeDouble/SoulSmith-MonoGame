@@ -18,6 +18,7 @@ namespace SoulSmith.Drawing.Animation
 
         public AnimationClip(IEnumerable<AnimationFrame> sortedFrames, IEnumerable<int> transitionFrameIndices = null)
         {
+            if (sortedFrames == null || sortedFrames.Count() == 0) throw new ArgumentNullException(nameof(sortedFrames)); 
             _frames = new List<AnimationFrame>(sortedFrames);
             _transitionFrameIndices = new List<int>(transitionFrameIndices);
         }
@@ -25,6 +26,7 @@ namespace SoulSmith.Drawing.Animation
         public AnimationClip(IEnumerable<AnimationFrame> unsortedFrames, string clipDataName, IEnumerable<int> transitionFrameIndices = null)
         {
             _frames = SortFrames(unsortedFrames, clipDataName);
+            if (_frames == null || _frames.Count() == 0) throw new ArgumentNullException(nameof(_frames));
             _transitionFrameIndices = new List<int>(transitionFrameIndices);
         }
 

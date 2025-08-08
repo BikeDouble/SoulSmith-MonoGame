@@ -18,6 +18,8 @@ namespace SoulSmith.Drawing.Zoned
         private Dictionary<string, IZone> _zones;
         private IDrawableResource _resource;
 
+        public SamplerState SamplerState { get { return _resource.SamplerState; } }
+
         public ZonedDrawableResourceInstance(IDictionary<string, IZone> zones, IDrawableResource resource) //TODO add multizone support
         {
             _zones = new Dictionary<string, IZone>(zones);

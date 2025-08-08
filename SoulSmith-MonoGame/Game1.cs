@@ -38,13 +38,20 @@ namespace SoulSmith_MonoGame
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
+            //_graphics.PreparingDeviceSettings += OnPrepareGraphicsDeviceSettings;
             _graphics.PreferredBackBufferHeight = SoulSmith.Drawing.Window.WINDOWHEIGHT;
-            _graphics.PreferredBackBufferWidth = SoulSmith.Drawing.Window.WINDOWLENGTH;
+            _graphics.PreferredBackBufferWidth = SoulSmith.Drawing.Window.WINDOWWIDTH;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             _renderQueue = new RenderQueue();
             _inputQueue = new InputQueue();
         }
+
+        //private void OnPrepareGraphicsDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        //{
+        //    //_graphics.PreferMultiSampling = true;
+        //    //e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 8;
+        //}
 
         protected override void Initialize()
         {

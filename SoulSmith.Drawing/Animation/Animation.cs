@@ -21,8 +21,9 @@ namespace SoulSmith.Drawing.Animation
         private IDictionary<string, AnimationClip> _clips;
         private Texture2DInstance _textureInstance;
 
-        public Animation(IDictionary<string, AnimationClip> clips, Texture2DInstance wrappedTexture)
+        public Animation(IDictionary<string, AnimationClip> clips, Texture2DInstance wrappedTexture, SamplerState samplerState = null)
         {
+            SamplerState = samplerState ?? SamplerState.PointClamp;
             _clips = clips;
             _textureInstance = wrappedTexture;
         }
@@ -71,6 +72,7 @@ namespace SoulSmith.Drawing.Animation
 
         public int Height { get { return GetDefaultClip().Height; } }
         public int Width { get { return GetDefaultClip().Width; } }
+        public SamplerState SamplerState { get; private set; }
     }
 
     public class AnimationDataJsonConverter : JsonConverter<Animation>
@@ -84,6 +86,7 @@ namespace SoulSmith.Drawing.Animation
             Texture2DInstance textureInstance = null;
             AnimationClipDeserializationData[] clipsData = null;
             AnimationFrame[] frames = null;
+            SamplerState samplerState = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -111,6 +114,11 @@ namespace SoulSmith.Drawing.Animation
                         frames = JsonSerializer.Deserialize<AnimationFrame[]>(ref reader, options);
                         reader.Read();
                         break;
+                    case "SamplerState":
+                        SamplerStateJsonConverter jsonConverter = new SamplerStateJsonConverter();
+                        samplerState = jsonConverter.Read(ref reader, typeof(SamplerState), options);
+                        reader.Read();
+                        break;
                     default:
                         reader.Skip();
                         break;
@@ -129,7 +137,7 @@ namespace SoulSmith.Drawing.Animation
                 clipsDict.Add(clipData.ClipFriendlyName, clip);
             }
 
-            return new Animation(clipsDict, textureInstance);
+            return new Animation(clipsDict, textureInstance, samplerState);
         }
 
         public override void Write(Utf8JsonWriter writer, Animation value, JsonSerializerOptions options)

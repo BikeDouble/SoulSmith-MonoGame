@@ -37,7 +37,7 @@ public class GameHeaderUI : CanvasObject
     private void InitializeBackboard()
     {
         _backboard = new CanvasObject(BACKBOARDRESOURCEKEY, new Position(0, 0, 1, 1, 0, -1));
-        _backboard.ScaleToSetSize(new Vector2(Window.WINDOWLENGTH, HEIGHT), false);
+        _backboard.ScaleToSetSize(new Vector2(Window.WINDOWWIDTH, HEIGHT), false);
         _backboard.SetOriginPlacement(OriginPlacement.TopLeft);
         AddChild(_backboard);
     }
@@ -51,7 +51,7 @@ public class GameHeaderUI : CanvasObject
 
     private void InitializeUnitListUI()
     { 
-        _unitListUI = new UnitListUI(new Position((Window.WINDOWLENGTH / 2) - (UnitListUI.WIDTH / 2), HEIGHT));
+        _unitListUI = new UnitListUI(new Position((Window.WINDOWWIDTH / 2) - (UnitListUI.WIDTH / 2), HEIGHT));
         _unitListUI.ClickedOutsideEventHandler += OnUnitListUIClickedOutside;
         _unitListUI.EntryPressedEventHandler += OnOnUnitListUIEntryPressed;
         _unitListUI.Hide();

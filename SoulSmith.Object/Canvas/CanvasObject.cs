@@ -270,7 +270,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
 
         if (resourceToDraw != null && _visible)
         {
-            renderQueue.Add(new DrawPacket(newPosition, color, Resource, scissorRect));
+            renderQueue.Add(new DrawPacket(newPosition, color, Resource, scissorRect, Resource?.SamplerState));
         }
 
         if (_visible)

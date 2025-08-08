@@ -56,9 +56,9 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 			}
 			else
 			{
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4, false, -1, 1));
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2, false, -1, 1));
-				_teamPositions.Add(new TeamPosition(Window.WINDOWLENGTH - BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4, false, -1, 1));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWWIDTH - BACKUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 4, false, -1, 1));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWWIDTH - FRONTUNITSDISTANCEFROMSCREENEDGE, Window.WINDOWHEIGHT / 2, false, -1, 1));
+				_teamPositions.Add(new TeamPosition(Window.WINDOWWIDTH - BACKUNITSDISTANCEFROMSCREENEDGE, 3 * Window.WINDOWHEIGHT / 4, false, -1, 1));
 			}
         }
 

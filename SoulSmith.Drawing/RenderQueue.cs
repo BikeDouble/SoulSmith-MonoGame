@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using NVorbis.Contracts;
 using SoulSmith.Core;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
@@ -7,60 +8,66 @@ namespace SoulSmith.Drawing
     public class RenderQueue : IAddOnly<DrawPacket> //TODO change input in CollectDrawPackets
     {
         public const SpriteSortMode SPRITESORTMODE = SpriteSortMode.Deferred;
+        public readonly static SamplerState DEFAULTSAMPLERSTATE = SamplerState.PointClamp;
 
+        private bool _spriteBatchBegan = false;
+        private SamplerState _currentSamplerState;
         private List<DrawPacket> _packets = new List<DrawPacket>();
-        private RasterizerState _scissorState = new RasterizerState { ScissorTestEnable = true };
+        private RasterizerState _scissorState = new RasterizerState { ScissorTestEnable = true, MultiSampleAntiAlias = true };
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
+            _spriteBatchBegan = false;
+            _currentSamplerState = null;
+            
             graphics.ScissorRectangle = graphics.Viewport.Bounds;
-            spriteBatch.Begin(SPRITESORTMODE, BlendState.NonPremultiplied, SamplerState.PointClamp);
 
             if (_packets.Count == 0) return;
 
-            _packets.Sort((a, b) => a.Z.CompareTo(b.Z));
+            _packets = _packets.OrderBy((a) => a.Z).ThenBy((a) => a.SamplerState.GetHashCode()).ThenBy((a) => a.ScissorRect.GetHashCode()).ToList();
 
             foreach (DrawPacket packet in _packets)
             {
-                CheckAndUpdateScissorRect(spriteBatch, graphics, packet.ScissorRect);
+                CheckAndUpdateForPacket(spriteBatch, graphics, packet);
 
                 DrawDrawPacket(packet, spriteBatch);
             }
 
-            spriteBatch.End();
+            if (_spriteBatchBegan) spriteBatch.End();
+            _spriteBatchBegan = false;
         }
 
-        private void CheckAndUpdateScissorRect(SpriteBatch spriteBatch, GraphicsDevice graphics, Rectangle? newScissorRect)
+        private void CheckAndUpdateForPacket(SpriteBatch spriteBatch, GraphicsDevice graphics, DrawPacket packet)
         {
             Rectangle currentScissorRect = graphics.ScissorRectangle;
 
-            if (newScissorRect.HasValue)
+            Rectangle newScissorRect = packet.ScissorRect;
+            SamplerState samplerState = packet.SamplerState;
+
+            if ((newScissorRect != currentScissorRect) || (samplerState != _currentSamplerState))
             {
-                if (currentScissorRect != newScissorRect.Value)
-                {
-                    UpdateSpriteBatchScissorRect(spriteBatch, graphics, newScissorRect.Value);
-                }
-            }
-            else if (currentScissorRect != graphics.Viewport.Bounds)
-            {
-                UpdateSpriteBatchScissorRect(spriteBatch, graphics, graphics.Viewport.Bounds);
+                RestartSpriteBatch(spriteBatch, graphics, newScissorRect, samplerState);
             }
         }
 
-        private void UpdateSpriteBatchScissorRect(SpriteBatch spriteBatch, GraphicsDevice graphics, Rectangle scissorRect)
+        private void RestartSpriteBatch(SpriteBatch spriteBatch, GraphicsDevice graphics, Rectangle scissorRect, SamplerState samplerState)
         {
             if (scissorRect == graphics.Viewport.Bounds)
             {
-                spriteBatch.End();
+                if (_spriteBatchBegan) spriteBatch.End();
                 graphics.ScissorRectangle = graphics.Viewport.Bounds;
-                spriteBatch.Begin(SPRITESORTMODE, BlendState.NonPremultiplied, SamplerState.PointClamp);
+                spriteBatch.Begin(SPRITESORTMODE, _blendState, samplerState);
+                _spriteBatchBegan = true;
             }
             else
             {
-                spriteBatch.End();
+                if (_spriteBatchBegan) spriteBatch.End();
                 graphics.ScissorRectangle = scissorRect;
-                spriteBatch.Begin(SPRITESORTMODE, BlendState.NonPremultiplied, SamplerState.PointClamp, rasterizerState: _scissorState);
+                spriteBatch.Begin(SPRITESORTMODE, _blendState, samplerState, rasterizerState: _scissorState);
+                _spriteBatchBegan = true;
             }
+
+            _currentSamplerState = samplerState;
         }
 
         private void DrawDrawPacket(DrawPacket packet, SpriteBatch spriteBatch)
@@ -84,5 +91,7 @@ namespace SoulSmith.Drawing
         {
             _packets.Add(packet);
         }
+
+        private BlendState _blendState { get { return BlendState.NonPremultiplied; } }
     }
 }

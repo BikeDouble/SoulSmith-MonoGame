@@ -2,6 +2,7 @@
     "Animations": {
         "Units": {
             "Forms": {
+                "Anger":  "Animations/Units/Forms/angerForm.json",
                 "Joy": "Animations/Units/Forms/joyForm.json"
             }
         }
@@ -63,6 +64,7 @@
         "SpriteSheets": {
             "Units": {
                 "Forms": {
+                    "Anger": "Textures/SpriteSheets/Units/Forms/angerForm.png",
                     "Joy": "Textures/SpriteSheets/Units/Forms/joyForm.png"
                 }
             }
@@ -122,6 +124,7 @@
         },
         "UnitSprites": {
             "Forms": {
+                "Anger": "ZonedResources/UnitSprites/Forms/angerForm.json",
                 "Joy": "ZonedResources/UnitSprites/Forms/joyForm.json"
             }
         }

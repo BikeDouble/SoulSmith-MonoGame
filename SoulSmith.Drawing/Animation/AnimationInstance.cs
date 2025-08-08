@@ -18,6 +18,8 @@ namespace SoulSmith.Drawing.Animation
         private string _nextClipName = null;
         private double _animationSpeed = 1d;
 
+        public SamplerState SamplerState { get { return _wrappedAnimation.Value.SamplerState; } }
+
         public AnimationInstance(IAssetWrapper<Animation> wrappedAnimation, double animationSpeed = 1d)
         {
             _wrappedAnimation = wrappedAnimation;

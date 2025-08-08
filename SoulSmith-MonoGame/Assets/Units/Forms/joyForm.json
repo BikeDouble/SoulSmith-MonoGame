@@ -2,9 +2,9 @@
     "FriendlyName": "Joy",
     "Sprite": {
         "Type": "ZonedResource",
-        "Key": "ZonedResources/UnitSprites/Forms/Joy"
+        "Key": "ZonedResources/UnitSprites/Forms/Anger"
     },
-    "MaxHealth": 600,
+    "MaxHealth": 60,
     "Attack": 120,
     "Defense": 120,
     "MoveSet": [

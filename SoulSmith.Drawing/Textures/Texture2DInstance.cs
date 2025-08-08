@@ -10,7 +10,9 @@ namespace SoulSmith.Drawing.Textures
     {
         private IAssetWrapper<Texture2D> _wrappedTexture;
 
-        public Texture2DInstance(IAssetWrapper<Texture2D> texture)
+        public SamplerState SamplerState { get; private set; }
+
+        public Texture2DInstance(IAssetWrapper<Texture2D> texture, SamplerState samplerState = null)
         {
             if (texture == null)
             {
@@ -21,6 +23,8 @@ namespace SoulSmith.Drawing.Textures
             {
                 throw new ArgumentException("Wrapped texture must have a valid Texture2D instance.", nameof(texture));
             }
+
+            SamplerState = samplerState ?? RenderQueue.DEFAULTSAMPLERSTATE;
 
             _wrappedTexture = texture;
         }
