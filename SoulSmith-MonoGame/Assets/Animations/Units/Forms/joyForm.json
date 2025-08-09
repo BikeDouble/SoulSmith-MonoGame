@@ -1,6 +1,6 @@
 {
     "TextureKey": "Textures/SpriteSheets/Units/Forms/Joy",
-    "SamplerState": "LinearClamp",
+    "SamplerState": "PointClamp",
     "ClipData": [
         {
             "ClipFriendlyName": "idle",

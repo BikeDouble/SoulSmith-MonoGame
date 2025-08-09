@@ -39,7 +39,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		template.Emotion,
 		template.FriendlyName,
 		template.TimeOnBoard,
-		template.SpriteName)
+		template.SpriteName,
+		template.SpriteSizeMod)
 	{ }
 
 	public Unit(
@@ -50,12 +51,14 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		EmotionTag.EmotionTag emotion,
 		string friendlyName,
 		int timeOnBoard,
-		string spriteKey) : base()
+		string spriteKey,
+		float spriteSizemod) : base()
 	{
 		_spriteKey = spriteKey;
 
         _sprite = sprite;
 		_sprite.UpdateResourceState(UnitSprite.SPRITEIDLESTATE);
+		_sprite.Scale(spriteSizemod);
 		AddChild(sprite);
 
         _stats = new UnitStats(statsList, timeOnBoard, emotion);

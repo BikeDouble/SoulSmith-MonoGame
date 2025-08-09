@@ -85,7 +85,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	private int ApplyAllRelevantStatModifiers(int value, StatType stat) 
 	{
         List<StatModifier> statModifiers = GetRelevantStatModifiers(stat);
-        StatModifier combinedModifier = CombineStatModifiers(statModifiers);
+        (double FlatMod, double AdditiveMod, double MultiplicativeMod) combinedModifier = CombineStatModifiers(statModifiers);
         int retValue = ApplyStatModifier(value, combinedModifier);
 
 		return retValue;
@@ -109,34 +109,42 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		return modifiers;
     }
 
-    private StatModifier CombineStatModifiers(List<StatModifier> statModifiers)
+    private (double FlatMod, double AdditiveMod, double MultiplicativeMod) CombineStatModifiers(List<StatModifier> statModifiers)
     {
         if (statModifiers.Count == 0)
         {
-            return new StatModifier();
+            return (0, 0, 1);
         }
 
-        StatType stat = StatType.None;
-        int flatMod = 0;
+        double flatMod = 0;
         double additiveMod = 0f;
         double multiplicativeMod = 1f;
 
         foreach (StatModifier statModifier in statModifiers)
         {
-            flatMod += statModifier.FlatMod;
-            additiveMod += statModifier.AdditiveMod;
-            multiplicativeMod *= statModifier.MultiplicativeMod;
+			switch (statModifier.ModStyle)
+			{
+				case StatModStyle.Flat:
+					flatMod += statModifier.ModAmount; 
+					break;
+				case StatModStyle.AdditivePercent:
+					additiveMod += statModifier.ModAmount;
+					break;
+				case StatModStyle.MultiplicativePercent:
+                    multiplicativeMod *= statModifier.ModAmount;
+					break;
 
+            }
         }
 
-        return new StatModifier(stat, flatMod, additiveMod, multiplicativeMod);
+		return (flatMod, additiveMod, multiplicativeMod);
     }
 
-	private int ApplyStatModifier(int baseStat, StatModifier modifier)
+	private int ApplyStatModifier(int baseStat, (double FlatMod, double AdditiveMod, double MultiplicativeMod) modifierResults)
 	{
-		int retStat = baseStat + modifier.FlatMod;
-		retStat = (int)(retStat * (modifier.AdditiveMod + 1));
-		retStat = (int)(retStat * modifier.MultiplicativeMod);
+		int retStat = baseStat + (int)modifierResults.FlatMod;
+		retStat = (int)(retStat * (modifierResults.AdditiveMod + 1));
+		retStat = (int)(retStat * modifierResults.MultiplicativeMod);
 
 		return retStat;
 	}
@@ -452,7 +460,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
     private Result ExecuteRemoveModifierPayload(RemoveModifierPayload payload)
     {
-        if (payload.Modifier == null) throw new ArgumentException("EnqueueRemove modifier payload does not contain a modifier");
+        if (payload.Modifier == null) throw new ArgumentException("EnqueueRemove modifierResults payload does not contain a modifierResults");
 
 		if (!_modifiers.Contains(payload.Modifier)) return new RemoveModifierResult(payload.Sender, payload.Target, payload.Modifier, false, payload.ParentResult); //Modifier may have been removed already
 

@@ -1,0 +1,21 @@
+{
+    "Type": "StaticStatBasedOnDamageDone",
+    "Modifier": {
+        "StatType": "attack",
+        "ModStyle": "additivepercent",
+        "PortionOfDamageAsStatMod": 0.5,
+        "Duration": 1,
+        "DurationStyle": "hosthits",
+        "Alignment": "buff",
+        "IsModifierVisible": true,
+        "IconKey": "Textures/Units/Forms/JoyV1",
+        "FriendlyName": "Enraged",
+        "Description": {
+            "LocalizationKey": "Modifiers/Stat/Static/HostHits/Attack/Additive",
+            "LocalizationVariables": {
+                "Percent": 50,
+                "Duration": 1
+            }
+        }
+    }
+}

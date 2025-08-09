@@ -9,9 +9,8 @@ namespace SoulSmith.Battle.Modifiers.Stat
     {
         public StaticStatModifier(
             StatType statType,
-            int flatMod,
-            double additiveMod,
-            double multiplicativeMod,
+            StatModStyle modType,
+            double modAmount,
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
@@ -22,20 +21,18 @@ namespace SoulSmith.Battle.Modifiers.Stat
             : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description)
         {
             StatType = statType;
-            FlatMod = flatMod;
-            AdditiveMod = additiveMod;
-            MultiplicativeMod = multiplicativeMod;
+            ModType = modType;
+            ModAmount = modAmount;
         }
 
 
         public override StatModifier? GetStatModifier()
         {
-            return new StatModifier(StatType, FlatMod, AdditiveMod, MultiplicativeMod);
+            return new StatModifier(StatType, ModType, ModAmount);
         }
 
         public StatType StatType { get; private set; }
-        public int FlatMod { get; private set; }
-        public double AdditiveMod { get; private set; }
-        public double MultiplicativeMod { get; private set; }
+        public StatModStyle ModType { get; private set; }
+        public double ModAmount { get; private set; }
     }
 }

@@ -24,7 +24,7 @@ namespace SoulSmith.Battle.Effects.Modifier
 
         public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
         {
-            IModifier modifier = _modifierFactory.CreateModifier();
+            IModifier modifier = _modifierFactory.CreateModifier(sender, target, combat, parentEffectResult);
 
             return new AddModifierPayload(sender, target, modifier, parentEffectResult);
         }

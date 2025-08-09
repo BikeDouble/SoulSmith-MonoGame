@@ -1,0 +1,15 @@
+{
+    "FriendlyName": "Wrath",
+    "Tag": 4,
+    "FormKey": "Units/Forms/Anger",
+    "Color": [ 171, 0, 0, 255 ],
+    "CombatEntryEffects": 
+     [
+        {
+            "Type": "Modifier",
+            "Effect": {
+                "ModifierKey": "Modifiers/Anger/Innate/ApplyStacksOnTakingHit"
+            }
+        }
+    ]
+}

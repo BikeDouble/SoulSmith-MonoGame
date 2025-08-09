@@ -6,6 +6,7 @@ using SoulSmith.EmotionTag;
 using SoulSmith.Battle.Effects;
 using System.Text.Json.Serialization;
 using SoulSmith.Asset;
+using SoulSmith.Templates;
 
 namespace SoulSmith.Emotion
 {
@@ -59,14 +60,23 @@ namespace SoulSmith.Emotion
             return emotion;
         }
 
+        //public static UnitTemplate GetFormTemplate(EmotionTag.EmotionTag emotionTag)
+        //{
+        //    Emotion emotion = GetEmotion(emotionTag);
+
+        //    emotion.UnitTemplateKey
+        //}
+
         private static string GetEmotionKey(EmotionTag.EmotionTag emotionTag)
         {
             switch(emotionTag)
             {
-                case SoulSmith.EmotionTag.EmotionTag.Joy:
-                    return "Emotions/Single/Joy";
                 case SoulSmith.EmotionTag.EmotionTag.Typeless:
                     return "Emotions/Typeless";
+                case SoulSmith.EmotionTag.EmotionTag.Joy:
+                    return "Emotions/Single/Joy";
+                case SoulSmith.EmotionTag.EmotionTag.Wrath:
+                    return "Emotions/Single/Anger";
                 default:
                     throw new KeyNotFoundException($"Emotion with tag {emotionTag} does not have a predefined key.");
             }

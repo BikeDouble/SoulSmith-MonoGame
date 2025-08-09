@@ -272,11 +272,13 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 			foreach (CombatTeam team in _teams)
 			{
 				// TODO remove 
-				string unitName = "Units/Forms/Joy";
+				string joyUnitKey = "Units/Forms/Joy";
+				string angerUnitKey = "Units/Forms/Anger";
 				//if (!team.PlayerControlled) unitName = "animatedScrap";
 				for (int i = 0; i < 3; i++)
 				{
-                    IAssetWrapper<UnitTemplate> templateAsset = AssetManager.Instance.GetUnitTemplate<UnitTemplate>(unitName);
+					string unitKey = (i == 2) ? angerUnitKey : joyUnitKey;
+                    IAssetWrapper<UnitTemplate> templateAsset = AssetManager.Instance.GetUnitTemplate<UnitTemplate>(unitKey);
                     if (templateAsset == null) throw new ArgumentNullException(nameof(templateAsset));
                     Unit unit = new Unit(templateAsset.Value);
 					team.AssignUnitToPosition(unit, i);

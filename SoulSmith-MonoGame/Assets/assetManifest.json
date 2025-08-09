@@ -15,6 +15,7 @@
     },
     "Emotions": {
         "Single": {
+            "Anger": "Emotions/Single/anger.json",
             "Joy": "Emotions/Single/joy.json"
         }
     },
@@ -24,6 +25,12 @@
         }
     },
     "Modifiers": {
+        "Anger": {
+            "Innate": {
+                "ApplyStacksOnTakingHit": "Modifiers/Anger/Innate/angerApplyStacksOnTakingHit.json", 
+                "Stack": "Modifiers/Anger/Innate/angerInnateModifierStack.json"
+            }
+        },
         "Joy": {
             "Effect": {
                 "CheeredOn": "Modifiers/Joy/Effect/cheeredOn.json",
@@ -98,6 +105,7 @@
     },
     "Units": {
         "Forms": {
+            "Anger": "Units/Forms/angerForm.json",
             "Joy": "Units/Forms/joyForm.json"
         },
         "Enemies": {

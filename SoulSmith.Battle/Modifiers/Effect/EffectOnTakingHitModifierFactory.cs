@@ -1,5 +1,6 @@
 ﻿using SoulSmith.Asset;
 using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Core;
 using SoulSmith.Drawing;
 using SoulSmith.UnitStats;
@@ -13,10 +14,10 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Modifiers.Effect
 {
-    [JsonConverter(typeof(FollowUpEffectModifierFactoryJsonConverter))]
-    public class EffectOnHitModifierFactory : ModifierFactory
+    [JsonConverter(typeof(EffectOnTakingHitModifierFactoryJsonConverter))]
+    public class EffectOnTakingHitModifierFactory : ModifierFactory
     {
-        public EffectOnHitModifierFactory(
+        public EffectOnTakingHitModifierFactory(
             IEffect effect,
             int duration,
             DurationStyle durationStyle,
@@ -32,15 +33,15 @@ namespace SoulSmith.Battle.Modifiers.Effect
 
         public IEffect Effect { get; private set; }
 
-        public override IModifier CreateModifier()
+        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentResult)
         {
-            return new EffectOnHitModifier(Effect, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description);
+            return new EffectOnTakingHitModifier(Effect, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description);
         }
     }
 
-    public class FollowUpEffectModifierFactoryJsonConverter : JsonConverter<EffectOnHitModifierFactory>
+    public class EffectOnTakingHitModifierFactoryJsonConverter : JsonConverter<EffectOnTakingHitModifierFactory>
     {
-        public override EffectOnHitModifierFactory Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override EffectOnTakingHitModifierFactory Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
@@ -114,10 +115,10 @@ namespace SoulSmith.Battle.Modifiers.Effect
             if (modifierAlignment == null) throw new JsonException("Expected 'ModifierAlignment' property to be present.");
             if ((modifierIconKey == null) && (isModifierVisible.Value)) throw new JsonException("Expected 'ModifierIconKey' property to be present.");
 
-            return new EffectOnHitModifierFactory(effect, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description);
+            return new EffectOnTakingHitModifierFactory(effect, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description);
         }
 
-        public override void Write(Utf8JsonWriter writer, EffectOnHitModifierFactory value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, EffectOnTakingHitModifierFactory value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

@@ -6,11 +6,11 @@ using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Battle.Modifiers.Effect
 {
-    public class EffectOnHitModifier : Modifier
+    public class EffectOnGivingHitModifier : Modifier
     {
         private readonly IEffect _effect;
 
-        public EffectOnHitModifier(
+        public EffectOnGivingHitModifier(
             IEffect effect,
             int duration,
             DurationStyle durationStyle,
@@ -38,7 +38,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
 
                 if (damageResult.EffectiveDamage <= 0) return;
 
-                EffectInput effectInput = new EffectInput(_effect, Host, result.Target, Priority.SelfReaction);
+                EffectInput effectInput = new EffectInput(_effect, Host, result.Target, Priority.ReactionToSelf);
 
                 EnqueueEffectInput(effectInput, result);
             }

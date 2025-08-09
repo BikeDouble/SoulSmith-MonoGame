@@ -17,6 +17,7 @@ public class UnitTemplate : IDisposable
     private int _timeOnBoard;
     private int _maxMoveCount = 3;
     private string _friendlyName;
+    private float _spriteSizeMod = 1;
 
     public UnitTemplate(IDictionary<StatType, int> statsList,
                         IReadOnlySoulSmithWeightedList<string> moveSetString,
@@ -24,6 +25,7 @@ public class UnitTemplate : IDisposable
                         int timeOnBoard,
                         string spriteName,
                         string spriteType,
+                        float spriteSizeMod,
                         string friendlyName)
     {
         _statsList = new(statsList);
@@ -32,6 +34,7 @@ public class UnitTemplate : IDisposable
         _spriteName = spriteName;
         _spriteType = spriteType;
         _friendlyName = friendlyName;
+        _spriteSizeMod = spriteSizeMod;
         _timeOnBoard = timeOnBoard;
     }
 
@@ -42,6 +45,7 @@ public class UnitTemplate : IDisposable
     public EmotionTag.EmotionTag Emotion { get { return _emotion; } }
     public string SpriteName { get { return _spriteName; } }
     public string SpriteType { get { return _spriteType; } }
+    public float SpriteSizeMod { get { return _spriteSizeMod; } }
     public int TimeOnBoard { get { return _timeOnBoard; } }
     public string FriendlyName { get { return _friendlyName; } }
     public int MaxMoveCount {  get { return _maxMoveCount; } }

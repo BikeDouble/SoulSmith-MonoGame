@@ -1,13 +1,12 @@
 {
-    "FriendlyName": "Joy",
+    "FriendlyName": "Wrath",
     "Sprite": {
         "Type": "ZonedResource",
-        "Key": "ZonedResources/UnitSprites/Forms/Joy"
+        "Key": "ZonedResources/UnitSprites/Forms/Anger"
     },
-    "SpriteSizeMod": 0.75,
     "MaxHealth": 600,
-    "Attack": 120,
-    "Defense": 120,
+    "Attack": 160,
+    "Defense": 80,
     "MoveSet": [
         {
             "Item": "Joy/SingleHit",
@@ -22,6 +21,6 @@
             "Weight": 60
         }
     ],
-    "Emotion": 1,
+    "Emotion": 4,
     "TimeOnBoard": -1
 }

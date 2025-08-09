@@ -1,4 +1,5 @@
 ﻿using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Damage;
 using SoulSmith.Battle.Effects.Modifier;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
@@ -49,6 +50,21 @@ namespace SoulSmith.Battle.Modifiers
                             if (result.Sender == Host)
                             {
                                 DecrementDuration(result);
+                            }
+                        }
+                    }
+                    break;
+                case DurationStyle.HostGivesHits:
+                    if (result is DamageResult damageResult)
+                    {
+                        if (damageResult.Sender == Host)
+                        {
+                            if (damageResult.DamageType == DamageType.Hit)
+                            {
+                                if (damageResult.EffectiveDamage >= 1)
+                                {
+                                    DecrementDuration(result);
+                                }
                             }
                         }
                     }

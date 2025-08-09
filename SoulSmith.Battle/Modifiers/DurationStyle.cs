@@ -14,7 +14,8 @@ namespace SoulSmith.Battle.Modifiers
     {
         Permanent,
         Rounds,
-        HostMoves
+        HostMoves,
+        HostGivesHits
     }
 
     public class DurationStyleJsonConverter : JsonConverter<DurationStyle>
@@ -27,6 +28,8 @@ namespace SoulSmith.Battle.Modifiers
                 "permanent" => DurationStyle.Permanent,
                 "rounds" => DurationStyle.Rounds,
                 "hostmoves" => DurationStyle.HostMoves,
+                "hosthits" => DurationStyle.HostGivesHits,
+                "hostgiveshits" => DurationStyle.HostGivesHits,
                 _ => throw new JsonException($"Unknown DurationStyle value: {value}")
             };
         }
@@ -38,6 +41,7 @@ namespace SoulSmith.Battle.Modifiers
                 DurationStyle.Permanent => "permanent",
                 DurationStyle.Rounds => "rounds",
                 DurationStyle.HostMoves => "hostmoves",
+                DurationStyle.HostGivesHits => "hostgiveshits",
                 _ => throw new JsonException($"Unknown DurationStyle value: {value}")
             };
             writer.WriteStringValue(strValue);

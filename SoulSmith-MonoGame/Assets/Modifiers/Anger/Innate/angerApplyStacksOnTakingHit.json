@@ -1,0 +1,15 @@
+{
+    "Type": "EffectOnTakingHit",
+    "Modifier": {
+        "Effect": {
+            "Type": "Modifier",
+            "Effect": {
+                "ModifierKey": "Modifiers/Anger/Innate/Stack"
+            }
+        },
+        "DurationStyle": "permanent",
+        "ModifierAlignment": "buff",
+        "IsModifierVisible": false,
+        "ModifierIconKey": "Textures/Units/Forms/JoyV1"
+    }
+}

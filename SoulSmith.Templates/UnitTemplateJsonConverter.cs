@@ -22,8 +22,9 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
             throw new JsonException("Expected property name");
 
         string friendlyName = string.Empty;
-        string spriteName = string.Empty;
+        string spriteKey = string.Empty; //TODO remove spriteType 
         string spriteType = string.Empty;
+        float spriteSizeMod = 1f;
         int maxHealth = -1;
         int curHealth = -1;
         int curDecay = 0;
@@ -49,8 +50,12 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
                     spriteType = reader.GetString();
                     reader.Read();
                     reader.Read();
-                    spriteName = reader.GetString();
+                    spriteKey = reader.GetString();
                     reader.Read();
+                    break;
+                case "SpriteSize":
+                case "SpriteSizeMod":
+                    spriteSizeMod = reader.GetSingle();
                     break;
                 case "MaxHealth":
                     maxHealth = reader.GetInt32();
@@ -106,7 +111,7 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
         statsList.Add(StatType.CurHealth, curHealth);
         statsList.Add(StatType.CurDecay, curDecay);
 
-        UnitTemplate value = new UnitTemplate(statsList, moveSet, emotionTag, timeOnBoard, spriteName, spriteType, friendlyName);
+        UnitTemplate value = new UnitTemplate(statsList, moveSet, emotionTag, timeOnBoard, spriteKey, spriteType, spriteSizeMod, friendlyName);
 
         return value;
     }

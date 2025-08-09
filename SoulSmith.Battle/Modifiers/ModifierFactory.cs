@@ -1,4 +1,5 @@
 ﻿using SoulSmith.Asset;
+using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle.Effects.Visualization.Factory;
 using SoulSmith.Battle.Modifiers.Effect;
 using SoulSmith.Battle.Modifiers.Stat;
@@ -34,7 +35,7 @@ namespace SoulSmith.Battle.Modifiers
         public string ModifierIconKey { get; private set; }
         public string FriendlyName { get; private set; }
         public string Description { get; private set; }
-        public virtual IModifier CreateModifier()
+        public virtual IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult)
         {
             return null;
         }
@@ -81,8 +82,17 @@ namespace SoulSmith.Battle.Modifiers
                     value = JsonSerializer.Deserialize<StaticStatModifierFactory>(ref reader, options);
                     reader.Read();
                     break;
+                case "StaticStatBasedOnDamageDone":
+                    value = JsonSerializer.Deserialize<StaticStatBasedOnDamageDoneModifierFactory>(ref reader, options);
+                    reader.Read(); 
+                    break;
                 case "EffectOnHit":
-                    value = JsonSerializer.Deserialize<EffectOnHitModifierFactory>(ref reader, options);
+                case "EffectOnGivingHit":
+                    value = JsonSerializer.Deserialize<EffectOnGivingHitModifierFactory>(ref reader, options);
+                    reader.Read();
+                    break;
+                case "EffectOnTakingHit":
+                    value = JsonSerializer.Deserialize<EffectOnTakingHitModifierFactory>(ref reader, options);
                     reader.Read();
                     break;
                 default:

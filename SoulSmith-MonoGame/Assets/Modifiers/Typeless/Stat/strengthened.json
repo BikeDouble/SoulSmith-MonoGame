@@ -2,7 +2,8 @@
     "Type": "StaticStat",
     "Modifier": {
         "StatType": "attack",
-        "AdditiveMod": 3,
+        "ModStyle": "additivepercent",
+        "ModAmount": 3,
         "Duration": 4,
         "DurationStyle": "rounds",
         "Alignment": "buff",

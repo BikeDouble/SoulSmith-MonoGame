@@ -25,8 +25,9 @@ public class EffectQueue : CanvasObject
             Priority.EmotionCombatEntryEffect,
             Priority.ImmediateAfterEffect,
             Priority.ModifierRemovalImmediate,
-            Priority.SelfReaction,
-            Priority.Reaction,
+            Priority.ReactionToSelf,
+            Priority.ReactionToAlly,
+            Priority.ReactionToEnemy,
             Priority.Move,
             Priority.ModifierRemovalDelayed,
         });

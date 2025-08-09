@@ -214,6 +214,13 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
         _position.ZTranslate(zTranslation);
     }
 
+    public void Scale(float scale)
+    {
+        if (scale == 1) return;
+
+        this.Scale(new Vector2(scale));
+    }
+
     public void Scale(Vector2 scale)
     {
         if (scale == Vector2.One) return;

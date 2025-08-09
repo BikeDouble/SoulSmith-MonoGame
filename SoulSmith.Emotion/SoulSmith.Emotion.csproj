@@ -15,6 +15,7 @@
     <ProjectReference Include="..\SoulSmith.Core\SoulSmith.Core.csproj" />
     <ProjectReference Include="..\SoulSmith.EmotionTag\SoulSmith.EmotionTag.csproj" />
     <ProjectReference Include="..\SoulSmith.Battle\SoulSmith.Battle.csproj" />
+    <ProjectReference Include="..\SoulSmith.Templates\SoulSmith.Templates.csproj" />
   </ItemGroup>
 
 </Project>

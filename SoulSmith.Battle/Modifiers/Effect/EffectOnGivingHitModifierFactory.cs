@@ -1,7 +1,6 @@
 ﻿using SoulSmith.Asset;
+using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Results;
-using SoulSmith.Battle.Effects.Visualization.Factory;
-using SoulSmith.Battle.Modifiers;
 using SoulSmith.Core;
 using SoulSmith.Drawing;
 using SoulSmith.UnitStats;
@@ -13,15 +12,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SoulSmith.Battle.Modifiers.Stat
+namespace SoulSmith.Battle.Modifiers.Effect
 {
-    [JsonConverter(typeof(StaticStatModifierFactoryJsonConverter))]
-    public class StaticStatModifierFactory : ModifierFactory
+    [JsonConverter(typeof(EffectOnGivingHitModifierFactoryJsonConverter))]
+    public class EffectOnGivingHitModifierFactory : ModifierFactory
     {
-        public StaticStatModifierFactory(
-            StatType statType,
-            StatModStyle statModStyle,
-            double modAmount,
+        public EffectOnGivingHitModifierFactory(
+            IEffect effect,
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
@@ -31,32 +28,26 @@ namespace SoulSmith.Battle.Modifiers.Stat
             string description)
             : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description)
         {
-            StatType = statType;
-            ModStyle = statModStyle;
-            ModAmount = modAmount;
+            Effect = effect;
         }
 
-        public StatType StatType { get; private set; }
-        public StatModStyle ModStyle { get; private set; }
-        public double ModAmount { get; private set; }
+        public IEffect Effect { get; private set; }
 
         public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentResult)
         {
-            return new StaticStatModifier(StatType, ModStyle, ModAmount, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description);
+            return new EffectOnGivingHitModifier(Effect, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description);
         }
     }
 
-    public class StaticStatModifierFactoryJsonConverter : JsonConverter<StaticStatModifierFactory>
+    public class EffectOnGivingHitModifierFactoryJsonConverter : JsonConverter<EffectOnGivingHitModifierFactory>
     {
-        public override StaticStatModifierFactory Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override EffectOnGivingHitModifierFactory Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
             reader.Read();
 
-            StatType statType = StatType.None;
-            StatModStyle modStyle = StatModStyle.Null;
-            double? modAmount = null;
+            IEffect effect = null;
             int duration = 0;
             DurationStyle? durationStyle = null;
             ModifierAlignment? modifierAlignment = null;
@@ -75,18 +66,8 @@ namespace SoulSmith.Battle.Modifiers.Stat
 
                 switch (propertyName)
                 {
-                    case "StatType":
-                        statType = JsonSerializer.Deserialize<StatType>(ref reader, options);
-                        reader.Read();
-                        break;
-                    case "StatModStyle":
-                    case "ModStyle":
-                        modStyle = JsonSerializer.Deserialize<StatModStyle>(ref reader, options);
-                        reader.Read();
-                        break;
-                    case "Mod":
-                    case "ModAmount":
-                        modAmount = reader.GetDouble();
+                    case "Effect":
+                        effect = JsonSerializer.Deserialize<IEffect>(ref reader, options);
                         reader.Read();
                         break;
                     case "Duration":
@@ -128,18 +109,16 @@ namespace SoulSmith.Battle.Modifiers.Stat
                 }
             }
 
-            if (statType == StatType.None) throw new JsonException("Expected 'StatType' property to be present.");
-            if (modStyle == StatModStyle.Null) throw new JsonException("Expected 'StatModStyle' property to be present.");
-            if (!modAmount.HasValue) throw new JsonException("Expected 'ModAmount' property to be present.");
+            if (effect == null) throw new JsonException("Expected 'Effect' property to be present.");
             if (isModifierVisible == null) throw new JsonException("Expected 'IsModifierVisible' property to be present.");
             if (durationStyle == null) throw new JsonException("Expected 'DurationStyle' property to be present.");
             if (modifierAlignment == null) throw new JsonException("Expected 'ModifierAlignment' property to be present.");
             if ((modifierIconKey == null) && (isModifierVisible.Value)) throw new JsonException("Expected 'ModifierIconKey' property to be present.");
-            
-            return new StaticStatModifierFactory(statType, modStyle, modAmount.Value, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description);
+
+            return new EffectOnGivingHitModifierFactory(effect, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description);
         }
 
-        public override void Write(Utf8JsonWriter writer, StaticStatModifierFactory value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, EffectOnGivingHitModifierFactory value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

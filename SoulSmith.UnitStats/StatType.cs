@@ -69,26 +69,23 @@ namespace SoulSmith.UnitStats
 
     public readonly struct StatModifier
     {
-        public StatModifier(StatType stat, int flatMod = 0, double additiveMod = 0f, double multiplicativeMod = 1f)
+        public StatModifier(StatType stat, StatModStyle modType, double modAmount)
         {
             Stat = stat;
-            FlatMod = flatMod;
-            AdditiveMod = additiveMod;
-            MultiplicativeMod = multiplicativeMod;
+            ModStyle = modType;
+            ModAmount = modAmount;
         }
 
         public StatModifier()
         {
             Stat = StatType.None;
-            FlatMod = 0;
-            AdditiveMod = 0f;
-            MultiplicativeMod = 1f;
+            ModStyle = StatModStyle.Null;
+            ModAmount = 0;
         }
 
         public StatType Stat { get; }
-        public int FlatMod { get; }
-        public double AdditiveMod { get; }
-        public double MultiplicativeMod { get; }
+        public StatModStyle ModStyle { get; }
+        public double ModAmount { get; }
     }
 
     public class StatTypeJsonConverter : System.Text.Json.Serialization.JsonConverter<StatType>
