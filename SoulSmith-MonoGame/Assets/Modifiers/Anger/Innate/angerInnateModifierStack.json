@@ -10,6 +10,7 @@
         "IsModifierVisible": true,
         "IconKey": "Textures/Units/Forms/JoyV1",
         "FriendlyName": "Enraged",
+        "MergeKey": "AngerInnateStack",
         "Description": {
             "LocalizationKey": "Modifiers/Stat/Static/HostHits/Attack/Additive",
             "LocalizationVariables": {

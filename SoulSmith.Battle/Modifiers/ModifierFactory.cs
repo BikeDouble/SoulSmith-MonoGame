@@ -17,7 +17,7 @@ namespace SoulSmith.Battle.Modifiers
     [JsonConverter(typeof(ModifierFactoryJsonConverter))]
     public class ModifierFactory : IDisposable
     {
-        public ModifierFactory(int duration, DurationStyle durationStyle, ModifierAlignment modifierAlignment, bool isModifierVisible, string modifierIconKey, string friendlyName, string description)
+        public ModifierFactory(int duration, DurationStyle durationStyle, ModifierAlignment modifierAlignment, bool isModifierVisible, string modifierIconKey, string friendlyName, string description, string mergeKey = null)
         {
             Duration = duration;
             DurationStyle = durationStyle;
@@ -26,6 +26,7 @@ namespace SoulSmith.Battle.Modifiers
             ModifierIconKey = modifierIconKey;
             FriendlyName = friendlyName ?? "Unnamed";
             Description = description ?? string.Empty;
+            MergeKey = mergeKey;
         }
 
         public int Duration { get; private set; }
@@ -35,6 +36,7 @@ namespace SoulSmith.Battle.Modifiers
         public string ModifierIconKey { get; private set; }
         public string FriendlyName { get; private set; }
         public string Description { get; private set; }
+        public string MergeKey { get; private set; }
         public virtual IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult)
         {
             return null;

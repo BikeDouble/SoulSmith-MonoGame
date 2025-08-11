@@ -28,8 +28,9 @@ namespace SoulSmith.Battle.Modifiers.Stat
             bool isVisible,
             string iconKey,
             string friendlyName,
-            string description)
-            : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description)
+            string description,
+            string mergeKey)
+            : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description, mergeKey)
         {
             StatType = statType;
             ModStyle = statModStyle;
@@ -42,7 +43,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
 
         public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentResult)
         {
-            return new StaticStatModifier(StatType, ModStyle, ModAmount, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description);
+            return new StaticStatModifier(StatType, ModStyle, ModAmount, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description, MergeKey);
         }
     }
 
@@ -64,6 +65,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
             string modifierIconKey = null;
             string friendlyName = "Unnamed";
             string description = string.Empty;
+            string mergeKey = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -122,6 +124,10 @@ namespace SoulSmith.Battle.Modifiers.Stat
                         description = localizedStringConverter.Read(ref reader, typeof(string), options);
                         reader.Read();
                         break;
+                    case "MergeKey":
+                        mergeKey = reader.GetString();
+                        reader.Read();
+                        break;
                     default:
                         reader.Skip();
                         break;
@@ -136,7 +142,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
             if (modifierAlignment == null) throw new JsonException("Expected 'ModifierAlignment' property to be present.");
             if ((modifierIconKey == null) && (isModifierVisible.Value)) throw new JsonException("Expected 'ModifierIconKey' property to be present.");
             
-            return new StaticStatModifierFactory(statType, modStyle, modAmount.Value, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description);
+            return new StaticStatModifierFactory(statType, modStyle, modAmount.Value, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description, mergeKey);
         }
 
         public override void Write(Utf8JsonWriter writer, StaticStatModifierFactory value, JsonSerializerOptions options)

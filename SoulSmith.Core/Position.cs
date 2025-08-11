@@ -21,6 +21,16 @@ namespace SoulSmith.Core
             Coordinates = coordinates;
         }
 
+        public Position(Vector2 coordinates, Vector2 scale, float rotation, int z = 0)
+        {
+            Coordinates = coordinates;
+            ScaleVector = scale;
+            Rotation = rotation;
+            Z = z;
+            if (Width == 0f) Width = MINIMUMSCALE;
+            if (Height == 0f) Height = MINIMUMSCALE;
+        }
+
         public Position(IReadOnlyPosition other)
         {
             if (other == null)

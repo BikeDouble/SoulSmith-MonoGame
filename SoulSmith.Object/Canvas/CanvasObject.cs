@@ -127,11 +127,11 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
     /// </summary>
     /// <param name="desiredSize"></param>
     /// <param name="preserveRatio"></param>
-    public void ScaleToSetSize(Vector2 desiredSize, bool preserveRatio = true, Vector2? trueResourceSize = null)
+    public void ScaleToSetSize(Vector2 desiredSize, bool preserveRatio = true, Vector2? overrideResourceSize = null)
     {
-        if (Resource == null && !trueResourceSize.HasValue) return;
+        if (Resource == null && !overrideResourceSize.HasValue) return;
 
-        Vector2 resourceSize = trueResourceSize ?? Resource.Size;
+        Vector2 resourceSize = overrideResourceSize ?? Resource.Size;
 
         if (resourceSize == Vector2.Zero) return;
 
@@ -272,6 +272,12 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
 
         newPosition = new Position(absolutePosition);
         newPosition.TransformInContext(Position, absolutePosition);
+
+        if (UnMirrorable)
+        {
+            if (newPosition.Width < 0) newPosition.Scale(new Vector2(-1, 1));
+            if (newPosition.Height < 0) newPosition.Scale(new Vector2(1, -1));
+        }
 
         IDrawableResource resourceToDraw = Resource;
 
@@ -474,6 +480,7 @@ public class CanvasObject : SoulSmithObject, IReadOnlyCanvasObject
 
     public bool Visible { get { return _visible; } }
     public IReadOnlyPosition Position { get { return _position; } }
+    protected bool UnMirrorable = false;
     protected virtual IDrawableResource Resource { get { return _drawableResource; } }
 }
 

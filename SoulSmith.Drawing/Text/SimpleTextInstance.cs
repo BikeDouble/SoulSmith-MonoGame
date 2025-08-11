@@ -51,6 +51,8 @@ namespace SoulSmith.Drawing.Text
                 case OriginPlacement.TopMiddle:
                     size = _wrappedFont.Value.MeasureString(_text);
                     return new Vector2(size.X / 2, 0);
+                case OriginPlacement.BottomRight:
+                    return _wrappedFont.Value.MeasureString(_text);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(OriginPlacement), OriginPlacement, "Invalid origin placement specified.");
             }

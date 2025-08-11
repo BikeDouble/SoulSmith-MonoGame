@@ -73,6 +73,7 @@ public class UnitUI : CanvasObject
 	{
 		UpdateHealthBar(stats);
 		UpdateRoundsOnBoardCounter(stats);
+		_modifierDisplay.UpdateText();
 	}
 
 	private void UpdateRoundsOnBoardCounter(IReadOnlyUnit unit)

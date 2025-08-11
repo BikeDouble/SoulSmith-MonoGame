@@ -8,6 +8,9 @@
         }
     },
     "EffectVisualizations": {
+        "Anger": {
+            "DirectMissile": "EffectVisualizations/Anger/angerDirectMissile.json"
+        },
         "Joy": {
             "DirectMissile": "EffectVisualizations/Joy/joyDirectMissile.json",
             "Pop": "EffectVisualizations/Joy/joyPop.json"
@@ -44,6 +47,9 @@
         }
     },
     "Moves": {
+        "Anger": {
+            "SingleHit": "Moves/Anger/angerSingleHit.json"
+        },
         "Joy": {
             "CheerOn": "Moves/Joy/cheerOn.json",
             "DoubleHit": "Moves/Joy/joyDoubleHit.json",

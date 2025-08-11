@@ -6,7 +6,7 @@
             "Zone": {
                 "Type": "circle",
                 "Data": {
-                    "diameter": 99
+                    "diameter": 46
                 }
             }
         },
@@ -15,7 +15,7 @@
             "Zone": {
                 "Type": "circle",
                 "Data": {
-                    "diameter": 99
+                    "diameter": 46
                 }
             }
         }

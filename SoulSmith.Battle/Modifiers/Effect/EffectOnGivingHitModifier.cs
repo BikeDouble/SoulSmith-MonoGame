@@ -18,8 +18,9 @@ namespace SoulSmith.Battle.Modifiers.Effect
             bool isVisible,
             string iconKey,
             string friendlyName,
-            string description)
-            : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description)
+            string description,
+            string statusText)
+            : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description, statusText)
         {
             _effect = effect ?? throw new ArgumentNullException(nameof(effect));
         }

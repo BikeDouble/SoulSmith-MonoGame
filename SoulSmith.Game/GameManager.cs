@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.ObjectModel;
 using SoulSmith.UnitStats;
@@ -11,6 +11,7 @@ using System.Linq;
 using SoulSmith.MoveSelection;
 using SoulSmith.Units;
 using SoulSmith.Battle;
+using SoulSmith.Drawing;
 
 namespace SoulSmith.Game;
 public partial class GameManager : CanvasObject
@@ -27,7 +28,7 @@ public partial class GameManager : CanvasObject
 	public GameManager() 
 	{
 		Initialize();
-	}
+    }
 
 	private void Initialize()
 	{

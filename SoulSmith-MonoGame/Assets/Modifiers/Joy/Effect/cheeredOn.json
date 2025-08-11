@@ -9,11 +9,12 @@
                 "VisualizationKey": "EffectVisualizations/Joy/Pop"
             }
         },
+        "StatusText": "30",
         "Duration":  1,
         "DurationStyle": "rounds",
         "ModifierAlignment": "buff",
         "IsModifierVisible": true,
-        "ModifierIconKey": "Textures/Units/Forms/JoyV1",
+        "ModifierIconKey": "Textures/SolidColor/Black",
         "FriendlyName": "Cheered On",
         "Description": {
             "LocalizationKey": "Modifiers/Joy/CheeredOn",

@@ -11,6 +11,7 @@ namespace SoulSmith.Drawing
         Center,
         TopLeft,
         BottomMiddle,
-        TopMiddle
+        TopMiddle,
+        BottomRight,
     }
 }

@@ -25,17 +25,20 @@ namespace SoulSmith.Battle.Modifiers.Effect
             bool isVisible,
             string iconKey,
             string friendlyName,
-            string description)
+            string description,
+            string statusText)
             : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description)
         {
             Effect = effect;
+            StatusText = statusText;
         }
 
         public IEffect Effect { get; private set; }
+        public string StatusText { get; private set; }
 
         public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentResult)
         {
-            return new EffectOnGivingHitModifier(Effect, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description);
+            return new EffectOnGivingHitModifier(Effect, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description, StatusText);
         }
     }
 
@@ -52,6 +55,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
             DurationStyle? durationStyle = null;
             ModifierAlignment? modifierAlignment = null;
             bool? isModifierVisible = null;
+            string statusText = null;
             string modifierIconKey = null;
             string friendlyName = "Unnamed";
             string description = string.Empty;
@@ -103,6 +107,10 @@ namespace SoulSmith.Battle.Modifiers.Effect
                         description = localizedStringConverter.Read(ref reader, typeof(string), options);
                         reader.Read();
                         break;
+                    case "StatusText":
+                        statusText = reader.GetString();
+                        reader.Read();
+                        break;
                     default:
                         reader.Skip();
                         break;
@@ -115,7 +123,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
             if (modifierAlignment == null) throw new JsonException("Expected 'ModifierAlignment' property to be present.");
             if ((modifierIconKey == null) && (isModifierVisible.Value)) throw new JsonException("Expected 'ModifierIconKey' property to be present.");
 
-            return new EffectOnGivingHitModifierFactory(effect, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description);
+            return new EffectOnGivingHitModifierFactory(effect, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description, statusText);
         }
 
         public override void Write(Utf8JsonWriter writer, EffectOnGivingHitModifierFactory value, JsonSerializerOptions options)

@@ -10,24 +10,32 @@ using SoulSmith.Object.Canvas;
 namespace SoulSmith.Units; 
 public class UnitUIModifierDisplay : CanvasObject
 {
-    public const int ICONSIZE = 30;
+    public const int ICONSIZE = 40;
     public const int ICONSPERLINE = 5;
     public const int NUMBEROFROWS = 3;
     public const int SPACEBETWEENICONS = 5;
     public const int FIRSTICONX = -(((ICONSIZE * (ICONSPERLINE - 1)) / 2) + (SPACEBETWEENICONS * ((ICONSPERLINE - 1) / 2)));
-    public const int FIRSTICONY = 60;
+    public const int FIRSTICONY = 75;
     public static ReadOnlyCollection<Vector2> IconPositions = null;
 
     // Children
-    private Dictionary<IModifier, UnitUIModifierIcon> _displayedIcons;
+    private Dictionary<IReadOnlyModifier, UnitUIModifierIcon> _displayedIcons;
 
     public UnitUIModifierDisplay() 
     {
-        _displayedIcons = new Dictionary<IModifier, UnitUIModifierIcon>();
+        _displayedIcons = new Dictionary<IReadOnlyModifier, UnitUIModifierIcon>();
 
         if (IconPositions == null)
         {
             IconPositions = GenerateIconPositions();
+        }
+    }
+
+    public void UpdateText()
+    {
+        foreach (var icon in _displayedIcons)
+        {
+            icon.Value.UpdateText(icon.Key);
         }
     }
 
@@ -50,7 +58,7 @@ public class UnitUIModifierDisplay : CanvasObject
         return iconPositions.AsReadOnly();
     }
 
-    public void OnModifierRemoved(IModifier modifier)
+    public void OnModifierRemoved(IReadOnlyModifier modifier)
     {
         CanvasObject removedIcon = _displayedIcons.GetValueOrDefault(modifier);
 
@@ -67,7 +75,7 @@ public class UnitUIModifierDisplay : CanvasObject
         //TODO shift modifier icons
     }
 
-    public void OnModifierAdded(IModifier modifier)
+    public void OnModifierAdded(IReadOnlyModifier modifier)
     {
         if (modifier.IsVisible)
         {
@@ -75,16 +83,14 @@ public class UnitUIModifierDisplay : CanvasObject
         }
     }
 
-    private UnitUIModifierIcon CreateModifierIcon(IModifier modifier)
+    private UnitUIModifierIcon CreateModifierIcon(IReadOnlyModifier modifier)
     {
         if (modifier == null || !modifier.IsVisible) return null;
 
-        IDrawableResource iconResource = DrawHelpers.GetDrawableResourceInstance(modifier.IconKey);
-
-        return new UnitUIModifierIcon(new Core.Position(0, 0), iconResource);
+        return new UnitUIModifierIcon(new Core.Position(0, 0), modifier);
     }
 
-    private bool TryAddDisplayIcon(IModifier modifier)
+    private bool TryAddDisplayIcon(IReadOnlyModifier modifier)
     {
         UnitUIModifierIcon addedIcon = CreateModifierIcon(modifier);
 
@@ -104,7 +110,7 @@ public class UnitUIModifierDisplay : CanvasObject
         }
         else
         {
-            addedIcon.Hide(); //TODO 
+            addedIcon.Hide(); //TODO add overflow handling
         }
 
         return true;

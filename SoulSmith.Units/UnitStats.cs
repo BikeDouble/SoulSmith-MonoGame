@@ -489,9 +489,22 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	{
 		if (modifier == null) return;
 
-        AddModifier(modifier);
+		bool merged = false;
 
-		modifier.ApplyModifier(sender, (IReadOnlyUnit)this.GetParent());
+        foreach (IModifier mergeCandidate in _modifiers)
+		{
+			if (mergeCandidate.TryMerge(modifier)) 
+			{
+				merged = true;
+                break;
+			}
+		}
+
+		if (!merged)
+        {
+            AddModifier(modifier);
+            modifier.ApplyModifier(sender, (IReadOnlyUnit)this.GetParent());
+        }
     }
 
 	public void OnRetreat()

@@ -13,6 +13,7 @@ namespace SoulSmith.Battle.Modifiers
         public void ReactToPayloadResult(Result result);
         public void ModifyPayload(Payload request);
         public void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host);
+        public bool TryMerge(IModifier other);
         public StatModifier? GetStatModifier();
         public IReadOnlyUnit Applier { get; }
         public IReadOnlyUnit Host { get; }
@@ -25,6 +26,8 @@ namespace SoulSmith.Battle.Modifiers
         public RemoveModifierEffect RemovalEffect { get; }
         public string Name { get; }
         public string Description { get; }
+        public string StatusText { get; }
+        public string MergeKey { get; }
     }
 
     public class RemoveModifierEventArgs : EventArgs

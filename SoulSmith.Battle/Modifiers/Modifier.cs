@@ -16,7 +16,7 @@ namespace SoulSmith.Battle.Modifiers
 {
     public class Modifier : IModifier
     {
-        public Modifier(int duration, DurationStyle durationStyle, ModifierAlignment alignment, bool isVisible = true, string iconKey = null, string friendlyName = "Unnamed", string description = "")
+        public Modifier(int duration, DurationStyle durationStyle, ModifierAlignment alignment, bool isVisible = true, string iconKey = null, string friendlyName = "Unnamed", string description = "", string statusText = null, string mergeKey = null)
         {
             Duration = duration;
             DurationStyle = durationStyle;
@@ -26,6 +26,8 @@ namespace SoulSmith.Battle.Modifiers
             Name = friendlyName;
             Description = description;
             RemovalEffect = new RemoveModifierEffect(this, null, 0);
+            StatusText = statusText;
+            MergeKey = mergeKey;
         }
         public virtual void ReactToPayloadResult(Result result) 
         {
@@ -80,15 +82,38 @@ namespace SoulSmith.Battle.Modifiers
         }
 
         public virtual void ModifyPayload(Payload request) { }
+
         public virtual void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host) 
         {
             Applier = applier;
             Host = host;
         }
+
+        public bool TryMerge(IModifier other)
+        {
+            if (other == null) return false;
+            if (other.MergeKey == null) return false;
+            if (other.MergeKey == "") return false;
+            if (other.MergeKey != MergeKey) return false;
+
+            return MergeInternal(other);
+        }
+
+        /// <summary>
+        /// Merge logic for merging two modifiers. Other is not null, and MergeKey is the same.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        protected virtual bool MergeInternal(IModifier other)
+        {
+            return false;
+        }
+
         public virtual StatModifier? GetStatModifier() 
         {
             return null;
         }
+
         public int Duration { get; private set; }
         public DurationStyle DurationStyle { get; private set; }
         public IReadOnlyUnit Applier { get; private set; }
@@ -98,6 +123,8 @@ namespace SoulSmith.Battle.Modifiers
         public ModifierAlignment Alignment { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
+        public string MergeKey { get; private set; }
+        public virtual string StatusText { get; private set; }
         public RemoveModifierEffect RemovalEffect { get; private set; }
         protected void EnqueueRemove(Priority priority, Result parentResult)
         {

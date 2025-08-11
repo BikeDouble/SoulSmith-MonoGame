@@ -9,7 +9,7 @@
     "Defense": 80,
     "MoveSet": [
         {
-            "Item": "Joy/SingleHit",
+            "Item": "Anger/SingleHit",
             "Weight": 60
         },
         {

@@ -9,6 +9,7 @@
                 "VisualizationKey": "EffectVisualizations/Joy/Pop"
             }
         },
+        "StatusText": "30",
         "DurationStyle": "permanent",
         "ModifierAlignment": "buff",
         "IsModifierVisible": false,
