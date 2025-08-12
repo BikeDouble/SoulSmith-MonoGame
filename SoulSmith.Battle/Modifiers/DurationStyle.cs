@@ -12,6 +12,7 @@ namespace SoulSmith.Battle.Modifiers
     [JsonConverter(typeof(DurationStyleJsonConverter))]
     public enum DurationStyle
     {
+        Null,
         Permanent,
         Rounds,
         HostMoves,

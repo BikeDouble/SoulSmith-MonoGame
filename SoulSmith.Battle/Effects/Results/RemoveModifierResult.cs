@@ -1,4 +1,5 @@
-﻿using SoulSmith.Battle.Modifiers;
+﻿using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Modifiers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace SoulSmith.Battle.Effects.Results
 {
     public class RemoveModifierResult : Result
     {
-        public RemoveModifierResult(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, bool removedSuccessfully, Result parentResult)
-            : base(sender, target, parentResult)
+        public RemoveModifierResult(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, bool removedSuccessfully, Result parentResult, Payload payload)
+            : base(sender, target, parentResult, payload)
         {
             Modifier = modifier ?? throw new ArgumentNullException(nameof(modifier));
             RemovedSuccessfully = removedSuccessfully;

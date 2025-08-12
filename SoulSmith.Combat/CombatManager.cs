@@ -527,7 +527,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
     // Listens to effect queue
     private void ExecuteEffect(object sender, ExecuteEffectEventArgs e)
 	{
-		Payload request = e.EffectRequest;
+		Payload request = e.Payload;
 
 		ProcessEffectRequest(request);
 	}
@@ -562,7 +562,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	{
         if (payload is TriggerPayload triggerPayload) //Combat trigger effects should not be processed as normal effects and should never be modified
         {
-            return new TriggerResult(payload.Sender, payload.Target, triggerPayload.Trigger);
+            return new TriggerResult(payload.Sender, payload.Target, triggerPayload.Trigger, payload);
         }
 
         Unit target = null;

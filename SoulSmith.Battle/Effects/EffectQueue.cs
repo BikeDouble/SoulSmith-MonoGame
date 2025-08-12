@@ -23,8 +23,8 @@ public class EffectQueue : CanvasObject
             Priority.NonMoveCombatTrigger,
             Priority.NaturalDecayDamage,
             Priority.EmotionCombatEntryEffect,
-            Priority.ImmediateAfterEffect,
             Priority.ModifierRemovalImmediate,
+            Priority.ImmediateAfterEffect,
             Priority.ReactionToSelf,
             Priority.ReactionToAlly,
             Priority.ReactionToEnemy,
@@ -235,10 +235,12 @@ public class EffectQueue : CanvasObject
 
     public void SendEffectRequestFromInput(EffectInput effectInput, Result parentEffectResult = null)
     {
-        Payload request = effectInput.Effect.GeneratePayload(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult);
+        Payload payload = effectInput.Effect.GeneratePayload(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult);
+
+        if (payload == null) return;
 
         ExecuteEffectEventArgs e = new();
-        e.EffectRequest = request;
+        e.Payload = payload;
 
         ExecuteEffectEventHandler?.Invoke(this, e);
     }
@@ -307,5 +309,5 @@ public class EffectQueue : CanvasObject
 
 public class ExecuteEffectEventArgs : EventArgs
 {
-    public Payload EffectRequest { get; set; }
+    public Payload Payload { get; set; }
 }

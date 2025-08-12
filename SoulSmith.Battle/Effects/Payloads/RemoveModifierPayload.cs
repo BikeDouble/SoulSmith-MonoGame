@@ -10,7 +10,7 @@ namespace SoulSmith.Battle.Effects.Payloads
 {
     public class RemoveModifierPayload : Payload
     {
-        public RemoveModifierPayload(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, Result parentResult, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, immediateAfterEffects)
+        public RemoveModifierPayload(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, Result parentResult, IReadOnlyEffect generatingEffect, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, immediateAfterEffects)
         {
             Modifier = modifier;
         }

@@ -1,0 +1,29 @@
+{
+    "Name": "Rampage",
+    "EmotionTag": 4,
+    "TargetingStyle": "Enemy",
+    "Description": {
+        "LocalizationKey": "Move/Anger/Rampage",
+        "LocalizationVariables": {
+            "AttackPercent": 80
+        }
+    },
+    "Effects": [   
+        {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.8",
+                "DamageType": "hit",
+                "ImmediateAfterEffects": [
+                    {
+                        "Type": "RampageRefund",
+                        "Effect": {
+                            "PortionOfModToRefund": 1
+                        }
+                    }
+                ],
+                "VisualizationKey": "EffectVisualizations/Anger/DirectMissile"  
+            }
+        }
+    ]
+}

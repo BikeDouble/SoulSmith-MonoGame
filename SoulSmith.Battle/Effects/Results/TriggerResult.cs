@@ -1,4 +1,5 @@
-﻿using SoulSmith.Battle.Effects.Trigger;
+﻿using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Trigger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace SoulSmith.Battle.Effects.Results
 {
     public class TriggerResult : Result
     {
-        public TriggerResult(IReadOnlyUnit sender, IReadOnlyUnit target, CombatTrigger trigger)
-            : base(sender, target, null)
+        public TriggerResult(IReadOnlyUnit sender, IReadOnlyUnit target, CombatTrigger trigger, Payload payload)
+            : base(sender, target, null, payload)
         {
             Trigger = trigger;
         }

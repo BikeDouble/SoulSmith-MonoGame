@@ -11,7 +11,7 @@ namespace SoulSmith.Battle.Effects.Payloads
 {
     public class DamagePayload : Payload
     {
-        public DamagePayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawDamage, DamageType damageType, Result parentResult, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, immediateAfterEffects)
+        public DamagePayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawDamage, DamageType damageType, Result parentResult, IReadOnlyEffect generatingEffect, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, immediateAfterEffects)
         {
             RawDamage = rawDamage;
             DamageType = damageType;

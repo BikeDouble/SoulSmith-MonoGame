@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SoulSmith.Battle.Modifiers;
 using SoulSmith.UnitStats;
 
 namespace SoulSmith.Battle
@@ -11,6 +12,7 @@ namespace SoulSmith.Battle
     {
         int GetModStat(StatType stat);
         int GetBaseStat(StatType stat);
+        IReadOnlyModifier GetReadOnlyModifier(string mergeKey);
         int CombatPosition { get; }
         int TimeOnBoard { get; }
         int MaxHealth { get; }

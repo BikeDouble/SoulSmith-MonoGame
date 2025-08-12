@@ -8,7 +8,7 @@ using SoulSmith.Battle.Effects.Results;
 namespace SoulSmith.Battle.Effects.Payloads;
 public class Payload
 {
-    public Payload(IReadOnlyUnit sender, IReadOnlyUnit target, Result parentResult, IEnumerable<IEffect> immediateAfterEffects = null)
+    public Payload(IReadOnlyUnit sender, IReadOnlyUnit target, Result parentResult, IReadOnlyEffect generatingEffect, IEnumerable<IEffect> immediateAfterEffects = null)
     {
         Sender = sender;
         Target = target;
@@ -21,6 +21,7 @@ public class Payload
 
     public IReadOnlyUnit Sender { get; }
     public IReadOnlyUnit Target { get; }
+    public IReadOnlyEffect GeneratingEffect { get; }
     public Result ParentResult { get; }
     public IReadOnlyCollection<IEffect> ImmediateAfterEffects { get; }
 }

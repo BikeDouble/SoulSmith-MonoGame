@@ -23,7 +23,7 @@ namespace SoulSmith.Battle.Modifiers
             Alignment = alignment;
             IsVisible = isVisible;
             IconKey = iconKey;
-            Name = friendlyName;
+            FriendlyName = friendlyName;
             Description = description;
             RemovalEffect = new RemoveModifierEffect(this, null, 0);
             StatusText = statusText;
@@ -121,7 +121,7 @@ namespace SoulSmith.Battle.Modifiers
         public bool IsVisible { get; private set; }
         public string IconKey { get; private set; }
         public ModifierAlignment Alignment { get; private set; }
-        public string Name { get; private set; }
+        public string FriendlyName { get; private set; }
         public string Description { get; private set; }
         public string MergeKey { get; private set; }
         public virtual string StatusText { get; private set; }

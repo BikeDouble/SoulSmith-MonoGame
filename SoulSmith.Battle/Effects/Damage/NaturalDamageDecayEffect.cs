@@ -20,7 +20,7 @@ namespace SoulSmith.Battle.Effects.Damage
 
             if (parentEffectResult is DamageResult parentDamageResult) rawDecay = (int)(parentDamageResult.EffectiveDamage * _percentOfDamageAsDecay);
 
-            Payload request = new DecayPayload(parentEffectResult?.Sender, parentEffectResult?.Target, rawDecay, parentEffectResult);
+            Payload request = new DecayPayload(parentEffectResult?.Sender, parentEffectResult?.Target, rawDecay, parentEffectResult, this, ImmediateAfterEffects);
 
             return request;
         }

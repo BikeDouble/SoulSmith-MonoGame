@@ -12,6 +12,7 @@ namespace SoulSmith.Battle.Modifiers
     [JsonConverter(typeof(ModifierAlignmentJsonConverter))]
     public enum ModifierAlignment
     {
+        Null,
         Neutral,
         Buff,
         Debuff

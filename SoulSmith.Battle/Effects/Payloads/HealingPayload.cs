@@ -9,7 +9,7 @@ namespace SoulSmith.Battle.Effects.Payloads
 {
     public class HealingPayload : Payload
     {
-        public HealingPayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawHealing, Result parentResult, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, immediateAfterEffects)
+        public HealingPayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawHealing, Result parentResult, IReadOnlyEffect generatingEffect, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, immediateAfterEffects)
         {
             RawHealing = rawHealing;
         }

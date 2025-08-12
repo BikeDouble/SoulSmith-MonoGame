@@ -5,7 +5,7 @@ using SoulSmith.UnitStats;
 
 namespace SoulSmith.Battle.Modifiers.Stat
 {
-    public class StaticStatModifier : Modifier
+    public class StaticStatModifier : Modifier, IReadOnlyStatModifier
     {
         public StaticStatModifier(
             StatType statType,

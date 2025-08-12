@@ -400,10 +400,11 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 			SetStat(StatType.CurHealth, newHP);
 		}
 
-		Result result = new DamageResult(payload.Sender, payload.Target, effectiveDamage, damageType, payload.ParentResult);
+		bool killed = GetModStat(StatType.CurHealth) <= 0;
 
-		if (GetModStat(StatType.CurHealth) <= 0)
-			CallForDeath(payload.Sender, result);
+		Result result = new DamageResult(payload.Sender, payload.Target, effectiveDamage, damageType, killed, payload.ParentResult, payload);
+
+		if (killed) CallForDeath(payload.Sender, result);
 
         return result;
     }
@@ -422,7 +423,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
             SetStat(StatType.CurDecay, newDecay);
         }
 
-        Result effectResult = new DecayResult(payload.Sender, payload.Target, effectiveDecay, payload.ParentResult);
+        Result effectResult = new DecayResult(payload.Sender, payload.Target, effectiveDecay, payload.ParentResult, payload);
 
         int undecayedHealthRoom = GetModStat(StatType.MaxHealth) - GetModStat(StatType.CurDecay);
 
@@ -442,7 +443,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		if (rawHealing == 0) return null;
 
 		int effectiveHealing = GainHP(rawHealing);
-		Result result = new HealingResult(payload.Sender, payload.Target, effectiveHealing, payload.ParentResult);
+		Result result = new HealingResult(payload.Sender, payload.Target, effectiveHealing, payload.ParentResult, payload);
 
 		return result;
 	}
@@ -453,7 +454,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 		ApplyModifier(payload.Modifier, payload.Sender);
 
-		Result result = new AddModifierResult(payload.Sender, payload.Target, payload.Modifier, true, payload.ParentResult);
+		Result result = new AddModifierResult(payload.Sender, payload.Target, payload.Modifier, true, payload.ParentResult, payload);
 
         return result;
 	}
@@ -462,14 +463,14 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
     {
         if (payload.Modifier == null) throw new ArgumentException("EnqueueRemove modifierResults payload does not contain a modifierResults");
 
-		if (!_modifiers.Contains(payload.Modifier)) return new RemoveModifierResult(payload.Sender, payload.Target, payload.Modifier, false, payload.ParentResult); //Modifier may have been removed already
+		if (!_modifiers.Contains(payload.Modifier)) return new RemoveModifierResult(payload.Sender, payload.Target, payload.Modifier, false, payload.ParentResult, payload); //Modifier may have been removed already
 
 		RemoveModifierEventArgs e = new RemoveModifierEventArgs();
 		e.Modifier = payload.Modifier;
 
 		RemoveModifier(this, e);
 
-        Result result = new RemoveModifierResult(payload.Sender, payload.Target, payload.Modifier, true, payload.ParentResult);
+        Result result = new RemoveModifierResult(payload.Sender, payload.Target, payload.Modifier, true, payload.ParentResult, payload);
 
         return result;
     }
@@ -506,6 +507,17 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
             modifier.ApplyModifier(sender, (IReadOnlyUnit)this.GetParent());
         }
     }
+
+	public IReadOnlyModifier GetReadOnlyModifier(string mergeKey)
+	{
+		foreach (IModifier modifier in _modifiers)
+        {
+            if (modifier.MergeKey == mergeKey)
+                return modifier;
+        }
+
+		return null;
+	}
 
 	public void OnRetreat()
 	{

@@ -15,7 +15,7 @@ namespace SoulSmith.Battle.Effects.Trigger
 
         public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
         {
-            return new TriggerPayload(sender, target, _trigger);
+            return new TriggerPayload(sender, target, _trigger, this);
         }
 
         public EffectVisualization CreateVisualization()

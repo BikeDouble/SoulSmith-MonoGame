@@ -14,7 +14,7 @@ namespace SoulSmith.Battle.Effects.Damage
         private Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double> _parsedFormula;
         private DamageType _damageType = DamageType.Hit;
 
-        public FormulaDamageEffect(string formula, DamageType damageType, EffectVisualizationFactory visualizationFactory, float additionalDelay) : base(visualizationFactory, additionalDelay)
+        public FormulaDamageEffect(string formula, DamageType damageType, EffectVisualizationFactory visualizationFactory, float additionalDelay, IEffect[] immediateAfterEffects) : base(visualizationFactory, additionalDelay, immediateAfterEffects)
         {
             Interpreter interpreter = new Interpreter();
             _parsedFormula = interpreter.ParseAsDelegate<Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double>>(formula, "sender", "target", "combat");
@@ -25,7 +25,7 @@ namespace SoulSmith.Battle.Effects.Damage
         {
             double damage = _parsedFormula(sender, target, combat);
 
-            return new DamagePayload(sender, target, (int)damage, _damageType, parentEffectResult);
+            return new DamagePayload(sender, target, (int)damage, _damageType, parentEffectResult, this, ImmediateAfterEffects);
         }
     }
 
@@ -41,6 +41,7 @@ namespace SoulSmith.Battle.Effects.Damage
             string formula = string.Empty;
             float additionalDelay = 0f;
             DamageType damageType = DamageType.Null;
+            IEffect[] immediateAfterEffects = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -76,6 +77,11 @@ namespace SoulSmith.Battle.Effects.Damage
                         damageType = JsonSerializer.Deserialize<DamageType>(ref reader, options);
                         reader.Read();
                         break;
+                    case "ImmediateAfterEffects":
+                        if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException("Expected start of an array");
+                        immediateAfterEffects = JsonSerializer.Deserialize<IEffect[]>(ref reader, options);
+                        reader.Read();
+                        break;
                     default:
                         reader.Skip(); 
                         break;
@@ -85,7 +91,7 @@ namespace SoulSmith.Battle.Effects.Damage
             if (string.IsNullOrEmpty(formula)) throw new JsonException("Formula cannot be null or empty");
             if (damageType == DamageType.Null) throw new JsonException("DamageType cannot be Null");
 
-            return new FormulaDamageEffect(formula, damageType, visualizationFactory, additionalDelay);
+            return new FormulaDamageEffect(formula, damageType, visualizationFactory, additionalDelay, immediateAfterEffects);
         }
 
         public override void Write(Utf8JsonWriter writer, FormulaDamageEffect value, JsonSerializerOptions options)

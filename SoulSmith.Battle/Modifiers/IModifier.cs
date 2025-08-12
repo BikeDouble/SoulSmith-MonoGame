@@ -24,7 +24,7 @@ namespace SoulSmith.Battle.Modifiers
         public ModifierAlignment Alignment { get; }
         public EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler { get; set; }
         public RemoveModifierEffect RemovalEffect { get; }
-        public string Name { get; }
+        public string FriendlyName { get; }
         public string Description { get; }
         public string StatusText { get; }
         public string MergeKey { get; }

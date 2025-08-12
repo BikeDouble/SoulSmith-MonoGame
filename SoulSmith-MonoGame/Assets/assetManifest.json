@@ -48,6 +48,7 @@
     },
     "Moves": {
         "Anger": {
+            "Rampage": "Moves/Anger/rampage.json",
             "SingleHit": "Moves/Anger/angerSingleHit.json"
         },
         "Joy": {

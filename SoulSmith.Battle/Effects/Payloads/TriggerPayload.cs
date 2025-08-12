@@ -9,7 +9,7 @@ namespace SoulSmith.Battle.Effects.Payloads
 {
     public class TriggerPayload : Payload
     {
-        public TriggerPayload(IReadOnlyUnit sender, IReadOnlyUnit target, CombatTrigger trigger) : base(sender, target, null)
+        public TriggerPayload(IReadOnlyUnit sender, IReadOnlyUnit target, CombatTrigger trigger, IReadOnlyEffect generatingEffect) : base(sender, target, null, generatingEffect, null)
         {
             Trigger = trigger;
         }

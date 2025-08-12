@@ -85,6 +85,7 @@ namespace SoulSmith.Battle.Moves
                 switch (propertyName)
                 {
                     case "Name":
+                    case "FriendlyName":
                         if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
                         name = reader.GetString();
                         reader.Read();

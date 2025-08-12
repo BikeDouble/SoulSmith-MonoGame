@@ -27,7 +27,7 @@ namespace SoulSmith.Battle.Effects.Modifier
         {
             IModifier modifier = _modifierToRemove;
 
-            return new RemoveModifierPayload(sender, target, modifier, parentEffectResult);
+            return new RemoveModifierPayload(sender, target, modifier, parentEffectResult, this, ImmediateAfterEffects);
         }
     }
 }

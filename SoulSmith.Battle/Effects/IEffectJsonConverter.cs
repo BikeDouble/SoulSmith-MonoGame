@@ -46,6 +46,10 @@ namespace SoulSmith.Battle.Effects
                     value = JsonSerializer.Deserialize<AddModifierEffect>(ref reader, options);
                     reader.Read();
                     break;
+                case "RampageRefund":
+                    value = JsonSerializer.Deserialize<RampageRefundEffect>(ref reader, options);
+                    reader.Read();
+                    break;
                 default:
                     throw new JsonException($"Unexpected type {effectType}. Type is either misspelled or does not exist.");
             }
