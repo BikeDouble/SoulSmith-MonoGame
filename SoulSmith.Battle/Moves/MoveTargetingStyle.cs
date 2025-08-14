@@ -13,6 +13,7 @@ namespace SoulSmith.Battle.Moves
     {
         Enemy,
         AllyOrSelf,
+        Self,
         Ally,
         None
     }
@@ -25,13 +26,15 @@ namespace SoulSmith.Battle.Moves
 
             string value = reader.GetString();
 
-            switch (value)
+            switch (value.ToLower())
             {
-                case "Enemy":
+                case "enemy":
                     return MoveTargetingStyle.Enemy;
-                case "AllyOrSelf":
+                case "allyorself":
                     return MoveTargetingStyle.AllyOrSelf;
-                case "Ally":
+                case "self":
+                    return MoveTargetingStyle.Self;
+                case "ally":
                     return MoveTargetingStyle.Ally;
                 default: 
                     return MoveTargetingStyle.None;

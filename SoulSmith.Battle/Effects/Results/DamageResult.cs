@@ -11,9 +11,9 @@ namespace SoulSmith.Battle.Effects.Results
 {
     public class DamageResult : Result
     {
-        public DamageResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveDamage, DamageType damageType, bool killedTarget, Result parentResult, Payload payload)
-            : base(sender, target, parentResult, payload)
-        {
+        public DamageResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveDamage, DamageType damageType, bool killedTarget, Result parentResult, Payload payload, IEffectOriginator originator)
+            : base(sender, target, parentResult, payload, originator)
+        { 
             EffectiveDamage = effectiveDamage;
             DamageType = damageType;
             KilledTarget = killedTarget;

@@ -15,30 +15,27 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Effects.Modifier
 {
-    [JsonConverter(typeof(RampageRefundEffectJsonConverter))]
-    public class RampageRefundEffect : VisualizedEffectBase, IEffect
+    [JsonConverter(typeof(ReapplyStatModifierEffectJsonConverter))]
+    public class ReapplyStatModifierEffect : VisualizedEffectBase, IEffect
     {
-        public const string ANGERINNATESTACKSMERGEKEY = "AngerInnateStack";
-
         private float _portionOfModToRefund;
 
-        public RampageRefundEffect(
+        public ReapplyStatModifierEffect(
             float portionOfModToRefund,
+            TargetingStyle targetingStyle,
             EffectVisualizationFactory visualizationFactory,
             float additionalDelay,
             IEffect[] immediateAfterEffects
-        ) : base(visualizationFactory, additionalDelay, immediateAfterEffects)
+        ) : base(targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects)
         {
             _portionOfModToRefund = portionOfModToRefund;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
+        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
         {
-            if (!(parentEffectResult is DamageResult damageResult)) return null;
+            if (!(parentEffectResult is RemoveModifierResult removeResult)) return null;
 
-            if (!damageResult.KilledTarget) return null;
-
-            IReadOnlyModifier currentModifier = sender.ReadOnlyStats.GetReadOnlyModifier(ANGERINNATESTACKSMERGEKEY);
+            IReadOnlyModifier currentModifier = removeResult.Modifier;
 
             if (!(currentModifier is IReadOnlyStatModifier currentStatMod)) return null;
 
@@ -51,21 +48,22 @@ namespace SoulSmith.Battle.Effects.Modifier
                 1,
                 currentStatMod.DurationStyle,
                 currentStatMod.Alignment,
+                originator,
                 currentStatMod.IsVisible,
                 currentStatMod.IconKey,
                 currentStatMod.FriendlyName,
                 currentStatMod.Description,
                 currentStatMod.MergeKey);
 
-            AddModifierPayload payload = new AddModifierPayload(sender, sender, modifier, parentEffectResult, this, ImmediateAfterEffects);
+            AddModifierPayload payload = new AddModifierPayload(sender, GetTrueTarget(sender, target), modifier, parentEffectResult, this, originator, ImmediateAfterEffects);
 
             return payload;
         }
     }
 
-    public class RampageRefundEffectJsonConverter : JsonConverter<RampageRefundEffect>
+    public class ReapplyStatModifierEffectJsonConverter : JsonConverter<ReapplyStatModifierEffect>
     {
-        public override RampageRefundEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ReapplyStatModifierEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
@@ -75,6 +73,7 @@ namespace SoulSmith.Battle.Effects.Modifier
             float? portionOfModToRefund = null;
             float additionalDelay = 0f;
             IEffect[] immediateAfterEffects = null;
+            TargetingStyle targetingStyle = TargetingStyle.Target;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -110,6 +109,10 @@ namespace SoulSmith.Battle.Effects.Modifier
                         immediateAfterEffects = JsonSerializer.Deserialize<IEffect[]>(ref reader, options);
                         reader.Read();
                         break;
+                    case "TargetingStyle":
+                        targetingStyle = JsonSerializer.Deserialize<TargetingStyle>(ref reader, options);
+                        reader.Read();
+                        break;
                     default:
                         reader.Skip();
                         break;
@@ -118,10 +121,10 @@ namespace SoulSmith.Battle.Effects.Modifier
 
             if (!portionOfModToRefund.HasValue) throw new JsonException("Portion of mod to refund is required");
 
-            return new RampageRefundEffect(portionOfModToRefund.Value, visualizationFactory, additionalDelay, immediateAfterEffects);
+            return new ReapplyStatModifierEffect(portionOfModToRefund.Value, targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects);
         }
 
-        public override void Write(Utf8JsonWriter writer, RampageRefundEffect value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ReapplyStatModifierEffect value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

@@ -10,8 +10,8 @@ namespace SoulSmith.Battle.Effects.Results
 {
     public class TriggerResult : Result
     {
-        public TriggerResult(IReadOnlyUnit sender, IReadOnlyUnit target, CombatTrigger trigger, Payload payload)
-            : base(sender, target, null, payload)
+        public TriggerResult(IReadOnlyUnit sender, IReadOnlyUnit target, CombatTrigger trigger, Payload payload, IEffectOriginator originator)
+            : base(sender, target, null, payload, originator)
         {
             Trigger = trigger;
         }

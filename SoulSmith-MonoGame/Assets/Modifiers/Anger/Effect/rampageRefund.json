@@ -1,0 +1,26 @@
+{
+    "Type": "RampageRefund",
+    "Modifier": {
+        "Effect": {
+            "Type": "ReapplyStatModifier",
+            "Effect": {
+                "PortionOfModToRefund": 1,
+                "TargetingStyle": "self"
+            }
+        },
+        "TargetModifierMergeKey": "AngerInnateStack",
+        "Duration": 1,
+        "DurationStyle": "moveends",
+        "ModifierAlignment": "buff",
+        "IsModifierVisible": false,
+        "ModifierIconKey": "Textures/SolidColor/Green",
+        "FriendlyName": "Cheered On",
+        "Description": {
+            "LocalizationKey": "Modifiers/Joy/CheeredOn",
+            "LocalizationVariables": {
+                "Percent": 30,
+                "Duration": 1
+            }
+        }
+    }
+}

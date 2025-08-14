@@ -9,8 +9,8 @@ namespace SoulSmith.Battle.Effects.Results
 {
     public class HealingResult : Result
     {
-        public HealingResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveHealing, Result parentResult, Payload payload)
-            : base(sender, target, parentResult, payload)
+        public HealingResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveHealing, Result parentResult, Payload payload, IEffectOriginator originator)
+            : base(sender, target, parentResult, payload, originator)
         {
             EffectiveHealing = effectiveHealing;
         }

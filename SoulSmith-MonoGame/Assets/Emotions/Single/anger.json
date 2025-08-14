@@ -10,14 +10,6 @@
             "Effect": {
                 "ModifierKey": "Modifiers/Anger/Innate/ApplyStacksOnTakingHit"
             }
-        },
-        {
-            "Type": "FormulaDamage",
-            "Effect": {
-                "Formula": "sender.Attack * 1",
-                "DamageType": "hit",
-                "VisualizationKey": "EffectVisualizations/Anger/DirectMissile"
-            }
         }
     ]
 }

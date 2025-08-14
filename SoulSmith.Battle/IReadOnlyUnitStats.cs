@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Modifiers;
 using SoulSmith.UnitStats;
 
 namespace SoulSmith.Battle
 {
-    public interface IReadOnlyUnitStats
+    public interface IReadOnlyUnitStats : IEffectOriginator
     {
         int GetModStat(StatType stat);
         int GetBaseStat(StatType stat);

@@ -15,12 +15,13 @@ namespace SoulSmith.Battle.Modifiers.Effect
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
+            IEffectOriginator originator,
             bool isVisible,
             string iconKey,
             string friendlyName,
             string description,
             string statusText)
-            : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description, statusText)
+            : base(duration, durationStyle, alignment, originator, isVisible, iconKey, friendlyName, description, statusText)
         {
             _effect = effect ?? throw new ArgumentNullException(nameof(effect));
         }
@@ -39,9 +40,9 @@ namespace SoulSmith.Battle.Modifiers.Effect
 
                 if (damageResult.EffectiveDamage <= 0) return;
 
-                EffectInput effectInput = new EffectInput(_effect, Host, result.Target, Priority.ReactionToSelf);
+                EffectInput effectInput = new EffectInput(_effect, Host, result.Target, Priority.ReactionToSelf, this, result);
 
-                EnqueueEffectInput(effectInput, result);
+                EnqueueEffectInput(effectInput);
             }
         }
     }

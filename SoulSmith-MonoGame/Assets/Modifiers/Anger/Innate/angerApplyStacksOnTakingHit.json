@@ -4,7 +4,8 @@
         "Effect": {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Anger/Innate/Stack"
+                "ModifierKey": "Modifiers/Anger/Innate/Stack",
+                "TargetingStyle": "self"
             }
         },
         "DurationStyle": "permanent",

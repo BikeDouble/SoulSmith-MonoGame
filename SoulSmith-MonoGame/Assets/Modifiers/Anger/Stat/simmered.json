@@ -1,9 +1,9 @@
 {
-    "Type": "StaticStatBasedOnDamageDone",
+    "Type": "StaticStat",
     "Modifier": {
         "StatType": "attack",
         "ModStyle": "additivepercent",
-        "PortionOfDamageAsStatMod": 0.5,
+        "ModAmount": 0.8,
         "Duration": 1,
         "DurationStyle": "hosthits",
         "Alignment": "buff",
@@ -14,7 +14,7 @@
         "Description": {
             "LocalizationKey": "Modifiers/Stat/Static/HostHits/Attack/Additive",
             "LocalizationVariables": {
-                "Percent": 50,
+                "Percent": 80,
                 "Duration": 1
             }
         }

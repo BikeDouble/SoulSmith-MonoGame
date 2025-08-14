@@ -18,16 +18,16 @@ namespace SoulSmith.Battle.Effects.Modifier
             IModifier modifierToRemove,
             EffectVisualizationFactory visualizationFactory,
             float additionalDelay
-        ) : base(visualizationFactory, additionalDelay)
+        ) : base(TargetingStyle.Special, visualizationFactory, additionalDelay)
         {
             _modifierToRemove = modifierToRemove;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
+        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
         {
             IModifier modifier = _modifierToRemove;
 
-            return new RemoveModifierPayload(sender, target, modifier, parentEffectResult, this, ImmediateAfterEffects);
+            return new RemoveModifierPayload(sender, modifier.Host, modifier, parentEffectResult, this, originator, ImmediateAfterEffects);
         }
     }
 }

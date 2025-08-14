@@ -15,7 +15,8 @@ namespace SoulSmith.Battle.Modifiers
         Null,
         Permanent,
         Rounds,
-        HostMoves,
+        MoveEnds,
+        HostMoveEnds,
         HostGivesHits
     }
 
@@ -28,7 +29,8 @@ namespace SoulSmith.Battle.Modifiers
             {
                 "permanent" => DurationStyle.Permanent,
                 "rounds" => DurationStyle.Rounds,
-                "hostmoves" => DurationStyle.HostMoves,
+                "moveends" => DurationStyle.MoveEnds,
+                "hostmoveemds" => DurationStyle.HostMoveEnds,
                 "hosthits" => DurationStyle.HostGivesHits,
                 "hostgiveshits" => DurationStyle.HostGivesHits,
                 _ => throw new JsonException($"Unknown DurationStyle value: {value}")
@@ -41,7 +43,8 @@ namespace SoulSmith.Battle.Modifiers
             {
                 DurationStyle.Permanent => "permanent",
                 DurationStyle.Rounds => "rounds",
-                DurationStyle.HostMoves => "hostmoves",
+                DurationStyle.MoveEnds => "moveends",
+                DurationStyle.HostMoveEnds => "hostmoveends",
                 DurationStyle.HostGivesHits => "hostgiveshits",
                 _ => throw new JsonException($"Unknown DurationStyle value: {value}")
             };

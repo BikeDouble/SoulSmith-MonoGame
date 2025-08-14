@@ -5,25 +5,28 @@ using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Battle.Effects
 {
-    public struct EffectInput
+    public class EffectInput
     {
-        public EffectInput(IEffect effect, IReadOnlyUnit sender, IReadOnlyUnit target, Priority enqueuePriority)
+        public EffectInput(IEffect effect, IReadOnlyUnit sender, IReadOnlyUnit target, Priority enqueuePriority, IEffectOriginator originator, Result parentResult)
         {
             Effect = effect;
             Sender = sender;
             Target = target;
             EnqueuePriority = enqueuePriority;
+            Originator = originator;
+            ParentResult = parentResult;
         }
 
         public readonly IEffect Effect;
         public readonly IReadOnlyUnit Sender;
         public readonly IReadOnlyUnit Target;
+        public readonly IEffectOriginator Originator;
         public readonly Priority EnqueuePriority;
+        public Result ParentResult;
     }
 
     public class EnqueueEffectInputEventArgs : EventArgs
     {
         public EffectInput EffectInput;
-        public Result ParentEffectResult = null;
     }
 }

@@ -48,16 +48,14 @@ public class EffectQueue : CanvasObject
 
     public readonly struct QueuedEffect
     {
-        public QueuedEffect(EffectInput input, Result parentEffectResult, double additionalDelay)
+        public QueuedEffect(EffectInput input, double additionalDelay)
         {
             EffectInput = input;
             VisualizationListener = new EffectVisualizationListener(input, additionalDelay);
-            ParentEffectResult = parentEffectResult;
         }
 
         public EffectInput EffectInput { get; }
         public EffectVisualizationListener VisualizationListener { get; }
-        public Result ParentEffectResult { get; }
     }
 
     public EffectQueue(IReadOnlyCombat parentCombat)
@@ -86,32 +84,32 @@ public class EffectQueue : CanvasObject
 
     public void OnTurnBegin()
     {
-        EnqueueEffect(new EffectInput(_turnBeginEffect, null, null, Priority.NonMoveCombatTrigger));
+        EnqueueEffect(new EffectInput(_turnBeginEffect, null, null, Priority.NonMoveCombatTrigger, _parentCombat, null));
     }
 
     public void OnTurnEnd()
     {
-        EnqueueEffect(new EffectInput(_turnEndEffect, null, null, Priority.NonMoveCombatTrigger));
+        EnqueueEffect(new EffectInput(_turnEndEffect, null, null, Priority.NonMoveCombatTrigger, _parentCombat, null));
     }
 
     public void OnRoundBegin()
     {
-        EnqueueEffect(new EffectInput(_roundBeginEffect, null, null, Priority.NonMoveCombatTrigger));
+        EnqueueEffect(new EffectInput(_roundBeginEffect, null, null, Priority.NonMoveCombatTrigger, _parentCombat, null));
     }
 
     public void OnRoundEnd()
     {
-        EnqueueEffect(new EffectInput(_roundEndEffect, null, null, Priority.NonMoveCombatTrigger));
+        EnqueueEffect(new EffectInput(_roundEndEffect, null, null, Priority.NonMoveCombatTrigger, _parentCombat, null));
     }
 
     public void OnUnitDeath(IReadOnlyUnit killer, IReadOnlyUnit deadUnit, Result killingEffectResult)
     {
-        EnqueueEffect(new EffectInput(UNITDEATHEFFECT, killer, deadUnit, Priority.NonMoveCombatTrigger), killingEffectResult, DEATHANIMATIONDURATION);
+        EnqueueEffect(new EffectInput(UNITDEATHEFFECT, killer, deadUnit, Priority.NonMoveCombatTrigger, _parentCombat, killingEffectResult), DEATHANIMATIONDURATION);
     }
 
     public void OnUnitRetreat(IReadOnlyUnit retreatingUnit)
     {
-        EnqueueEffect(new EffectInput(UNITRETREATEFFECT, null, retreatingUnit, Priority.NonMoveCombatTrigger));
+        EnqueueEffect(new EffectInput(UNITRETREATEFFECT, null, retreatingUnit, Priority.NonMoveCombatTrigger, _parentCombat, null));
     }
 
     private void InitializeQueues() 
@@ -157,7 +155,7 @@ public class EffectQueue : CanvasObject
             return;
         }
 
-        SendEffectRequestFromInput(effectInput, queuedEffect.ParentEffectResult);
+        SendEffectRequestFromInput(effectInput);
     }
 
     public void EnqueueMove(MoveInput moveInput)
@@ -166,19 +164,20 @@ public class EffectQueue : CanvasObject
         IReadOnlyUnit sender = moveInput.Sender;
         IReadOnlyUnit target = moveInput.Target;
 
-        EnqueueEffect(new EffectInput(_moveBeginEffect, sender, target, Priority.Move));
+        EnqueueEffect(new EffectInput(_moveBeginEffect, sender, target, Priority.Move, moveInput.Move, null));
+
         foreach (IEffect effect in effects)
         {
-            EnqueueEffect(new EffectInput(effect, sender, target, Priority.Move), null, UNIVERSALMOVEEFFECTDELAY);
+            EnqueueEffect(new EffectInput(effect, sender, target, Priority.Move, moveInput.Move, null), UNIVERSALMOVEEFFECTDELAY);
         }
-        EnqueueEffect(new EffectInput(_moveEndEffect, sender, target, Priority.Move));
+
+        EnqueueEffect(new EffectInput(_moveEndEffect, sender, target, Priority.Move, moveInput.Move, null));
 
         _moveHistory.Push(moveInput);
     }
 
     public void EnqueueEffect(
         EffectInput effectInput,
-        Result parentEffectResult = null,
         double additionalDelay = 0)
     {
         if (effectInput.Effect == null)
@@ -186,7 +185,7 @@ public class EffectQueue : CanvasObject
             throw new ArgumentNullException(nameof(effectInput.Effect), "EffectInput must have a valid effect.");
         }
 
-        QueuedEffect queuedEffect = new QueuedEffect(effectInput, parentEffectResult, additionalDelay);
+        QueuedEffect queuedEffect = new QueuedEffect(effectInput, additionalDelay);
         EffectVisualization visualization = queuedEffect.VisualizationListener.Visualization;
         
         if (visualization != null)
@@ -235,7 +234,7 @@ public class EffectQueue : CanvasObject
 
     public void SendEffectRequestFromInput(EffectInput effectInput, Result parentEffectResult = null)
     {
-        Payload payload = effectInput.Effect.GeneratePayload(effectInput.Sender, effectInput.Target, _parentCombat, parentEffectResult);
+        Payload payload = effectInput.Effect.GeneratePayload(effectInput.Sender, effectInput.Target, _parentCombat, effectInput.Originator, effectInput.ParentResult);
 
         if (payload == null) return;
 
@@ -248,20 +247,32 @@ public class EffectQueue : CanvasObject
     /// <summary>
     /// Receives request and result of executed effect and enqueues its immediate after effects, with priority.
     /// </summary>
-    /// <param name="request"></param>
+    /// <param name="payload"></param>
     /// <param name="result"></param>
-    public void ResolveEffect(Payload request, Result result)
+    public void ResolveEffect(Payload payload, Result result)
     {
-        if (request.ImmediateAfterEffects != null)
+        if (payload.ImmediateAfterEffects != null)
         {
-            foreach (IEffect immediateAfterEffect in request.ImmediateAfterEffects)
+            foreach (IEffect immediateAfterEffect in payload.ImmediateAfterEffects)
             {
-                EffectInput immediateAfterEffectInput = new EffectInput(immediateAfterEffect, request.Sender, request.Target, Priority.ImmediateAfterEffect);
-                EnqueueEffect(immediateAfterEffectInput, result);
+                EffectInput immediateAfterEffectInput = new EffectInput(immediateAfterEffect, payload.Sender, payload.Target, Priority.ImmediateAfterEffect, result.Originator, result);
+                EnqueueEffect(immediateAfterEffectInput);
             }
         }
 
-        _effectHistory.Push((request, result));
+        if (payload.Originator is IReadOnlyMove move) // Set result of next effect in move to this
+        {
+            if (_priorityQueues[Priority.Move].Count > 0)
+            {
+                EffectInput nextMoveInput = _priorityQueues[Priority.Move].Peek().EffectInput;
+                if (nextMoveInput.Originator == move)
+                {
+                    nextMoveInput.ParentResult = result;
+                }
+            }
+        }
+
+        _effectHistory.Push((payload, result));
     }
 
     private List<EffectVisualization> _visualizationsToRemove = new List<EffectVisualization>();

@@ -1,4 +1,5 @@
 ﻿using SoulSmith.Asset;
+using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle.Effects.Visualization.Factory;
 using SoulSmith.Battle.Modifiers;
@@ -41,7 +42,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
         public StatModStyle ModStyle { get; private set; }
         public double PortionOfDamageAsStatMod { get; private set; }
 
-        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentResult)
+        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentResult)
         {
             if (!(parentResult is DamageResult damageResult)) return null;
 
@@ -62,7 +63,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
                     return null;
             }
 
-            return new StaticStatModifier(StatType, ModStyle, modAmount, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description, MergeKey);
+            return new StaticStatModifier(StatType, ModStyle, modAmount, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, MergeKey);
         }
     }
 

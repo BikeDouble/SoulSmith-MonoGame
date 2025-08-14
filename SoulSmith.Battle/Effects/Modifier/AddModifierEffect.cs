@@ -15,19 +15,20 @@ namespace SoulSmith.Battle.Effects.Modifier
 
         public AddModifierEffect(
             ModifierFactory modifierFactory,
+            TargetingStyle targetingStyle,
             EffectVisualizationFactory visualizationFactory,
             float additionalDelay,
             IEffect[] immediateAfterEffects = null
-        ) : base(visualizationFactory, additionalDelay, immediateAfterEffects)
+        ) : base(targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects)
         {
             _modifierFactory = modifierFactory;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
+        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
         {
-            IModifier modifier = _modifierFactory.CreateModifier(sender, target, combat, parentEffectResult);
+            IModifier modifier = _modifierFactory.CreateModifier(sender, target, combat, originator, parentEffectResult);
 
-            return new AddModifierPayload(sender, target, modifier, parentEffectResult, this, ImmediateAfterEffects);
+            return new AddModifierPayload(sender, GetTrueTarget(sender, target), modifier, parentEffectResult, this, originator, ImmediateAfterEffects);
         }
     }
 
@@ -43,6 +44,7 @@ namespace SoulSmith.Battle.Effects.Modifier
             ModifierFactory modifierFactory = null;
             float additionalDelay = 0f;
             IEffect[] immediateAfterEffects = null;
+            TargetingStyle targetingStyle = TargetingStyle.Target;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -81,6 +83,10 @@ namespace SoulSmith.Battle.Effects.Modifier
                         immediateAfterEffects = JsonSerializer.Deserialize<IEffect[]>(ref reader, options);
                         reader.Read();
                         break;
+                    case "TargetingStyle":
+                        targetingStyle = JsonSerializer.Deserialize<TargetingStyle>(ref reader, options);
+                        reader.Read();
+                        break;
                     default:
                         reader.Skip();
                         break;
@@ -94,6 +100,7 @@ namespace SoulSmith.Battle.Effects.Modifier
 
             return new AddModifierEffect(
                 modifierFactory,
+                targetingStyle,
                 visualizationFactory,
                 additionalDelay,
                 immediateAfterEffects

@@ -168,6 +168,17 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 		return GetEnemyTeam(GetTeamWithUnit(callingUnit));
     }
 
+	private CombatTeam GetPlayerTeam()
+	{
+        foreach (CombatTeam team in _teams)
+        {
+            if (team.PlayerControlled)
+                return team;
+        }
+
+        return null;
+    }
+
     private CombatTeam GetComputerTeam()
 	{
 		foreach (CombatTeam team in _teams)
@@ -499,6 +510,11 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 				positions = new List<int>{0, 1, 2};
 				showingTeam = GetEnemyTeam(senderTeam);
 				break;
+			case MoveTargetingStyle.Self:
+                userPosition = GetTeamWithUnit(unitSender).GetPositionIndexWithUnit(unitSender);
+                positions = new List<int>{userPosition};
+                showingTeam = senderTeam;
+				break;
 			default:
 				positions = new List<int>();
 				showingTeam = null;
@@ -512,8 +528,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	private void OnOfferEffectInput(object sender, EnqueueEffectInputEventArgs e)
 	{
 		EffectInput effectInput = e.EffectInput;
-		Result parentEffectResult = e.ParentEffectResult;
-        _effectQueue.EnqueueEffect(effectInput, parentEffectResult);
+        _effectQueue.EnqueueEffect(effectInput);
 	}
 
     public EventHandler<DeployUnitButtonPressedEventArgs> DeployUnitButtonPressedEventHandler;
@@ -562,7 +577,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	{
         if (payload is TriggerPayload triggerPayload) //Combat trigger effects should not be processed as normal effects and should never be modified
         {
-            return new TriggerResult(payload.Sender, payload.Target, triggerPayload.Trigger, payload);
+            return new TriggerResult(payload.Sender, payload.Target, triggerPayload.Trigger, payload, payload.Originator);
         }
 
         Unit target = null;
@@ -580,6 +595,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         // Requests intercepted in order: sender, sender's team (may include target), other team, target*
         // if sender is null, target's team is used first instead
         CombatTeam firstTeam = null;
+
 		if (sender == null)
 		{
 			firstTeam = GetTeamWithUnit(target);
@@ -588,6 +604,8 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 		{
             firstTeam = GetTeamWithUnit(sender);
         }
+
+		if (firstTeam == null) firstTeam = GetPlayerTeam();
 
 		CombatTeam otherTeam = GetEnemyTeam(firstTeam);
 
@@ -652,28 +670,31 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
             sender = (Unit)result.Sender;
         }
 
-        // Results reacted to in order: sender, sender's team (may include target), other team, target*
-        // if sender is null, target's team is used first instead
+		// Results reacted to in order: sender, sender's team (may include target), other team, target*
+		// if sender is null, target's team is used first instead
 		CombatTeam firstTeam = null;
-		CombatTeam secondTeam = null;
+        CombatTeam secondTeam = null;
 
-		if (sender != null)
-		{
-			firstTeam = GetTeamWithUnit(sender);
-			secondTeam = GetEnemyTeam(firstTeam);
-		}
-		else if (target != null)
-		{
-			firstTeam = GetTeamWithUnit(target);
-			secondTeam = GetEnemyTeam(firstTeam);
-		}
-		else
-		{
-			secondTeam = GetComputerTeam();
-			firstTeam = GetEnemyTeam(secondTeam);
+        if (sender == null)
+        {
+            if (target == null)
+            {
+                firstTeam = GetPlayerTeam();
+            }
+            else
+            {
+                firstTeam = GetTeamWithUnit(target);
+            }
+        }
+        else
+        {
+            firstTeam = GetTeamWithUnit(sender);
         }
 
-		if (firstTeam == null || secondTeam == null) throw new ArgumentException("Invalid teams for effect result processing.");
+		if (firstTeam == null) firstTeam = GetPlayerTeam();
+        secondTeam = GetEnemyTeam(firstTeam);
+
+        if (firstTeam == null || secondTeam == null) throw new ArgumentException("Invalid teams for effect result processing.");
 		firstTeam.ReactToPayloadResult(result);
 		secondTeam.ReactToPayloadResult(result);
     }

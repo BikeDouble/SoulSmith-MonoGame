@@ -120,7 +120,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		foreach (IEffect effect in emotion.BattleEntryEffects)
 		{
 			EnqueueEffectInputEventArgs args = new EnqueueEffectInputEventArgs();
-			args.EffectInput = new EffectInput(effect, this, this, Priority.EmotionCombatEntryEffect);
+			args.EffectInput = new EffectInput(effect, this, this, Priority.EmotionCombatEntryEffect, null, null);
 			EnqueueEffectInput(this, args);
         }
 	}

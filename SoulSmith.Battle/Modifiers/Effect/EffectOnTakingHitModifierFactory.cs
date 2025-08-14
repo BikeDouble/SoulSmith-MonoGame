@@ -36,9 +36,9 @@ namespace SoulSmith.Battle.Modifiers.Effect
         public IEffect Effect { get; private set; }
         public string StatusText { get; private set; }
 
-        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentResult)
+        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentResult)
         {
-            return new EffectOnTakingHitModifier(Effect, Duration, DurationStyle, ModifierAlignment, IsModifierVisible, ModifierIconKey, FriendlyName, Description, StatusText);
+            return new EffectOnTakingHitModifier(Effect, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, StatusText);
         }
     }
 

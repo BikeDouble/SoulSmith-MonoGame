@@ -10,8 +10,8 @@ namespace SoulSmith.Battle.Effects.Results
 {
     public class DecayResult : Result
     {
-        public DecayResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveDecay, Result parentResult, Payload payload)
-            : base(sender, target, parentResult, payload)
+        public DecayResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveDecay, Result parentResult, Payload payload, IEffectOriginator originator)
+            : base(sender, target, parentResult, payload, originator)
         {
             EffectiveDecay = effectiveDecay;
         }

@@ -4,6 +4,7 @@ using SoulSmith.Shapes;
 using SoulSmith.UnitStats;
 using SoulSmith.Battle.Moves;
 using SoulSmith.Drawing;
+using SoulSmith.Battle.Effects;
 
 namespace SoulSmith.Battle;
 

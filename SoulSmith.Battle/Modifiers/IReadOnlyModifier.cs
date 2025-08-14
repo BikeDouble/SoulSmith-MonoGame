@@ -1,8 +1,8 @@
-﻿
+﻿using SoulSmith.Battle.Effects;
 
 namespace SoulSmith.Battle.Modifiers
 {
-    public interface IReadOnlyModifier
+    public interface IReadOnlyModifier : IEffectOriginator
     {
         public string IconKey { get; }
         public int Duration { get; }

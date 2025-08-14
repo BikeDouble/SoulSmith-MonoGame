@@ -5,24 +5,23 @@
     "Description": {
         "LocalizationKey": "Move/Anger/Rampage",
         "LocalizationVariables": {
-            "AttackPercent": 80
+            "AttackPercent": 60
         }
     },
-    "Effects": [   
+    "Effects": [
+        {
+            "Type": "Modifier",
+            "Effect": {
+                "ModifierKey": "Modifiers/Anger/Effect/RampageRefund",
+                "TargetingStyle": "self"
+            }
+        },
         {
             "Type": "FormulaDamage",
             "Effect": {
-                "Formula": "sender.Attack * 0.8",
+                "Formula": "sender.Attack * 0.6",
                 "DamageType": "hit",
-                "ImmediateAfterEffects": [
-                    {
-                        "Type": "RampageRefund",
-                        "Effect": {
-                            "PortionOfModToRefund": 1
-                        }
-                    }
-                ],
-                "VisualizationKey": "EffectVisualizations/Anger/DirectMissile"  
+                "VisualizationKey": "EffectVisualizations/Anger/DirectMissile"
             }
         }
     ]

@@ -1,0 +1,19 @@
+{
+    "Name": "Simmer",
+    "EmotionTag": 4,
+    "TargetingStyle": "Self",
+    "Description": {
+        "LocalizationKey": "Move/Anger/Simmer",
+        "LocalizationVariables": {
+            "Percent": 80
+        }
+    },
+    "Effects": [   
+        {
+            "Type": "Modifier",
+            "Effect": {
+                "ModifierKey": "Modifiers/Anger/Stat/Simmered"
+            }
+        }
+    ]
+}

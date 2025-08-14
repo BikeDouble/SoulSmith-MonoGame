@@ -523,16 +523,17 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		TeamPosition senderPosition = this.GetPositionWithUnit(result.Sender);
 		senderPosition?.ReactToPayloadResult(result);
 
+        TeamPosition targetPosition = this.GetPositionWithUnit(result.Target);
+
         foreach (TeamPosition position in _teamPositions)
 		{
-			if ((position.Unit != result.Target) && (position.Unit != result.Sender))
+			if ((position.Unit != result.Target) && (position != senderPosition) && (position!= targetPosition))
 			{
 				position.ReactToPayloadResult(result);
 			}
 		}
 
-        TeamPosition targetPosition = this.GetPositionWithUnit(result.Target);
-        targetPosition?.ReactToPayloadResult(result);
+        if (senderPosition != targetPosition) targetPosition?.ReactToPayloadResult(result);
     }
 
     public bool PlayerControlled { get { return _playerControlled; } }

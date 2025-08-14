@@ -16,10 +16,11 @@ namespace SoulSmith.Battle.Modifiers
 {
     public class Modifier : IModifier
     {
-        public Modifier(int duration, DurationStyle durationStyle, ModifierAlignment alignment, bool isVisible = true, string iconKey = null, string friendlyName = "Unnamed", string description = "", string statusText = null, string mergeKey = null)
+        public Modifier(int duration, DurationStyle durationStyle, ModifierAlignment alignment, IEffectOriginator originator, bool isVisible = true, string iconKey = null, string friendlyName = "Unnamed", string description = "", string statusText = null, string mergeKey = null)
         {
             Duration = duration;
             DurationStyle = durationStyle;
+            Originator = originator;
             Alignment = alignment;
             IsVisible = isVisible;
             IconKey = iconKey;
@@ -44,7 +45,7 @@ namespace SoulSmith.Battle.Modifiers
                         }
                     }
                     break;
-                case DurationStyle.HostMoves:
+                case DurationStyle.HostMoveEnds:
                     if (result is TriggerResult triggerResult2)
                     {
                         if (triggerResult2.Trigger == Effects.Trigger.CombatTrigger.OnMoveEnd)
@@ -53,6 +54,15 @@ namespace SoulSmith.Battle.Modifiers
                             {
                                 DecrementDuration(result);
                             }
+                        }
+                    }
+                    break;
+                case DurationStyle.MoveEnds:
+                    if (result is TriggerResult triggerResult3)
+                    {
+                        if (triggerResult3.Trigger == Effects.Trigger.CombatTrigger.OnMoveEnd)
+                        {
+                            DecrementDuration(result);
                         }
                     }
                     break;
@@ -125,18 +135,18 @@ namespace SoulSmith.Battle.Modifiers
         public string Description { get; private set; }
         public string MergeKey { get; private set; }
         public virtual string StatusText { get; private set; }
+        public IEffectOriginator Originator { get; private set; }
         public RemoveModifierEffect RemovalEffect { get; private set; }
         protected void EnqueueRemove(Priority priority, Result parentResult)
         {
-            EffectInput removeEffectInput = new EffectInput(RemovalEffect, Applier, Host, priority);
+            EffectInput removeEffectInput = new EffectInput(RemovalEffect, Applier, Host, priority, this, parentResult);
             EnqueueEffectInput(removeEffectInput);
         }
         public EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler { get; set; }
-        protected void EnqueueEffectInput(EffectInput effectInput, Result parentResult = null)
+        protected void EnqueueEffectInput(EffectInput effectInput)
         {
             EnqueueEffectInputEventArgs e = new();
             e.EffectInput = effectInput;
-            e.ParentEffectResult = parentResult;
 
             EnqueueEffectInputEventHandler(this, e);
         }

@@ -8,16 +8,16 @@ namespace SoulSmith.Battle.Effects.Damage
     {
         private int _decayDamage;
 
-        public FlatDecayDamageEffect(int decayDamage, EffectVisualizationFactory visualizationFactory = null, float additionalDelay = 0) : base(visualizationFactory, additionalDelay)
+        public FlatDecayDamageEffect(int decayDamage, TargetingStyle targetingStyle = TargetingStyle.Target, EffectVisualizationFactory visualizationFactory = null, float additionalDelay = 0) : base(targetingStyle, visualizationFactory, additionalDelay)
         {
             _decayDamage = decayDamage;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult = null)
+        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
         {
             int rawDecay = _decayDamage;
 
-            Payload request = new DecayPayload(sender, target, rawDecay, parentEffectResult, this, ImmediateAfterEffects);
+            Payload request = new DecayPayload(sender, GetTrueTarget(sender, target), rawDecay, parentEffectResult, this, originator, ImmediateAfterEffects);
             return request;
         }
     }

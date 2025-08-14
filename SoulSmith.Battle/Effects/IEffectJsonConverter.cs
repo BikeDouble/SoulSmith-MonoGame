@@ -46,8 +46,8 @@ namespace SoulSmith.Battle.Effects
                     value = JsonSerializer.Deserialize<AddModifierEffect>(ref reader, options);
                     reader.Read();
                     break;
-                case "RampageRefund":
-                    value = JsonSerializer.Deserialize<RampageRefundEffect>(ref reader, options);
+                case "ReapplyStatModifier":
+                    value = JsonSerializer.Deserialize<ReapplyStatModifierEffect>(ref reader, options);
                     reader.Read();
                     break;
                 default:

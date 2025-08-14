@@ -1,4 +1,5 @@
 ﻿using SoulSmith.Asset;
+using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle.Effects.Visualization.Factory;
 using SoulSmith.Battle.Modifiers.Effect;
@@ -37,7 +38,7 @@ namespace SoulSmith.Battle.Modifiers
         public string FriendlyName { get; private set; }
         public string Description { get; private set; }
         public string MergeKey { get; private set; }
-        public virtual IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, Result parentEffectResult)
+        public virtual IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result addEffectParentResult)
         {
             return null;
         }
@@ -95,6 +96,10 @@ namespace SoulSmith.Battle.Modifiers
                     break;
                 case "EffectOnTakingHit":
                     value = JsonSerializer.Deserialize<EffectOnTakingHitModifierFactory>(ref reader, options);
+                    reader.Read();
+                    break;
+                case "RampageRefund":
+                    value = JsonSerializer.Deserialize<RampageRefundModifierFactory>(ref reader, options);
                     reader.Read();
                     break;
                 default:

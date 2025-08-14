@@ -14,12 +14,13 @@ namespace SoulSmith.Battle.Modifiers.Stat
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
+            IEffectOriginator originator,
             bool isVisible,
             string iconKey,
             string friendlyName,
             string description,
             string mergeKey)
-            : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description, null, mergeKey)
+            : base(duration, durationStyle, alignment, originator, isVisible, iconKey, friendlyName, description, null, mergeKey)
         {
             StatType = statType;
             ModStyle = modType;

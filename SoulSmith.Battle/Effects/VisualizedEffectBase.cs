@@ -8,11 +8,22 @@ namespace SoulSmith.Battle.Effects
         private EffectVisualizationFactory _visualizationFactory;
         private float _additionalDelay;
 
-        public VisualizedEffectBase(EffectVisualizationFactory visualizationFactory, float additionalDelay, IEnumerable<IEffect> immediateAfterEffects = null) 
+        public VisualizedEffectBase(TargetingStyle targetingStyle, EffectVisualizationFactory visualizationFactory, float additionalDelay, IEnumerable<IEffect> immediateAfterEffects = null) 
         {
             _visualizationFactory = visualizationFactory;
             _additionalDelay = additionalDelay;
             ImmediateAfterEffects = immediateAfterEffects;
+            TargetingStyle = targetingStyle;
+        }
+
+        public IReadOnlyUnit GetTrueTarget(IReadOnlyUnit sender, IReadOnlyUnit target)
+        {
+            return TargetingStyle switch
+            {
+                TargetingStyle.Sender => sender,
+                TargetingStyle.Target => target,
+                _ => throw new InvalidOperationException($"Unsupported targeting style: {TargetingStyle}")
+            };
         }
 
         public EffectVisualization CreateVisualization()
@@ -27,5 +38,6 @@ namespace SoulSmith.Battle.Effects
 
         protected IEnumerable<IEffect> ImmediateAfterEffects { get; private set; }
         public float AdditionalDelay { get { return _additionalDelay; } }
+        public TargetingStyle TargetingStyle { get; private set; }
     }
 }

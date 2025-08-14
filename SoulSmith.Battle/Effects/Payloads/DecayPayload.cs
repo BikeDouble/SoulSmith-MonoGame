@@ -9,7 +9,7 @@ namespace SoulSmith.Battle.Effects.Payloads
 {
     public class DecayPayload : Payload
     {
-        public DecayPayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawDecay, Result parentResult, IReadOnlyEffect generatingEffect, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, immediateAfterEffects)
+        public DecayPayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawDecay, Result parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
         {
             RawDecay = rawDecay;
         }
