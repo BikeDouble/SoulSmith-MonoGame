@@ -10,6 +10,24 @@ namespace SoulSmith.UnitStats
 
     public static class StatTypeHelper
     {
+        public static float CombineModifiers(float a, float b, StatModStyle modStyle)
+        {
+            switch (modStyle)
+            {
+                case StatModStyle.Flat:
+                    return a + b;
+                case StatModStyle.AdditivePercent:
+                    return a + b;
+                case StatModStyle.MultiplicativePercent:
+                    float aAsDecimal = (100 + a) / 100;
+                    float bAsDecimal = (100 + b) / 100;
+                    float resultAsDecimal = aAsDecimal * bAsDecimal;
+                    return resultAsDecimal * 100 - 100; // Convert back to percentage
+                default:
+                    throw new ArgumentException("Invalid mod style");
+            }
+        }
+
         public static StatType StringToStatType(string text)
         {
             string textLower = text.ToLower();
@@ -69,7 +87,7 @@ namespace SoulSmith.UnitStats
 
     public readonly struct StatModifier
     {
-        public StatModifier(StatType stat, StatModStyle modType, double modAmount)
+        public StatModifier(StatType stat, StatModStyle modType, float modAmount)
         {
             Stat = stat;
             ModStyle = modType;
@@ -85,7 +103,7 @@ namespace SoulSmith.UnitStats
 
         public StatType Stat { get; }
         public StatModStyle ModStyle { get; }
-        public double ModAmount { get; }
+        public float ModAmount { get; }
     }
 
     public class StatTypeJsonConverter : System.Text.Json.Serialization.JsonConverter<StatType>

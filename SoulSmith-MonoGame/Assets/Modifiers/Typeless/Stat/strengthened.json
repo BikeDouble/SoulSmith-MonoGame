@@ -3,7 +3,7 @@
     "Modifier": {
         "StatType": "attack",
         "ModStyle": "additivepercent",
-        "ModAmount": 3,
+        "ModAmount": 300,
         "Duration": 4,
         "DurationStyle": "rounds",
         "Alignment": "buff",

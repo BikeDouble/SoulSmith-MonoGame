@@ -13,7 +13,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
         public StaticStatModifierFactory(
             StatType statType,
             StatModStyle statModStyle,
-            double modAmount,
+            float modAmount,
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
@@ -31,7 +31,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
 
         public StatType StatType { get; private set; }
         public StatModStyle ModStyle { get; private set; }
-        public double ModAmount { get; private set; }
+        public float ModAmount { get; private set; }
 
         public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentResult)
         {
@@ -49,7 +49,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
 
             StatType statType = StatType.None;
             StatModStyle modStyle = StatModStyle.Null;
-            double? modAmount = null;
+            float? modAmount = null;
             int duration = 0;
             DurationStyle? durationStyle = null;
             ModifierAlignment? modifierAlignment = null;
@@ -80,7 +80,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
                         break;
                     case "Mod":
                     case "ModAmount":
-                        modAmount = reader.GetDouble();
+                        modAmount = reader.GetSingle();
                         reader.Read();
                         break;
                     case "Duration":

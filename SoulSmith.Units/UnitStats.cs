@@ -85,7 +85,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 	private int ApplyAllRelevantStatModifiers(int value, StatType stat) 
 	{
         List<StatModifier> statModifiers = GetRelevantStatModifiers(stat);
-        (double FlatMod, double AdditiveMod, double MultiplicativeMod) combinedModifier = CombineStatModifiers(statModifiers);
+        (float Flat, float AdditivePercent, float MultiplicativePercent) combinedModifier = CombineStatModifiers(statModifiers);
         int retValue = ApplyStatModifier(value, combinedModifier);
 
 		return retValue;
@@ -109,42 +109,49 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		return modifiers;
     }
 
-    private (double FlatMod, double AdditiveMod, double MultiplicativeMod) CombineStatModifiers(List<StatModifier> statModifiers)
+    private (float Flat, float AdditivePercent, float MultiplicativePercent) CombineStatModifiers(List<StatModifier> statModifiers)
     {
         if (statModifiers.Count == 0)
         {
             return (0, 0, 1);
         }
 
-        double flatMod = 0;
-        double additiveMod = 0f;
-        double multiplicativeMod = 1f;
+        float flat = 0;
+        float additivePercent = 0f;
+        float multiplicativePercent = 1f;
 
         foreach (StatModifier statModifier in statModifiers)
         {
 			switch (statModifier.ModStyle)
 			{
 				case StatModStyle.Flat:
-					flatMod += statModifier.ModAmount; 
+					flat = StatTypeHelper.CombineModifiers(flat, statModifier.ModAmount, StatModStyle.Flat);
 					break;
 				case StatModStyle.AdditivePercent:
-					additiveMod += statModifier.ModAmount;
+					additivePercent = StatTypeHelper.CombineModifiers(additivePercent, statModifier.ModAmount, StatModStyle.AdditivePercent);
 					break;
 				case StatModStyle.MultiplicativePercent:
-                    multiplicativeMod *= statModifier.ModAmount;
+                    multiplicativePercent = StatTypeHelper.CombineModifiers(multiplicativePercent, statModifier.ModAmount, StatModStyle.MultiplicativePercent);
 					break;
 
             }
         }
 
-		return (flatMod, additiveMod, multiplicativeMod);
+		return (flat, additivePercent, multiplicativePercent);
     }
 
-	private int ApplyStatModifier(int baseStat, (double FlatMod, double AdditiveMod, double MultiplicativeMod) modifierResults)
+	private int ApplyStatModifier(int baseStat, (double Flat, double AdditivePercent, double MultiplicativePercent) modifierResults)
 	{
-		int retStat = baseStat + (int)modifierResults.FlatMod;
-		retStat = (int)(retStat * (modifierResults.AdditiveMod + 1));
-		retStat = (int)(retStat * modifierResults.MultiplicativeMod);
+		// Flat modifier is applied immediately to the base stat.
+		int retStat = baseStat + (int)modifierResults.Flat;
+
+		// Additive percent modifier is applied to the base stat after the flat modifier.
+		float additiveAsDecimal = (float)((modifierResults.AdditivePercent + 100) / 100);
+		retStat = (int)(retStat * additiveAsDecimal);
+
+		// Multiplicative percent modifier is applied to the base stat after the flat and additive percent modifiers.
+        float multiplicativeAsDecimal = (float)((modifierResults.MultiplicativePercent + 100) / 100);
+        retStat = (int)(retStat * multiplicativeAsDecimal);
 
 		return retStat;
 	}

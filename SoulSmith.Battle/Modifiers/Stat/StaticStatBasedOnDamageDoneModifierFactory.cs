@@ -22,7 +22,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
         public StaticStatBasedOnDamageDoneModifierFactory(
             StatType statType,
             StatModStyle statModStyle,
-            double portionOfDamageAsStatMod,
+            float portionOfDamageAsStatMod,
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
@@ -40,28 +40,13 @@ namespace SoulSmith.Battle.Modifiers.Stat
 
         public StatType StatType { get; private set; }
         public StatModStyle ModStyle { get; private set; }
-        public double PortionOfDamageAsStatMod { get; private set; }
+        public float PortionOfDamageAsStatMod { get; private set; }
 
         public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentResult)
         {
             if (!(parentResult is DamageResult damageResult)) return null;
 
-            double modAmount;
-
-            switch (ModStyle)
-            {
-                case StatModStyle.Flat:
-                    modAmount = PortionOfDamageAsStatMod * damageResult.EffectiveDamage;
-                    break;
-                case StatModStyle.AdditivePercent:
-                    modAmount = (double)((PortionOfDamageAsStatMod / 100) * damageResult.EffectiveDamage);
-                    break;
-                case StatModStyle.MultiplicativePercent:
-                    modAmount = 1 + (double)((PortionOfDamageAsStatMod / 100) * damageResult.EffectiveDamage);
-                    break;
-                default:
-                    return null;
-            }
+            float modAmount = PortionOfDamageAsStatMod * damageResult.EffectiveDamage;
 
             return new StaticStatModifier(StatType, ModStyle, modAmount, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, MergeKey);
         }
@@ -77,7 +62,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
 
             StatType statType = StatType.None;
             StatModStyle modStyle = StatModStyle.Null;
-            double? portionOfDamageAsStatMod = null;
+            float? portionOfDamageAsStatMod = null;
             int duration = 0;
             DurationStyle? durationStyle = null;
             ModifierAlignment? modifierAlignment = null;
@@ -110,7 +95,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
                     case "PortionOfDamageAsMod":
                     case "PercentOfDamageAsMod":
                     case "PercentOfDamageAsStatMod":
-                        portionOfDamageAsStatMod = reader.GetDouble();
+                        portionOfDamageAsStatMod = reader.GetSingle();
                         reader.Read();
                         break;
                     case "Duration":

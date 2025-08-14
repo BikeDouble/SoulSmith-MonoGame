@@ -10,7 +10,7 @@ namespace SoulSmith.Battle.Modifiers
     public interface IReadOnlyStatModifier : IReadOnlyModifier
     {
         public StatType StatType { get; }
-        public double ModAmount { get; }
+        public float ModAmount { get; }
         public StatModStyle ModStyle { get; }
     }
 }

@@ -10,7 +10,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
         public StaticStatModifier(
             StatType statType,
             StatModStyle modType,
-            double modAmount,
+            float modAmount,
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
@@ -41,7 +41,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
             {
                 case StatModStyle.AdditivePercent:
                 case StatModStyle.MultiplicativePercent:
-                    ret = ((int)(ModAmount * 100)).ToString() + "%";
+                    ret = ((int)ModAmount).ToString() + "%";
                     break;
                 default:
                     ret = ((int)ModAmount).ToString();
@@ -57,24 +57,16 @@ namespace SoulSmith.Battle.Modifiers.Stat
             if (otherStatModifier.StatType != StatType) return false;
             if (otherStatModifier.ModStyle != ModStyle) return false;
 
-            switch (ModStyle) {
-                case StatModStyle.Flat:
-                    ModAmount += otherStatModifier.ModAmount;
-                    return true;
-                case StatModStyle.AdditivePercent:
-                    ModAmount += otherStatModifier.ModAmount;
-                    return true;
-                case StatModStyle.MultiplicativePercent:
-                    ModAmount = (1 + 0.01 * ModAmount) * (1 + 0.01 * otherStatModifier.ModAmount) - 1;
-                    return true;
-                default:
-                    return false;
-            }
+            if (ModStyle != otherStatModifier.ModStyle) return false;
+
+            ModAmount = StatTypeHelper.CombineModifiers(ModAmount, otherStatModifier.ModAmount, ModStyle);
+
+            return true;
         }
 
         public StatType StatType { get; private set; }
         public StatModStyle ModStyle { get; private set; }
         public override string StatusText { get { return GetStatusTextInternal(); } }
-        public double ModAmount { get; private set; }
+        public float ModAmount { get; private set; }
     }
 }

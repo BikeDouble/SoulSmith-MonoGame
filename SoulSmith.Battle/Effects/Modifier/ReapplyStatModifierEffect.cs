@@ -39,7 +39,7 @@ namespace SoulSmith.Battle.Effects.Modifier
 
             if (!(currentModifier is IReadOnlyStatModifier currentStatMod)) return null;
 
-            double refundedAmount = currentStatMod.ModAmount * _portionOfModToRefund;
+            float refundedAmount = currentStatMod.ModAmount * _portionOfModToRefund;
 
             IModifier modifier = new StaticStatModifier(
                 currentStatMod.StatType,
