@@ -1,12 +1,13 @@
 {
-    "FriendlyName": "Wrath",
+    "FriendlyName": "Exultation",
     "Sprite": {
         "Type": "ZonedResource",
-        "Key": "ZonedResources/UnitSprites/Forms/Anger"
+        "Key": "ZonedResources/UnitSprites/Forms/Double/JoyAnger"
     },
-    "MaxHealth": 600,
-    "Attack": 160,
-    "Defense": 80,
+    "SpriteSizeMod": 0.59,
+    "MaxHealth": 800,
+    "Attack": 200,
+    "Defense": 120,
     "MoveSet": [
         {
             "Item": "Anger/SingleHit",
@@ -17,10 +18,10 @@
             "Weight": 60
         },
         {
-            "Item": "Anger/Simmer",
+            "Item": "Joy/DoubleHit",
             "Weight": 60
         }
     ],
-    "Emotion": 4,
+    "Emotion": 5,
     "TimeOnBoard": -1
 }

@@ -2,8 +2,13 @@
     "Animations": {
         "Units": {
             "Forms": {
-                "Anger":  "Animations/Units/Forms/angerForm.json",
-                "Joy": "Animations/Units/Forms/joyForm.json"
+                "Single": {
+                    "Anger": "Animations/Units/Forms/Single/angerForm.json",
+                    "Joy": "Animations/Units/Forms/Single/joyForm.json"
+                },
+                "Double": {
+                    "JoyAnger": "Animations/Units/Forms/Double/joyAngerForm.json"
+                }
             }
         }
     },
@@ -20,6 +25,9 @@
         "Single": {
             "Anger": "Emotions/Single/anger.json",
             "Joy": "Emotions/Single/joy.json"
+        },
+        "Double": {
+            "JoyAnger": "Emotions/Double/joyAnger.json"
         }
     },
     "Fonts": {
@@ -85,8 +93,13 @@
         "SpriteSheets": {
             "Units": {
                 "Forms": {
-                    "Anger": "Textures/SpriteSheets/Units/Forms/angerForm.png",
-                    "Joy": "Textures/SpriteSheets/Units/Forms/joyForm.png"
+                    "Single": {
+                        "Anger": "Textures/SpriteSheets/Units/Forms/Single/angerForm.png",
+                        "Joy": "Textures/SpriteSheets/Units/Forms/Single/joyForm.png"
+                    },
+                    "Double": {
+                        "JoyAnger": "Textures/SpriteSheets/Units/Forms/Double/joyAngerSpritesheet.png"
+                    }
                 }
             }
         },
@@ -119,8 +132,13 @@
     },
     "Units": {
         "Forms": {
-            "Anger": "Units/Forms/angerForm.json",
-            "Joy": "Units/Forms/joyForm.json"
+            "Single": {
+                "Anger": "Units/Forms/Single/angerForm.json",
+                "Joy": "Units/Forms/Single/joyForm.json"
+            },
+            "Double": {
+                "JoyAnger": "Units/Forms/Double/joyAngerForm.json"
+            }
         },
         "Enemies": {
             "AnimatedScrap": "Units/Enemies/animatedScrap.json",
@@ -146,8 +164,13 @@
         },
         "UnitSprites": {
             "Forms": {
-                "Anger": "ZonedResources/UnitSprites/Forms/angerForm.json",
-                "Joy": "ZonedResources/UnitSprites/Forms/joyForm.json"
+                "Single": {
+                    "Anger": "ZonedResources/UnitSprites/Forms/Single/angerForm.json",
+                    "Joy": "ZonedResources/UnitSprites/Forms/Single/joyForm.json"
+                },
+                "Double": {
+                    "JoyAnger": "ZonedResources/UnitSprites/Forms/Double/joyAngerForm.json"
+                }
             }
         }
     }

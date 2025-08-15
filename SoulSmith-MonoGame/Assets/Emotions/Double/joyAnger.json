@@ -1,0 +1,21 @@
+{
+    "FriendlyName": "Exultation",
+    "Tag": 5,
+    "FormKey": "Units/Forms/JoyAnger",
+    "Color": [ 219, 115, 0, 255 ],
+    "CombatEntryEffects": 
+     [
+        {
+            "Type": "Modifier",
+            "Effect": {
+                "ModifierKey": "Modifiers/Anger/Innate/ApplyStacksOnTakingHit"
+            }
+        },
+        {
+            "Type": "Modifier",
+            "Effect": {
+                "ModifierKey": "Modifiers/Joy/Effect/Pop"
+            }
+        }
+    ]
+}

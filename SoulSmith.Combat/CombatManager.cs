@@ -283,12 +283,19 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 			foreach (CombatTeam team in _teams)
 			{
 				// TODO remove 
-				string joyUnitKey = "Units/Forms/Joy";
-				string angerUnitKey = "Units/Forms/Anger";
+				string joyUnitKey = "Units/Forms/Single/Joy";
+				string angerUnitKey = "Units/Forms/Single/Anger";
+				string joyAngerUnitKey = "Units/Forms/Double/JoyAnger";
 				//if (!team.PlayerControlled) unitName = "animatedScrap";
 				for (int i = 0; i < 3; i++)
 				{
-					string unitKey = (i == 2) ? angerUnitKey : joyUnitKey;
+					string unitKey = i switch
+					{
+						0 => joyUnitKey,
+                        1 => joyAngerUnitKey,
+                        2 => angerUnitKey,
+                        _ => throw new ArgumentOutOfRangeException(nameof(i), i, "Invalid index")
+                    };
                     IAssetWrapper<UnitTemplate> templateAsset = AssetManager.Instance.GetUnitTemplate<UnitTemplate>(unitKey);
                     if (templateAsset == null) throw new ArgumentNullException(nameof(templateAsset));
                     Unit unit = new Unit(templateAsset.Value);

@@ -1,7 +1,7 @@
 {
     "FriendlyName": "Joy",
     "Tag": 1,
-    "FormKey": "Units/Forms/Joy",
+    "FormKey": "Units/Forms/Single/Joy",
     "Color": [ 245, 188, 0, 255 ],
     "CombatEntryEffects": 
      [

@@ -1,5 +1,5 @@
 {
-    "TextureKey": "Textures/SpriteSheets/Units/Forms/Anger",
+    "TextureKey": "Textures/SpriteSheets/Units/Forms/Single/Anger",
     "SamplerState": "LinearClamp",
     "ClipData": [
         {

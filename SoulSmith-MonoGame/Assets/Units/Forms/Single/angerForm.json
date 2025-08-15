@@ -1,0 +1,26 @@
+{
+    "FriendlyName": "Wrath",
+    "Sprite": {
+        "Type": "ZonedResource",
+        "Key": "ZonedResources/UnitSprites/Forms/Single/Anger"
+    },
+    "MaxHealth": 600,
+    "Attack": 160,
+    "Defense": 80,
+    "MoveSet": [
+        {
+            "Item": "Anger/SingleHit",
+            "Weight": 60
+        },
+        {
+            "Item": "Anger/Rampage",
+            "Weight": 60
+        },
+        {
+            "Item": "Anger/Simmer",
+            "Weight": 60
+        }
+    ],
+    "Emotion": 4,
+    "TimeOnBoard": -1
+}

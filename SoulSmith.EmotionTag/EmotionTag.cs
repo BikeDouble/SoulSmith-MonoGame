@@ -15,7 +15,7 @@ namespace SoulSmith.EmotionTag
         Adoration = 0b010000,
         Fear = 0b100000,
         Poignancy = 0b000011, //Twofers, joy
-        Catharsis = 0b000101,
+        Exultation = 0b000101,
         Comfort = 0b001001,
         Affection = 0b010001,
         Exhilaration = 0b100001,
@@ -29,7 +29,7 @@ namespace SoulSmith.EmotionTag
         Loyalty = 0b011000, //Tranquility
         Dread = 0b101000,
         Respect = 0b110000, //Adoration
-        Eraticism = 0b000111, //Threefers, joy
+        Catharsis = 0b000111, //Threefers, joy
         Nostalgia = 0b001011,
         Pride = 0b001101,
         Salvation = 0b010011,

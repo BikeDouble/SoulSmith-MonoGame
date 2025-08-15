@@ -1,7 +1,7 @@
 {
     "FriendlyName": "Wrath",
     "Tag": 4,
-    "FormKey": "Units/Forms/Anger",
+    "FormKey": "Units/Forms/Single/Anger",
     "Color": [ 171, 0, 0, 255 ],
     "CombatEntryEffects": 
      [

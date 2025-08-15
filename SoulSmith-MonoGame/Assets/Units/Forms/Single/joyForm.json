@@ -2,7 +2,7 @@
     "FriendlyName": "Joy",
     "Sprite": {
         "Type": "ZonedResource",
-        "Key": "ZonedResources/UnitSprites/Forms/Joy"
+        "Key": "ZonedResources/UnitSprites/Forms/Single/Joy"
     },
     "SpriteSizeMod": 0.75,
     "MaxHealth": 600,

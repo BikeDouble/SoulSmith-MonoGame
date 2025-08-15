@@ -1,7 +1,7 @@
 {
     "Type": "DirectMissile",
     "Visualization": {
-        "MissileSprite": "Animations/Units/Forms/Anger",
+        "MissileSprite": "Animations/Units/Forms/Single/Anger",
         "MissileSizeInPixels": {
             "X": 60,
             "Y": 60

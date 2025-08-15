@@ -1,12 +1,12 @@
 {
-    "DrawableResource": "Animations/Units/Forms/Joy",
+    "DrawableResource": "Animations/Units/Forms/Single/Anger",
     "Zones": [
         {
             "Key": "hitzone",
             "Zone": {
                 "Type": "circle",
                 "Data": {
-                    "diameter": 99
+                    "diameter": 46
                 }
             }
         },
@@ -15,7 +15,7 @@
             "Zone": {
                 "Type": "circle",
                 "Data": {
-                    "diameter": 99
+                    "diameter": 46
                 }
             }
         }

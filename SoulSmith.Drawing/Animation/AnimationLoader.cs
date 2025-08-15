@@ -17,6 +17,8 @@ namespace SoulSmith.Drawing.Animation
 
             Animation data = JsonSerializer.Deserialize<Animation>(File.ReadAllText(path));
 
+            if (data == null) throw new ArgumentNullException(nameof(data));
+
             return data;
         }
     }

@@ -35,7 +35,6 @@
     <ProjectReference Include="..\SoulSmith.Units\SoulSmith.Units.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\Emotions\Double\" />
     <Folder Include="Assets\Emotions\Triple\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

@@ -1,5 +1,5 @@
 {
-    "TextureKey": "Textures/SpriteSheets/Units/Forms/Joy",
+    "TextureKey": "Textures/SpriteSheets/Units/Forms/Single/Joy",
     "SamplerState": "PointClamp",
     "ClipData": [
         {
