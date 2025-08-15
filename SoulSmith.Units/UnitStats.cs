@@ -84,16 +84,14 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	private int ApplyAllRelevantStatModifiers(int value, StatType stat) 
 	{
-        List<StatModifier> statModifiers = GetRelevantStatModifiers(stat);
-        (float Flat, float AdditivePercent, float MultiplicativePercent) combinedModifier = CombineStatModifiers(statModifiers);
-        int retValue = ApplyStatModifier(value, combinedModifier);
+        int retValue = (int)StatTypeHelper.CombineAndApplyStyledModifiers(value, GetRelevantStatModifiers(stat));
 
 		return retValue;
     }
 
-    private List<StatModifier> GetRelevantStatModifiers(StatType stat)
+    private List<IStyledNumberModifier> GetRelevantStatModifiers(StatType stat)
     {
-        List<StatModifier> modifiers = new List<StatModifier>();
+        List<IStyledNumberModifier> modifiers = new List<IStyledNumberModifier>();
         foreach (IModifier modifier in _modifiers)
         {
             StatModifier? statModifier = modifier.GetStatModifier();
@@ -109,52 +107,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		return modifiers;
     }
 
-    private (float Flat, float AdditivePercent, float MultiplicativePercent) CombineStatModifiers(List<StatModifier> statModifiers)
-    {
-        if (statModifiers.Count == 0)
-        {
-            return (0, 0, 1);
-        }
 
-        float flat = 0;
-        float additivePercent = 0f;
-        float multiplicativePercent = 1f;
-
-        foreach (StatModifier statModifier in statModifiers)
-        {
-			switch (statModifier.ModStyle)
-			{
-				case StatModStyle.Flat:
-					flat = StatTypeHelper.CombineModifiers(flat, statModifier.ModAmount, StatModStyle.Flat);
-					break;
-				case StatModStyle.AdditivePercent:
-					additivePercent = StatTypeHelper.CombineModifiers(additivePercent, statModifier.ModAmount, StatModStyle.AdditivePercent);
-					break;
-				case StatModStyle.MultiplicativePercent:
-                    multiplicativePercent = StatTypeHelper.CombineModifiers(multiplicativePercent, statModifier.ModAmount, StatModStyle.MultiplicativePercent);
-					break;
-
-            }
-        }
-
-		return (flat, additivePercent, multiplicativePercent);
-    }
-
-	private int ApplyStatModifier(int baseStat, (double Flat, double AdditivePercent, double MultiplicativePercent) modifierResults)
-	{
-		// Flat modifier is applied immediately to the base stat.
-		int retStat = baseStat + (int)modifierResults.Flat;
-
-		// Additive percent modifier is applied to the base stat after the flat modifier.
-		float additiveAsDecimal = (float)((modifierResults.AdditivePercent + 100) / 100);
-		retStat = (int)(retStat * additiveAsDecimal);
-
-		// Multiplicative percent modifier is applied to the base stat after the flat and additive percent modifiers.
-        float multiplicativeAsDecimal = (float)((modifierResults.MultiplicativePercent + 100) / 100);
-        retStat = (int)(retStat * multiplicativeAsDecimal);
-
-		return retStat;
-	}
 
     //
     // Modifier related functions
@@ -389,10 +342,10 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         switch (damageType)
         {
             case DamageType.Hit:
-				hpLoss = StandardDefenseCalculation(payload.RawDamage, GetModStat(StatType.Defense));
+				hpLoss = StandardDefenseCalculation(payload.ModifiedDamage, GetModStat(StatType.Defense));
                 break;
 			case DamageType.Essence:
-                hpLoss = StandardDefenseCalculation(payload.RawDamage, GetModStat(StatType.Defense));
+                hpLoss = StandardDefenseCalculation(payload.ModifiedDamage, GetModStat(StatType.Defense));
                 break;
             default:
 				throw new ArgumentException($"Unknown damage type: {damageType}");

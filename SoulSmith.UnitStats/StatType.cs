@@ -10,6 +10,58 @@ namespace SoulSmith.UnitStats
 
     public static class StatTypeHelper
     {
+        public static float CombineAndApplyStyledModifiers(float value, IEnumerable<IStyledNumberModifier> modifiers)
+        {
+            return ApplyCombinedStyledModifier(value, CombineStyledModifiers(modifiers));
+        }
+
+        public static (float Flat, float AdditivePercent, float MultiplicativePercent) CombineStyledModifiers(IEnumerable<IStyledNumberModifier> modifiers)
+        {
+            if (modifiers.Count() == 0)
+            {
+                return (0, 0, 0);
+            }
+
+            float flat = 0;
+            float additivePercent = 0f;
+            float multiplicativePercent = 0f;
+
+            foreach (IStyledNumberModifier modifier in modifiers)
+            {
+                switch (modifier.ModStyle)
+                {
+                    case StatModStyle.Flat:
+                        flat = StatTypeHelper.CombineModifiers(flat, modifier.ModAmount, StatModStyle.Flat);
+                        break;
+                    case StatModStyle.AdditivePercent:
+                        additivePercent = StatTypeHelper.CombineModifiers(additivePercent, modifier.ModAmount, StatModStyle.AdditivePercent);
+                        break;
+                    case StatModStyle.MultiplicativePercent:
+                        multiplicativePercent = StatTypeHelper.CombineModifiers(multiplicativePercent, modifier.ModAmount, StatModStyle.MultiplicativePercent);
+                        break;
+
+                }
+            }
+
+            return (flat, additivePercent, multiplicativePercent);
+        }
+
+        public static float ApplyCombinedStyledModifier(float baseStat, (double Flat, double AdditivePercent, double MultiplicativePercent) combinedModifier)
+        {
+            // Flat modifier is applied immediately to the base stat.
+            float retStat = baseStat + (int)combinedModifier.Flat;
+
+            // Additive percent modifier is applied to the base stat after the flat modifier.
+            float additiveAsDecimal = (float)((combinedModifier.AdditivePercent + 100) / 100);
+            retStat = (int)(retStat * additiveAsDecimal);
+
+            // Multiplicative percent modifier is applied to the base stat after the flat and additive percent modifiers.
+            float multiplicativeAsDecimal = (float)((combinedModifier.MultiplicativePercent + 100) / 100);
+            retStat = (int)(retStat * multiplicativeAsDecimal);
+
+            return retStat;
+        }
+
         public static float CombineModifiers(float a, float b, StatModStyle modStyle)
         {
             switch (modStyle)
@@ -85,7 +137,7 @@ namespace SoulSmith.UnitStats
         DecayRate
     }
 
-    public readonly struct StatModifier
+    public readonly struct StatModifier : IStyledNumberModifier
     {
         public StatModifier(StatType stat, StatModStyle modType, float modAmount)
         {

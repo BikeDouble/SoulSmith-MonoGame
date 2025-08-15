@@ -52,7 +52,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
                     if (result.ParentResult is DamageResult hitResult && hitResult.KilledTarget) // Check if the target of the damage was killed
                     {
                         // Refund the modifier
-                        EffectInput effectInput = new EffectInput(_effect, Host, Host, Priority.Reaction, this, result);
+                        EffectInput effectInput = new EffectInput(_effect, Host, Host, Priority.Body, this, result);
 
                         EnqueueEffectInput(effectInput);
 
