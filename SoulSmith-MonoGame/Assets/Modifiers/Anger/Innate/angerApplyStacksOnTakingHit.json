@@ -1,5 +1,5 @@
 {
-    "Type": "EffectOnTakingHit",
+    "Type": "EffectOnResultReaction",
     "Modifier": {
         "Effect": {
             "Type": "Modifier",
@@ -8,6 +8,8 @@
                 "TargetingStyle": "self"
             }
         },
+        "EffectPriority": "body",
+        "TriggerStyle": "ontakinghitdamage",
         "DurationStyle": "permanent",
         "ModifierAlignment": "buff",
         "IsModifierVisible": false,

@@ -89,13 +89,8 @@ namespace SoulSmith.Battle.Modifiers
                     value = JsonSerializer.Deserialize<StaticStatBasedOnDamageDoneModifierFactory>(ref reader, options);
                     reader.Read(); 
                     break;
-                case "EffectOnHit":
-                case "EffectOnGivingHit":
-                    value = JsonSerializer.Deserialize<EffectOnGivingHitModifierFactory>(ref reader, options);
-                    reader.Read();
-                    break;
-                case "EffectOnTakingHit":
-                    value = JsonSerializer.Deserialize<EffectOnTakingHitModifierFactory>(ref reader, options);
+                case "EffectOnResultReaction":
+                    value = JsonSerializer.Deserialize<EffectOnResultReactionModifierFactory>(ref reader, options);
                     reader.Read();
                     break;
                 case "RampageRefund":

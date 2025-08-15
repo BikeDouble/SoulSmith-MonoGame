@@ -21,13 +21,11 @@ public class EffectQueue : CanvasObject
         new List<Priority>
         {
             Priority.NonMoveCombatTrigger,
-            Priority.NaturalDecayDamage,
+            Priority.Body,
             Priority.EmotionCombatEntryEffect,
             Priority.ModifierRemovalImmediate,
             Priority.ImmediateAfterEffect,
-            Priority.ReactionToSelf,
-            Priority.ReactionToAlly,
-            Priority.ReactionToEnemy,
+            Priority.Reaction,
             Priority.Move,
             Priority.ModifierRemovalDelayed,
         });

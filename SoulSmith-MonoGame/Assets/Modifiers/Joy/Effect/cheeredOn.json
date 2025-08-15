@@ -1,5 +1,5 @@
 {
-    "Type": "EffectOnHit",
+    "Type": "EffectOnResultReaction",
     "Modifier": {
         "Effect": {
             "Type": "FormulaDamage",
@@ -9,8 +9,10 @@
                 "VisualizationKey": "EffectVisualizations/Joy/Pop"
             }
         },
+        "EffectPriority": "reaction",
+        "TriggerStyle": "ongivinghitdamage",
         "StatusText": "30",
-        "Duration":  1,
+        "Duration": 1,
         "DurationStyle": "rounds",
         "ModifierAlignment": "buff",
         "IsModifierVisible": true,

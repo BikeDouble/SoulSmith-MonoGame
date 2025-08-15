@@ -15,10 +15,12 @@ using System.Threading.Tasks;
 namespace SoulSmith.Battle.Modifiers.Effect
 {
     [JsonConverter(typeof(EffectOnGivingHitModifierFactoryJsonConverter))]
-    public class EffectOnGivingHitModifierFactory : ModifierFactory
+    public class EffectOnResultReactionModifierFactory : ModifierFactory
     {
-        public EffectOnGivingHitModifierFactory(
+        public EffectOnResultReactionModifierFactory(
             IEffect effect,
+            Priority effectPriority,
+            EffectModifierTriggerStyle triggerStyle,
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
@@ -31,20 +33,24 @@ namespace SoulSmith.Battle.Modifiers.Effect
         {
             Effect = effect;
             StatusText = statusText;
+            EffectPriority = effectPriority;
+            TriggerStyle = triggerStyle;
         }
 
         public IEffect Effect { get; private set; }
         public string StatusText { get; private set; }
+        public Priority EffectPriority { get; private set; }
+        public EffectModifierTriggerStyle TriggerStyle { get; private set; }
 
         public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentResult)
         {
-            return new EffectOnGivingHitModifier(Effect, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, StatusText);
+            return new EffectOnResultReactionModifier(Effect, EffectPriority, TriggerStyle, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, StatusText);
         }
     }
 
-    public class EffectOnGivingHitModifierFactoryJsonConverter : JsonConverter<EffectOnGivingHitModifierFactory>
+    public class EffectOnGivingHitModifierFactoryJsonConverter : JsonConverter<EffectOnResultReactionModifierFactory>
     {
-        public override EffectOnGivingHitModifierFactory Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override EffectOnResultReactionModifierFactory Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
@@ -54,6 +60,8 @@ namespace SoulSmith.Battle.Modifiers.Effect
             int duration = 0;
             DurationStyle? durationStyle = null;
             ModifierAlignment? modifierAlignment = null;
+            Priority? effectPriority = null;
+            EffectModifierTriggerStyle? triggerStyle = null;
             bool? isModifierVisible = null;
             string statusText = null;
             string modifierIconKey = null;
@@ -111,6 +119,14 @@ namespace SoulSmith.Battle.Modifiers.Effect
                         statusText = reader.GetString();
                         reader.Read();
                         break;
+                    case "EffectPriority":
+                        effectPriority = JsonSerializer.Deserialize<Priority>(ref reader, options);
+                        reader.Read();
+                        break;
+                    case "TriggerStyle":
+                        triggerStyle = JsonSerializer.Deserialize<EffectModifierTriggerStyle>(ref reader, options);
+                        reader.Read();
+                        break;
                     default:
                         reader.Skip();
                         break;
@@ -122,11 +138,13 @@ namespace SoulSmith.Battle.Modifiers.Effect
             if (durationStyle == null) throw new JsonException("Expected 'DurationStyle' property to be present.");
             if (modifierAlignment == null) throw new JsonException("Expected 'ModifierAlignment' property to be present.");
             if ((modifierIconKey == null) && (isModifierVisible.Value)) throw new JsonException("Expected 'ModifierIconKey' property to be present.");
+            if (triggerStyle == null) throw new JsonException("Expected 'TriggerStyle' property to be present.");
+            if (effectPriority == null) throw new JsonException("Expected 'EffectPriority' property to be present.");
 
-            return new EffectOnGivingHitModifierFactory(effect, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description, statusText);
+            return new EffectOnResultReactionModifierFactory(effect, effectPriority.Value, triggerStyle.Value, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description, statusText);
         }
 
-        public override void Write(Utf8JsonWriter writer, EffectOnGivingHitModifierFactory value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, EffectOnResultReactionModifierFactory value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

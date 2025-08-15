@@ -345,7 +345,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
                     if (damageResult.EffectiveDamage > 0)
                     {
                         EnqueueEffectInputEventArgs e = new();
-                        EffectInput effectInput = new EffectInput(_naturalDamageDecayEffect, parent, parent, Priority.NaturalDecayDamage, this, result);
+                        EffectInput effectInput = new EffectInput(_naturalDamageDecayEffect, parent, parent, Priority.Body, this, result);
                         e.EffectInput = effectInput;
                         EnqueueEffectInput(this, e);
                     }
