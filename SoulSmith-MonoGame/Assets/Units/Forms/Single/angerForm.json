@@ -9,19 +9,19 @@
     "Defense": 80,
     "MoveSet": [
         {
-            "Item": "Anger/SingleHit",
+            "Item": "SingleEmotion/Anger/SingleHit",
             "Weight": 60
         },
         {
-            "Item": "Anger/Rampage",
+            "Item": "SingleEmotion/Anger/Rampage",
             "Weight": 60
         },
         {
-            "Item": "Anger/Simmer",
+            "Item": "SingleEmotion/Anger/Simmer",
             "Weight": 60
         },
         {
-            "Item": "Anger/TeamHit",
+            "Item": "SingleEmotion/Anger/TeamHit",
             "Weight": 60
         }
     ],

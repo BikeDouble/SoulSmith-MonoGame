@@ -8,11 +8,11 @@ namespace SoulSmith.Drawing.Textures
 {
     public class Texture2DInstance : IDrawableResource
     {
-        private IAssetWrapper<Texture2D> _wrappedTexture;
+        private IAssetWrapper<SoulSmithTexture> _wrappedTexture;
 
-        public SamplerState SamplerState { get; private set; }
+        public SamplerState SamplerState { get { return _wrappedTexture.Value.SamplerState; } }
 
-        public Texture2DInstance(IAssetWrapper<Texture2D> texture, SamplerState samplerState = null)
+        public Texture2DInstance(IAssetWrapper<SoulSmithTexture> texture)
         {
             if (texture == null)
             {
@@ -23,8 +23,6 @@ namespace SoulSmith.Drawing.Textures
             {
                 throw new ArgumentException("Wrapped texture must have a valid Texture2D instance.", nameof(texture));
             }
-
-            SamplerState = samplerState ?? RenderQueue.DEFAULTSAMPLERSTATE;
 
             _wrappedTexture = texture;
         }
@@ -37,7 +35,7 @@ namespace SoulSmith.Drawing.Textures
             if (spriteEffects == SpriteEffects.FlipVertically) scaleVector.Y *= -1;
 
             spriteBatch.Draw(
-                    Texture,
+                    Texture.Texture,
                     position.Coordinates,
                     null,
                     color,
@@ -57,7 +55,7 @@ namespace SoulSmith.Drawing.Textures
             if (spriteEffects == SpriteEffects.FlipHorizontally) scaleVector.X *= -1;
             if (spriteEffects == SpriteEffects.FlipVertically) scaleVector.Y *= -1;
 
-            spriteBatch.Draw(Texture, position.Coordinates, sourceRect, color, position.Rotation, subSectionOrigin.Value, scaleVector, spriteEffects, 0f);
+            spriteBatch.Draw(Texture.Texture, position.Coordinates, sourceRect, color, position.Rotation, subSectionOrigin.Value, scaleVector, spriteEffects, 0f);
         }
 
         private SpriteEffects GetSpriteEffects(IReadOnlyPosition position)
@@ -99,7 +97,7 @@ namespace SoulSmith.Drawing.Textures
             }
         }
 
-        public Texture2D Texture { get { return _wrappedTexture.Value; } }
+        public SoulSmithTexture Texture { get { return _wrappedTexture.Value; } }
         public int Width { get { return Texture.Width; } }
         public int Height { get { return Texture.Height; } }
         public Vector2 Origin { get { return GetOriginInternal(); } }

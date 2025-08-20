@@ -10,7 +10,7 @@ namespace SoulSmith.Battle.Effects.Visualization
     public class ShockwaveVisualization : EffectVisualization
     {
         public readonly static Vector2 STARTSIZE = new Vector2(0, 0);
-        public readonly static Vector2 FADESTARTSIZE = new Vector2(Window.DISTANCEBETWEENBACKUNITSONEITHERTEAM * 2);
+        public readonly static Vector2 FADESTARTSIZE = new Vector2((Window.DISTANCEBETWEENBACKUNITSONEITHERTEAM - 150) * 2);
 
 
         // Children

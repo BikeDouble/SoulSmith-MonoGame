@@ -1,0 +1,12 @@
+{
+    "Type": "DirectMissile",
+    "Visualization": {
+        "MissileSprite": "Animations/Units/Forms/Double/JoyAnger",
+        "MissileSizeInPixels": {
+            "X": 60,
+            "Y": 60
+        },
+        "FlightTime": 1,
+        "Delay": 0
+    }
+}

@@ -39,6 +39,21 @@ namespace SoulSmith.Battle.Effects.Results
             return allTargets;
         }
 
+        public ICollection<IReadOnlyUnit> GetSecondaryTargets()
+        {
+            List<IReadOnlyUnit> allTargets = new List<IReadOnlyUnit>();
+
+            foreach (var result in IndividualResults)
+            {
+                if (result.Target != null && !allTargets.Contains(result.Target) && result.Target != Target)
+                {
+                    allTargets.Add(result.Target);
+                }
+            }
+
+            return allTargets;
+        }
+
         public bool ContainsTarget(IReadOnlyUnit target)
         {
             return IndividualResults.Any(result => result.Target == target);

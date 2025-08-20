@@ -14,7 +14,7 @@
             "Effect": {
                 "Formula": "sender.Attack * 0.4",
                 "DamageType": "hit",
-                "VisualizationKey": "EffectVisualizations/Joy/DirectMissile"
+                "VisualizationKey": "EffectVisualizations/SingleEmotion/Joy/DirectMissile"
             }
         },
         {
@@ -22,7 +22,7 @@
             "Effect": {
                 "Formula": "sender.Attack * 0.4",
                 "DamageType": "hit",
-                "VisualizationKey": "EffectVisualizations/Joy/DirectMissile",
+                "VisualizationKey": "EffectVisualizations/SingleEmotion/Joy/DirectMissile",
                 "AdditionalDelay": 0.3
             }
         }

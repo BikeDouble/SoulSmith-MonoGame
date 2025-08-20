@@ -24,7 +24,7 @@ namespace SoulSmith.Asset
         private Cache _fontResourceCache;
 
         // Loaders
-        private IGraphicsAssetLoader _textureLoader;
+        private IGraphicsAssetLoader _soulSmithTextureLoader;
         private IBasicAssetLoader _zonedTextureLoader;
         private IBasicAssetLoader _unitTemplateLoader;
         private IBasicAssetLoader _moveLoader;
@@ -81,12 +81,12 @@ namespace SoulSmith.Asset
             return _unitTemplateCache.GetAsset<T>(key);
         }
 
-        public void RegisterTextureLoader(IGraphicsAssetLoader loader)
+        public void RegisterSoulSmithTextureLoader(IGraphicsAssetLoader loader)
         {
-            _textureLoader = loader;
+            _soulSmithTextureLoader = loader;
         }
 
-        public IAssetWrapper<T> GetTexture2D<T>(string key) where T : IDisposable
+        public IAssetWrapper<T> GetSoulSmithTexture<T>(string key) where T : IDisposable
         {
             if (_textureCache.Contains(key)) return _textureCache.GetAsset<T>(key);
 
@@ -94,7 +94,7 @@ namespace SoulSmith.Asset
 
             string filepath = FILEPREFIX + _manifest[key];
 
-            IDisposable resource = _textureLoader.Load(filepath, _graphics);
+            IDisposable resource = _soulSmithTextureLoader.Load(filepath, _graphics);
 
             if (resource == null) return null;
 

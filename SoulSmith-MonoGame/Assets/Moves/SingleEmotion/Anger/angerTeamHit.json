@@ -15,7 +15,7 @@
                 "Formula": "sender.Attack * 0.3",
                 "DamageType": "hit",
                 "AOEStyle": "wholeteam",
-                "VisualizationKey": "EffectVisualizations/Anger/ShockwaveCircle"  
+                "VisualizationKey": "EffectVisualizations/SingleEmotion/Anger/ShockwaveCircle"  
             }
         }
     ]

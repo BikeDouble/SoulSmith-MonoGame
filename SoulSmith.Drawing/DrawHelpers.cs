@@ -32,7 +32,7 @@ namespace SoulSmith.Drawing
                 case "texture2d":
                 case "texture2dresource":
                 case "texture2dinstance":
-                    IAssetWrapper<Texture2D> texture = AssetManager.Instance.GetTexture2D<Texture2D>(key);
+                    IAssetWrapper<SoulSmithTexture> texture = AssetManager.Instance.GetSoulSmithTexture<SoulSmithTexture>(key);
                     resource = new Texture2DInstance(texture);
                     break;
                 case "animations":

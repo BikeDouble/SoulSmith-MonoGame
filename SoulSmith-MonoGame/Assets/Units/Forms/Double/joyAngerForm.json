@@ -10,16 +10,24 @@
     "Defense": 120,
     "MoveSet": [
         {
-            "Item": "Anger/SingleHit",
+            "Item": "DoubleEmotion/JoyAnger/DoubleTeamHit",
             "Weight": 60
         },
         {
-            "Item": "Anger/Rampage",
-            "Weight": 60
+            "Item": "SingleEmotion/Anger/SingleHit",
+            "Weight": 10
         },
         {
-            "Item": "Joy/DoubleHit",
-            "Weight": 60
+            "Item": "SingleEmotion/Anger/Rampage",
+            "Weight": 10
+        },
+        {
+            "Item": "SingleEmotion/Anger/TeamHit",
+            "Weight": 10
+        },
+        {
+            "Item": "SingleEmotion/Joy/DoubleHit",
+            "Weight": 10
         }
     ],
     "Emotion": 5,

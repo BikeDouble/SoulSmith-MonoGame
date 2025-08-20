@@ -21,7 +21,7 @@
             "Effect": {
                 "Formula": "sender.Attack * 0.6",
                 "DamageType": "hit",
-                "VisualizationKey": "EffectVisualizations/Anger/DirectMissile"
+                "VisualizationKey": "EffectVisualizations/SingleEmotion/Anger/DirectMissile"
             }
         }
     ]

@@ -10,15 +10,15 @@
     "Defense": 120,
     "MoveSet": [
         {
-            "Item": "Joy/SingleHit",
+            "Item": "SingleEmotion/Joy/SingleHit",
             "Weight": 60
         },
         {
-            "Item": "Joy/DoubleHit",
+            "Item": "SingleEmotion/Joy/DoubleHit",
             "Weight": 60
         },
         {
-            "Item": "Joy/CheerOn",
+            "Item": "SingleEmotion/Joy/CheerOn",
             "Weight": 60
         }
     ],

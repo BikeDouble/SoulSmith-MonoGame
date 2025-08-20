@@ -1,0 +1,32 @@
+{
+    "Name": "Bellow",
+    "EmotionTag": 5,
+    "TargetingStyle": "Enemy",
+    "Description": {
+        "LocalizationKey": "Move/HitDamage/Double/AOE/Team/Attack",
+        "LocalizationVariables": {
+            "AttackPercent": 10
+        }
+    },
+    "Effects": [
+        {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.1",
+                "DamageType": "hit",
+                "AOEStyle": "wholeteam",
+                "VisualizationKey": "EffectVisualizations/DoubleEmotion/JoyAnger/ShockwaveCircle"
+            }
+        },
+        {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.1",
+                "DamageType": "hit",
+                "AOEStyle": "wholeteam",
+                "VisualizationKey": "EffectVisualizations/DoubleEmotion/JoyAnger/ShockwaveCircle",
+                "AdditionalDelay": 0.3
+            }
+        }
+    ]
+}

@@ -6,7 +6,7 @@
             "Effect": {
                 "Formula": "sender.Attack * 0.3",
                 "DamageType": "essence",
-                "VisualizationKey": "EffectVisualizations/Joy/Pop"
+                "VisualizationKey": "EffectVisualizations/SingleEmotion/Joy/Pop"
             }
         },
         "EffectPriority": "reaction",

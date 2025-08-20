@@ -13,8 +13,7 @@
         {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Joy/Effect/CheeredOn",
-                "VisualizationKey": "EffectVisualizations/Joy/DirectMissile"
+                "ModifierKey": "Modifiers/Joy/Effect/CheeredOn"
             }
         }
     ]

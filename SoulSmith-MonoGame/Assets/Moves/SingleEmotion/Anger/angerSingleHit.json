@@ -1,6 +1,6 @@
 {
-    "Name": "Laugh",
-    "EmotionTag": 1,
+    "Name": "Shout",
+    "EmotionTag": 4,
     "TargetingStyle": "Enemy",
     "Description": {
         "LocalizationKey": "Move/HitDamage/Single/Attack",
@@ -14,7 +14,7 @@
             "Effect": {
                 "Formula": "sender.Attack * 1",
                 "DamageType": "hit",
-                "VisualizationKey": "EffectVisualizations/Joy/DirectMissile"  
+                "VisualizationKey": "EffectVisualizations/SingleEmotion/Anger/DirectMissile"  
             }
         }
     ]

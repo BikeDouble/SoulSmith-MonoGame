@@ -13,13 +13,21 @@
         }
     },
     "EffectVisualizations": {
-        "Anger": {
-            "DirectMissile": "EffectVisualizations/Anger/angerDirectMissile.json",
-            "ShockwaveCircle": "EffectVisualizations/Anger/shockwaveCircle.json"
+        "SingleEmotion": {
+            "Anger": {
+                "DirectMissile": "EffectVisualizations/SingleEmotion/Anger/angerDirectMissile.json",
+                "ShockwaveCircle": "EffectVisualizations/SingleEmotion/Anger/shockwaveCircle.json"
+            },
+            "Joy": {
+                "DirectMissile": "EffectVisualizations/SingleEmotion/Joy/joyDirectMissile.json",
+                "Pop": "EffectVisualizations/SingleEmotion/Joy/joyPop.json"
+            }
         },
-        "Joy": {
-            "DirectMissile": "EffectVisualizations/Joy/joyDirectMissile.json",
-            "Pop": "EffectVisualizations/Joy/joyPop.json"
+        "DoubleEmotion": {
+            "JoyAnger": {
+                "DirectMissile": "EffectVisualizations/DoubleEmotion/JoyAnger/joyAngerDirectMissile.json",
+                "ShockwaveCircle": "EffectVisualizations/DoubleEmotion/JoyAnger/shockwaveCircle.json"
+            }
         }
     },
     "Emotions": {
@@ -62,16 +70,23 @@
         }
     },
     "Moves": {
-        "Anger": {
-            "Rampage": "Moves/Anger/rampage.json",
-            "Simmer": "Moves/Anger/simmer.json",
-            "SingleHit": "Moves/Anger/angerSingleHit.json",
-            "TeamHit": "Moves/Anger/angerTeamHit.json"
+        "SingleEmotion": {
+            "Anger": {
+                "Rampage": "Moves/SingleEmotion/Anger/rampage.json",
+                "Simmer": "Moves/SingleEmotion/Anger/simmer.json",
+                "SingleHit": "Moves/SingleEmotion/Anger/angerSingleHit.json",
+                "TeamHit": "Moves/SingleEmotion/Anger/angerTeamHit.json"
+            },
+            "Joy": {
+                "CheerOn": "Moves/SingleEmotion/Joy/cheerOn.json",
+                "DoubleHit": "Moves/SingleEmotion/Joy/joyDoubleHit.json",
+                "SingleHit": "Moves/SingleEmotion/Joy/joySingleHit.json"
+            }
         },
-        "Joy": {
-            "CheerOn": "Moves/Joy/cheerOn.json",
-            "DoubleHit": "Moves/Joy/joyDoubleHit.json",
-            "SingleHit": "Moves/Joy/joySingleHit.json"
+        "DoubleEmotion": {
+            "JoyAnger": {
+                "DoubleTeamHit": "Moves/DoubleEmotion/JoyAnger/doubleTeamHit.json"
+            }
         },
         "Typeless": {
             "AttackBoost": "Moves/Typeless/typelessAttackBoost.json"

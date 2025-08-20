@@ -12,6 +12,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
         private readonly EffectModifierTriggerStyle _trigger;
         private readonly Priority _effectPriority;
         private readonly string _desiredModifierMergeKey;
+        private readonly bool _enqueueEffectForAllTargetsOfAOE = true;
 
         public EffectOnResultReactionModifier(
             IEffect effect,
@@ -44,29 +45,36 @@ namespace SoulSmith.Battle.Modifiers.Effect
                 case EffectModifierTriggerStyle.OnGivingHitDamage:
                     if (result is DamageResult damageResult)
                     {
-                        if (damageResult.Sender != this.Host) return;
+                        CheckAndEnqueueOnGivingHitDamageResult(damageResult);
+                    }
+                    else if (result is AOEDamageResult aoeDamageResult)
+                    {
+                        DamageResult primaryDamageResult = aoeDamageResult.GetResultOfPrimaryTarget();
+                        if (primaryDamageResult != null) CheckAndEnqueueOnGivingHitDamageResult(primaryDamageResult);
 
-                        if (damageResult.Target == null) return;
-
-                        if (damageResult.DamageType != Effects.Damage.DamageType.Hit) return;
-
-                        if (damageResult.EffectiveDamage <= 0) return;
-
-                        TriggerEffect(damageResult.Target, result);
+                        if (_enqueueEffectForAllTargetsOfAOE)
+                        {
+                            foreach (IReadOnlyUnit target in aoeDamageResult.GetSecondaryTargets())
+                            {
+                                DamageResult damageResultOfTarget = aoeDamageResult.GetResultOfTarget(target);
+                                if (damageResultOfTarget != null && damageResultOfTarget != primaryDamageResult)
+                                {
+                                    CheckAndEnqueueOnGivingHitDamageResult(damageResultOfTarget);
+                                }
+                            }
+                        }
                     }
                     break;
                 case EffectModifierTriggerStyle.OnTakingHitDamage:
                     if (result is DamageResult damageResult2)
                     {
-                        if (damageResult2.Target != this.Host) return;
+                        CheckAndEnqueueOnTakingHitDamageResult(damageResult2);
+                    }
+                    else if (result is AOEDamageResult aoeDamageResult)
+                    {
+                        damageResult2 = aoeDamageResult.GetResultOfTarget(Host);
 
-                        if (damageResult2.DamageType != Effects.Damage.DamageType.Hit) return;
-
-                        if (damageResult2.EffectiveDamage <= 0) return;
-
-                        EffectInput effectInput = new EffectInput(_effect, Host, result.Sender, Priority.Reaction, this, result);
-
-                        TriggerEffect(damageResult2.Sender, result);
+                        if (damageResult2 != null) CheckAndEnqueueOnTakingHitDamageResult(damageResult2);
                     }
                     break;
                 case EffectModifierTriggerStyle.OnHostRemovesOtherModifierFromSelf:
@@ -85,6 +93,32 @@ namespace SoulSmith.Battle.Modifiers.Effect
                     }
                     break;
             }
+        }
+
+        private void CheckAndEnqueueOnTakingHitDamageResult(DamageResult damageResult)
+        {
+            if (damageResult.Target != this.Host) return;
+
+            if (damageResult.DamageType != Effects.Damage.DamageType.Hit) return;
+
+            if (damageResult.EffectiveDamage <= 0) return;
+
+            EffectInput effectInput = new EffectInput(_effect, Host, damageResult.Sender, Priority.Reaction, this, damageResult);
+
+            TriggerEffect(damageResult.Sender, damageResult);
+        }
+
+        private void CheckAndEnqueueOnGivingHitDamageResult(DamageResult damageResult)
+        {
+            if (damageResult.Sender != this.Host) return;
+
+            if (damageResult.Target == null) return;
+
+            if (damageResult.DamageType != Effects.Damage.DamageType.Hit) return;
+
+            if (damageResult.EffectiveDamage <= 0) return;
+
+            TriggerEffect(damageResult.Target, damageResult);
         }
 
         private void TriggerEffect(IReadOnlyUnit target, ResultBase parentResult)
