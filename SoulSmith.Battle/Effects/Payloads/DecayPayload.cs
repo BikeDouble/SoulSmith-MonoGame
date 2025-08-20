@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Effects.Payloads
 {
-    public class DecayPayload : Payload
+    public class DecayPayload : PayloadBase
     {
-        public DecayPayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawDecay, Result parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
+        public DecayPayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawDecay, ResultBase parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
         {
             RawDecay = rawDecay;
         }

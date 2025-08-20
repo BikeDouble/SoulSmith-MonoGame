@@ -7,7 +7,7 @@ namespace SoulSmith.Battle.Effects
     [JsonConverter(typeof(IEffectJsonConverter))]
     public interface IEffect : IDisposable, IReadOnlyEffect
     {
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null);
+        public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null);
         public Visualization.EffectVisualization CreateVisualization();
         public float AdditionalDelay { get; }
     }

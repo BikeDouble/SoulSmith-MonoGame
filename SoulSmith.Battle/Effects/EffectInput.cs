@@ -7,7 +7,7 @@ namespace SoulSmith.Battle.Effects
 {
     public class EffectInput
     {
-        public EffectInput(IEffect effect, IReadOnlyUnit sender, IReadOnlyUnit target, Priority enqueuePriority, IEffectOriginator originator, Result parentResult)
+        public EffectInput(IEffect effect, IReadOnlyUnit sender, IReadOnlyUnit target, Priority enqueuePriority, IEffectOriginator originator, ResultBase parentResult)
         {
             Effect = effect;
             Sender = sender;
@@ -22,7 +22,7 @@ namespace SoulSmith.Battle.Effects
         public readonly IReadOnlyUnit Target;
         public readonly IEffectOriginator Originator;
         public readonly Priority EnqueuePriority;
-        public Result ParentResult;
+        public ResultBase ParentResult;
     }
 
     public class EnqueueEffectInputEventArgs : EventArgs

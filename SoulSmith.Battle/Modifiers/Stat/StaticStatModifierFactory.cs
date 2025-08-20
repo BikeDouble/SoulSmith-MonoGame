@@ -33,7 +33,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
         public StatModStyle ModStyle { get; private set; }
         public float ModAmount { get; private set; }
 
-        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentResult)
+        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentResult)
         {
             return new StaticStatModifier(StatType, ModStyle, ModAmount, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, MergeKey);
         }

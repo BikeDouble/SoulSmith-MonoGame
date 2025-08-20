@@ -188,9 +188,9 @@ public class TeamPosition : CanvasObject, IReadOnlyTeamPosition
         EnqueueEffectInputEventHandler(this, e);
     }
 
-	public Result ExecutePayload(Payload payload)
+	public ResultBase ExecutePayload(PayloadBase payload)
 	{
-		Result result = null;
+		ResultBase result = null;
 
         if (_containsUnit)
         {
@@ -200,7 +200,7 @@ public class TeamPosition : CanvasObject, IReadOnlyTeamPosition
 		return result;
     }
 
-    public void ModifyEffectRequest(Payload request)
+    public void ModifyPayload(PayloadBase request)
     {
         if (_containsUnit)
 		{
@@ -208,7 +208,7 @@ public class TeamPosition : CanvasObject, IReadOnlyTeamPosition
 		}
     }
 
-	public void ReactToPayloadResult(Result result)
+	public void ReactToPayloadResult(ResultBase result)
 	{
 		if (_containsUnit)
 		{

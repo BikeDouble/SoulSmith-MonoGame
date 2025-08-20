@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Effects.Payloads
 {
-    public class TriggerPayload : Payload
+    public class TriggerPayload : PayloadBase
     {
         public TriggerPayload(IReadOnlyUnit sender, IReadOnlyUnit target, CombatTrigger trigger, IReadOnlyEffect generatingEffect, IEffectOriginator originator) : base(sender, target, null, generatingEffect, originator, null)
         {

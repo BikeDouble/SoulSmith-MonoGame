@@ -23,7 +23,7 @@ namespace SoulSmith.Battle.Effects.Modifier
             _modifierToRemove = modifierToRemove;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
+        public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null)
         {
             IModifier modifier = _modifierToRemove;
 

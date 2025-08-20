@@ -139,14 +139,14 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		_stats.OnDeath();
 	}
 
-    public void ModifyEffectRequest(Payload request)
+    public void ModifyEffectRequest(PayloadBase request)
     {
 		_stats.ModifyPayload(request);
     }
 
-	public Result ExecuteEffectRequest(Payload request)
+	public ResultBase ExecuteEffectRequest(PayloadBase request)
 	{
-		Result result = null;
+		ResultBase result = null;
 
 		result = _stats.ExecutePayload(request);
 
@@ -155,7 +155,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
         return result;
 	}
 
-	public void ReactToPayloadResult(Result result)
+	public void ReactToPayloadResult(ResultBase result)
 	{
 		switch (result)
 		{

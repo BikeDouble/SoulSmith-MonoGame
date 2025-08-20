@@ -406,6 +406,28 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
         return activeUnits.AsReadOnly();
     }
 
+    // Returns all units adjacent to the target unit
+    public ReadOnlyCollection<IReadOnlyUnit> GetAdjacentReadOnlyUnits(IReadOnlyUnit target)
+    {
+		List<IReadOnlyUnit> adjacentUnits = new List<IReadOnlyUnit>();
+
+        switch (GetPositionIndexWithUnit(target))
+		{
+			case 0:
+				if (_teamPositions[1].ContainsUnit) adjacentUnits.Add(_teamPositions[1].Unit); 
+				break;
+            case 1:
+                if (_teamPositions[0].ContainsUnit) adjacentUnits.Add(_teamPositions[0].Unit);
+                if (_teamPositions[2].ContainsUnit) adjacentUnits.Add(_teamPositions[2].Unit);
+				break;
+            case 2:
+                if (_teamPositions[1].ContainsUnit) adjacentUnits.Add(_teamPositions[1].Unit);
+				break;
+        }
+
+		return adjacentUnits.AsReadOnly();
+    }
+
     //Returns all units that can still move this turn as UnitStats
     public List<Units.UnitStats> GetActiveUnitStats()
     {
@@ -491,7 +513,7 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		_moveSelector.SelectMoveInput(thisTeam, enemyTeam);
 	}
 
-	public Result ExecutePayload(Payload payload)
+	public ResultBase ExecutePayload(PayloadBase payload)
 	{
 		IReadOnlyUnit target = payload.Target;
 		TeamPosition position = GetPositionWithUnit(target);
@@ -499,25 +521,25 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		return position?.ExecutePayload(payload);
 	}
 
-    public void ModifyEffectRequest(Payload request)
+    public void ModifyPayload(PayloadBase payload)
     {
         // Requests intercepted in order: sender, sender's team, target's team, target
-        TeamPosition senderPosition = this.GetPositionWithUnit(request.Sender);
-        senderPosition?.ModifyEffectRequest(request);
+        TeamPosition senderPosition = this.GetPositionWithUnit(payload.Sender);
+        senderPosition?.ModifyPayload(payload);
 
         foreach (TeamPosition position in _teamPositions)
         {
-            if ((position.Unit != request.Target) && (position.Unit != request.Sender))
+            if ((position.Unit != payload.Target) && (position.Unit != payload.Sender))
             {
-                position.ModifyEffectRequest(request);
+                position.ModifyPayload(payload);
             }
         }
 
-        TeamPosition targetPosition = this.GetPositionWithUnit(request.Target);
-        targetPosition?.ModifyEffectRequest(request);
+        TeamPosition targetPosition = this.GetPositionWithUnit(payload.Target);
+        targetPosition?.ModifyPayload(payload);
     }
 
-    public void ReactToPayloadResult(Result result)
+    public void ReactToPayloadResult(ResultBase result)
     {
 		// Results intercepted in order: sender, sender's team, target's team, target
 		TeamPosition senderPosition = this.GetPositionWithUnit(result.Sender);

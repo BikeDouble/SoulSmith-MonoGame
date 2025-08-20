@@ -3,9 +3,9 @@ using SoulSmith.Battle.Modifiers;
 
 namespace SoulSmith.Battle.Effects.Results
 {
-    public class AddModifierResult : Result
+    public class AddModifierResult : ResultBase
     {
-        public AddModifierResult(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, bool appliedSuccessfully, Result parentResult, Payload payload, IEffectOriginator originator)
+        public AddModifierResult(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, bool appliedSuccessfully, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
             : base(sender, target, parentResult, payload, originator)
         {
             Modifier = modifier ?? throw new ArgumentNullException(nameof(modifier));

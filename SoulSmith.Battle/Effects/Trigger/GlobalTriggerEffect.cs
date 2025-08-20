@@ -13,7 +13,7 @@ namespace SoulSmith.Battle.Effects.Trigger
             _trigger = trigger;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
+        public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null)
         {
             return new TriggerPayload(sender, target, _trigger, this, originator);
         }

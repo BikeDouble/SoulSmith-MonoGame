@@ -20,6 +20,7 @@ namespace SoulSmith.Emotion
         public string FriendlyName { get; }
         public string FormKey { get; }
         public ReadOnlyCollection<IEffect> BattleEntryEffects { get; }
+        public ReadOnlyCollection<EmotionTag.EmotionTag> BasicEmotions { get; }
 
         public Emotion(EmotionTag.EmotionTag emotionTag, string friendlyName, string formKey, Color color, IEnumerable<IEffect> battleEntryEffects)
         {
@@ -28,6 +29,23 @@ namespace SoulSmith.Emotion
             FormKey = formKey;
             BattleEntryEffects = battleEntryEffects.ToList().AsReadOnly();
             EmotionTag = emotionTag;
+            BasicEmotions = GetBaseEmotionTags(emotionTag).AsReadOnly();
+        }
+
+        public static List<EmotionTag.EmotionTag> GetBaseEmotionTags(EmotionTag.EmotionTag value)
+        {
+            List<EmotionTag.EmotionTag> baseEmotionTags = new List<EmotionTag.EmotionTag>();
+
+            int valueAsInt = (int)value;
+
+            for (int bit = 0; bit < 8; bit++)
+            {
+                int mask = 1 << bit;
+                if ((valueAsInt & mask) != 0)
+                    baseEmotionTags.Add((EmotionTag.EmotionTag)mask);
+            }
+
+            return baseEmotionTags;
         }
 
         public void Dispose()

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Effects.Payloads
 {
-    public class AddModifierPayload : Payload
+    public class AddModifierPayload : PayloadBase
     {
-        public AddModifierPayload(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, Result parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
+        public AddModifierPayload(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, ResultBase parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
         {
             Modifier = modifier;
         }

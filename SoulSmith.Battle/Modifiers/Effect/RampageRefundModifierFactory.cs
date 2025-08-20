@@ -39,7 +39,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
         public string StatusText { get; private set; }
         public string ModifierToRefundMergeKey { get; private set; }
 
-        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentResult)
+        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentResult)
         {
             return new RampageRefundModifier(Effect, ModifierToRefundMergeKey, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, StatusText);
         }

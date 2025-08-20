@@ -42,7 +42,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
         public StatModStyle ModStyle { get; private set; }
         public float PortionOfDamageAsStatMod { get; private set; }
 
-        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentResult)
+        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentResult)
         {
             if (!(parentResult is DamageResult damageResult)) return null;
 

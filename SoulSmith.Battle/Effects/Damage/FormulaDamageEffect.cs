@@ -12,20 +12,33 @@ namespace SoulSmith.Battle.Effects.Damage
     public class FormulaDamageEffect : VisualizedEffectBase, IEffect 
     {
         private Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double> _parsedFormula;
-        private DamageType _damageType = DamageType.Hit;
+        private DamageType _damageType;
+        private AOETargetStyle? _aOEStyle; 
+        private float _fractionOfDamageToSecondaryTargets;
 
-        public FormulaDamageEffect(string formula, DamageType damageType, TargetingStyle targetingStyle, EffectVisualizationFactory visualizationFactory, float additionalDelay, IEffect[] immediateAfterEffects) : base(targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects)
+        public FormulaDamageEffect(string formula, DamageType damageType, AOETargetStyle? aOEStyle, float fractionOfDamageToSecondaryTargets, TargetingStyle targetingStyle, EffectVisualizationFactory visualizationFactory, float additionalDelay, IEffect[] immediateAfterEffects) : base(targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects)
         {
             Interpreter interpreter = new Interpreter();
             _parsedFormula = interpreter.ParseAsDelegate<Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double>>(formula, "sender", "target", "combat");
             _damageType = damageType;
+            _aOEStyle = aOEStyle;
+            _fractionOfDamageToSecondaryTargets = fractionOfDamageToSecondaryTargets;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
+        public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null)
         { 
             double damage = _parsedFormula(sender, target, combat);
 
-            return new DamagePayload(sender, GetTrueTarget(sender, target), (int)damage, _damageType, parentEffectResult, this, originator, ImmediateAfterEffects);
+            if (!_aOEStyle.HasValue)
+            {
+                return new DamagePayload(sender, GetTrueTarget(sender, target), (int)damage, _damageType, parentEffectResult, this, originator, ImmediateAfterEffects);
+            }
+            else
+            {
+                IReadOnlyUnit trueTarget = GetTrueTarget(sender, target);
+                ICollection<IReadOnlyUnit> secondaryTargets = AOEPayloadBase.GetSecondaryTargets(trueTarget, combat, _aOEStyle.Value);
+                return new AOEDamagePayload(sender, trueTarget, secondaryTargets, (int)damage, _damageType, _fractionOfDamageToSecondaryTargets, parentEffectResult, this, originator, ImmediateAfterEffects);
+            }
         }
     }
 
@@ -43,6 +56,8 @@ namespace SoulSmith.Battle.Effects.Damage
             DamageType damageType = DamageType.Null;
             IEffect[] immediateAfterEffects = null;
             TargetingStyle targetingStyle = TargetingStyle.Target;
+            AOETargetStyle? aOEStyle = null;
+            float fractionOfDamageToSecondaryTargets = 1f;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -75,6 +90,7 @@ namespace SoulSmith.Battle.Effects.Damage
                         reader.Read();
                         break;
                     case "DamageType":
+                        if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
                         damageType = JsonSerializer.Deserialize<DamageType>(ref reader, options);
                         reader.Read();
                         break;
@@ -84,7 +100,19 @@ namespace SoulSmith.Battle.Effects.Damage
                         reader.Read();
                         break;
                     case "TargetingStyle":
+                        if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
                         targetingStyle = JsonSerializer.Deserialize<TargetingStyle>(ref reader, options);
+                        reader.Read();
+                        break;
+                    case "AOEStyle":
+                    case "AOETargetStyle":
+                        if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
+                        aOEStyle = JsonSerializer.Deserialize<AOETargetStyle>(ref reader, options);
+                        reader.Read();
+                        break;
+                    case "FractionOfDamageToSecondaryTargets":
+                        if (reader.TokenType != JsonTokenType.Number) throw new JsonException("Expected number");
+                        fractionOfDamageToSecondaryTargets = reader.GetSingle();
                         reader.Read();
                         break;
                     default:
@@ -96,7 +124,7 @@ namespace SoulSmith.Battle.Effects.Damage
             if (string.IsNullOrEmpty(formula)) throw new JsonException("Formula cannot be null or empty");
             if (damageType == DamageType.Null) throw new JsonException("DamageType cannot be Null");
 
-            return new FormulaDamageEffect(formula, damageType, targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects);
+            return new FormulaDamageEffect(formula, damageType, aOEStyle, fractionOfDamageToSecondaryTargets, targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects);
         }
 
         public override void Write(Utf8JsonWriter writer, FormulaDamageEffect value, JsonSerializerOptions options)

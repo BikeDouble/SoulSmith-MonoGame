@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Effects.Results
 {
-    public class DamageResult : Result
+    public class DamageResult : ResultBase
     {
-        public DamageResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveDamage, DamageType damageType, bool killedTarget, Result parentResult, Payload payload, IEffectOriginator originator)
+        public DamageResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveDamage, DamageType damageType, bool killedTarget, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
             : base(sender, target, parentResult, payload, originator)
         { 
             EffectiveDamage = effectiveDamage;

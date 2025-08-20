@@ -27,6 +27,7 @@ public class EffectVisualization : CanvasObject
         _totalLifespan = lifespan;
         _elapsedLifespan = lifespan;
         _effectActivationTimer = effectActivationTimer;
+        TotalEffectActivationTimer = effectActivationTimer;
         _delay = delay;
         _baseDelay = delay;
     }
@@ -115,7 +116,8 @@ public class EffectVisualization : CanvasObject
     protected float Delay { get { return _delay; } }
     protected float BaseDelay { get { return _baseDelay; } }
     protected bool Enabled { get { return _enabled; } }
-    protected float EffectActivationTimer { get { return _effectActivationTimer; } }
+    protected float ElapsedEffectActivationTimer { get { return _effectActivationTimer; } }
+    protected float TotalEffectActivationTimer { get; private set; }
     protected IReadOnlyUnit Sender { get { return _sender; } }
     protected IReadOnlyUnit Target { get { return _target; } }
 }

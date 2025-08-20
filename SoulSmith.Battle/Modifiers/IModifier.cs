@@ -10,8 +10,8 @@ namespace SoulSmith.Battle.Modifiers
 {
     public interface IModifier : IReadOnlyModifier
     {
-        public void ReactToPayloadResult(Result result);
-        public void ModifyPayload(Payload request);
+        public void ReactToPayloadResult(ResultBase result);
+        public void ModifyPayload(PayloadBase request);
         public void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host);
         public bool TryMerge(IModifier other);
         public StatModifier? GetStatModifier();

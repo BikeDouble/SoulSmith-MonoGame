@@ -31,7 +31,7 @@ namespace SoulSmith.Battle.Effects.Modifier
             _portionOfModToRefund = portionOfModToRefund;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
+        public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null)
         {
             if (!(parentEffectResult is RemoveModifierResult removeResult)) return null;
 

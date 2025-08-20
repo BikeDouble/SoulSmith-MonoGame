@@ -1,0 +1,7 @@
+{
+    "Type": "Shockwave",
+    "Visualization": {
+        "Sprite": "Textures/Effects/Particles/ShockwaveCircle",
+        "Color": [ 171, 0, 0, 255 ]
+    }
+}

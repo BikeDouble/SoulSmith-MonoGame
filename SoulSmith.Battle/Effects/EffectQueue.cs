@@ -31,7 +31,7 @@ public class EffectQueue : CanvasObject
         });
 
     private Dictionary<Priority, Queue<QueuedEffect>> _priorityQueues = new Dictionary<Priority, Queue<QueuedEffect>>();
-    private DropOutStack<(Payload, Result)> _effectHistory; //Effect history is pushed after effect is processed
+    private DropOutStack<(PayloadBase, ResultBase)> _effectHistory; //Effect history is pushed after effect is processed
     private DropOutStack<MoveInput> _moveHistory; //Move history is pushed after move is queued
     private bool _processingEnabled = true;
     private IReadOnlyCombat _parentCombat;
@@ -100,7 +100,7 @@ public class EffectQueue : CanvasObject
         EnqueueEffect(new EffectInput(_roundEndEffect, null, null, Priority.NonMoveCombatTrigger, _parentCombat, null));
     }
 
-    public void OnUnitDeath(IReadOnlyUnit killer, IReadOnlyUnit deadUnit, Result killingEffectResult)
+    public void OnUnitDeath(IReadOnlyUnit killer, IReadOnlyUnit deadUnit, ResultBase killingEffectResult)
     {
         EnqueueEffect(new EffectInput(UNITDEATHEFFECT, killer, deadUnit, Priority.NonMoveCombatTrigger, _parentCombat, killingEffectResult), DEATHANIMATIONDURATION);
     }
@@ -120,7 +120,7 @@ public class EffectQueue : CanvasObject
 
     private void InitializeHistory()
     {
-        _effectHistory = new DropOutStack<(Payload, Result)>(50);
+        _effectHistory = new DropOutStack<(PayloadBase, ResultBase)>(50);
         _moveHistory = new DropOutStack<MoveInput>(24);
     }
 
@@ -230,9 +230,9 @@ public class EffectQueue : CanvasObject
     //
     public event EventHandler<ExecuteEffectEventArgs> ExecuteEffectEventHandler;
 
-    public void SendEffectRequestFromInput(EffectInput effectInput, Result parentEffectResult = null)
+    public void SendEffectRequestFromInput(EffectInput effectInput, ResultBase parentEffectResult = null)
     {
-        Payload payload = effectInput.Effect.GeneratePayload(effectInput.Sender, effectInput.Target, _parentCombat, effectInput.Originator, effectInput.ParentResult);
+        PayloadBase payload = effectInput.Effect.GeneratePayload(effectInput.Sender, effectInput.Target, _parentCombat, effectInput.Originator, effectInput.ParentResult);
 
         if (payload == null) return;
 
@@ -247,7 +247,7 @@ public class EffectQueue : CanvasObject
     /// </summary>
     /// <param name="payload"></param>
     /// <param name="result"></param>
-    public void ResolveEffect(Payload payload, Result result)
+    public void ResolveEffect(PayloadBase payload, ResultBase result)
     {
         if (payload.ImmediateAfterEffects != null)
         {
@@ -318,5 +318,5 @@ public class EffectQueue : CanvasObject
 
 public class ExecuteEffectEventArgs : EventArgs
 {
-    public Payload Payload { get; set; }
+    public PayloadBase Payload { get; set; }
 }

@@ -5,11 +5,11 @@ using System.Collections.ObjectModel;
 
 namespace SoulSmith.Battle.Effects.Payloads
 {
-    public class DamagePayload : Payload
+    public class DamagePayload : PayloadBase
     {
         private readonly List<MagnitudeModifier> _magnitudeModifiers = new List<MagnitudeModifier>();
 
-        public DamagePayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawDamage, DamageType damageType, Result parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
+        public DamagePayload(IReadOnlyUnit sender, IReadOnlyUnit target, int rawDamage, DamageType damageType, ResultBase parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
         {
             RawDamage = rawDamage;
             DamageType = damageType;

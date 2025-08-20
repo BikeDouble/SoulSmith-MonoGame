@@ -4,9 +4,9 @@ using SoulSmith.Battle.Effects.Trigger;
 using SoulSmith.Battle.Modifiers;
 
 namespace SoulSmith.Battle.Effects.Results;
-public partial class Result
+public partial class ResultBase
 {
-    public Result(IReadOnlyUnit sender, IReadOnlyUnit target, Result parentResult, Payload payload, IEffectOriginator originator)
+    public ResultBase(IReadOnlyUnit sender, IReadOnlyUnit target, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
     {
         Sender = sender;
         Target = target;
@@ -18,6 +18,6 @@ public partial class Result
     public IReadOnlyUnit Sender { get; }
     public IReadOnlyUnit Target { get; }
     public IEffectOriginator Originator { get; }
-    public Payload Payload { get; }
-    public Result ParentResult { get; }
+    public PayloadBase Payload { get; }
+    public ResultBase ParentResult { get; }
 }

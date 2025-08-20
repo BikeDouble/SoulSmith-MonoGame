@@ -256,7 +256,8 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 		return units.AsReadOnly();
 	}
 
-	public ReadOnlyCollection<IReadOnlyUnit> GetAllActiveUnitsAsReadOnly()
+    // Returns all units in combat that can still move this round
+    public ReadOnlyCollection<IReadOnlyUnit> GetAllActiveUnitsAsReadOnly()
 	{
         List<IReadOnlyUnit> units = new List<IReadOnlyUnit>();
         foreach (CombatTeam team in _teams)
@@ -266,17 +267,27 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         return units.AsReadOnly();
     }
 
-	//
-	// Combat Processing
-	//
+	public ReadOnlyCollection<IReadOnlyUnit> GetAllReadOnlyUnits()
+	{
+		List<IReadOnlyUnit> units = new List<IReadOnlyUnit>();
+		foreach (CombatTeam team in _teams)
+		{
+			units.AddRange(team.GetReadOnlyUnits());
+		}
+		return units.AsReadOnly();
+    }
 
-	
-	
-	//
-	// Round Processing
-	//
-	
-	public void BeginRound() //AKA round end, there's not really a difference
+    //
+    // Combat Processing
+    //
+
+
+
+    //
+    // Round Processing
+    //
+
+    public void BeginRound() //AKA round end, there's not really a difference
 	{
 		if (!_startingUnitsInstantiated)
 		{
@@ -549,18 +560,20 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
     // Listens to effect queue
     private void ExecuteEffect(object sender, ExecuteEffectEventArgs e)
 	{
-		Payload request = e.Payload;
+		PayloadBase request = e.Payload;
 
-		ProcessEffectRequest(request);
+		ProcessPayload(request);
 	}
-
-	private void ProcessEffectRequest(Payload request)
+	
+	private void ProcessPayload(PayloadBase payload)
 	{
-		Result result = ExecutePayloadInternal(request);
-		ReactToEffectResult(result);
+		LetTeamsModifyPayload(payload);
+        ResultBase result = ExecutePayload(payload);
+        _effectQueue.ResolveEffect(payload, result);
+        ReactToEffectResult(result);
     }
 
-	private void ReactToEffectResult(Result result)
+	private void ReactToEffectResult(ResultBase result)
 	{
         if (result != null)
         {
@@ -580,11 +593,11 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         }
     }
 
-	private Result ExecutePayloadInternal(Payload payload)
+	private void LetTeamsModifyPayload(PayloadBase payload)
 	{
-        if (payload is TriggerPayload triggerPayload) //Combat trigger effects should not be processed as normal effects and should never be modified
+        if (payload is TriggerPayload triggerPayload) // Combat trigger payloads should not be modified
         {
-            return new TriggerResult(payload.Sender, payload.Target, triggerPayload.Trigger, payload, payload.Originator);
+			return;
         }
 
         Unit target = null;
@@ -618,16 +631,51 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 
 		if (firstTeam == null || otherTeam == null) throw new ArgumentException("Invalid teams for effect execution.");
 
-		firstTeam.ModifyEffectRequest(payload);
-		otherTeam.ModifyEffectRequest(payload);
+		firstTeam.ModifyPayload(payload);
+		otherTeam.ModifyPayload(payload);
+    }
 
-		CombatTeam targetTeam = GetTeamWithUnit(target);
-		if (targetTeam == null) throw new ArgumentException("Target team not found for effect execution.");
-		Result result = targetTeam.ExecutePayload(payload);
+	private ResultBase ExecutePayload(PayloadBase payload)
+	{
+		if (payload is TriggerPayload triggerPayload)
+		{
+            // Trigger payloads should not be executed, but rather returned as a result and used exclusively for triggering other effects
+            return new TriggerResult(payload.Sender, payload.Target, triggerPayload.Trigger, payload, payload.Originator); 
+        }
 
-        _effectQueue.ResolveEffect(payload, result);
+		if (payload is AOEPayloadBase aOEPayload)
+		{
+            // AOE payloads require special handling
+            return ExecuteAOEPayload(aOEPayload);
+        }
+
+		CombatTeam targetTeam = GetTeamWithUnit(payload.Target);
+        if (targetTeam == null) throw new ArgumentException("Target team not found for payload execution.");
+        ResultBase result = targetTeam.ExecutePayload(payload);
 
         return result;
+    }
+
+	private ResultBase ExecuteAOEPayload(AOEPayloadBase aOEPayload)
+	{
+        List<ResultBase> results = new List<ResultBase>();
+        foreach (IReadOnlyUnit target in aOEPayload.AllTargets)
+        {
+            PayloadBase singleTargetPayload = aOEPayload.GetTargetSpecificPayload(target);
+            ResultBase singleTargetResult = ExecutePayload(singleTargetPayload);
+            if (singleTargetResult != null)
+            {
+                results.Add(singleTargetResult);
+            }
+        }
+
+        switch (aOEPayload)
+        {
+            case AOEDamagePayload damagePayload:
+                return new AOEDamageResult(damagePayload.Sender, damagePayload.Target, results.Cast<DamageResult>().ToList().AsReadOnly(), damagePayload.FractionOfDamageToSecondaryTargets, damagePayload.ParentResult, damagePayload, damagePayload.Originator);
+            default:
+                throw new ArgumentException("Unsupported AOEPayload type.");
+        }
     }
 
 	private void KillUnit(IReadOnlyUnit unit)
@@ -662,7 +710,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         }
     }
 
-    private void GiveEffectResultToTeams(Result result)
+    private void GiveEffectResultToTeams(ResultBase result)
 	{
         Unit target = null;
         Unit sender = null;

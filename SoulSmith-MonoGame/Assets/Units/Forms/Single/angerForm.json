@@ -19,6 +19,10 @@
         {
             "Item": "Anger/Simmer",
             "Weight": 60
+        },
+        {
+            "Item": "Anger/TeamHit",
+            "Weight": 60
         }
     ],
     "Emotion": 4,

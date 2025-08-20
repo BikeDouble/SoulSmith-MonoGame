@@ -21,6 +21,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
             IEffect effect,
             Priority effectPriority,
             EffectModifierTriggerStyle triggerStyle,
+            string reactionTargetModifierMergeKey,
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
@@ -35,16 +36,18 @@ namespace SoulSmith.Battle.Modifiers.Effect
             StatusText = statusText;
             EffectPriority = effectPriority;
             TriggerStyle = triggerStyle;
+            ReactionTargetModifierMergeKey = reactionTargetModifierMergeKey;
         }
 
         public IEffect Effect { get; private set; }
         public string StatusText { get; private set; }
         public Priority EffectPriority { get; private set; }
         public EffectModifierTriggerStyle TriggerStyle { get; private set; }
+        public string ReactionTargetModifierMergeKey { get; private set; }
 
-        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentResult)
+        public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentResult)
         {
-            return new EffectOnResultReactionModifier(Effect, EffectPriority, TriggerStyle, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, StatusText);
+            return new EffectOnResultReactionModifier(Effect, EffectPriority, TriggerStyle, ReactionTargetModifierMergeKey, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, StatusText);
         }
     }
 
@@ -67,6 +70,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
             string modifierIconKey = null;
             string friendlyName = "Unnamed";
             string description = string.Empty;
+            string reactionTargetModifierMergeKey = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -127,6 +131,10 @@ namespace SoulSmith.Battle.Modifiers.Effect
                         triggerStyle = JsonSerializer.Deserialize<EffectModifierTriggerStyle>(ref reader, options);
                         reader.Read();
                         break;
+                    case "ReactionTargetModifierMergeKey":
+                        reactionTargetModifierMergeKey = reader.GetString();
+                        reader.Read();
+                        break;
                     default:
                         reader.Skip();
                         break;
@@ -140,8 +148,9 @@ namespace SoulSmith.Battle.Modifiers.Effect
             if ((modifierIconKey == null) && (isModifierVisible.Value)) throw new JsonException("Expected 'ModifierIconKey' property to be present.");
             if (triggerStyle == null) throw new JsonException("Expected 'TriggerStyle' property to be present.");
             if (effectPriority == null) throw new JsonException("Expected 'EffectPriority' property to be present.");
+            if ((reactionTargetModifierMergeKey == null) && (triggerStyle == EffectModifierTriggerStyle.OnHostRemovesOtherModifierFromSelf)) throw new JsonException("Expected 'ReactionTargetModifierMergeKey' property to be present.");
 
-            return new EffectOnResultReactionModifierFactory(effect, effectPriority.Value, triggerStyle.Value, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description, statusText);
+            return new EffectOnResultReactionModifierFactory(effect, effectPriority.Value, triggerStyle.Value, reactionTargetModifierMergeKey, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description, statusText);
         }
 
         public override void Write(Utf8JsonWriter writer, EffectOnResultReactionModifierFactory value, JsonSerializerOptions options)

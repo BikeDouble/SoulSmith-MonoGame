@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Effects.Results
 {
-    public class HealingResult : Result
+    public class HealingResult : ResultBase
     {
-        public HealingResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveHealing, Result parentResult, Payload payload, IEffectOriginator originator)
+        public HealingResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveHealing, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
             : base(sender, target, parentResult, payload, originator)
         {
             EffectiveHealing = effectiveHealing;

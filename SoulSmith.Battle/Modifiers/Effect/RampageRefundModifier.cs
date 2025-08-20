@@ -41,7 +41,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
         }
 
 
-        public override void ReactToPayloadResult(Result result)
+        public override void ReactToPayloadResult(ResultBase result)
         {
             base.ReactToPayloadResult(result);
 

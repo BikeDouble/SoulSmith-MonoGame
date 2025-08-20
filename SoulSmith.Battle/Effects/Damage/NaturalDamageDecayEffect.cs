@@ -14,13 +14,13 @@ namespace SoulSmith.Battle.Effects.Damage
             _percentOfDamageAsDecay = percentOfDamageAsDecay;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
+        public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null)
         {
             int rawDecay = 0;
 
             if (parentEffectResult is DamageResult parentDamageResult) rawDecay = (int)(parentDamageResult.EffectiveDamage * _percentOfDamageAsDecay);
 
-            Payload request = new DecayPayload(parentEffectResult?.Sender, parentEffectResult?.Target, rawDecay, parentEffectResult, this, originator, ImmediateAfterEffects);
+            PayloadBase request = new DecayPayload(parentEffectResult?.Sender, parentEffectResult?.Target, rawDecay, parentEffectResult, this, originator, ImmediateAfterEffects);
 
             return request;
         }

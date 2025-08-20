@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Effects.Results
 {
-    public class DecayResult : Result
+    public class DecayResult : ResultBase
     {
-        public DecayResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveDecay, Result parentResult, Payload payload, IEffectOriginator originator)
+        public DecayResult(IReadOnlyUnit sender, IReadOnlyUnit target, int effectiveDecay, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
             : base(sender, target, parentResult, payload, originator)
         {
             EffectiveDecay = effectiveDecay;

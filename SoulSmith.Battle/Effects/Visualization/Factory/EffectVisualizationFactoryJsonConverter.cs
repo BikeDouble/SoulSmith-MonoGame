@@ -48,6 +48,10 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
                     value = JsonSerializer.Deserialize<GrowAndFadeOnTargetEffectVisualizationFactory>(ref reader, options);
                     reader.Read();
                     break;
+                case "Shockwave":
+                    value = JsonSerializer.Deserialize<ShockwaveVisualizationFactory>(ref reader, options);
+                    reader.Read();
+                    break;
                 default:
                     throw new JsonException($"Unexpected type {visType}. Type is either misspelled or does not exist.");
             }

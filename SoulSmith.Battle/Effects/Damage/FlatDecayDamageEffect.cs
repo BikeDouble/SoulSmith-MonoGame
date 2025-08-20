@@ -13,11 +13,11 @@ namespace SoulSmith.Battle.Effects.Damage
             _decayDamage = decayDamage;
         }
 
-        public Payload GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, Result parentEffectResult = null)
+        public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null)
         {
             int rawDecay = _decayDamage;
 
-            Payload request = new DecayPayload(sender, GetTrueTarget(sender, target), rawDecay, parentEffectResult, this, originator, ImmediateAfterEffects);
+            PayloadBase request = new DecayPayload(sender, GetTrueTarget(sender, target), rawDecay, parentEffectResult, this, originator, ImmediateAfterEffects);
             return request;
         }
     }

@@ -10,8 +10,8 @@ namespace SoulSmith.Core
     {
         Background = -1000,
         UnitSprite = 0,
-        EffectVisualization = 1000,
-        UnitUI = 2000,
+        UnitUI = 1000,
+        EffectVisualization = 2000,
         Header = 10000
     }
 }

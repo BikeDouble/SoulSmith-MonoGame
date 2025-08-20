@@ -30,7 +30,7 @@ namespace SoulSmith.Battle.Modifiers
             StatusText = statusText;
             MergeKey = mergeKey;
         }
-        public virtual void ReactToPayloadResult(Result result) 
+        public virtual void ReactToPayloadResult(ResultBase result) 
         {
             if (result == null) return;
             
@@ -84,14 +84,14 @@ namespace SoulSmith.Battle.Modifiers
             }
         }
 
-        private void DecrementDuration(Result parentResult)
+        private void DecrementDuration(ResultBase parentResult)
         {
             Duration -= 1;
 
             if (Duration <= 0) EnqueueRemove(Priority.ModifierRemovalImmediate, parentResult);
         }
 
-        public virtual void ModifyPayload(Payload request) { }
+        public virtual void ModifyPayload(PayloadBase request) { }
 
         public virtual void ApplyModifier(IReadOnlyUnit applier, IReadOnlyUnit host) 
         {
@@ -137,7 +137,7 @@ namespace SoulSmith.Battle.Modifiers
         public virtual string StatusText { get; private set; }
         public IEffectOriginator Originator { get; private set; }
         public RemoveModifierEffect RemovalEffect { get; private set; }
-        protected void EnqueueRemove(Priority priority, Result parentResult)
+        protected void EnqueueRemove(Priority priority, ResultBase parentResult)
         {
             EffectInput removeEffectInput = new EffectInput(RemovalEffect, Applier, Host, priority, this, parentResult);
             EnqueueEffectInput(removeEffectInput);

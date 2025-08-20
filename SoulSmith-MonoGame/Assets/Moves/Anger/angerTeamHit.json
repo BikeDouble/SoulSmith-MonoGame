@@ -1,0 +1,22 @@
+{
+    "Name": "Roar",
+    "EmotionTag": 4,
+    "TargetingStyle": "Enemy",
+    "Description": {
+        "LocalizationKey": "Move/HitDamage/AOE/Team/Attack",
+        "LocalizationVariables": {
+            "AttackPercent": 30
+        }
+    },
+    "Effects": [   
+        {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.3",
+                "DamageType": "hit",
+                "AOEStyle": "wholeteam",
+                "VisualizationKey": "EffectVisualizations/Anger/ShockwaveCircle"  
+            }
+        }
+    ]
+}

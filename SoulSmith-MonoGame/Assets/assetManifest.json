@@ -14,7 +14,8 @@
     },
     "EffectVisualizations": {
         "Anger": {
-            "DirectMissile": "EffectVisualizations/Anger/angerDirectMissile.json"
+            "DirectMissile": "EffectVisualizations/Anger/angerDirectMissile.json",
+            "ShockwaveCircle": "EffectVisualizations/Anger/shockwaveCircle.json"
         },
         "Joy": {
             "DirectMissile": "EffectVisualizations/Joy/joyDirectMissile.json",
@@ -64,7 +65,8 @@
         "Anger": {
             "Rampage": "Moves/Anger/rampage.json",
             "Simmer": "Moves/Anger/simmer.json",
-            "SingleHit": "Moves/Anger/angerSingleHit.json"
+            "SingleHit": "Moves/Anger/angerSingleHit.json",
+            "TeamHit": "Moves/Anger/angerTeamHit.json"
         },
         "Joy": {
             "CheerOn": "Moves/Joy/cheerOn.json",
@@ -83,7 +85,8 @@
     "Textures": {
         "Effects": {
             "Particles": {
-                "JoyPopStar": "Textures/Effects/Particles/joyPopStar.png"
+                "JoyPopStar": "Textures/Effects/Particles/joyPopStar.png",
+                "ShockwaveCircle": "Textures/Effects/Particles/shockwaveCircle.png"
             }
         },
         "SolidColor": {

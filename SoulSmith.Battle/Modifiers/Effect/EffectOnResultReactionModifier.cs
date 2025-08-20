@@ -11,11 +11,13 @@ namespace SoulSmith.Battle.Modifiers.Effect
         private readonly IEffect _effect;
         private readonly EffectModifierTriggerStyle _trigger;
         private readonly Priority _effectPriority;
+        private readonly string _desiredModifierMergeKey;
 
         public EffectOnResultReactionModifier(
             IEffect effect,
             Priority effectPriority,
             EffectModifierTriggerStyle trigger,
+            string desiredModifierMergeKey,
             int duration,
             DurationStyle durationStyle,
             ModifierAlignment alignment,
@@ -30,9 +32,10 @@ namespace SoulSmith.Battle.Modifiers.Effect
             _effect = effect ?? throw new ArgumentNullException(nameof(effect));
             _trigger = trigger;
             _effectPriority = effectPriority;
+            _desiredModifierMergeKey = desiredModifierMergeKey;
         }
 
-        public override void ReactToPayloadResult(Result result)
+        public override void ReactToPayloadResult(ResultBase result)
         {
             base.ReactToPayloadResult(result);
 
@@ -66,10 +69,25 @@ namespace SoulSmith.Battle.Modifiers.Effect
                         TriggerEffect(damageResult2.Sender, result);
                     }
                     break;
+                case EffectModifierTriggerStyle.OnHostRemovesOtherModifierFromSelf:
+                    if (result is RemoveModifierResult removeModifierResult)
+                    {
+                        if (removeModifierResult.Modifier.MergeKey == _desiredModifierMergeKey)
+                        {
+                            if (removeModifierResult.Modifier.Host == this.Host)
+                            {
+                                if (removeModifierResult.Sender == this.Host)
+                                {
+                                    TriggerEffect(result.Target, result);
+                                }
+                            }
+                        }
+                    }
+                    break;
             }
         }
 
-        private void TriggerEffect(IReadOnlyUnit target, Result parentResult)
+        private void TriggerEffect(IReadOnlyUnit target, ResultBase parentResult)
         {
             EffectInput effectInput = new EffectInput(_effect, Host, target, _effectPriority, this, parentResult);
 

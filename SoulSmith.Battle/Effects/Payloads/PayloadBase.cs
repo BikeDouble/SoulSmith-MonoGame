@@ -7,9 +7,9 @@ using SoulSmith.UnitStats;
 using System.Collections.ObjectModel;
 
 namespace SoulSmith.Battle.Effects.Payloads;
-public class Payload
+public class PayloadBase
 {
-    public Payload(IReadOnlyUnit sender, IReadOnlyUnit target, Result parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null)
+    public PayloadBase(IReadOnlyUnit sender, IReadOnlyUnit target, ResultBase parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null)
     {
         Sender = sender;
         Target = target;
@@ -26,6 +26,6 @@ public class Payload
     public IReadOnlyUnit Target { get; }
     public IReadOnlyEffect GeneratingEffect { get; }
     public IEffectOriginator Originator { get; }
-    public Result ParentResult { get; }
+    public ResultBase ParentResult { get; }
     public IReadOnlyCollection<IEffect> ImmediateAfterEffects { get; }
 }
