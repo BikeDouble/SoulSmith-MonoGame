@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SoulSmith.Battle.Modifiers
+namespace SoulSmith.Battle.Modifiers.Stat
 {
     public interface IReadOnlyStatModifier : IReadOnlyModifier
     {

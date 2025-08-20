@@ -2,7 +2,7 @@
     "Type": "RampageRefund",
     "Modifier": {
         "Effect": {
-            "Type": "ReapplyStatModifier",
+            "Type": "ReapplyPayloadModifier",
             "Effect": {
                 "PortionOfModToRefund": 1,
                 "TargetingStyle": "self"

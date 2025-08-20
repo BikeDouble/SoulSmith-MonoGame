@@ -57,8 +57,6 @@ namespace SoulSmith.Battle.Modifiers.Stat
             if (otherStatModifier.StatType != StatType) return false;
             if (otherStatModifier.ModStyle != ModStyle) return false;
 
-            if (ModStyle != otherStatModifier.ModStyle) return false;
-
             ModAmount = StatTypeHelper.CombineModifiers(ModAmount, otherStatModifier.ModAmount, ModStyle);
 
             return true;

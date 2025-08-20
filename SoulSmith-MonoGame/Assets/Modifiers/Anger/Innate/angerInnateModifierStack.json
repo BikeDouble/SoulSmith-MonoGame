@@ -1,11 +1,11 @@
 {
-    "Type": "StaticStatBasedOnDamageDone",
+    "Type": "StaticBasedOnDamageDoneDamagePayload",
     "Modifier": {
-        "StatType": "attack",
+        "TriggerStyle": "ongivinghitdamage",
         "ModStyle": "additivepercent",
         "PortionOfDamageAsStatMod": 0.5,
         "Duration": 1,
-        "DurationStyle": "hosthits",
+        "DurationStyle": "payloadmodifications",
         "Alignment": "buff",
         "IsModifierVisible": true,
         "IconKey": "Textures/Units/Forms/JoyV1",

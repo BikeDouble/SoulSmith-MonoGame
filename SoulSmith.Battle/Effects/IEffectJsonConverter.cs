@@ -50,6 +50,10 @@ namespace SoulSmith.Battle.Effects
                     value = JsonSerializer.Deserialize<ReapplyStatModifierEffect>(ref reader, options);
                     reader.Read();
                     break;
+                case "ReapplyPayloadModifier":
+                    value = JsonSerializer.Deserialize<ReapplyPayloadModifierEffect>(ref reader, options);
+                    reader.Read();
+                    break;
                 default:
                     throw new JsonException($"Unexpected type {effectType}. Type is either misspelled or does not exist.");
             }

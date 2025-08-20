@@ -81,10 +81,19 @@ namespace SoulSmith.Battle.Modifiers
                         }
                     }
                     break;
+                case DurationStyle.PayloadModifications:
+                    if (result.Payload != null)
+                    {
+                        if (result.Payload.GetModifyingObjects().Contains(this))
+                        {
+                            DecrementDuration(result);
+                        }
+                    }
+                    break;
             }
         }
 
-        private void DecrementDuration(ResultBase parentResult)
+        protected void DecrementDuration(ResultBase parentResult)
         {
             Duration -= 1;
 

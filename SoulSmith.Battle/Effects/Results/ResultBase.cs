@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using SoulSmith.Battle.Effects.Damage;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Trigger;

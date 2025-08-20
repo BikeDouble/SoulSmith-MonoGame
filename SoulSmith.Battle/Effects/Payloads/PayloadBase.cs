@@ -28,4 +28,9 @@ public class PayloadBase
     public IEffectOriginator Originator { get; }
     public ResultBase ParentResult { get; }
     public IReadOnlyCollection<IEffect> ImmediateAfterEffects { get; }
+
+    public virtual List<IEffectOriginator> GetModifyingObjects()
+    {
+        return new List<IEffectOriginator>();
+    }
 }

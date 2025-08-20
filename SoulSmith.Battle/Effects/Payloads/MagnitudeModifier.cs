@@ -9,6 +9,13 @@ namespace SoulSmith.Battle.Effects.Payloads
 {
     public class MagnitudeModifier : IStyledNumberModifier
     {
+        public MagnitudeModifier(StatModStyle modStyle, float modAmount, IEffectOriginator originator)
+        {
+            ModStyle = modStyle;
+            ModAmount = modAmount;
+            Originator = originator;
+        }
+
         public IEffectOriginator Originator { get; }
         public StatModStyle ModStyle { get; }
         public float ModAmount { get; }

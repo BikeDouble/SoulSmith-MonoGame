@@ -20,6 +20,21 @@ namespace SoulSmith.Battle.Effects.Payloads
             _magnitudeModifiers.Add(magnitudeModifier);
         }
 
+        public override List<IEffectOriginator> GetModifyingObjects()
+        {
+            List<IEffectOriginator> modifyingObjects = base.GetModifyingObjects();
+            
+            foreach (MagnitudeModifier magnitudeModifier in _magnitudeModifiers)
+            {
+                if (magnitudeModifier.Originator != null && !modifyingObjects.Contains(magnitudeModifier.Originator))
+                {
+                    modifyingObjects.Add(magnitudeModifier.Originator);
+                }
+            }
+
+            return modifyingObjects;
+        }
+
         public int RawDamage { get; }
         public int ModifiedDamage { get { return (int)StatTypeHelper.CombineAndApplyStyledModifiers(RawDamage, _magnitudeModifiers); } }
         public DamageType DamageType { get; }

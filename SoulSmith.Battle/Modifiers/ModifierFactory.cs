@@ -1,17 +1,10 @@
-﻿using SoulSmith.Asset;
-using SoulSmith.Battle.Effects;
+﻿using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Results;
-using SoulSmith.Battle.Effects.Visualization.Factory;
 using SoulSmith.Battle.Modifiers.Effect;
 using SoulSmith.Battle.Modifiers.Stat;
-using SoulSmith.Drawing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using SoulSmith.Battle.Modifiers.Payload;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Modifiers
 {
@@ -88,6 +81,16 @@ namespace SoulSmith.Battle.Modifiers
                 case "StaticStatBasedOnDamageDone":
                     value = JsonSerializer.Deserialize<StaticStatBasedOnDamageDoneModifierFactory>(ref reader, options);
                     reader.Read(); 
+                    break;
+                case "StaticDamagePayload":
+                case "StaticDamagePayloadModifier":
+                    value = JsonSerializer.Deserialize<StaticPayloadModifierFactory>(ref reader, options);
+                    reader.Read();
+                    break;
+                case "StaticBasedOnDamageDoneDamagePayload":
+                case "StaticBasedOnDamageDoneDamagePayloadModifier":
+                    value = JsonSerializer.Deserialize<StaticBasedOnDamageDonePayloadModifierFactory>(ref reader, options);
+                    reader.Read();
                     break;
                 case "EffectOnResultReaction":
                     value = JsonSerializer.Deserialize<EffectOnResultReactionModifierFactory>(ref reader, options);

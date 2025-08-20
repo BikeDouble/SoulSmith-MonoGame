@@ -38,6 +38,35 @@ namespace SoulSmith.Battle.Effects.Payloads
             _targetSpecificMagnitudeModifiers[target].Add(magnitudeModifier);
         }
 
+        public override List<IEffectOriginator> GetModifyingObjects()
+        {
+            List<IEffectOriginator> modifyingObjects = base.GetModifyingObjects();
+
+            foreach (var kvp in _targetSpecificMagnitudeModifiers)
+            {
+                if (kvp.Value != null)
+                {
+                    foreach (var modifier in kvp.Value)
+                    {
+                        if (modifier.Originator != null && !modifyingObjects.Contains(modifier.Originator))
+                        {
+                            modifyingObjects.Add(modifier.Originator);
+                        }
+                    }
+                }
+            }
+
+            foreach (var modifier in _allTargetMagnitudeModifiers)
+            {
+                if (modifier.Originator != null && !modifyingObjects.Contains(modifier.Originator))
+                {
+                    modifyingObjects.Add(modifier.Originator);
+                }
+            }
+
+            return modifyingObjects;
+        }
+
         public ReadOnlyCollection<MagnitudeModifier> GetTargetSpecificMagnitudeModifiers(IReadOnlyUnit target)
         {
             if (!_targetSpecificMagnitudeModifiers.ContainsKey(target)) return _allTargetMagnitudeModifiers.AsReadOnly();
