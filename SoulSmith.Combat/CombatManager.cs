@@ -277,6 +277,28 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 		return units.AsReadOnly();
     }
 
+	public IReadOnlyUnit GetReadOnlyUnitAcrossFrom(IReadOnlyUnit unit)
+	{
+		if (unit == null) return null;
+		CombatTeam team = GetTeamWithUnit(unit);
+		if (team == null) return null;
+        int unitPositionIndex = team.GetPositionIndexWithUnit(unit);
+		CombatTeam acrossTeam = GetEnemyTeam(team);
+		if (acrossTeam == null) return null;
+		return acrossTeam.GetUnitAtPosition(unitPositionIndex);
+    }
+
+    // Gets any enemy unit that is currently in combat, NOT RANDOM
+    public IReadOnlyUnit GetAnyEnemyReadOnlyUnit(IReadOnlyUnit unit)
+	{
+		if (unit == null) return null;
+		CombatTeam team = GetTeamWithUnit(unit);
+		if (team == null) return null;
+		CombatTeam enemyTeam = GetEnemyTeam(team);
+		if (enemyTeam == null) return null;
+		return enemyTeam.GetAnyUnit();
+    }
+
     //
     // Combat Processing
     //
@@ -569,8 +591,11 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	{
 		LetTeamsModifyPayload(payload);
         ResultBase result = ExecutePayload(payload);
-        _effectQueue.ResolveEffect(payload, result);
-        ReactToEffectResult(result);
+		if (result != null)
+		{
+			_effectQueue.ResolveEffect(payload, result);
+			ReactToEffectResult(result);
+		}
     }
 
 	private void ReactToEffectResult(ResultBase result)
@@ -650,7 +675,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
         }
 
 		CombatTeam targetTeam = GetTeamWithUnit(payload.Target);
-        if (targetTeam == null) throw new ArgumentException("Target team not found for payload execution.");
+		if (targetTeam == null) return null;//throw new ArgumentException("Target team not found for payload execution.");
         ResultBase result = targetTeam.ExecutePayload(payload);
 
         return result;

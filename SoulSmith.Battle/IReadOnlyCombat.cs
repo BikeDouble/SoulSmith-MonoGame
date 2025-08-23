@@ -15,5 +15,7 @@ namespace SoulSmith.Battle
         public IReadOnlyCombatTeam GetEnemyReadOnlyTeam(IReadOnlyUnit unit);
         public ReadOnlyCollection<IReadOnlyUnit> GetAllActiveUnitsAsReadOnly();
         public ReadOnlyCollection<IReadOnlyUnit> GetAllReadOnlyUnits();
+        public IReadOnlyUnit GetReadOnlyUnitAcrossFrom(IReadOnlyUnit unit);
+        public IReadOnlyUnit GetAnyEnemyReadOnlyUnit(IReadOnlyUnit unit);
     }
 }

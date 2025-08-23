@@ -8,7 +8,7 @@
         {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Anger/Innate/ApplyStacksOnTakingHit"
+                "ModifierKey": "Modifiers/SingleEmotion/Anger/Innate/ApplyStacksOnTakingHit"
             }
         }
     ]

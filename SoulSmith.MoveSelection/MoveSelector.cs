@@ -182,7 +182,10 @@ public class MoveSelector : IMoveSelector //TODO rework move selection
 			case MoveTargetingStyle.Enemy:
 				viableTargets = EnemyTeam.GetReadOnlyUnits();
 				return viableTargets;
-			default:
+			case MoveTargetingStyle.Self:
+				viableTargets = new List<IReadOnlyUnit> { GetSender() };
+				return viableTargets;
+            default:
 				viableTargets = new List<IReadOnlyUnit>();
 				return viableTargets;
 		}

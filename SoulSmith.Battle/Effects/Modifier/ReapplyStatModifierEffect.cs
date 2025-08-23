@@ -55,7 +55,7 @@ namespace SoulSmith.Battle.Effects.Modifier
                 currentStatMod.Description,
                 currentStatMod.MergeKey);
 
-            AddModifierPayload payload = new AddModifierPayload(sender, GetTrueTarget(sender, target), modifier, parentEffectResult, this, originator, ImmediateAfterEffects);
+            AddModifierPayload payload = new AddModifierPayload(sender, GetTrueTarget(sender, target, combat), modifier, parentEffectResult, this, originator, ImmediateAfterEffects);
 
             return payload;
         }

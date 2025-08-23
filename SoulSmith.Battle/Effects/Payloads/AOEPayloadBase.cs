@@ -29,7 +29,7 @@ namespace SoulSmith.Battle.Effects.Payloads
             switch (targetStyle)
             {
                 case AOETargetStyle.WholeTeam:
-                    secondaryTargets = combat.GetReadOnlyTeamWithUnit(target).GetReadOnlyUnits().ToList();
+                    secondaryTargets = combat.GetReadOnlyTeamWithUnit(target)?.GetReadOnlyUnits().ToList() ?? new List<IReadOnlyUnit>();
                     secondaryTargets.Remove(target); // Remove the primary target from the secondary targets
                     return secondaryTargets;
                 case AOETargetStyle.WholeCombat:
@@ -37,7 +37,7 @@ namespace SoulSmith.Battle.Effects.Payloads
                     secondaryTargets.Remove(target);
                     return secondaryTargets;
                 case AOETargetStyle.Adjacent:
-                    return combat.GetReadOnlyTeamWithUnit(target).GetAdjacentReadOnlyUnits(target).ToList();
+                    return combat.GetReadOnlyTeamWithUnit(target)?.GetAdjacentReadOnlyUnits(target)?.ToList() ?? new List<IReadOnlyUnit>();
                 default:
                     throw new ArgumentException("Invalid AOETargetStyle provided.");
             }

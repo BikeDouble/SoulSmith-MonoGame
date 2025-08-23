@@ -3,16 +3,14 @@ using SoulSmith.Battle.Modifiers;
 
 namespace SoulSmith.Battle.Effects.Results
 {
-    public class AddModifierResult : ResultBase
+    public class AddModifierResult : ModifierResultBase
     {
         public AddModifierResult(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, bool appliedSuccessfully, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
-            : base(sender, target, parentResult, payload, originator)
+            : base(sender, target, modifier, parentResult, payload, originator)
         {
-            Modifier = modifier ?? throw new ArgumentNullException(nameof(modifier));
             AppliedSuccessfully = appliedSuccessfully;
         }
 
-        public IModifier Modifier { get; }
         public bool AppliedSuccessfully { get; }
     }
 }

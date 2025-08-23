@@ -12,7 +12,7 @@
         {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Anger/Stat/Simmered"
+                "ModifierKey": "Modifiers/SingleEmotion/Anger/Stat/Simmered"
             }
         }
     ]

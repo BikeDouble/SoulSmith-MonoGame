@@ -1,8 +1,10 @@
 ﻿using DynamicExpresso;
 using SoulSmith.Asset;
-using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle.Effects.Payloads;
+using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle.Effects.Visualization.Factory;
+using SoulSmith.Battle.Modifiers.Payload;
+using SoulSmith.Battle.Modifiers.Stat;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -11,15 +13,21 @@ namespace SoulSmith.Battle.Effects.Damage
     [JsonConverter(typeof(FormulaHitDamageEffectJsonConverter))]
     public class FormulaDamageEffect : VisualizedEffectBase, IEffect 
     {
-        private Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double> _parsedFormula;
+        private Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, IEffectOriginator, ResultBase, double> _parsedFormula;
         private DamageType _damageType;
         private AOETargetStyle? _aOEStyle; 
         private float _fractionOfDamageToSecondaryTargets;
 
         public FormulaDamageEffect(string formula, DamageType damageType, AOETargetStyle? aOEStyle, float fractionOfDamageToSecondaryTargets, TargetingStyle targetingStyle, EffectVisualizationFactory visualizationFactory, float additionalDelay, IEffect[] immediateAfterEffects) : base(targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects)
         {
-            Interpreter interpreter = new Interpreter();
-            _parsedFormula = interpreter.ParseAsDelegate<Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, double>>(formula, "sender", "target", "combat");
+            Interpreter interpreter = new Interpreter().Reference(typeof(IReadOnlyStatModifier)).Reference(typeof(ModifierResultBase)).Reference(typeof(IReadOnlyPayloadModifier));
+            _parsedFormula = interpreter.ParseAsDelegate<Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, IEffectOriginator, ResultBase, double>>(formula, "sender", "target", "combat", "originator", "parentResult");
+
+            if (_parsedFormula == null)
+            {
+                throw new ArgumentException("The formula provided is not valid or could not be parsed.");
+            }
+
             _damageType = damageType;
             _aOEStyle = aOEStyle;
             _fractionOfDamageToSecondaryTargets = fractionOfDamageToSecondaryTargets;
@@ -27,15 +35,15 @@ namespace SoulSmith.Battle.Effects.Damage
 
         public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null)
         { 
-            double damage = _parsedFormula(sender, target, combat);
+            double damage = _parsedFormula(sender, target, combat, originator, parentEffectResult);
 
             if (!_aOEStyle.HasValue)
             {
-                return new DamagePayload(sender, GetTrueTarget(sender, target), (int)damage, _damageType, parentEffectResult, this, originator, ImmediateAfterEffects);
+                return new DamagePayload(sender, GetTrueTarget(sender, target, combat), (int)damage, _damageType, parentEffectResult, this, originator, ImmediateAfterEffects);
             }
             else
             {
-                IReadOnlyUnit trueTarget = GetTrueTarget(sender, target);
+                IReadOnlyUnit trueTarget = GetTrueTarget(sender, target, combat);
                 ICollection<IReadOnlyUnit> secondaryTargets = AOEPayloadBase.GetSecondaryTargets(trueTarget, combat, _aOEStyle.Value);
                 return new AOEDamagePayload(sender, trueTarget, secondaryTargets, (int)damage, _damageType, _fractionOfDamageToSecondaryTargets, parentEffectResult, this, originator, ImmediateAfterEffects);
             }

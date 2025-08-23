@@ -14,7 +14,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
     {
         OnTakingHitDamage,
         OnGivingHitDamage,
-        OnHostRemovesOtherModifierFromSelf
+        OnOtherModifierRemovesItselfFromHost
     }
 
     public class EffectModifierTriggerStyleJsonConverter : JsonConverter<EffectModifierTriggerStyle>
@@ -26,7 +26,8 @@ namespace SoulSmith.Battle.Modifiers.Effect
             {
                 "ontakinghitdamage" => EffectModifierTriggerStyle.OnTakingHitDamage,
                 "ongivinghitdamage" => EffectModifierTriggerStyle.OnGivingHitDamage,
-                "onhostremovesothermodifierfromself" => EffectModifierTriggerStyle.OnHostRemovesOtherModifierFromSelf,
+                "onhostremovesothermodifierfromself" => EffectModifierTriggerStyle.OnOtherModifierRemovesItselfFromHost,
+                "onothermodifierremovesitselffromhost" => EffectModifierTriggerStyle.OnOtherModifierRemovesItselfFromHost,
                 _ => throw new JsonException($"Unknown EffectModifierTriggerStyle value: {value}")
             };
         }

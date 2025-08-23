@@ -8,13 +8,19 @@
         {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Anger/Innate/ApplyStacksOnTakingHit"
+                "ModifierKey": "Modifiers/SingleEmotion/Anger/Innate/ApplyStacksOnTakingHit"
             }
         },
         {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Joy/Effect/Pop"
+                "ModifierKey": "Modifiers/SingleEmotion/Joy/Effect/Pop"
+            }
+        },
+        {
+            "Type": "Modifier",
+            "Effect": {
+                "ModifierKey": "Modifiers/DoubleEmotion/JoyAnger/Effect/InnateShockwave"
             }
         }
     ]

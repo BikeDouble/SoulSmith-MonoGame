@@ -1,0 +1,32 @@
+{
+    "Type": "EffectOnResultReaction",
+    "Modifier": {
+        "Effect": {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "(((parentResult as ModifierResultBase)?.Modifier as IReadOnlyPayloadModifier)?.ModAmount ?? 0) * 1",
+                "DamageType": "essence",
+                "TargetingStyle": "anyenemy",
+                "AOEStyle": "wholeteam",
+                "VisualizationKey": "EffectVisualizations/DoubleEmotion/JoyAnger/InnateShockwave"
+            }
+        },
+        "EffectPriority": "reaction",
+        "TriggerStyle": "onhostremovesothermodifierfromself",
+        "ReactionTargetModifierMergeKey": "AngerInnateStack",
+        "StatusText": "100",
+        "Duration": -1,
+        "DurationStyle": "permanent",
+        "ModifierAlignment": "buff",
+        "IsModifierVisible": false,
+        "ModifierIconKey": "Textures/SolidColor/Black",
+        "FriendlyName": "",
+        "Description": {
+            "LocalizationKey": "",
+            "LocalizationVariables": {
+                "Percent": 100,
+                "Duration": 1
+            }
+        }
+    }
+}

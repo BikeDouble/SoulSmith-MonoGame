@@ -26,7 +26,8 @@
         "DoubleEmotion": {
             "JoyAnger": {
                 "DirectMissile": "EffectVisualizations/DoubleEmotion/JoyAnger/joyAngerDirectMissile.json",
-                "ShockwaveCircle": "EffectVisualizations/DoubleEmotion/JoyAnger/shockwaveCircle.json"
+                "ShockwaveCircle": "EffectVisualizations/DoubleEmotion/JoyAnger/shockwaveCircle.json",
+                "InnateShockwave": "EffectVisualizations/DoubleEmotion/JoyAnger/innateShockwave.json"
             }
         }
     },
@@ -45,22 +46,31 @@
         }
     },
     "Modifiers": {
-        "Anger": {
-            "Effect": {
-                "RampageRefund": "Modifiers/Anger/Effect/rampageRefund.json"
+        "SingleEmotion": {
+            "Anger": {
+                "Effect": {
+                    "RampageRefund": "Modifiers/SingleEmotion/Anger/Effect/rampageRefund.json"
+                },
+                "Innate": {
+                    "ApplyStacksOnTakingHit": "Modifiers/SingleEmotion/Anger/Innate/angerApplyStacksOnTakingHit.json",
+                    "Stack": "Modifiers/SingleEmotion/Anger/Innate/angerInnateModifierStack.json"
+                },
+                "Stat": {
+                    "Simmered": "Modifiers/SingleEmotion/Anger/Stat/simmered.json"
+                }
             },
-            "Innate": {
-                "ApplyStacksOnTakingHit": "Modifiers/Anger/Innate/angerApplyStacksOnTakingHit.json",
-                "Stack": "Modifiers/Anger/Innate/angerInnateModifierStack.json"
-            },
-            "Stat": {
-                "Simmered": "Modifiers/Anger/Stat/simmered.json"
+            "Joy": {
+                "Effect": {
+                    "CheeredOn": "Modifiers/SingleEmotion/Joy/Effect/cheeredOn.json",
+                    "Pop": "Modifiers/SingleEmotion/Joy/Effect/joyPop.json"
+                }
             }
         },
-        "Joy": {
-            "Effect": {
-                "CheeredOn": "Modifiers/Joy/Effect/cheeredOn.json",
-                "Pop": "Modifiers/Joy/Effect/joyPop.json"
+        "DoubleEmotion": {
+            "JoyAnger": {
+                "Effect": {
+                    "InnateShockwave": "Modifiers/DoubleEmotion/JoyAnger/Effect/innateShockwave.json"
+                }
             }
         },
         "Typeless": {

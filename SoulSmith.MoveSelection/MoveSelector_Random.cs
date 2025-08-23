@@ -13,33 +13,49 @@ public partial class MoveSelector_Random : MoveSelector
 	public override void SelectMoveInput(IReadOnlyCombatTeam thisTeam, IReadOnlyCombatTeam enemyTeam)
 	{
 		base.SelectMoveInput(thisTeam, enemyTeam);
-		SelectSender();
+		_triedSender.Clear();
+		_triedMoves.Clear();
+        SelectSender();
 	}
-	
-	public override void SelectSender()
+
+	private List<IReadOnlyUnit> _triedSender = new List<IReadOnlyUnit>();
+
+    public override void SelectSender()
 	{
-		ReadOnlyCollection<IReadOnlyUnit> activeUnits = Team.GetActiveUnitsAsReadOnly();
-		if (activeUnits.Count == 0)
+		List<IReadOnlyUnit> activeUnits = Team.GetActiveUnitsAsReadOnly();
+		foreach (IReadOnlyUnit triedSender in _triedSender) activeUnits.Remove(triedSender);
+
+        if (activeUnits.Count == 0)
 		{
 			PassTurn();
-			return;
+            _triedSender.Clear();
+            _triedMoves.Clear();
+            return;
 		}
 		int selectedIndex = Rand.RandInt(activeUnits.Count);
-		ReceiveSender(activeUnits[selectedIndex]);
+		IReadOnlyUnit selectedUnit = activeUnits[selectedIndex];
+        ReceiveSender(selectedUnit);
+		_triedSender.Add(selectedUnit);
         SelectMove();
     }
-	
-	public override void SelectMove()
+
+	private List<Move> _triedMoves = new List<Move>();
+
+    public override void SelectMove()
 	{
 		IReadOnlyUnit userUnit = GetSender();
-        ReadOnlyCollection<Move> moveSet = userUnit.MoveSet;
+        List<Move> moveSet = new List<Move>(userUnit.MoveSet);
+		foreach (Move triedMove in _triedMoves) moveSet.Remove(triedMove);
         if (moveSet.Count == 0)
         {
-            PassTurn();
+            _triedMoves.Clear();
+			SelectSender();
 			return;
         }
         int selectedIndex = Rand.RandInt(moveSet.Count);
-		ReceiveMove(moveSet[selectedIndex]);
+		Move selectedMove = moveSet[selectedIndex];
+		_triedMoves.Add(selectedMove);
+        ReceiveMove(selectedMove);
         SelectTarget();
     }
 	
@@ -48,11 +64,13 @@ public partial class MoveSelector_Random : MoveSelector
 		List<IReadOnlyUnit> viableTargets = GetViableTargets();
         if (viableTargets.Count == 0)
         {
-            PassTurn();
+			SelectMove();
 			return;
         }
         int selectedIndex = Rand.RandInt(viableTargets.Count);
 		ReceiveTarget(viableTargets[selectedIndex]);
         ReturnMoveInputToCombatManager();
+        _triedSender.Clear();
+        _triedMoves.Clear();
     }
 }

@@ -17,7 +17,7 @@ namespace SoulSmith.Battle.Effects.Damage
         {
             int rawDecay = _decayDamage;
 
-            PayloadBase request = new DecayPayload(sender, GetTrueTarget(sender, target), rawDecay, parentEffectResult, this, originator, ImmediateAfterEffects);
+            PayloadBase request = new DecayPayload(sender, GetTrueTarget(sender, target, combat), rawDecay, parentEffectResult, this, originator, ImmediateAfterEffects);
             return request;
         }
     }

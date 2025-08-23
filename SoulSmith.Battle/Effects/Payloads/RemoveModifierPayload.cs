@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Effects.Payloads
 {
-    public class RemoveModifierPayload : PayloadBase
+    public class RemoveModifierPayload : ModifierPayloadBase
     {
-        public RemoveModifierPayload(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, ResultBase parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
+        public RemoveModifierPayload(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, ResultBase parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, modifier, parentResult, generatingEffect, originator, immediateAfterEffects)
         {
-            Modifier = modifier;
         }
 
-        public IModifier Modifier { get; }
     }
 }

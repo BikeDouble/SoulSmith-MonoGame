@@ -5,14 +5,14 @@
     "Description": {
         "LocalizationKey": "Move/HitDamage/AOE/Team/Attack",
         "LocalizationVariables": {
-            "AttackPercent": 30
+            "AttackPercent": 40
         }
     },
     "Effects": [   
         {
             "Type": "FormulaDamage",
             "Effect": {
-                "Formula": "sender.Attack * 0.3",
+                "Formula": "sender.Attack * 0.4",
                 "DamageType": "hit",
                 "AOEStyle": "wholeteam",
                 "VisualizationKey": "EffectVisualizations/SingleEmotion/Anger/ShockwaveCircle"  

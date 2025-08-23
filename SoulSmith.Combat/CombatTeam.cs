@@ -379,7 +379,7 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 	}
 	
 	//Returns all units that can still move this turn
-	public ReadOnlyCollection<Unit> GetActiveUnits()
+	public List<Unit> GetActiveUnits()
 	{
 		List<Unit> activeUnits = new List<Unit>();
 		foreach (TeamPosition position in _teamPositions)
@@ -389,11 +389,11 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 				activeUnits.Add(position.Unit);
 			}
 		}	
-		return activeUnits.AsReadOnly();
+		return activeUnits;
 	}
 
     //Returns all units that can still move this turn as ReadOnlyUnit
-    public ReadOnlyCollection<IReadOnlyUnit> GetActiveUnitsAsReadOnly()
+    public List<IReadOnlyUnit> GetActiveUnitsAsReadOnly()
     {
         List<IReadOnlyUnit> activeUnits = new List<IReadOnlyUnit>();
         foreach (TeamPosition position in _teamPositions)
@@ -403,11 +403,11 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
                 activeUnits.Add(position.Unit);
             }
         }
-        return activeUnits.AsReadOnly();
+        return activeUnits;
     }
 
     // Returns all units adjacent to the target unit
-    public ReadOnlyCollection<IReadOnlyUnit> GetAdjacentReadOnlyUnits(IReadOnlyUnit target)
+    public List<IReadOnlyUnit> GetAdjacentReadOnlyUnits(IReadOnlyUnit target)
     {
 		List<IReadOnlyUnit> adjacentUnits = new List<IReadOnlyUnit>();
 
@@ -425,7 +425,7 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 				break;
         }
 
-		return adjacentUnits.AsReadOnly();
+		return adjacentUnits;
     }
 
     //Returns all units that can still move this turn as UnitStats
@@ -469,6 +469,29 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
             }
         }
         return activeUnits;
+    }
+
+	public Unit GetUnitAtPosition(int positionIndex)
+	{
+		if (positionIndex < 0 || positionIndex >= _teamPositions.Count)
+		{
+			return null; // Invalid position index
+        }
+		TeamPosition position = _teamPositions[positionIndex];
+		return position.ContainsUnit ? position.Unit : null;
+    }
+
+	public Unit GetAnyUnit()
+	{
+		foreach (TeamPosition position in _teamPositions)
+		{
+			if (position.ContainsUnit)
+			{
+				return position.Unit;
+			}
+		}
+
+		return null; // No unit found
     }
 
     public List<Units.UnitStats> GetUnitStats()

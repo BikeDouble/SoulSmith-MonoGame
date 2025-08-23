@@ -12,7 +12,7 @@
         {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Anger/Effect/RampageRefund",
+                "ModifierKey": "Modifiers/SingleEmotion/Anger/Effect/RampageRefund",
                 "TargetingStyle": "self"
             }
         },

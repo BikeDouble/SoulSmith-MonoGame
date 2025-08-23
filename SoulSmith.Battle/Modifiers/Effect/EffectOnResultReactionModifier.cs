@@ -40,6 +40,11 @@ namespace SoulSmith.Battle.Modifiers.Effect
         {
             base.ReactToPayloadResult(result);
 
+            CheckAndEnqueue(result);
+        }
+
+        public void CheckAndEnqueue(ResultBase result)
+        {
             switch (_trigger)
             {
                 case EffectModifierTriggerStyle.OnGivingHitDamage:
@@ -77,22 +82,21 @@ namespace SoulSmith.Battle.Modifiers.Effect
                         if (damageResult2 != null) CheckAndEnqueueOnTakingHitDamageResult(damageResult2);
                     }
                     break;
-                case EffectModifierTriggerStyle.OnHostRemovesOtherModifierFromSelf:
+                case EffectModifierTriggerStyle.OnOtherModifierRemovesItselfFromHost:
                     if (result is RemoveModifierResult removeModifierResult)
                     {
-                        if (removeModifierResult.Modifier.MergeKey == _desiredModifierMergeKey)
-                        {
-                            if (removeModifierResult.Modifier.Host == this.Host)
-                            {
-                                if (removeModifierResult.Sender == this.Host)
-                                {
-                                    TriggerEffect(result.Target, result);
-                                }
-                            }
-                        }
+                        CheckAndEnqueueOnOtherModifierRemovesItselfFromHost(removeModifierResult);
                     }
                     break;
             }
+        }
+
+        private void CheckAndEnqueueOnOtherModifierRemovesItselfFromHost(RemoveModifierResult removeModifierResult)
+        {
+            if (removeModifierResult.Modifier.MergeKey != _desiredModifierMergeKey) return;
+            if (removeModifierResult.Modifier.Host != this.Host) return;
+            if (removeModifierResult.Originator != removeModifierResult.Modifier) return; // Ensure the originator is the modifier itself
+            TriggerEffect(removeModifierResult.Target, removeModifierResult);
         }
 
         private void CheckAndEnqueueOnTakingHitDamageResult(DamageResult damageResult)

@@ -10,8 +10,8 @@ namespace SoulSmith.Battle
     public interface IReadOnlyCombatTeam
     {
         public List<IReadOnlyUnit> GetReadOnlyUnits();
-        public ReadOnlyCollection<IReadOnlyUnit> GetActiveUnitsAsReadOnly();
-        public ReadOnlyCollection<IReadOnlyUnit> GetAdjacentReadOnlyUnits(IReadOnlyUnit target);
+        public List<IReadOnlyUnit> GetActiveUnitsAsReadOnly();
+        public List<IReadOnlyUnit> GetAdjacentReadOnlyUnits(IReadOnlyUnit target);
         public bool HasActiveUnit();
     }
 }

@@ -25,8 +25,8 @@ public class EffectQueue : CanvasObject
             Priority.EmotionCombatEntryEffect,
             Priority.ModifierRemovalImmediate,
             Priority.ImmediateAfterEffect,
-            Priority.Reaction,
             Priority.Move,
+            Priority.Reaction,
             Priority.ModifierRemovalDelayed,
         });
 
@@ -135,6 +135,11 @@ public class EffectQueue : CanvasObject
                 {
                     DequeueAndProcess(queue);
                     return true;
+                }
+                else if (queue.Count > 0)
+                {
+                    // Next effect in this queue is not ready, so we cannot process any lower priority queues
+                    return false;
                 }
             }
         }

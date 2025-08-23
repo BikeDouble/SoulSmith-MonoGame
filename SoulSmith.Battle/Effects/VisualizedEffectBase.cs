@@ -16,12 +16,14 @@ namespace SoulSmith.Battle.Effects
             TargetingStyle = targetingStyle;
         }
 
-        public IReadOnlyUnit GetTrueTarget(IReadOnlyUnit sender, IReadOnlyUnit target)
+        public IReadOnlyUnit GetTrueTarget(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat)
         {
             return TargetingStyle switch
             {
                 TargetingStyle.Sender => sender,
                 TargetingStyle.Target => target,
+                TargetingStyle.AcrossFromSender => combat.GetReadOnlyUnitAcrossFrom(sender),
+                TargetingStyle.AnyEnemy => combat.GetAnyEnemyReadOnlyUnit(sender),
                 _ => throw new InvalidOperationException($"Unsupported targeting style: {TargetingStyle}")
             };
         }

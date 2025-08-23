@@ -148,7 +148,7 @@ namespace SoulSmith.Battle.Modifiers.Effect
             if ((modifierIconKey == null) && (isModifierVisible.Value)) throw new JsonException("Expected 'ModifierIconKey' property to be present.");
             if (triggerStyle == null) throw new JsonException("Expected 'TriggerStyle' property to be present.");
             if (effectPriority == null) throw new JsonException("Expected 'EffectPriority' property to be present.");
-            if ((reactionTargetModifierMergeKey == null) && (triggerStyle == EffectModifierTriggerStyle.OnHostRemovesOtherModifierFromSelf)) throw new JsonException("Expected 'ReactionTargetModifierMergeKey' property to be present.");
+            if ((reactionTargetModifierMergeKey == null) && (triggerStyle == EffectModifierTriggerStyle.OnOtherModifierRemovesItselfFromHost)) throw new JsonException("Expected 'ReactionTargetModifierMergeKey' property to be present.");
 
             return new EffectOnResultReactionModifierFactory(effect, effectPriority.Value, triggerStyle.Value, reactionTargetModifierMergeKey, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description, statusText);
         }

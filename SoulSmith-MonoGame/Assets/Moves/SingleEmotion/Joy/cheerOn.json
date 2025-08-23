@@ -13,7 +13,7 @@
         {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Joy/Effect/CheeredOn"
+                "ModifierKey": "Modifiers/SingleEmotion/Joy/Effect/CheeredOn"
             }
         }
     ]

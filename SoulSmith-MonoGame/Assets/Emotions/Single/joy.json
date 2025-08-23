@@ -8,7 +8,7 @@
         {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Joy/Effect/Pop"
+                "ModifierKey": "Modifiers/SingleEmotion/Joy/Effect/Pop"
             }
         }
     ]

@@ -18,7 +18,7 @@ public class MoveSelector_Console : MoveSelector
 	
 	public override void SelectSender()
 	{
-		ReadOnlyCollection<IReadOnlyUnit> activeUnits = Team.GetActiveUnitsAsReadOnly();
+		List<IReadOnlyUnit> activeUnits = Team.GetActiveUnitsAsReadOnly();
 		if (activeUnits.Count == 0)
 		{
 			PassTurn();
@@ -110,10 +110,10 @@ public class MoveSelector_Console : MoveSelector
         ReturnMoveInputToCombatManager();
     }
 
-	private static void WriteUnits(ReadOnlyCollection<IReadOnlyUnit> unitList)
+	private static void WriteUnits(ICollection<IReadOnlyUnit> unitList)
 	{
 		int i = 0;
-        foreach (Unit unit in unitList)
+        foreach (IReadOnlyUnit unit in unitList)
         {
 
             Console.WriteLine(

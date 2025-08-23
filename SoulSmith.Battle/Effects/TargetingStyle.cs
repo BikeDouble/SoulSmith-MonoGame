@@ -13,6 +13,8 @@ namespace SoulSmith.Battle.Effects
     {
         Target,
         Sender,
+        AcrossFromSender,
+        AnyEnemy,
         Special
     }
 
@@ -32,6 +34,9 @@ namespace SoulSmith.Battle.Effects
                 "target" => TargetingStyle.Target,
                 "sender" => TargetingStyle.Sender,
                 "self" => TargetingStyle.Sender,
+                "acrossfromsender" => TargetingStyle.AcrossFromSender,
+                "across" => TargetingStyle.AcrossFromSender,
+                "anyenemy" => TargetingStyle.AnyEnemy,
                 _ => throw new JsonException($"Unknown {nameof(TargetingStyle)} value: {value}")
             };
         }
@@ -42,6 +47,9 @@ namespace SoulSmith.Battle.Effects
             {
                 TargetingStyle.Target => "target",
                 TargetingStyle.Sender => "sender",
+                TargetingStyle.AcrossFromSender => "acrossfromsender",
+                TargetingStyle.AnyEnemy => "anyenemy",
+                TargetingStyle.Special => "special",
                 _ => throw new JsonException($"Unknown {nameof(TargetingStyle)} value: {value}")
             };
 

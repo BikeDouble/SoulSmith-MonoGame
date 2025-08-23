@@ -4,7 +4,7 @@
         "Effect": {
             "Type": "Modifier",
             "Effect": {
-                "ModifierKey": "Modifiers/Anger/Innate/Stack",
+                "ModifierKey": "Modifiers/SingleEmotion/Anger/Innate/Stack",
                 "TargetingStyle": "self"
             }
         },
