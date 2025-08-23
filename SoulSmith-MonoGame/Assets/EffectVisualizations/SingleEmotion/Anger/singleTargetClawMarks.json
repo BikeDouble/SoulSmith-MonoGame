@@ -1,0 +1,14 @@
+{
+    "Type": "SingleTargetClawMarks",
+    "Visualization": {
+        "Sprite": "Textures/Effects/Particles/ClawMarks",
+        "Size": {
+            "X": 200,
+            "Y": 200
+        },
+        "Color": [ 171, 0, 0, 255 ],
+        "SlashTime": 0.2,
+        "LingerTime": 0.5,
+        "FadeTime": 0.3
+    }
+}

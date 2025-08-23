@@ -16,7 +16,8 @@
         "SingleEmotion": {
             "Anger": {
                 "DirectMissile": "EffectVisualizations/SingleEmotion/Anger/angerDirectMissile.json",
-                "ShockwaveCircle": "EffectVisualizations/SingleEmotion/Anger/shockwaveCircle.json"
+                "ShockwaveCircle": "EffectVisualizations/SingleEmotion/Anger/shockwaveCircle.json",
+                "SingleTargetClawMarks": "EffectVisualizations/SingleEmotion/Anger/singleTargetClawMarks.json"
             },
             "Joy": {
                 "DirectMissile": "EffectVisualizations/SingleEmotion/Joy/joyDirectMissile.json",
@@ -111,7 +112,8 @@
         "Effects": {
             "Particles": {
                 "JoyPopStar": "Textures/Effects/Particles/joyPopStar.png",
-                "ShockwaveCircle": "Textures/Effects/Particles/shockwaveCircle.png"
+                "ShockwaveCircle": "Textures/Effects/Particles/shockwaveCircle.png",
+                "ClawMarks": "Textures/Effects/Particles/clawMarks.png"
             }
         },
         "SolidColor": {
