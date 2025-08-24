@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SoulSmith.Camp\SoulSmith.Camp.csproj" />
-    <ProjectReference Include="..\SoulSmith.Combat\SoulSmith.Combat.csproj" />
+    <ProjectReference Include="..\SoulSmith.Camp\SoulSmith.Camps.csproj" />
+    <ProjectReference Include="..\SoulSmith.Combat\SoulSmith.Combats.csproj" />
     <ProjectReference Include="..\SoulSmith.Core\SoulSmith.Core.csproj" />
     <ProjectReference Include="..\SoulSmith.MoveSelection\SoulSmith.MoveSelection.csproj" />
     <ProjectReference Include="..\SoulSmith.Object\SoulSmith.Object.csproj" />

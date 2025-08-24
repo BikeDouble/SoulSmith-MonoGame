@@ -7,7 +7,6 @@ using SoulSmith.Core;
 using SoulSmith.Asset;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Drawing.Text;
-using SoulSmith.Emotion;
 using SoulSmith.Drawing.Zoned;
 
 namespace SoulSmith.Units;
@@ -73,7 +72,7 @@ public class UnitUIMoveButton : ButtonObject_GrowOnHover
 
 	private void SetEmotionColor(EmotionTag.EmotionTag emotionTag)
 	{
-		Emotion.Emotion emotion = Emotion.Emotion.GetEmotion(emotionTag);
+        Battle.Emotions.Emotion emotion = Battle.Emotions.Emotion.GetEmotion(emotionTag);
 
 		if (emotion == null) _hoverColor = Color.Gray;
         else _hoverColor = emotion.Color;

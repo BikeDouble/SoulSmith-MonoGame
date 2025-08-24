@@ -16,7 +16,7 @@ using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
 
 namespace SoulSmith.Combat;
-public class CombatManager : CanvasObject, IReadOnlyCombat
+public class Combat : CanvasObject, IReadOnlyCombat
 {
 	//This team always goes first in the round
 	private const int TEAMGOESFIRSTINDEX = 1;
@@ -38,7 +38,7 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
 	private bool _awaitingMoveInput;
 	private List<Unit> _retreatingUnits = new List<Unit>();
 
-    public CombatManager(IMoveSelector playerMoveSelector, IMoveSelector enemyMoveSelector)
+    public Combat(IMoveSelector playerMoveSelector, IMoveSelector enemyMoveSelector)
 	{
         Initialize(playerMoveSelector, enemyMoveSelector);
 	}

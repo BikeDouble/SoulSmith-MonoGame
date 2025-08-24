@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SoulSmith.Emotion
+namespace SoulSmith.Battle.Emotions
 {
     public class EmotionLoader : IBasicAssetLoader
     {

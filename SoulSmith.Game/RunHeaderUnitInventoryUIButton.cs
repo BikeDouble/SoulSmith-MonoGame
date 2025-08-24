@@ -6,12 +6,12 @@ using SoulSmith.Units;
 
 namespace SoulSmith.Game
 {
-    public class GameHeaderUnitInventoryUIButton : ButtonObject
+    public class RunHeaderUnitInventoryUIButton : ButtonObject
     {
         public static string UNITINVENTORYBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/Moves/MoveButton";
         public static string UNITINVENTORYBUTTONHOVEREDRESOURCEKEY = "ZonedResources/UI/Units/Moves/MoveButton";
 
-        public GameHeaderUnitInventoryUIButton(Position position)
+        public RunHeaderUnitInventoryUIButton(Position position)
             : base(
                   DrawHelpers.GetDrawableResourceInstance(UNITINVENTORYBUTTONIDLERESOURCEKEY) as ZonedDrawableResourceInstance, 
                   DrawHelpers.GetDrawableResourceInstance(UNITINVENTORYBUTTONHOVEREDRESOURCEKEY) as ZonedDrawableResourceInstance, 

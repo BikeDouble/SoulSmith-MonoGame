@@ -111,7 +111,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 
 	private void EnqueueEmotionCombatEntryEffects()
 	{
-		Emotion.Emotion emotion = Emotion.Emotion.GetEmotion(_emotionTag);
+        Battle.Emotions.Emotion emotion = Battle.Emotions.Emotion.GetEmotion(_emotionTag);
 
 		if (emotion == null) return;
 		if (emotion.BattleEntryEffects == null) return;

@@ -14,18 +14,18 @@ using SoulSmith.Battle;
 using SoulSmith.Drawing;
 
 namespace SoulSmith.Game;
-public partial class GameManager : CanvasObject
+public partial class Run : CanvasObject
 {
 
 	public const string UIFONTNAME = "uIFont";
 
 	//Children
-	private CombatManager _combatManager;
-	private CampManager _campManager;
+	private Combat.Combat _combatManager;
+	private Camp.Camp _campManager;
 	private UnitInventory _unitInventory;
-	private GameHeaderUI _headerUI;
+	private RunHeaderUI _headerUI;
 
-	public GameManager() 
+	public Run() 
 	{
 		Initialize();
     }
@@ -40,7 +40,7 @@ public partial class GameManager : CanvasObject
 
 	private void InitializeHeaderUI()
 	{
-		_headerUI = new GameHeaderUI();
+		_headerUI = new RunHeaderUI();
 		AddChild(_headerUI);
 		_headerUI.UnitInventoryButtonPressedEventHandler += OnUnitInventoryButtonPressed;
 		_headerUI.UnitListUIClickedOutsideEventHandler += OnUnitListUIClickedOutside;
@@ -49,13 +49,13 @@ public partial class GameManager : CanvasObject
 
 	private void InitializeCamp()
 	{
-		_campManager = new CampManager();
+        _campManager = new Camp.Camp();
 		AddChild(_campManager);
 	}
 
 	private void InitializeCombat()
 	{
-		_combatManager = new CombatManager(new MoveSelector_PlayerInput(), new MoveSelector_PlayerInput());
+        _combatManager = new Combat.Combat(new MoveSelector_PlayerInput(), new MoveSelector_PlayerInput());
 		AddChild(_combatManager);
 
 		_combatManager.OfferUnitToInventoryEventHandler += OnOfferUnitToInventory;

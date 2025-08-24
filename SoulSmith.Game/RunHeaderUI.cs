@@ -6,7 +6,7 @@ using SoulSmith.Input;
 using SoulSmith.Object.Canvas;
 
 namespace SoulSmith.Game;
-public class GameHeaderUI : CanvasObject
+public class RunHeaderUI : CanvasObject
 {
     public const string BACKBOARDRESOURCEKEY = "Textures/UI/Units/List/EntryBackboardIdle";
     public const int HEIGHT = 120;
@@ -15,14 +15,14 @@ public class GameHeaderUI : CanvasObject
 
     // Children
     private CanvasObject _backboard;
-    private GameHeaderUnitInventoryUIButton _unitInventoryButton;
+    private RunHeaderUnitInventoryUIButton _unitInventoryButton;
     private UnitListUI _unitListUI;
 
     public const int INVENTORYBUTTONPOSITIONX = 1000;
     public const int INVENTORYBUTTONPOSITIONY = 50;
     public const float INVENTORYBUTTONSCALE = 0.2f;
 
-    public GameHeaderUI() 
+    public RunHeaderUI() 
     {
         Initialize();
     }
@@ -44,7 +44,7 @@ public class GameHeaderUI : CanvasObject
 
     private void InitializeUnitInventoryButton()
     {
-        _unitInventoryButton = new GameHeaderUnitInventoryUIButton(new Position(INVENTORYBUTTONPOSITIONX, INVENTORYBUTTONPOSITIONY, INVENTORYBUTTONSCALE, INVENTORYBUTTONSCALE));
+        _unitInventoryButton = new RunHeaderUnitInventoryUIButton(new Position(INVENTORYBUTTONPOSITIONX, INVENTORYBUTTONPOSITIONY, INVENTORYBUTTONSCALE, INVENTORYBUTTONSCALE));
         AddChild(_unitInventoryButton);
         _unitInventoryButton.ButtonPressedEventHandler += OnUnitInventoryButtonPressed;
     }

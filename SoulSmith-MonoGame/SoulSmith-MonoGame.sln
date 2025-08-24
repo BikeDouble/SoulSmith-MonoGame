@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Object", "..\Soul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Input", "..\SoulSmith.Input\SoulSmith.Input.csproj", "{7EF647A0-9095-48B8-BEAA-2DAADADE8E65}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.EmotionTag", "..\SoulSmith.EmotionTag\SoulSmith.EmotionTag.csproj", "{0631697D-C103-4F9C-95EC-0CAD3AF9796C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.EmotionTags", "..\SoulSmith.EmotionTag\SoulSmith.EmotionTags.csproj", "{0631697D-C103-4F9C-95EC-0CAD3AF9796C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Vector", "..\SoulSmith.Vector\SoulSmith.Vector.csproj", "{E2626811-6489-4D74-9C77-8BF7E064A941}"
 EndProject
@@ -29,15 +29,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Collections", "..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.MoveSelection", "..\SoulSmith.MoveSelection\SoulSmith.MoveSelection.csproj", "{19FAFF82-00AD-4802-A5BC-88D446EABE65}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Combat", "..\SoulSmith.Combat\SoulSmith.Combat.csproj", "{B1C39004-658A-473E-ACE0-8A00D667ED77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Combats", "..\SoulSmith.Combat\SoulSmith.Combats.csproj", "{B1C39004-658A-473E-ACE0-8A00D667ED77}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Templates", "..\SoulSmith.Templates\SoulSmith.Templates.csproj", "{DB94676E-F423-4DB7-B160-EFBEEC940685}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Camp", "..\SoulSmith.Camp\SoulSmith.Camp.csproj", "{AAE23943-0F8F-49AB-A14B-C56BEF148147}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Camps", "..\SoulSmith.Camp\SoulSmith.Camps.csproj", "{AAE23943-0F8F-49AB-A14B-C56BEF148147}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Emotion", "..\SoulSmith.Emotion\SoulSmith.Emotion.csproj", "{0313C8F3-C2A8-401C-8FC9-D0568FFCBEB6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Game", "..\SoulSmith.Game\SoulSmith.Game.csproj", "{37CA0A9B-3E58-4609-894E-FEC4AA9267C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Runs", "..\SoulSmith.Game\SoulSmith.Runs.csproj", "{37CA0A9B-3E58-4609-894E-FEC4AA9267C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulSmith.Battle", "..\SoulSmith.Battle\SoulSmith.Battle.csproj", "{DB85DCEA-D212-4933-BC54-FBF683447596}"
 EndProject
@@ -113,10 +111,6 @@ Global
 		{AAE23943-0F8F-49AB-A14B-C56BEF148147}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAE23943-0F8F-49AB-A14B-C56BEF148147}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAE23943-0F8F-49AB-A14B-C56BEF148147}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0313C8F3-C2A8-401C-8FC9-D0568FFCBEB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0313C8F3-C2A8-401C-8FC9-D0568FFCBEB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0313C8F3-C2A8-401C-8FC9-D0568FFCBEB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0313C8F3-C2A8-401C-8FC9-D0568FFCBEB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{37CA0A9B-3E58-4609-894E-FEC4AA9267C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{37CA0A9B-3E58-4609-894E-FEC4AA9267C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37CA0A9B-3E58-4609-894E-FEC4AA9267C6}.Release|Any CPU.ActiveCfg = Release|Any CPU

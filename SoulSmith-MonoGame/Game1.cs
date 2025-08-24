@@ -15,7 +15,7 @@ using SoulSmith.Templates;
 using SoulSmith.Battle.Moves;
 using SoulSmith.Drawing.Animation;
 using SoulSmith.Drawing.Text;
-using SoulSmith.Emotion;
+using SoulSmith.Battle.Emotions;
 using SoulSmith.Battle.Effects.Visualization.Factory;
 using SoulSmith.Battle.Modifiers;
 using SoulSmith.Drawing.Textures;
@@ -57,7 +57,7 @@ namespace SoulSmith_MonoGame
         {
             SetTrace("debug.log");
             InitializeResources(Content, GraphicsDevice);
-            _root = new GameManager();
+            _root = new Run();
 
             base.Initialize();
         }

@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using SoulSmith.Object.Canvas;
 
 namespace SoulSmith.Camp;
-public class CampManager : CanvasObject
+public class Camp : CanvasObject
 {
 	private const int BASEFOUNDATIONCOUNT = 3;
 
 	private List<CampFoundation> _foundations;
 
-	public CampManager() 
+	public Camp() 
 	{ 
 		Initialize();
 	}
