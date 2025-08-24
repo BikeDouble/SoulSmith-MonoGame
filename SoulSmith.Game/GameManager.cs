@@ -55,7 +55,7 @@ public partial class GameManager : CanvasObject
 
 	private void InitializeCombat()
 	{
-		_combatManager = new CombatManager(new MoveSelector_PlayerInput(), new MoveSelector_Random());
+		_combatManager = new CombatManager(new MoveSelector_PlayerInput(), new MoveSelector_PlayerInput());
 		AddChild(_combatManager);
 
 		_combatManager.OfferUnitToInventoryEventHandler += OnOfferUnitToInventory;

@@ -9,6 +9,7 @@ namespace SoulSmith.Battle.Effects
     {
         public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null);
         public Visualization.EffectVisualization CreateVisualization();
+        public bool HasVisualization { get; }
         public float AdditionalDelay { get; }
     }
 }

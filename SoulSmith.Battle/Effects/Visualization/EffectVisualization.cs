@@ -16,6 +16,7 @@ public class EffectVisualization : CanvasObject
     private float _baseDelay = 0f;
     private IReadOnlyUnit _sender = null;
     private IReadOnlyUnit _target = null;
+    private bool _mirrorSprites = false;
 
     public event EventHandler<ReadyEffectEventArgs> ReadyEffectEventHandler;
 
@@ -57,11 +58,11 @@ public class EffectVisualization : CanvasObject
         ReadyEffectEventHandler?.Invoke(this, e);
     }
 
-    public virtual void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float additionalDelay = 0f)
+    public virtual void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float additionalDelay, bool mirrorSprites)
     {
         _sender = sender;
         _target = target;
-
+        _mirrorSprites = mirrorSprites;
         _elapsedLifespan = 0;
 
         _delay += additionalDelay;
@@ -120,6 +121,7 @@ public class EffectVisualization : CanvasObject
     protected float TotalEffectActivationTimer { get; private set; }
     protected IReadOnlyUnit Sender { get { return _sender; } }
     protected IReadOnlyUnit Target { get { return _target; } }
+    protected bool MirrorSprites { get { return _mirrorSprites; } }
 }
 
 public class ReadyEffectEventArgs : EventArgs

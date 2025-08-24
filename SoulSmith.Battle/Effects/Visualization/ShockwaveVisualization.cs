@@ -60,9 +60,9 @@ namespace SoulSmith.Battle.Effects.Visualization
             return (particleCount - 1) * delayBetweenParticles + timePerParticle + fadeTime;
         }
 
-        public override void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0)
+        public override void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0, bool mirrorSprites = false)
         {
-            base.BeginVisualization(sender, target, delay);
+            base.BeginVisualization(sender, target, delay, mirrorSprites);
 
             _particles = new List<(float, CanvasObject)>();
             _sender = sender;
@@ -80,6 +80,11 @@ namespace SoulSmith.Battle.Effects.Visualization
             IReadOnlyUnitSprite senderSprite = _sender.ReadOnlySprite;
             startPoint = senderSprite.GetGlobalPosition().Coordinates;
             particle.SetCoordinates(startPoint);
+
+            if (MirrorSprites)
+            {
+                particle.Scale(new Vector2(-1, 1));
+            }
 
             AddChild(particle);
 

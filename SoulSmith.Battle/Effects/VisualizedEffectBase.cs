@@ -8,7 +8,7 @@ namespace SoulSmith.Battle.Effects
         private EffectVisualizationFactory _visualizationFactory;
         private float _additionalDelay;
 
-        public VisualizedEffectBase(TargetingStyle targetingStyle, EffectVisualizationFactory visualizationFactory, float additionalDelay, IEnumerable<IEffect> immediateAfterEffects = null) 
+        public VisualizedEffectBase(TargetingStyle targetingStyle, EffectVisualizationFactory visualizationFactory, float additionalDelay, IEnumerable<IEffect> immediateAfterEffects = null)
         {
             _visualizationFactory = visualizationFactory;
             _additionalDelay = additionalDelay;
@@ -41,5 +41,6 @@ namespace SoulSmith.Battle.Effects
         protected IEnumerable<IEffect> ImmediateAfterEffects { get; private set; }
         public float AdditionalDelay { get { return _additionalDelay; } }
         public TargetingStyle TargetingStyle { get; private set; }
+        public bool HasVisualization { get { return _visualizationFactory != null; } }
     }
 }

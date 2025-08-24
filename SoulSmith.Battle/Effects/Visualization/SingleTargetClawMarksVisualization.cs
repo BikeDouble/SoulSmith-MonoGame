@@ -47,9 +47,9 @@ namespace SoulSmith.Battle.Effects.Visualization
             AddChild(_particleScissorRect);
         }
 
-        public override void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0)
+        public override void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0, bool mirrorSprites = false)
         {
-            base.BeginVisualization(sender, target, delay);
+            base.BeginVisualization(sender, target, delay, mirrorSprites);
 
             Vector2 startPoint;
 
@@ -57,7 +57,15 @@ namespace SoulSmith.Battle.Effects.Visualization
 
             startPoint = Target.GetGlobalPosition().Coordinates;
 
-            _particleScissorRect.SetCoordinates(startPoint - (_size / 2));
+            if (MirrorSprites)
+            {
+                _particleScissorRect.Scale(new Vector2(-1, 1));
+                _particleScissorRect.SetCoordinates(startPoint - (new Vector2(-_size.X / 2, _size.Y / 2)));
+            }
+            else
+            {
+                _particleScissorRect.SetCoordinates(startPoint - (_size / 2));
+            }
         }
 
         protected override void EnabledProcess(double delta)

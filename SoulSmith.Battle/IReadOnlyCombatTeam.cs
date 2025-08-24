@@ -12,6 +12,7 @@ namespace SoulSmith.Battle
         public List<IReadOnlyUnit> GetReadOnlyUnits();
         public List<IReadOnlyUnit> GetActiveUnitsAsReadOnly();
         public List<IReadOnlyUnit> GetAdjacentReadOnlyUnits(IReadOnlyUnit target);
+        public bool PlayerControlled { get; }
         public bool HasActiveUnit();
     }
 }

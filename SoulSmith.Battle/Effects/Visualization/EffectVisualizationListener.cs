@@ -5,7 +5,7 @@ public class EffectVisualizationListener
     private EffectVisualization _visualization;
     private bool _readyForExecute = true;
 
-    public EffectVisualizationListener(EffectInput input, double delay)
+    public EffectVisualizationListener(EffectInput input, double delay, bool mirrorVisuals)
     {
         delay += input.Effect.AdditionalDelay;
         EffectVisualization visualization = input.Effect.CreateVisualization();
@@ -20,13 +20,15 @@ public class EffectVisualizationListener
         BeginVisualization(input.Sender,
                            input.Target,
                            visualization,
-                           delay);
+                           delay,
+                           mirrorVisuals);
     }
 
-    public void BeginVisualization(IReadOnlyUnit user,
+    public void BeginVisualization(IReadOnlyUnit sender,
                                    IReadOnlyUnit target,
                                    EffectVisualization visualization,
-                                   double delay = 0f)
+                                   double delay = 0f,
+                                   bool mirrorVisuals = false)
     {
         _visualization = visualization;
         if (_visualization == null)
@@ -36,7 +38,8 @@ public class EffectVisualizationListener
         _readyForExecute = false;
         //_visualization.UpdateState(0); TODO
         _visualization.ReadyEffectEventHandler += OnVisualizationExecuteEffect;
-        _visualization.BeginVisualization(user, target, (float)delay);
+
+        _visualization.BeginVisualization(sender, target, (float)delay, mirrorVisuals);
     }
 
     private void StartTimerVisualization(double time)

@@ -20,11 +20,11 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 	private bool _playerControlled;
 	private List<TeamPosition> _teamPositions = new List<TeamPosition>();
 
-	public CombatTeam(IMoveSelector moveSelector) : base(new Core.Position(0, YOFFSET))
+	public CombatTeam(IMoveSelector moveSelector, bool playerControlled) : base(new Core.Position(0, YOFFSET))
 	{
 		_moveSelector = moveSelector;
 
-		_playerControlled = _moveSelector.PlayerControlled;
+		_playerControlled = playerControlled;
 
 		Initialize();
 	}

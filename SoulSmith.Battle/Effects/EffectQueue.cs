@@ -46,10 +46,10 @@ public class EffectQueue : CanvasObject
 
     public readonly struct QueuedEffect
     {
-        public QueuedEffect(EffectInput input, double additionalDelay)
+        public QueuedEffect(EffectInput input, double additionalDelay, bool mirrorVisuals)
         {
             EffectInput = input;
-            VisualizationListener = new EffectVisualizationListener(input, additionalDelay);
+            VisualizationListener = new EffectVisualizationListener(input, additionalDelay, mirrorVisuals);
         }
 
         public EffectInput EffectInput { get; }
@@ -188,7 +188,9 @@ public class EffectQueue : CanvasObject
             throw new ArgumentNullException(nameof(effectInput.Effect), "EffectInput must have a valid effect.");
         }
 
-        QueuedEffect queuedEffect = new QueuedEffect(effectInput, additionalDelay);
+        // If unit is player controlled, do not mirror visuals, if team is null mirror visuals. Do not mirror visuals for global trigger effects
+        bool mirrorVisuals = (effectInput.Effect.HasVisualization) && !(_parentCombat.GetReadOnlyTeamWithUnit(effectInput.Sender)?.PlayerControlled ?? false);
+        QueuedEffect queuedEffect = new QueuedEffect(effectInput, additionalDelay, mirrorVisuals);
         EffectVisualization visualization = queuedEffect.VisualizationListener.Visualization;
         
         if (visualization != null)

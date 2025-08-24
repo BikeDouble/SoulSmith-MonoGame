@@ -31,9 +31,9 @@ namespace SoulSmith.Battle.Effects.Visualization
             AddChild(_missile);
         }
 
-        public override void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0)
+        public override void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0, bool mirrorSprites = false)
         {
-            base.BeginVisualization(sender, target, delay);
+            base.BeginVisualization(sender, target, delay, mirrorSprites);
 
             IReadOnlyCanvasObject senderSprite = sender.ReadOnlySprite;
 
@@ -44,6 +44,11 @@ namespace SoulSmith.Battle.Effects.Visualization
             if (_missileSizeInPixels.HasValue) _missile.ScaleToSetSize(_missileSizeInPixels.Value);
 
             _endPoint = senderSprite.GetRandomGlobalPoint(Target.GetGlobalPosition(), HITZONEZONEKEY);
+
+            if (MirrorSprites)
+            {
+                _missile.Scale(new Vector2(-1, 1));
+            }
 
         }
 

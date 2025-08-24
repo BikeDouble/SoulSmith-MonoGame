@@ -27,9 +27,9 @@ namespace SoulSmith.Battle.Effects.Visualization
             _endSize = endSize;
         }
 
-        public override void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0)
+        public override void BeginVisualization(IReadOnlyUnit sender, IReadOnlyUnit target, float delay = 0, bool mirrorSprites = false)
         {
-            base.BeginVisualization(sender, target, delay);
+            base.BeginVisualization(sender, target, delay, mirrorSprites);
 
             Vector2 startPoint;
 
@@ -44,6 +44,11 @@ namespace SoulSmith.Battle.Effects.Visualization
             _particle.ScaleToSetSize(_startSize);
 
             _particle.SetCoordinates(startPoint);
+
+            if (MirrorSprites)
+            {
+                _particle.Scale(new Vector2(-1, 1));
+            }
         }
 
         protected override void EnabledProcess(double delta)

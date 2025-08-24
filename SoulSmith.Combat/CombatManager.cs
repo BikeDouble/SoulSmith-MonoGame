@@ -87,8 +87,8 @@ public class CombatManager : CanvasObject, IReadOnlyCombat
     {
 		//TODO move
         _teams = new List<CombatTeam>();
-        _teams.Add(new CombatTeam(playerMoveSelector));
-        _teams.Add(new CombatTeam(enemyMoveSelector));
+        _teams.Add(new CombatTeam(playerMoveSelector, true));
+        _teams.Add(new CombatTeam(enemyMoveSelector, false));
 
         foreach (CombatTeam team in _teams)
         {
