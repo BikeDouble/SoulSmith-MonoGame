@@ -5,7 +5,7 @@ using SoulSmith.Drawing;
 using SoulSmith.Input;
 using SoulSmith.Object.Canvas;
 
-namespace SoulSmith.Game;
+namespace SoulSmith.Runs;
 public class RunHeaderUI : CanvasObject
 {
     public const string BACKBOARDRESOURCEKEY = "Textures/UI/Units/List/EntryBackboardIdle";

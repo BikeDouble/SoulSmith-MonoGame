@@ -5,7 +5,7 @@ using SoulSmith.UnitStats;
 using SoulSmith.Units;
 using SoulSmith.Core;
 
-namespace SoulSmith.Camp;
+namespace SoulSmith.Camps;
 public partial class CampBuilding_Fuser : CampBuilding
 {
 	private double _statRandRange = 0.2f;

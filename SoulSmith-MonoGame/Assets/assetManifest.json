@@ -27,6 +27,8 @@
         "DoubleEmotion": {
             "JoyAnger": {
                 "DirectMissile": "EffectVisualizations/DoubleEmotion/JoyAnger/joyAngerDirectMissile.json",
+                "SmallDirectMissile": "EffectVisualizations/DoubleEmotion/JoyAnger/smallDirectMissile.json",
+                "TinyDirectMissile": "EffectVisualizations/DoubleEmotion/JoyAnger/tinyDirectMissile.json",
                 "ShockwaveCircle": "EffectVisualizations/DoubleEmotion/JoyAnger/shockwaveCircle.json",
                 "InnateShockwave": "EffectVisualizations/DoubleEmotion/JoyAnger/innateShockwave.json"
             }
@@ -96,7 +98,8 @@
         },
         "DoubleEmotion": {
             "JoyAnger": {
-                "DoubleTeamHit": "Moves/DoubleEmotion/JoyAnger/doubleTeamHit.json"
+                "DoubleTeamHit": "Moves/DoubleEmotion/JoyAnger/doubleTeamHit.json",
+                "LoadedTripleHit": "Moves/DoubleEmotion/JoyAnger/loadedTripleHit.json"
             }
         },
         "Typeless": {

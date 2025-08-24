@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace SoulSmith.EmotionTag
+namespace SoulSmith.EmotionTags
 {
     //Is the order of the emotions, represented as binary strings FATWDJ
     [JsonConverter(typeof(EmotionTagJsonConverter))]

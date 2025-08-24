@@ -1,6 +1,6 @@
 using System;
 using SoulSmith.Battle.Moves;
-using SoulSmith.Combat;
+using SoulSmith.Combats;
 using SoulSmith.Battle;
 
 namespace SoulSmith.MoveSelection;

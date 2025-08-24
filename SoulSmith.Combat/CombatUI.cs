@@ -8,7 +8,7 @@ using SoulSmith.Asset;
 using SoulSmith.Drawing.Text;
 using SoulSmith.Units;
 
-namespace SoulSmith.Combat;
+namespace SoulSmith.Combats;
 public class CombatUI : CanvasObject
 {
 	public const string FONTKEY = "Fonts/Raleway/Medium";

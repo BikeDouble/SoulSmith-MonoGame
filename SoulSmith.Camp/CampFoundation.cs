@@ -1,7 +1,7 @@
 
 using System;
 
-namespace SoulSmith.Camp;
+namespace SoulSmith.Camps;
 public partial class CampFoundation
 {
 	private bool _containsBuilding = false;

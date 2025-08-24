@@ -11,7 +11,7 @@ namespace SoulSmith.Battle.Moves
     [JsonConverter(typeof(MoveJsonConverter))]
     public class Move : IDisposable, IReadOnlyMove
     {
-        public Move(string friendlyName, string description, MoveTargetingStyle targetingStyle, EmotionTag.EmotionTag emotionTag, IList<IEffect> effects)
+        public Move(string friendlyName, string description, MoveTargetingStyle targetingStyle, EmotionTags.EmotionTag emotionTag, IList<IEffect> effects)
         {
             FriendlyName = friendlyName;
             Description = description;
@@ -21,7 +21,7 @@ namespace SoulSmith.Battle.Moves
         }
 
         public ReadOnlyCollection<IEffect> Effects { get; }
-        public EmotionTag.EmotionTag EmotionTag { get; }
+        public EmotionTags.EmotionTag EmotionTag { get; }
         public MoveTargetingStyle TargetingStyle { get; }
         public string FriendlyName { get; }
         public string Description { get; }
@@ -71,7 +71,7 @@ namespace SoulSmith.Battle.Moves
             Dictionary<string, string> localizationVariables = null;
             string description = "Localization keys not yet implemented.";
             IEffect[] effects = null;
-            EmotionTag.EmotionTag emotionTag = EmotionTag.EmotionTag.Typeless;
+            EmotionTags.EmotionTag emotionTag = EmotionTags.EmotionTag.Typeless;
             MoveTargetingStyle targetingStyle = MoveTargetingStyle.None;
 
             while (reader.TokenType != JsonTokenType.EndObject)
@@ -96,7 +96,7 @@ namespace SoulSmith.Battle.Moves
                         reader.Read();
                         break;
                     case "EmotionTag":
-                        emotionTag = JsonSerializer.Deserialize<EmotionTag.EmotionTag>(ref reader, options);
+                        emotionTag = JsonSerializer.Deserialize<EmotionTags.EmotionTag>(ref reader, options);
                         reader.Read();
                         break;
                     case "Effects":

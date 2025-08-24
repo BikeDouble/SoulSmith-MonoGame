@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using SoulSmith.Object.Canvas;
 
-namespace SoulSmith.Camp;
+namespace SoulSmith.Camps;
 public class Camp : CanvasObject
 {
 	private const int BASEFOUNDATIONCOUNT = 3;

@@ -4,7 +4,7 @@ using SoulSmith.Core;
 using SoulSmith.Drawing;
 using SoulSmith.Units;
 
-namespace SoulSmith.Game
+namespace SoulSmith.Runs
 {
     public class RunHeaderUnitInventoryUIButton : ButtonObject
     {

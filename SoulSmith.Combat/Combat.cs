@@ -15,7 +15,7 @@ using SoulSmith.Battle.Effects.Trigger;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
 
-namespace SoulSmith.Combat;
+namespace SoulSmith.Combats;
 public class Combat : CanvasObject, IReadOnlyCombat
 {
 	//This team always goes first in the round

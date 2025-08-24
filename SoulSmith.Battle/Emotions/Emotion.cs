@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using SoulSmith.Asset;
 using SoulSmith.Battle.Effects;
+using SoulSmith.Templates;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 
@@ -10,15 +11,18 @@ namespace SoulSmith.Battle.Emotions
     [JsonConverter(typeof(EmotionJsonConverter))]
     public class Emotion : IDisposable
     {
-        private static Dictionary<EmotionTag.EmotionTag, Emotion> _emotionCache = new Dictionary<EmotionTag.EmotionTag, Emotion>();
-        public EmotionTag.EmotionTag EmotionTag { get; }
+        private static Dictionary<EmotionTags.EmotionTag, Emotion> _emotionCache = new Dictionary<EmotionTags.EmotionTag, Emotion>();
+
+        private IAssetWrapper<UnitTemplate> _unitTemplateWrapper;
+        public EmotionTags.EmotionTag EmotionTag { get; }
         public Color Color { get; }
         public string FriendlyName { get; }
         public string FormKey { get; }
         public ReadOnlyCollection<IEffect> BattleEntryEffects { get; }
-        public ReadOnlyCollection<EmotionTag.EmotionTag> BasicEmotions { get; }
+        public ReadOnlyCollection<EmotionTags.EmotionTag> BasicEmotions { get; }
+        public UnitTemplate UnitTemplate { get { return _unitTemplateWrapper.Value; } }
 
-        public Emotion(EmotionTag.EmotionTag emotionTag, string friendlyName, string formKey, Color color, IEnumerable<IEffect> battleEntryEffects)
+        public Emotion(EmotionTags.EmotionTag emotionTag, string friendlyName, string formKey, Color color, IEnumerable<IEffect> battleEntryEffects)
         {
             Color = color;
             FriendlyName = friendlyName;
@@ -26,11 +30,12 @@ namespace SoulSmith.Battle.Emotions
             BattleEntryEffects = battleEntryEffects.ToList().AsReadOnly();
             EmotionTag = emotionTag;
             BasicEmotions = GetBaseEmotionTags(emotionTag).AsReadOnly();
+            _unitTemplateWrapper = AssetManager.Instance.GetUnitTemplate<UnitTemplate>(FormKey);
         }
 
-        public static List<EmotionTag.EmotionTag> GetBaseEmotionTags(EmotionTag.EmotionTag value)
+        public static List<EmotionTags.EmotionTag> GetBaseEmotionTags(EmotionTags.EmotionTag value)
         {
-            List<EmotionTag.EmotionTag> baseEmotionTags = new List<EmotionTag.EmotionTag>();
+            List<EmotionTags.EmotionTag> baseEmotionTags = new List<EmotionTags.EmotionTag>();
 
             int valueAsInt = (int)value;
 
@@ -38,7 +43,7 @@ namespace SoulSmith.Battle.Emotions
             {
                 int mask = 1 << bit;
                 if ((valueAsInt & mask) != 0)
-                    baseEmotionTags.Add((EmotionTag.EmotionTag)mask);
+                    baseEmotionTags.Add((EmotionTags.EmotionTag)mask);
             }
 
             return baseEmotionTags;
@@ -55,7 +60,7 @@ namespace SoulSmith.Battle.Emotions
             }
         }
 
-        public static Emotion GetEmotion(EmotionTag.EmotionTag emotionTag)
+        public static Emotion GetEmotion(EmotionTags.EmotionTag emotionTag)
         {
             if (_emotionCache.ContainsKey(emotionTag))
             {
@@ -81,17 +86,17 @@ namespace SoulSmith.Battle.Emotions
         //    emotion.UnitTemplateKey
         //}
 
-        private static string GetEmotionKey(EmotionTag.EmotionTag emotionTag)
+        private static string GetEmotionKey(EmotionTags.EmotionTag emotionTag)
         {
             switch(emotionTag)
             {
-                case SoulSmith.EmotionTag.EmotionTag.Typeless:
+                case SoulSmith.EmotionTags.EmotionTag.Typeless:
                     return "Emotions/Typeless";
-                case SoulSmith.EmotionTag.EmotionTag.Joy:
+                case SoulSmith.EmotionTags.EmotionTag.Joy:
                     return "Emotions/Single/Joy";
-                case SoulSmith.EmotionTag.EmotionTag.Wrath:
+                case SoulSmith.EmotionTags.EmotionTag.Wrath:
                     return "Emotions/Single/Anger";
-                case SoulSmith.EmotionTag.EmotionTag.Exultation:
+                case SoulSmith.EmotionTags.EmotionTag.Exultation:
                     return "Emotions/Double/JoyAnger";
                 default:
                     throw new KeyNotFoundException($"Emotion with tag {emotionTag} does not have a predefined key.");

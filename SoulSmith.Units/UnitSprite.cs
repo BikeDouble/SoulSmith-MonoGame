@@ -25,15 +25,16 @@ public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
 
     public const double MINIMUMTIMEBETWEENHURTANIMATIONSTARTS = 0.5d + HURTANIMATIONDURATION; // Hurt animation can look goofy if played directly after itself
 
-    public const float WIDTHSCALE = 1.2f;
-    public const float HEIGHTSCALE = 1.2f;
+    public const float SCALE = 1f;
+
+    public readonly static Vector2 BASESIZE = new Vector2(256, 256);
 
     private double _timeInAnimation = -1;
     private double _timeUntilHurtAnimationAllowed = -1;
 
     public UnitSprite(IDrawableResource sprite, double animationDesyncFactor) : base(null, sprite)
     {
-        this.Scale(new Vector2(WIDTHSCALE, HEIGHTSCALE));
+        this.ScaleToSetSize(BASESIZE * SCALE);
         //TODO implement animationDesyncFactor
     }
 

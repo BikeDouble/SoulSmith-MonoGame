@@ -4,7 +4,7 @@
         "Type": "ZonedResource",
         "Key": "ZonedResources/UnitSprites/Forms/Double/JoyAnger"
     },
-    "SpriteSizeMod": 0.59,
+    "SpriteSizeMod": 0.76,
     "MaxHealth": 800,
     "Attack": 200,
     "Defense": 120,
@@ -14,20 +14,8 @@
             "Weight": 60
         },
         {
-            "Item": "SingleEmotion/Anger/SingleHit",
-            "Weight": 10
-        },
-        {
-            "Item": "SingleEmotion/Anger/Rampage",
-            "Weight": 10
-        },
-        {
-            "Item": "SingleEmotion/Anger/TeamHit",
-            "Weight": 10
-        },
-        {
-            "Item": "SingleEmotion/Joy/DoubleHit",
-            "Weight": 1000
+            "Item": "DoubleEmotion/JoyAnger/LoadedTripleHit",
+            "Weight": 60
         }
     ],
     "Emotion": 5,

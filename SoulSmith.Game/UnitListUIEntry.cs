@@ -5,7 +5,7 @@ using SoulSmith.Drawing;
 using Microsoft.Xna.Framework;
 using SoulSmith.Units;
 
-namespace SoulSmith.Game;
+namespace SoulSmith.Runs;
 
 public class UnitListUIEntry : CanvasObject
 {

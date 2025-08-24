@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using SoulSmith.Battle.Moves;
 using SoulSmith.UnitStats;
-using SoulSmith.Combat;
+using SoulSmith.Combats;
 using SoulSmith.Battle;
 using SoulSmith.Units;
 

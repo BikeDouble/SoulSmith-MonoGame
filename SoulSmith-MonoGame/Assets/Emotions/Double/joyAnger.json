@@ -1,7 +1,7 @@
 {
     "FriendlyName": "Exultation",
     "Tag": 5,
-    "FormKey": "Units/Forms/JoyAnger",
+    "FormKey": "Units/Forms/Double/JoyAnger",
     "Color": [ 219, 115, 0, 255 ],
     "CombatEntryEffects": 
      [

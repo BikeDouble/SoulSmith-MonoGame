@@ -4,7 +4,7 @@
         "Type": "ZonedResource",
         "Key": "ZonedResources/UnitSprites/Forms/Single/Joy"
     },
-    "SpriteSizeMod": 0.75,
+    "SpriteSizeMod": 0.53,
     "MaxHealth": 600,
     "Attack": 120,
     "Defense": 120,

@@ -3,7 +3,7 @@ using SoulSmith.Units;
 using SoulSmith.Object.Canvas;
 using SoulSmith.Battle;
 
-namespace SoulSmith.Game;
+namespace SoulSmith.Runs;
 public class UnitInventory : CanvasObject
 {
     private List<Unit> _units = new List<Unit>();

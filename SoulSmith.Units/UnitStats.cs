@@ -27,15 +27,15 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		_statsList = new StatsList();
     }
 
-	public UnitStats(StatsList statsList, int timeOnBoard = -1, EmotionTag.EmotionTag emotion = EmotionTag.EmotionTag.Typeless)
+	public UnitStats(StatsList statsList, int timeOnBoard = -1, EmotionTags.EmotionTag emotion = EmotionTags.EmotionTag.Typeless)
 	{
 		_statsList = statsList;
 		_timeOnBoard = timeOnBoard;
 	}
 
-	public void LoadEmotionAttributes(EmotionTag.EmotionTag emotionTag)
+	public void LoadEmotionAttributes(EmotionTags.EmotionTag emotionTag)
 	{
-		EmotionTag.EmotionTag emotion = emotionTag;
+		EmotionTags.EmotionTag emotion = emotionTag;
 
 		if (emotion == null)
 		{

@@ -8,7 +8,7 @@ using SoulSmith.Core;
 using Microsoft.Xna.Framework;
 using SoulSmith.Battle;
 
-namespace SoulSmith.Game;
+namespace SoulSmith.Runs;
 
 using Entry = UnitListUIEntry;
 

@@ -3,7 +3,7 @@ using System;
 using SoulSmith.Units;
 using System.Collections.Generic;
 
-namespace SoulSmith.Camp;
+namespace SoulSmith.Camps;
 public partial class CampBuilding 
 {
     private List<Unit> _units;

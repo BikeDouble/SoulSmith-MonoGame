@@ -1,0 +1,41 @@
+{
+    "Name": "Sneer",
+    "EmotionTag": 5,
+    "TargetingStyle": "Enemy",
+    "Description": {
+        "LocalizationKey": "Move/HitDamage/Triple/Uneven/Attack",
+        "LocalizationVariables": {
+            "AttackPercentOne": 60,
+            "AttackPercentTwo": 30,
+            "AttackPercentThree": 15
+        }
+    },
+    "Effects": [
+        {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.6",
+                "DamageType": "hit",
+                "VisualizationKey": "EffectVisualizations/DoubleEmotion/JoyAnger/DirectMissile"
+            }
+        },
+        {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.3",
+                "DamageType": "hit",
+                "VisualizationKey": "EffectVisualizations/DoubleEmotion/JoyAnger/SmallDirectMissile",
+                "AdditionalDelay": 0.3
+            }
+        },
+        {
+            "Type": "FormulaDamage",
+            "Effect": {
+                "Formula": "sender.Attack * 0.15",
+                "DamageType": "hit",
+                "VisualizationKey": "EffectVisualizations/DoubleEmotion/JoyAnger/TinyDirectMissile",
+                "AdditionalDelay": 0.6
+            }
+        }
+    ]
+}

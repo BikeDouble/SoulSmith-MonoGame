@@ -27,7 +27,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	private bool _inCombat = false;
 	private bool _playerControlled = false;
 	private int _combatPosition;
-	private EmotionTag.EmotionTag _emotionTag;
+	private EmotionTags.EmotionTag _emotionTag;
 
 	public Unit(UnitTemplate template) : this(
 		new StatsList(template.StatsList),
@@ -48,7 +48,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		IEnumerable<Move> moveSet,
 		UnitSprite sprite,
 		UnitUI uI,
-		EmotionTag.EmotionTag emotion,
+		EmotionTags.EmotionTag emotion,
 		string friendlyName,
 		int timeOnBoard,
 		string spriteKey,

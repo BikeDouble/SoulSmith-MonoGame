@@ -1,7 +1,8 @@
 {
     "Type": "DirectMissile",
     "Visualization": {
-        "Emotion": 1,
+        "Emotion": 5,
+        "SizeMod": 0.67,
         "FlightTime": 1,
         "Delay": 0
     }

@@ -4,6 +4,7 @@
         "Type": "ZonedResource",
         "Key": "ZonedResources/UnitSprites/Forms/Single/Anger"
     },
+    "SpriteSizeMod": 0.79,
     "MaxHealth": 600,
     "Attack": 160,
     "Defense": 80,

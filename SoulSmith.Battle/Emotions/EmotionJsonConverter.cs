@@ -16,7 +16,7 @@ namespace SoulSmith.Battle.Emotions
             string friendlyName = string.Empty;
             string formKey = string.Empty;
             Color color = Color.White;
-            EmotionTag.EmotionTag emotionTag = EmotionTag.EmotionTag.Typeless;
+            EmotionTags.EmotionTag emotionTag = EmotionTags.EmotionTag.Typeless;
             IEffect[] battleEntryEffects = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
@@ -44,11 +44,11 @@ namespace SoulSmith.Battle.Emotions
                         color = converter.Read(ref reader, typeof(Color), options);
                         reader.Read();
                         break;
-                    case "EmotionTag":
+                    case "EmotionTags":
                     case "Tag":
                         if (reader.TokenType != JsonTokenType.Number) throw new JsonException("Expected number");
                         int emotionTagValue = reader.GetInt32();
-                        emotionTag = (EmotionTag.EmotionTag)emotionTagValue;
+                        emotionTag = (EmotionTags.EmotionTag)emotionTagValue;
                         reader.Read();
                         break;
                     case "BattleEntryEffects":

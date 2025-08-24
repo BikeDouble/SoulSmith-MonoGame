@@ -33,7 +33,7 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
         int decayRate = StatConstants.STANDARDDECAYRATE;
         int timeOnBoard = -1;
         SoulSmithWeightedList<string> moveSet = null;
-        EmotionTag.EmotionTag emotionTag = EmotionTag.EmotionTag.Typeless;
+        EmotionTags.EmotionTag emotionTag = EmotionTags.EmotionTag.Typeless;
 
         while (reader.TokenType != JsonTokenType.EndObject)
         {
@@ -76,7 +76,7 @@ public class UnitTemplateJsonConverter : JsonConverter<UnitTemplate>
                     defense = reader.GetInt32();
                     break;
                 case "Emotion":
-                    emotionTag = JsonSerializer.Deserialize<EmotionTag.EmotionTag>(ref reader, options);
+                    emotionTag = JsonSerializer.Deserialize<EmotionTags.EmotionTag>(ref reader, options);
                     break;
                 case "TimeOnBoard":
                     timeOnBoard = reader.GetInt32();

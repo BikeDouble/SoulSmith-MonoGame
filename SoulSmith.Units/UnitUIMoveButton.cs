@@ -65,12 +65,12 @@ public class UnitUIMoveButton : ButtonObject_GrowOnHover
 		_isRetrieveButton = true;
 		_move = null;
 		SetLabelText("Retrieve");
-		SetEmotionColor(EmotionTag.EmotionTag.Typeless);
+		SetEmotionColor(EmotionTags.EmotionTag.Typeless);
 		this.Show();
 		this.SetColor(_idleColor);
 	}
 
-	private void SetEmotionColor(EmotionTag.EmotionTag emotionTag)
+	private void SetEmotionColor(EmotionTags.EmotionTag emotionTag)
 	{
         Battle.Emotions.Emotion emotion = Battle.Emotions.Emotion.GetEmotion(emotionTag);
 

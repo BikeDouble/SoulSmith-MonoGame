@@ -3,8 +3,8 @@ using System;
 using System.Collections.ObjectModel;
 using SoulSmith.UnitStats;
 using SoulSmith.Object.Canvas;
-using SoulSmith.Camp;
-using SoulSmith.Combat;
+using SoulSmith.Camps;
+using SoulSmith.Combats;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
@@ -13,15 +13,15 @@ using SoulSmith.Units;
 using SoulSmith.Battle;
 using SoulSmith.Drawing;
 
-namespace SoulSmith.Game;
+namespace SoulSmith.Runs;
 public partial class Run : CanvasObject
 {
 
 	public const string UIFONTNAME = "uIFont";
 
 	//Children
-	private Combat.Combat _combatManager;
-	private Camp.Camp _campManager;
+	private Combats.Combat _combatManager;
+	private Camps.Camp _campManager;
 	private UnitInventory _unitInventory;
 	private RunHeaderUI _headerUI;
 
@@ -49,13 +49,13 @@ public partial class Run : CanvasObject
 
 	private void InitializeCamp()
 	{
-        _campManager = new Camp.Camp();
+        _campManager = new Camps.Camp();
 		AddChild(_campManager);
 	}
 
 	private void InitializeCombat()
 	{
-        _combatManager = new Combat.Combat(new MoveSelector_PlayerInput(), new MoveSelector_PlayerInput());
+        _combatManager = new Combats.Combat(new MoveSelector_PlayerInput(), new MoveSelector_PlayerInput());
 		AddChild(_combatManager);
 
 		_combatManager.OfferUnitToInventoryEventHandler += OnOfferUnitToInventory;

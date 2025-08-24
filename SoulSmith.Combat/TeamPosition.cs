@@ -7,7 +7,7 @@ using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle;
 using System.Numerics;
 
-namespace SoulSmith.Combat;
+namespace SoulSmith.Combats;
 public class TeamPosition : CanvasObject, IReadOnlyTeamPosition
 {
     public const string DEPLOYUNITBUTTONIDLERESOURCEKEY = "ZonedResources/UI/Units/DeployButton";

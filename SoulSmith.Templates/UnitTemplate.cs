@@ -11,7 +11,7 @@ public class UnitTemplate : IDisposable
 
     private ReadOnlyDictionary<StatType, int> _statsList;
     private IReadOnlySoulSmithWeightedList<string> _moveSetString;
-    private EmotionTag.EmotionTag _emotion;
+    private EmotionTags.EmotionTag _emotion;
     private string _spriteName;
     private string _spriteType;
     private int _timeOnBoard;
@@ -21,7 +21,7 @@ public class UnitTemplate : IDisposable
 
     public UnitTemplate(IDictionary<StatType, int> statsList,
                         IReadOnlySoulSmithWeightedList<string> moveSetString,
-                        EmotionTag.EmotionTag emotion,
+                        EmotionTags.EmotionTag emotion,
                         int timeOnBoard,
                         string spriteName,
                         string spriteType,
@@ -42,7 +42,7 @@ public class UnitTemplate : IDisposable
 
     public ReadOnlyDictionary<StatType, int> StatsList { get { return _statsList; } }
     public IReadOnlySoulSmithWeightedList<string> MoveSetWeightedList { get {  return _moveSetString; } }
-    public EmotionTag.EmotionTag Emotion { get { return _emotion; } }
+    public EmotionTags.EmotionTag Emotion { get { return _emotion; } }
     public string SpriteName { get { return _spriteName; } }
     public string SpriteType { get { return _spriteType; } }
     public float SpriteSizeMod { get { return _spriteSizeMod; } }

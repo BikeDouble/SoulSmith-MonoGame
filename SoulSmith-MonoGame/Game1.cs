@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using SoulSmith.Input;
 using SoulSmith.Core;
 using SoulSmith.Drawing;
-using SoulSmith.Game;
+using SoulSmith.Runs;
 using SoulSmith.Object;
 using Microsoft.Xna.Framework.Content;
 using SoulSmith.Asset;

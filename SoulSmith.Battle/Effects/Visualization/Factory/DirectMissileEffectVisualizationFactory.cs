@@ -1,5 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using SoulSmith.Battle.Emotions;
+using SoulSmith.Battle.Modifiers.Payload;
 using SoulSmith.Drawing;
+using SoulSmith.EmotionTags;
+using SoulSmith.Templates;
 using SoulSmith.Vector;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -30,6 +34,8 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
 
     public class DirectMissileEffectVisualizationFactoryJsonConverter : JsonConverter<DirectMissileEffectVisualizationFactory>
     {
+        public readonly static Vector2 STANDARDEMOTIONMISSILESIZE = new Vector2(100, 100);
+
         public override DirectMissileEffectVisualizationFactory Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
@@ -38,8 +44,10 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
 
             float flightTime = 0f;
             float delay = 0f;
+            float sizeMod = 1f;
             string missileResourceKey = null;
             Vector2? missileSizeInPixels = null;
+            EmotionTag? emotionTag = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -72,10 +80,29 @@ namespace SoulSmith.Battle.Effects.Visualization.Factory
                         missileSizeInPixels = converter.Read(ref reader, typeof(Vector2), options);
                         reader.Read();
                         break;
+                    case "EmotionTag":
+                    case "Emotion":
+                        if (reader.TokenType != JsonTokenType.Number) throw new JsonException("Expected number");
+                        emotionTag = (EmotionTag)reader.GetInt32();
+                        reader.Read();
+                        break;
+                    case "SizeMod":
+                        if (reader.TokenType != JsonTokenType.Number) throw new JsonException("Expected number");
+                        sizeMod = (float)reader.GetDouble();
+                        reader.Read();
+                        break;
                     default:
                         reader.Skip();
                         break;
                 }
+            }
+
+            if (emotionTag.HasValue)
+            {
+                UnitTemplate unitTemplate = Emotion.GetEmotion(emotionTag.Value).UnitTemplate;
+
+                missileResourceKey = unitTemplate.SpriteName;
+                missileSizeInPixels = unitTemplate.SpriteSizeMod * STANDARDEMOTIONMISSILESIZE * sizeMod;
             }
 
             return new DirectMissileEffectVisualizationFactory(missileResourceKey, flightTime, flightTime, delay, missileSizeInPixels);

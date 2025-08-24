@@ -9,7 +9,7 @@ using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
 
-namespace SoulSmith.Combat;
+namespace SoulSmith.Combats;
 public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 {
 	public const int BACKUNITSDISTANCEFROMSCREENEDGE = 250;
