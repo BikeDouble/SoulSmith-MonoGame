@@ -10,7 +10,7 @@ namespace SoulSmith.Battle.Effects.Results
 {
     public class RemoveModifierResult : ModifierResultBase
     {
-        public RemoveModifierResult(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, bool removedSuccessfully, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
+        public RemoveModifierResult(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyModifier modifier, bool removedSuccessfully, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
             : base(sender, target, modifier, parentResult, payload, originator)
         {
             RemovedSuccessfully = removedSuccessfully;

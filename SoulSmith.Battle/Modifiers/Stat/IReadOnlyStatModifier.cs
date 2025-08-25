@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Modifiers.Stat
 {
-    public interface IReadOnlyStatModifier : IReadOnlyModifier
+    public interface IReadOnlyStatModifier : IReadOnlyModAmountModifier
     {
         public StatType StatType { get; }
         public float ModAmount { get; }

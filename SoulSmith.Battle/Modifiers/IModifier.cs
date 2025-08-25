@@ -32,6 +32,6 @@ namespace SoulSmith.Battle.Modifiers
 
     public class RemoveModifierEventArgs : EventArgs
     {
-        public IModifier Modifier { get; set; }
+        public IReadOnlyModifier Modifier { get; set; }
     }
 }

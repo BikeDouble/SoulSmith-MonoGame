@@ -3,24 +3,24 @@ using SoulSmith.Asset;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle.Effects.Visualization.Factory;
+using SoulSmith.Battle.Modifiers;
 using SoulSmith.Battle.Modifiers.Payload;
 using SoulSmith.Battle.Modifiers.Stat;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace SoulSmith.Battle.Effects.Damage
+namespace SoulSmith.Battle.Effects.Healing
 {
-    [JsonConverter(typeof(FormulaDamageEffectJsonConverter))]
-    public class FormulaDamageEffect : VisualizedEffectBase, IEffect 
+    [JsonConverter(typeof(FormulaHealingEffectJsonConverter))]
+    public class FormulaHealingEffect : VisualizedEffectBase, IEffect 
     {
         private Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, IEffectOriginator, ResultBase, double> _parsedFormula;
-        private DamageType _damageType;
         private AOETargetStyle? _aOEStyle; 
-        private float _fractionOfDamageToSecondaryTargets;
+        private float _fractionOfHealingToSecondaryTargets;
 
-        public FormulaDamageEffect(string formula, DamageType damageType, AOETargetStyle? aOEStyle, float fractionOfDamageToSecondaryTargets, TargetingStyle targetingStyle, EffectVisualizationFactory visualizationFactory, float additionalDelay, IEffect[] immediateAfterEffects) : base(targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects)
+        public FormulaHealingEffect(string formula, AOETargetStyle? aOEStyle, float fractionOfHealingToSecondaryTargets, TargetingStyle targetingStyle, EffectVisualizationFactory visualizationFactory, float additionalDelay, IEffect[] immediateAfterEffects) : base(targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects)
         {
-            Interpreter interpreter = new Interpreter().Reference(typeof(IReadOnlyStatModifier)).Reference(typeof(ModifierResultBase)).Reference(typeof(IReadOnlyPayloadModifier));
+            Interpreter interpreter = new Interpreter().Reference(typeof(IReadOnlyStatModifier)).Reference(typeof(ModifierResultBase)).Reference(typeof(IReadOnlyPayloadModifier)).Reference(typeof(IReadOnlyModAmountModifier));
             _parsedFormula = interpreter.ParseAsDelegate<Func<IReadOnlyUnit, IReadOnlyUnit, IReadOnlyCombat, IEffectOriginator, ResultBase, double>>(formula, "sender", "target", "combat", "originator", "parentResult");
 
             if (_parsedFormula == null)
@@ -28,31 +28,30 @@ namespace SoulSmith.Battle.Effects.Damage
                 throw new ArgumentException("The formula provided is not valid or could not be parsed.");
             }
 
-            _damageType = damageType;
             _aOEStyle = aOEStyle;
-            _fractionOfDamageToSecondaryTargets = fractionOfDamageToSecondaryTargets;
+            _fractionOfHealingToSecondaryTargets = fractionOfHealingToSecondaryTargets;
         }
 
         public PayloadBase GeneratePayload(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentEffectResult = null)
         { 
-            double damage = _parsedFormula(sender, target, combat, originator, parentEffectResult);
+            double healing = _parsedFormula(sender, target, combat, originator, parentEffectResult);
 
             if (!_aOEStyle.HasValue)
             {
-                return new DamagePayload(sender, GetTrueTarget(sender, target, combat), (int)damage, _damageType, parentEffectResult, this, originator, ImmediateAfterEffects);
+                return new HealingPayload(sender, GetTrueTarget(sender, target, combat), (int)healing, parentEffectResult, this, originator, ImmediateAfterEffects);
             }
             else
             {
                 IReadOnlyUnit trueTarget = GetTrueTarget(sender, target, combat);
                 ICollection<IReadOnlyUnit> secondaryTargets = AOEPayloadBase.GetSecondaryTargets(trueTarget, combat, _aOEStyle.Value);
-                return new AOEDamagePayload(sender, trueTarget, secondaryTargets, (int)damage, _damageType, _fractionOfDamageToSecondaryTargets, parentEffectResult, this, originator, ImmediateAfterEffects);
+                return new AOEHealingPayload(sender, trueTarget, secondaryTargets, (int)healing, _fractionOfHealingToSecondaryTargets, parentEffectResult, this, originator, ImmediateAfterEffects);
             }
         }
     }
 
-    public class FormulaDamageEffectJsonConverter : JsonConverter<FormulaDamageEffect>
+    public class FormulaHealingEffectJsonConverter : JsonConverter<FormulaHealingEffect>
     {
-        public override FormulaDamageEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override FormulaHealingEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
@@ -61,11 +60,10 @@ namespace SoulSmith.Battle.Effects.Damage
             EffectVisualizationFactory visualizationFactory = null;
             string formula = string.Empty;
             float additionalDelay = 0f;
-            DamageType damageType = DamageType.Null;
             IEffect[] immediateAfterEffects = null;
             TargetingStyle targetingStyle = TargetingStyle.Target;
             AOETargetStyle? aOEStyle = null;
-            float fractionOfDamageToSecondaryTargets = 1f;
+            float fractionOfHealingToSecondaryTargets = 1f;
 
             while (reader.TokenType != JsonTokenType.EndObject)
             {
@@ -97,11 +95,6 @@ namespace SoulSmith.Battle.Effects.Damage
                         visualizationFactory = AssetManager.Instance.GetEffectVisualizationFactory<EffectVisualizationFactory>(visKey);
                         reader.Read();
                         break;
-                    case "DamageType":
-                        if (reader.TokenType != JsonTokenType.String) throw new JsonException("Expected string");
-                        damageType = JsonSerializer.Deserialize<DamageType>(ref reader, options);
-                        reader.Read();
-                        break;
                     case "ImmediateAfterEffects":
                         if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException("Expected start of an array");
                         immediateAfterEffects = JsonSerializer.Deserialize<IEffect[]>(ref reader, options);
@@ -118,9 +111,9 @@ namespace SoulSmith.Battle.Effects.Damage
                         aOEStyle = JsonSerializer.Deserialize<AOETargetStyle>(ref reader, options);
                         reader.Read();
                         break;
-                    case "FractionOfDamageToSecondaryTargets":
+                    case "FractionOfHealingToSecondaryTargets":
                         if (reader.TokenType != JsonTokenType.Number) throw new JsonException("Expected number");
-                        fractionOfDamageToSecondaryTargets = reader.GetSingle();
+                        fractionOfHealingToSecondaryTargets = reader.GetSingle();
                         reader.Read();
                         break;
                     default:
@@ -130,12 +123,11 @@ namespace SoulSmith.Battle.Effects.Damage
             }
 
             if (string.IsNullOrEmpty(formula)) throw new JsonException("Formula cannot be null or empty");
-            if (damageType == DamageType.Null) throw new JsonException("DamageType cannot be Null");
 
-            return new FormulaDamageEffect(formula, damageType, aOEStyle, fractionOfDamageToSecondaryTargets, targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects);
+            return new FormulaHealingEffect(formula, aOEStyle, fractionOfHealingToSecondaryTargets, targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects);
         }
 
-        public override void Write(Utf8JsonWriter writer, FormulaDamageEffect value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, FormulaHealingEffect value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

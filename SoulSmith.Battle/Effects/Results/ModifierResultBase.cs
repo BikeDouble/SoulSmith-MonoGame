@@ -10,12 +10,12 @@ namespace SoulSmith.Battle.Effects.Results
 {
     public class ModifierResultBase : ResultBase
     {
-        public ModifierResultBase(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
+        public ModifierResultBase(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyModifier modifier, ResultBase parentResult, PayloadBase payload, IEffectOriginator originator)
             : base(sender, target, parentResult, payload, originator)
         {
             Modifier = modifier ?? throw new ArgumentNullException(nameof(modifier));
         }
 
-        public IModifier Modifier { get; }
+        public IReadOnlyModifier Modifier { get; }
     }
 }

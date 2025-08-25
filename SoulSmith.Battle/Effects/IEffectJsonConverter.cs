@@ -2,6 +2,7 @@
 using System.Text.Json;
 using SoulSmith.Battle.Effects.Modifier;
 using SoulSmith.Battle.Effects.Damage;
+using SoulSmith.Battle.Effects.Healing;
 
 namespace SoulSmith.Battle.Effects
 {
@@ -42,6 +43,11 @@ namespace SoulSmith.Battle.Effects
                     value = JsonSerializer.Deserialize<FormulaDamageEffect>(ref reader, options);
                     reader.Read();
                     break;
+                case "HealingFormula":
+                case "FormulaHealing":
+                    value = JsonSerializer.Deserialize<FormulaHealingEffect>(ref reader, options);
+                    reader.Read();
+                    break;
                 case "Modifier":
                     value = JsonSerializer.Deserialize<AddModifierEffect>(ref reader, options);
                     reader.Read();
@@ -52,6 +58,11 @@ namespace SoulSmith.Battle.Effects
                     break;
                 case "ReapplyPayloadModifier":
                     value = JsonSerializer.Deserialize<ReapplyPayloadModifierEffect>(ref reader, options);
+                    reader.Read();
+                    break;
+                case "RemoveModifier": // The RemoveModifier effect will never be deserialized from json, only called in code, therefore reroute to RemoveModifierWithMergeKey
+                case "RemoveModifierWithMergeKey":
+                    value = JsonSerializer.Deserialize<RemoveModifierWithMergeKeyEffect>(ref reader, options);
                     reader.Read();
                     break;
                 default:

@@ -4,6 +4,8 @@ namespace SoulSmith.Battle.Modifiers
 {
     public interface IReadOnlyModifier : IEffectOriginator
     {
+        public IReadOnlyUnit Host { get; }
+        public IReadOnlyUnit Applier { get; }
         public string IconKey { get; }
         public int Duration { get; }
         public DurationStyle DurationStyle { get; }

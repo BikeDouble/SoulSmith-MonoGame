@@ -14,7 +14,8 @@ namespace SoulSmith.Battle.Modifiers.Effect
     {
         OnTakingHitDamage,
         OnGivingHitDamage,
-        OnOtherModifierRemovesItselfFromHost
+        OnOtherModifierRemovesItselfFromHost,
+
     }
 
     public class EffectModifierTriggerStyleJsonConverter : JsonConverter<EffectModifierTriggerStyle>

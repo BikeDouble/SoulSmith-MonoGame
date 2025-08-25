@@ -88,7 +88,8 @@
                 "Rampage": "Moves/SingleEmotion/Anger/rampage.json",
                 "Simmer": "Moves/SingleEmotion/Anger/simmer.json",
                 "SingleHit": "Moves/SingleEmotion/Anger/angerSingleHit.json",
-                "TeamHit": "Moves/SingleEmotion/Anger/angerTeamHit.json"
+                "TeamHit": "Moves/SingleEmotion/Anger/angerTeamHit.json",
+                "HealOffStacks": "Moves/SingleEmotion/Anger/healOffStacks.json"
             },
             "Joy": {
                 "CheerOn": "Moves/SingleEmotion/Joy/cheerOn.json",

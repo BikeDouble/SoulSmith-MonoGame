@@ -1,0 +1,27 @@
+{
+    "Name": "Refuse",
+    "EmotionTag": 4,
+    "TargetingStyle": "Self",
+    "Description": {
+        "LocalizationKey": "Move/Anger/HealOffStacks",
+        "LocalizationVariables": {
+            "HealPercent": 200
+        }
+    },
+    "Effects": [
+        {
+            "Type": "RemoveModifierWithMergeKey",
+            "Effect": {
+                "MergeKey": "AngerInnateStack",
+                "TargetingStyle": "self"
+            }
+        },
+        {
+            "Type": "FormulaHealing",
+            "Effect": {
+                "Formula": "(((parentResult as ModifierResultBase)?.Modifier as IReadOnlyModAmountModifier)?.ModAmount ?? 0) * 2",
+                "TargetingStyle": "self"
+            }
+        }   
+    ]
+}

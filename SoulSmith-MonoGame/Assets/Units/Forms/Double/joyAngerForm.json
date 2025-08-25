@@ -1,5 +1,5 @@
 {
-    "FriendlyName": "Exultation",
+    "FriendlyName": "Pride",
     "Sprite": {
         "Type": "ZonedResource",
         "Key": "ZonedResources/UnitSprites/Forms/Double/JoyAnger"
@@ -16,6 +16,10 @@
         {
             "Item": "DoubleEmotion/JoyAnger/LoadedTripleHit",
             "Weight": 60
+        },
+        {
+            "Item": "SingleEmotion/Anger/HealOffStacks",
+            "Weight": 6000
         }
     ],
     "Emotion": 5,

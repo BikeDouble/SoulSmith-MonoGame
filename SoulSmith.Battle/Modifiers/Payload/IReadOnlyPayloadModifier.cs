@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Modifiers.Payload
 {
-    public interface IReadOnlyPayloadModifier : IReadOnlyModifier
+    public interface IReadOnlyPayloadModifier : IReadOnlyModAmountModifier
     {
         public EffectModifierTriggerStyle TriggerStyle { get; }
         public float ModAmount { get; }

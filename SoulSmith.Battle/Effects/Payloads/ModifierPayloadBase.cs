@@ -10,11 +10,11 @@ namespace SoulSmith.Battle.Effects.Payloads
 {
     public class ModifierPayloadBase : PayloadBase
     {
-        public ModifierPayloadBase(IReadOnlyUnit sender, IReadOnlyUnit target, IModifier modifier, ResultBase parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
+        public ModifierPayloadBase(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyModifier modifier, ResultBase parentResult, IReadOnlyEffect generatingEffect, IEffectOriginator originator, IEnumerable<IEffect> immediateAfterEffects = null) : base(sender, target, parentResult, generatingEffect, originator, immediateAfterEffects)
         {
             Modifier = modifier;
         }
 
-        public IModifier Modifier { get; }
+        public IReadOnlyModifier Modifier { get; }
     }
 }

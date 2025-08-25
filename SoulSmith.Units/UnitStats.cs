@@ -62,12 +62,15 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
     public int GetBaseStat(StatType statType)
 	{
-		return _statsList[statType];
+		if (!_statsList.StatsDict.ContainsKey(statType)) throw new KeyNotFoundException($"StatType {statType} not found in UnitStats.");
+        return _statsList[statType];
 	}
 
 	public void SetStat(StatType statType, int newValue)
 	{
-		_statsList[statType] = newValue;
+		if (!_statsList.StatsDict.ContainsKey(statType)) throw new KeyNotFoundException($"StatType {statType} not found in UnitStats.");
+		if (statType != StatType.CurHealth && statType != StatType.CurDecay) throw new ArgumentOutOfRangeException($"StatType {statType} cannot have its base value modified.");
+        _statsList[statType] = newValue;
     }
 
     /// <summary>
@@ -136,7 +139,8 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 	private void RemoveModifier(object sender, RemoveModifierEventArgs e)
 	{
-		IModifier modifier = e.Modifier;
+		IModifier modifier = this._modifiers.FirstOrDefault(m => m== e.Modifier);
+		if (modifier == null) throw new ArgumentException("Modifier to be removed not found in UnitStats.");
         modifier.EnqueueEffectInputEventHandler -= EnqueueEffectInput;
 		_modifiersToBeRemoved.Add(modifier);
 
@@ -225,7 +229,7 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
     // Returns amount of hp actually gained, and sets the current health stat to the new value
     private int GainHP(int healing)
 	{
-		int newHealth = GetBaseStat(StatType.CurHealth + healing);
+		int newHealth = GetBaseStat(StatType.CurHealth) + healing;
 		SetStat(StatType.CurHealth, newHealth);
 
         int effectiveHealing = healing;
@@ -342,10 +346,10 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         switch (damageType)
         {
             case DamageType.Hit:
-				hpLoss = StandardDefenseCalculation(payload.ModifiedDamage, GetModStat(StatType.Defense));
+				hpLoss = StandardDefenseCalculation(payload.ModifiedAmount, GetModStat(StatType.Defense));
                 break;
 			case DamageType.Essence:
-                hpLoss = StandardDefenseCalculation(payload.ModifiedDamage, GetModStat(StatType.Defense));
+                hpLoss = StandardDefenseCalculation(payload.ModifiedAmount, GetModStat(StatType.Defense));
                 break;
             default:
 				throw new ArgumentException($"Unknown damage type: {damageType}");
@@ -445,8 +449,10 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
         }
 	}
 
-    private void ApplyModifier(IModifier modifier, IReadOnlyUnit sender)
+    private void ApplyModifier(IReadOnlyModifier modifierAsReadOnly, IReadOnlyUnit sender)
 	{
+		IModifier modifier = modifierAsReadOnly as IModifier;
+
 		if (modifier == null) return;
 
 		bool merged = false;

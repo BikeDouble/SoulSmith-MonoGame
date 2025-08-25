@@ -96,7 +96,7 @@ namespace SoulSmith.Battle.Emotions
                     return "Emotions/Single/Joy";
                 case SoulSmith.EmotionTags.EmotionTag.Wrath:
                     return "Emotions/Single/Anger";
-                case SoulSmith.EmotionTags.EmotionTag.Exultation:
+                case SoulSmith.EmotionTags.EmotionTag.Pride:
                     return "Emotions/Double/JoyAnger";
                 default:
                     throw new KeyNotFoundException($"Emotion with tag {emotionTag} does not have a predefined key.");
