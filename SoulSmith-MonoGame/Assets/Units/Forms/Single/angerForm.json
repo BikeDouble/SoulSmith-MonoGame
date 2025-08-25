@@ -15,7 +15,7 @@
         },
         {
             "Item": "SingleEmotion/Anger/Rampage",
-            "Weight": 6000
+            "Weight": 60
         },
         {
             "Item": "SingleEmotion/Anger/Simmer",
@@ -27,7 +27,7 @@
         },
         {
             "Item": "SingleEmotion/Anger/HealOffStacks",
-            "Weight": 6000
+            "Weight": 60
         }
     ],
     "Emotion": 4,

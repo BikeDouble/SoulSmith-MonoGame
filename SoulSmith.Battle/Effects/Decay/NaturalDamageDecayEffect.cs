@@ -3,7 +3,7 @@ using SoulSmith.Battle.Effects.Results;
 using SoulSmith.Battle.Effects.Visualization.Factory;
 using SoulSmith.Battle.Effects.Payloads;
 
-namespace SoulSmith.Battle.Effects.Damage
+namespace SoulSmith.Battle.Effects.Decay
 {
     public class NaturalDamageDecayEffect : VisualizedEffectBase, IEffect
     {

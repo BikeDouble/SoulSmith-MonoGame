@@ -16,10 +16,6 @@
         {
             "Item": "DoubleEmotion/JoyAnger/LoadedTripleHit",
             "Weight": 60
-        },
-        {
-            "Item": "SingleEmotion/Anger/HealOffStacks",
-            "Weight": 6000
         }
     ],
     "Emotion": 5,

@@ -9,6 +9,7 @@ using SoulSmith.Battle.Effects.Damage;
 using SoulSmith.Battle.Effects.Trigger;
 using SoulSmith.Battle.Effects.Payloads;
 using SoulSmith.Battle.Effects.Results;
+using SoulSmith.Battle.Effects.Decay;
 
 namespace SoulSmith.Units;
 public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
@@ -378,25 +379,45 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 
 		int ratedDecayGain = decayGain * GetModStat(StatType.DecayRate) / 100;
 
-		int effectiveDecay = CalculateEffectiveDecay(ratedDecayGain, this);
+		int ratedDecay = CalculateEffectiveDecay(ratedDecayGain, this);
 
-        if (effectiveDecay > 0)
+		int effectiveDecay = ratedDecay;
+
+		int maxHealth = GetBaseStat(StatType.MaxHealth);
+
+        if (ratedDecay > 0)
         {
-            int newDecay = GetBaseStat(StatType.CurDecay) + effectiveDecay;
-            SetStat(StatType.CurDecay, newDecay);
-        }
+            int newDecay = GetBaseStat(StatType.CurDecay) + ratedDecay;
 
-        ResultBase effectResult = new DecayResult(payload.Sender, payload.Target, effectiveDecay, payload.ParentResult, payload, payload.Originator);
+			if (newDecay > maxHealth)
+            {
+				effectiveDecay -= (newDecay - maxHealth);
+				newDecay = maxHealth;
+            }
+
+			SetStat(StatType.CurDecay, newDecay);
+        }
 
         int undecayedHealthRoom = GetModStat(StatType.MaxHealth) - GetModStat(StatType.CurDecay);
 
-		if (GetModStat(StatType.CurHealth) > undecayedHealthRoom)
-		{
-			SetStat(StatType.CurHealth, undecayedHealthRoom);
-            if (GetModStat(StatType.CurHealth) <= 0) CallForDeath(payload.Sender, effectResult);
+		if (undecayedHealthRoom < 0) undecayedHealthRoom = 0;
+
+        int hpLost = 0;
+
+		int currentHealth = GetModStat(StatType.CurHealth);
+
+        if (currentHealth > undecayedHealthRoom)
+        {
+            hpLost = currentHealth - undecayedHealthRoom;
+            SetStat(StatType.CurHealth, undecayedHealthRoom);
         }
 
-		return effectResult;
+        ResultBase effectResult = new DecayResult(payload.Sender, payload.Target, effectiveDecay, hpLost, payload.ParentResult, payload, payload.Originator);
+
+        
+        if (GetModStat(StatType.CurHealth) <= 0) CallForDeath(payload.Sender, effectResult);
+
+        return effectResult;
     }
 
 	private ResultBase ExecuteHealingPayload(HealingPayload payload)
