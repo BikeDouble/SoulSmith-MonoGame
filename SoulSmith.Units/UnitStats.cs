@@ -34,26 +34,6 @@ public class UnitStats : SoulSmithObject, IReadOnlyUnitStats
 		_timeOnBoard = timeOnBoard;
 	}
 
-	public void LoadEmotionAttributes(EmotionTags.EmotionTag emotionTag)
-	{
-		EmotionTags.EmotionTag emotion = emotionTag;
-
-		if (emotion == null)
-		{
-			Trace.TraceError("Null emotion with tag: " + emotionTag);
-			return;
-		}
-		
-		/*ReadOnlyCollection<ModifierTemplateWithArgs> modifierTemplates = emotion.PermanentModifiers; //TODO make emotion globally accessible with emotion tag
-		if (modifierTemplates != null)
-		{
-			foreach (ModifierTemplateWithArgs modifierTemplate in modifierTemplates)
-			{
-                ApplyModifier(modifierTemplate, (IReadOnlyUnit)GetParent());
-            }
-		}*/
-	}
-
     public event EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler;
 
     private void EnqueueEffectInput(object sender, EnqueueEffectInputEventArgs e)

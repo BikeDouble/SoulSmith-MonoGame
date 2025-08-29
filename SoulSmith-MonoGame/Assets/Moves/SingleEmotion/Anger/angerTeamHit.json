@@ -3,7 +3,7 @@
     "EmotionTag": 4,
     "TargetingStyle": "Enemy",
     "Description": {
-        "LocalizationKey": "Move/HitDamage/AOE/Team/Attack",
+        "LocalizationKey": "Moves/Descriptions/Generic/TeamAttackHit",
         "LocalizationVariables": {
             "AttackPercent": 40
         }

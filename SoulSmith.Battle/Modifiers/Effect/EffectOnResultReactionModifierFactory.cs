@@ -1,16 +1,8 @@
-﻿using SoulSmith.Asset;
-using SoulSmith.Battle.Effects;
+﻿using SoulSmith.Battle.Effects;
 using SoulSmith.Battle.Effects.Results;
-using SoulSmith.Core;
-using SoulSmith.Drawing;
-using SoulSmith.UnitStats;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using SoulSmith.Localization;
 
 namespace SoulSmith.Battle.Modifiers.Effect
 {

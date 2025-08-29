@@ -3,7 +3,7 @@
     "EmotionTag": 4,
     "TargetingStyle": "Enemy",
     "Description": {
-        "LocalizationKey": "Move/HitDamage/Single/Attack",
+        "LocalizationKey": "Moves/Descriptions/Generic/AttackHit",
         "LocalizationVariables": {
             "AttackPercent": 100
         }

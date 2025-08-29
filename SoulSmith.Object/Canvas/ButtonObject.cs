@@ -13,6 +13,8 @@ public class ButtonObject : CanvasObject_MultipleResources
     private bool _hovered = false;
     private int _idleResourceIndex = -1;
     private int _hoveredResourceIndex = -1;
+    private float _timeHovered = 0f;
+    private float _timeUnhovered = 0f;
 
     public ButtonObject(
         string idleResourceKey,
@@ -36,6 +38,17 @@ public class ButtonObject : CanvasObject_MultipleResources
     public override void Process(double delta)
     {
         base.Process(delta);
+
+        if (_hovered)
+        {
+            _timeHovered += (float)delta;
+            _timeUnhovered = 0f;
+        }
+        else
+        {
+            _timeUnhovered += (float)delta;
+            _timeHovered = 0f;
+        }
     }
 
     protected override void CollectInputPacketsInternal(IReadOnlyPosition absolutePosition, IAddOnly<InputPacket> inputQueue)
@@ -81,6 +94,8 @@ public class ButtonObject : CanvasObject_MultipleResources
     public virtual void OnMouseEnter()
     {
         _hovered = true;
+        _timeUnhovered = 0f;
+        _timeHovered = 0f;
 
         if (_hoveredResourceIndex >= 0)
             SetActiveResourceIndex(_hoveredResourceIndex);
@@ -89,6 +104,8 @@ public class ButtonObject : CanvasObject_MultipleResources
     public virtual void OnMouseExit()
     {
         _hovered = false;
+        _timeHovered = 0f;
+        _timeUnhovered = 0f;
 
         SetActiveResourceIndex(_idleResourceIndex);
     }
@@ -100,6 +117,9 @@ public class ButtonObject : CanvasObject_MultipleResources
         ButtonPressedEventHandler?.Invoke(this, e);
     }
 
+    public bool IsHovered { get { return _hovered; } }
+    public float TimeHovered { get { return _timeHovered; } }
+    public float TimeUnhovered { get { return _timeUnhovered; } }
     protected ZonedDrawableResourceInstance IdleResource { get { return GetResource(_idleResourceIndex) as ZonedDrawableResourceInstance; } }
     protected ZonedDrawableResourceInstance HoveredResource { get { return GetResource(_hoveredResourceIndex) as ZonedDrawableResourceInstance; } }
 }

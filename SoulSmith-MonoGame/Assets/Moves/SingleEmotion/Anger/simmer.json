@@ -3,7 +3,7 @@
     "EmotionTag": 4,
     "TargetingStyle": "Self",
     "Description": {
-        "LocalizationKey": "Move/Anger/Simmer",
+        "LocalizationKey": "Moves/Descriptions/SingleEmotion/Anger/Simmer",
         "LocalizationVariables": {
             "Percent": 80
         }

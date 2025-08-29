@@ -3,11 +3,11 @@
     "EmotionTag": 5,
     "TargetingStyle": "Enemy",
     "Description": {
-        "LocalizationKey": "Move/HitDamage/Triple/Uneven/Attack",
+        "LocalizationKey": "Moves/Descriptions/Generic/TripleAttackHitUneven",
         "LocalizationVariables": {
-            "AttackPercentOne": 60,
-            "AttackPercentTwo": 30,
-            "AttackPercentThree": 15
+            "FirstAttackPercent": 60,
+            "SecondAttackPercent": 30,
+            "ThirdAttackPercent": 15
         }
     },
     "Effects": [

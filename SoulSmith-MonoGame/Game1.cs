@@ -20,6 +20,7 @@ using SoulSmith.Battle.Effects.Visualization.Factory;
 using SoulSmith.Battle.Modifiers;
 using SoulSmith.Drawing.Textures;
 using SoulSmith.Drawing.Zoned;
+using SoulSmith.Localization;
 
 namespace SoulSmith_MonoGame
 {
@@ -32,6 +33,7 @@ namespace SoulSmith_MonoGame
         private InputQueue _inputQueue;
 
         private AssetManager _assetManager;
+        private LocalizationManager _localizationManager;
 
         public static string ASSETMANIFESTPATH = "../../../Assets/assetManifest.json";
 
@@ -56,6 +58,7 @@ namespace SoulSmith_MonoGame
         protected override void Initialize()
         {
             SetTrace("debug.log");
+            InitializeLocalization();
             InitializeResources(Content, GraphicsDevice);
             _root = new Run();
 
@@ -70,7 +73,7 @@ namespace SoulSmith_MonoGame
 
         private void InitializeResources(ContentManager content, GraphicsDevice graphicsDevice)
         {
-            _assetManager = new(content, graphicsDevice, JsonSerializer.Deserialize<AssetManifest>(File.ReadAllText(ASSETMANIFESTPATH)));
+            _assetManager = new(content, graphicsDevice, JsonSerializer.Deserialize<KeyPathManifest>(File.ReadAllText(ASSETMANIFESTPATH)));
             _assetManager.RegisterUnitTemplateLoader(new UnitTemplateLoader());
             _assetManager.RegisterSoulSmithTextureLoader(new SoulSmithTextureLoader());
             _assetManager.RegisterZonedTextureLoader(new ZonedResourceLoader());
@@ -80,6 +83,12 @@ namespace SoulSmith_MonoGame
             _assetManager.RegisterEmotionLoader(new EmotionLoader());
             _assetManager.RegisterEffectVisualizationFactoryLoader(new EffectVisualizationFactoryLoader());
             _assetManager.RegisterModifierFactoryLoader(new ModifierFactoryLoader());
+        }
+
+        private void InitializeLocalization()
+        {
+            KeyPathManifest localizationManifest = JsonSerializer.Deserialize<KeyPathManifest>(File.ReadAllText("../../../Assets/localizations/english.json"));
+            _localizationManager = new LocalizationManager(localizationManifest);
         }
 
         protected override void Update(GameTime gameTime)

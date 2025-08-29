@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Text.Json;
 using SoulSmith.Collections;
+using SoulSmith.Core;
 
 namespace SoulSmith.Asset
 { 
@@ -34,12 +35,12 @@ namespace SoulSmith.Asset
         private IBasicAssetLoader _effectVisualizationFactoryLoader;
         private IBasicAssetLoader _modifierFactoryLoader;
 
-        public static void Initialize(ContentManager content, GraphicsDevice graphics, AssetManifest manifest)
+        public static void Initialize(ContentManager content, GraphicsDevice graphics, KeyPathManifest manifest)
         {
             if (Instance == null) Instance = new AssetManager(content, graphics, manifest);
         }
 
-        public AssetManager(ContentManager content, GraphicsDevice graphics, AssetManifest manifest)
+        public AssetManager(ContentManager content, GraphicsDevice graphics, KeyPathManifest manifest)
         {
             if (Instance == null) { Instance = this; }
 

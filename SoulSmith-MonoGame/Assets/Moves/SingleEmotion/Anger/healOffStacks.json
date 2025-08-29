@@ -3,7 +3,7 @@
     "EmotionTag": 4,
     "TargetingStyle": "Self",
     "Description": {
-        "LocalizationKey": "Move/Anger/HealOffStacks",
+        "LocalizationKey": "Moves/Descriptions/SingleEmotion/Anger/HealOffStacks",
         "LocalizationVariables": {
             "HealPercent": 200
         }

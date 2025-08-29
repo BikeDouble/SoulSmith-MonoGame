@@ -1,9 +1,9 @@
-﻿using SoulSmith.Battle.Effects.Results;
-using SoulSmith.Battle.Effects;
-using SoulSmith.Core;
+﻿using SoulSmith.Battle.Effects;
+using SoulSmith.Battle.Effects.Results;
 using SoulSmith.UnitStats;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using SoulSmith.Localization;
 
 namespace SoulSmith.Battle.Modifiers.Stat
 {

@@ -120,6 +120,13 @@
                 "ClawMarks": "Textures/Effects/Particles/clawMarks.png"
             }
         },
+        "Modifiers": {
+            "SingleEmotion": {
+                "Anger": {
+                    "RageIcon": "Textures/Modifiers/SingleEmotion/Anger/rageIcon.png"
+                }
+            }
+        },
         "SolidColor": {
             "Black": "Textures/SolidColor/black.png",
             "Green": "Textures/SolidColor/green.png"

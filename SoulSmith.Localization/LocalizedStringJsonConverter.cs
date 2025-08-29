@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SoulSmith.Core
+namespace SoulSmith.Localization
 {
     public class LocalizedStringJsonConverter : JsonConverter<string>
     {
@@ -40,13 +40,14 @@ namespace SoulSmith.Core
                         reader.Read();
                         break;
                     case "LocalizationKey":
+                    case "Key":
                         localizationKey = reader.GetString();
                         reader.Read();
                         break;
                 }
             }
 
-            return "Localization not yet implemented.";
+            return LocalizationManager.Instance.GetLocalizedString(localizationKey, variables);
         }
 
         public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)

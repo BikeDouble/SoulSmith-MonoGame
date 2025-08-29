@@ -3,7 +3,7 @@
     "EmotionTag": 1,
     "TargetingStyle": "Ally",
     "Description": {
-        "LocalizationKey": "Move/Modifier/CheerOn",
+        "LocalizationKey": "Moves/Descriptions/SingleEmotion/Joy/CheerOn",
         "LocalizationVariables": {
             "Percent": 30,
             "Duration": 2

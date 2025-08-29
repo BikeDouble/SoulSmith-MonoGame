@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 
-namespace SoulSmith.Core
+namespace SoulSmith.Localization
 {
     public class LocalizationVariablesJsonConverter : JsonConverter<Dictionary<string, string>>
     {

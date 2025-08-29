@@ -87,7 +87,6 @@ public class Unit : CanvasObject, IReadOnlyUnit
 		_stats.EnqueueEffectInputEventHandler += EnqueueEffectInput;
         _stats.ModifierAddEventHandler += OnModifierAdded;
         _stats.ModifierRemoveEventHandler += OnModifierRemoved;
-        _stats.LoadEmotionAttributes(_emotionTag);
     }
 
     public event EventHandler<EnqueueEffectInputEventArgs> EnqueueEffectInputEventHandler;

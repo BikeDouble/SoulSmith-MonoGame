@@ -16,6 +16,7 @@
     <ProjectReference Include="..\SoulSmith.Asset\SoulSmith.Asset.csproj" />
     <ProjectReference Include="..\SoulSmith.Core\SoulSmith.Core.csproj" />
     <ProjectReference Include="..\SoulSmith.EmotionTag\SoulSmith.EmotionTags.csproj" />
+    <ProjectReference Include="..\SoulSmith.Localization\SoulSmith.Localization.csproj" />
     <ProjectReference Include="..\SoulSmith.Object\SoulSmith.Object.csproj" />
     <ProjectReference Include="..\SoulSmith.Templates\SoulSmith.Templates.csproj" />
     <ProjectReference Include="..\SoulSmith.UnitStats\SoulSmith.UnitStats.csproj" />

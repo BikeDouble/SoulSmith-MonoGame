@@ -1,10 +1,10 @@
-using System.Collections.ObjectModel;
-using System.Text.Json.Serialization;
-using System.Text.Json;
+using SoulSmith.Asset;
 using SoulSmith.Battle.Effects;
 using SoulSmith.Collections;
-using SoulSmith.Core;
-using SoulSmith.Asset;
+using System.Collections.ObjectModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using SoulSmith.Localization;
 
 namespace SoulSmith.Battle.Moves
 {

@@ -6,22 +6,22 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SoulSmith.Asset
+namespace SoulSmith.Core
 {
-    [JsonConverter(typeof(AssetManifestJsonConverter))]
-    public class AssetManifest
+    [JsonConverter(typeof(KeyPathManifestJsonConverter))]
+    public class KeyPathManifest
     {
         public Dictionary<string, string> Manifest;
 
-        public AssetManifest(IDictionary<string, string> manifest) 
+        public KeyPathManifest(IDictionary<string, string> manifest) 
         {
             Manifest = new Dictionary<string, string>(manifest);
         }
     }
 
-    internal class AssetManifestJsonConverter : System.Text.Json.Serialization.JsonConverter<AssetManifest> //TODO test!
+    internal class KeyPathManifestJsonConverter : System.Text.Json.Serialization.JsonConverter<KeyPathManifest> //TODO test!
     {
-        public override AssetManifest Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override KeyPathManifest Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
                 throw new JsonException("Expected start of object");
@@ -52,7 +52,7 @@ namespace SoulSmith.Asset
                 reader.Read();
             }
 
-            return new AssetManifest(dict);
+            return new KeyPathManifest(dict);
         }
 
         private string AddToPath(string predecessors, string name)
@@ -69,7 +69,7 @@ namespace SoulSmith.Asset
             return predecessors.Remove(predecessors.Length - name.Length - 1);
         }
 
-        public override void Write(Utf8JsonWriter writer, AssetManifest value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, KeyPathManifest value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

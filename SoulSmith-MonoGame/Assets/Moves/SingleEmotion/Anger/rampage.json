@@ -3,7 +3,7 @@
     "EmotionTag": 4,
     "TargetingStyle": "Enemy",
     "Description": {
-        "LocalizationKey": "Move/Anger/Rampage",
+        "LocalizationKey": "Moves/Descriptions/SingleEmotion/Anger/Rampage",
         "LocalizationVariables": {
             "AttackPercent": 60
         }

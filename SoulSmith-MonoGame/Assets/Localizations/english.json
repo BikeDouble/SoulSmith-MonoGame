@@ -1,0 +1,30 @@
+{
+    "Moves": {
+        "Descriptions": {
+            "SingleEmotion": {
+                "Joy": {
+                    "CheerOn": "Make an ally deal {Percent}% of their Attack as essence damage to any unit they hit for {Duration} turns."
+                },
+                "Anger": {
+                    "HealOffStacks": "Remove all your rage stacks and heal for {HealPercent}% of the removed stacks.",
+                    "Rampage": "Hit an enemy with {AttackPercent}% of your Attack. If this hit kills the enemy, regain all your rage stacks.",
+                    "Simmer": "Gain {Percent}% rage stacks."
+                }
+            },
+            "DoubleEmotion": {
+                "JoyAnger": {
+
+                }
+            },
+            "Generic": {
+                "AttackHit": "Hit an enemy with {AttackPercent}% of your Attack.",
+                "DoubleAttackHit": "Hit an enemy with {AttackPercent}% of your Attack twice.",
+                "DoubleAttackHitUneven": "Hit an enemy with {FirstAttackPercent}% and then {SecondAttackPercent}% of your Attack.",
+                "TripleAttackHit": "Hit an enemy with {AttackPercent}% of your Attack three times.",
+                "TripleAttackHitUneven": "Hit an enemy with {FirstAttackPercent}%, then {SecondAttackPercent}%, then {ThirdAttackPercent}% of your Attack.",
+                "TeamAttackHit": "Hit all enemies with {AttackPercent}% of your Attack.",
+                "TeamDoubleAttackHit": "Hit all enemies with {AttackPercent}% of your Attack twice."
+            }
+        }
+    }
+}

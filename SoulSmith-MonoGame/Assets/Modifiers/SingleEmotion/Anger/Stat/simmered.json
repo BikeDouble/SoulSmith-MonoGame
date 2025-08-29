@@ -8,7 +8,7 @@
         "DurationStyle": "payloadmodifications",
         "Alignment": "buff",
         "IsModifierVisible": true,
-        "IconKey": "Textures/Units/Forms/JoyV1",
+        "IconKey": "Textures/Modifiers/SingleEmotion/Anger/RageIcon",
         "FriendlyName": "Enraged",
         "MergeKey": "AngerInnateStack",
         "Description": {

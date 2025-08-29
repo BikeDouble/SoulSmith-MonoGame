@@ -29,6 +29,7 @@
     <ProjectReference Include="..\SoulSmith.Drawing\SoulSmith.Drawing.csproj" />
     <ProjectReference Include="..\SoulSmith.Game\SoulSmith.Runs.csproj" />
     <ProjectReference Include="..\SoulSmith.Input\SoulSmith.Input.csproj" />
+    <ProjectReference Include="..\SoulSmith.Localization\SoulSmith.Localization.csproj" />
     <ProjectReference Include="..\SoulSmith.Object\SoulSmith.Object.csproj" />
     <ProjectReference Include="..\SoulSmith.Polygon\SoulSmith.Shapes.csproj" />
     <ProjectReference Include="..\SoulSmith.Units\SoulSmith.Units.csproj" />
