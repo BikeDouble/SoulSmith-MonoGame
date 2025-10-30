@@ -64,6 +64,15 @@ public class TeamPosition : CanvasObject, IReadOnlyTeamPosition
 		OnUnitLeaveCombat();
     }
 
+    public void PlayUnitDeathAnimation()
+    {
+        if (!_containsUnit)
+        {
+            return;
+        }
+        _unit.PlayDeathAnimation();
+    }
+
     public void KillUnit()
     {
         if (!_containsUnit)

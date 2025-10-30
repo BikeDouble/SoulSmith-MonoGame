@@ -27,6 +27,10 @@ namespace SoulSmith.Drawing
                     SimpleTextInstance simpleText = new SimpleTextInstance(wrappedFontResource);
                     resource = simpleText;
                     break;
+                case "textboxes":
+                    IAssetWrapper<TextBox> textBox = AssetManager.Instance.GetTextBox<TextBox>(key);
+                    resource = new TextBoxInstance(textBox);
+                    break;  
                 case "textures":
                 case "texture":
                 case "texture2d":

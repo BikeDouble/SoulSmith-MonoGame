@@ -2,6 +2,7 @@
 using SoulSmith.Drawing;
 using SoulSmith.Object.Canvas;
 using SoulSmith.UnitStats;
+using SoulSmith.Localization;
 
 namespace SoulSmith.Battle.Modifiers.Stat
 {
@@ -18,13 +19,13 @@ namespace SoulSmith.Battle.Modifiers.Stat
             bool isVisible,
             string iconKey,
             string friendlyName,
-            string description,
             string mergeKey)
-            : base(duration, durationStyle, alignment, originator, isVisible, iconKey, friendlyName, description, null, mergeKey)
+            : base(duration, durationStyle, alignment, originator, isVisible, iconKey, friendlyName, "", "", mergeKey)
         {
             StatType = statType;
             ModStyle = modType;
             ModAmount = modAmount;
+            UpdateDescription();
         }
 
 
@@ -51,6 +52,34 @@ namespace SoulSmith.Battle.Modifiers.Stat
             return ret;
         }
 
+        private void UpdateDescription()
+        {
+            string localizedStringKeu = StatType switch
+            {
+                StatType.Attack => ModStyle switch
+                {
+                    StatModStyle.Flat => ModAmount >= 0 ? "Modifiers/Descriptions/Generic/AttackUpFlat" : "Modifiers/Descriptions/Generic/AttackDownFlat",
+                    StatModStyle.AdditivePercent => ModAmount >= 0 ? "Modifiers/Descriptions/Generic/AttackUpAdditive" : "Modifiers/Descriptions/Generic/AttackDownAdditive",
+                    StatModStyle.MultiplicativePercent => ModAmount >= 0 ? "Modifiers/Descriptions/Generic/AttackUpMultiplicative" : "Modifiers/Descriptions/Generic/AttackDownMultiplicative",
+                    _ => "Modifier_Description_Default"
+                },
+                StatType.Defense => ModStyle switch
+                {
+                    StatModStyle.Flat => ModAmount >= 0 ? "Modifiers/Descriptions/Generic/DefenseUpFlat" : "Modifiers/Descriptions/Generic/DefenseDownFlat",
+                    StatModStyle.AdditivePercent => ModAmount >= 0 ? "Modifiers/Descriptions/Generic/DefenseUpAdditive" : "Modifiers/Descriptions/Generic/DefenseDownAdditive",
+                    StatModStyle.MultiplicativePercent => ModAmount >= 0 ? "Modifiers/Descriptions/Generic/DefenseUpMultiplicative" : "Modifiers/Descriptions/Generic/DefenseDownMultiplicative",
+                    _ => "Modifier_Description_Default"
+                }
+            };
+
+            string localizedString = LocalizationManager.Instance.GetLocalizedString(localizedStringKeu, new Dictionary<string, string>
+            {
+                { "ModAmount", ModAmount.ToString() },
+            });
+
+            Description = localizedString;
+        }
+
         protected override bool MergeInternal(IModifier other)
         {
             if (!(other is StaticStatModifier otherStatModifier)) return false;
@@ -58,6 +87,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
             if (otherStatModifier.ModStyle != ModStyle) return false;
 
             ModAmount = StatTypeHelper.CombineModifiers(ModAmount, otherStatModifier.ModAmount, ModStyle);
+            UpdateDescription();
 
             return true;
         }

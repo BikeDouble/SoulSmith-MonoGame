@@ -55,7 +55,7 @@ public class ButtonObject : CanvasObject_MultipleResources
     {
         if (IsVisible())
         {
-            InputPacket packet = CreateInputPacket(ProcessInputs, absolutePosition, (IMultiZone)Resource, CLICKZONEKEY, true);
+            InputPacket packet = CreateInputPacket(ProcessInputs, absolutePosition, Zone, CLICKZONEKEY, true);
             inputQueue.Add(packet);
         }
 
@@ -120,6 +120,7 @@ public class ButtonObject : CanvasObject_MultipleResources
     public bool IsHovered { get { return _hovered; } }
     public float TimeHovered { get { return _timeHovered; } }
     public float TimeUnhovered { get { return _timeUnhovered; } }
+    public virtual IMultiZone Zone { get { return Resource as IMultiZone; } }
     protected ZonedDrawableResourceInstance IdleResource { get { return GetResource(_idleResourceIndex) as ZonedDrawableResourceInstance; } }
     protected ZonedDrawableResourceInstance HoveredResource { get { return GetResource(_hoveredResourceIndex) as ZonedDrawableResourceInstance; } }
 }

@@ -9,13 +9,6 @@
         "Alignment": "buff",
         "IsModifierVisible": true,
         "IconKey": "Textures/Units/Forms/JoyV1",
-        "FriendlyName": "Strengthened",
-        "Description": {
-            "LocalizationKey": "Modifiers/Stat/Static/RoundDuration/Attack/Additive",
-            "LocalizationVariables": {
-                "Percent": 300,
-                "Duration": 4
-            }
-        }
+        "FriendlyName": "Strengthened"
     }
 }

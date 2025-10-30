@@ -1,0 +1,14 @@
+{
+    "Format": {
+        "X": 118,
+        "Y": 170,
+        "Width": 392,
+        "Height": 172,
+        "BottomXOffset": -117,
+        "FontSize": 40,
+        "SpaceBetweenLines": -5,
+        "BorderPadding": 10,
+        "LinePositioning": "Top"
+    },
+    "Font": "Fonts/Raleway/Medium"
+}

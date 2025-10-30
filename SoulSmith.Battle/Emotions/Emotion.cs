@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using SoulSmith.Asset;
 using SoulSmith.Battle.Effects;
+using SoulSmith.EmotionTags;
 using SoulSmith.Templates;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
@@ -47,6 +48,11 @@ namespace SoulSmith.Battle.Emotions
             }
 
             return baseEmotionTags;
+        }
+
+        public static EmotionTag CombineTags(EmotionTag a, EmotionTag b)
+        {
+            return a | b; //TODO test
         }
 
         public void Dispose()

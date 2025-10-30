@@ -23,6 +23,7 @@ namespace SoulSmith.Asset
         private Cache _unitTemplateCache;
         private Cache _animationDataCache;
         private Cache _fontResourceCache;
+        private Cache _textBoxCache;
 
         // Loaders
         private IGraphicsAssetLoader _soulSmithTextureLoader;
@@ -32,6 +33,7 @@ namespace SoulSmith.Asset
         private IBasicAssetLoader _emotionLoader;
         private IBasicAssetLoader _animationLoader;
         private IBasicAssetLoader _fontResourceLoader;
+        private IBasicAssetLoader _textBoxLoader;
         private IBasicAssetLoader _effectVisualizationFactoryLoader;
         private IBasicAssetLoader _modifierFactoryLoader;
 
@@ -56,6 +58,7 @@ namespace SoulSmith.Asset
             _unitTemplateCache = new Cache();
             _animationDataCache = new Cache();
             _fontResourceCache = new Cache();
+            _textBoxCache = new Cache();
         }
 
         public void RegisterUnitTemplateLoader(IBasicAssetLoader loader)
@@ -137,6 +140,25 @@ namespace SoulSmith.Asset
             _fontResourceCache.CacheAsset(key, resource);
 
             return _fontResourceCache.GetAsset<T>(key);
+        }
+
+        public void RegisterTextBoxLoader(IBasicAssetLoader loader) { _textBoxLoader = loader; }
+
+        public IAssetWrapper<T> GetTextBox<T>(string key) where T : IDisposable
+        {
+            if (_textBoxCache.Contains(key)) return _textBoxCache.GetAsset<T>(key);
+
+            if (!_manifest.ContainsKey(key)) return null;
+
+            string textBoxFilepath = FILEPREFIX + _manifest[key];
+
+            IDisposable resource = _textBoxLoader.Load(textBoxFilepath);
+
+            if (resource == null) return null;
+
+            _textBoxCache.CacheAsset(key, resource);
+
+            return _textBoxCache.GetAsset<T>(key);
         }
 
         public void RegisterMoveLoader(IBasicAssetLoader loader) { _moveLoader = loader; }

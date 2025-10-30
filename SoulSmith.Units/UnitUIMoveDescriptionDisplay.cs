@@ -8,15 +8,17 @@ namespace SoulSmith.Units
 {
     public class UnitUIMoveDescriptionDisplay : CanvasObject
     {
+        public const string TEXTBOXKEY = "TextBoxes/Moves/InfoPopup";
+
         // Children
         private CanvasObject _label;
 
         public UnitUIMoveDescriptionDisplay(
-        string fontKey,
+        string resourceKey,
         Position position = null,
         IEnumerable<SoulSmithObject> children = null) :
         base(
-            fontKey,
+            resourceKey,
             position,
             children)
         {
@@ -30,8 +32,8 @@ namespace SoulSmith.Units
 
         private void InitializeLabel()
         {
-            IDrawableResource textResource = DrawHelpers.GetDrawableResourceInstance(UnitUIMoveButton.LABELFONTKEY);
-            _label = new CanvasObject(new Position(0, 0, UnitUIMoveButton.LABELWIDTHSCALE, UnitUIMoveButton.LABELHEIGHTSCALE, 0, 1), textResource);
+            IDrawableResource textResource = DrawHelpers.GetDrawableResourceInstance(TEXTBOXKEY);
+            _label = new CanvasObject(new Position(0, 0, 1, 1, 0, 1), textResource);
             _label.SetColor(new Color(UnitUIMoveButton.LABELBRIGHTNESS, UnitUIMoveButton.LABELBRIGHTNESS, UnitUIMoveButton.LABELBRIGHTNESS, 255));
             AddChild(_label);
             _label.UpdateResourceState("0");

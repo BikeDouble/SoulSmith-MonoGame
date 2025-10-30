@@ -235,7 +235,16 @@ public partial class CombatTeam : CanvasObject, IReadOnlyCombatTeam
 		_moveSelector.ReceiveTarget(target);
 	}
 
-	public void HideMoveSelectUI()
+	public void PlayDeathAnimationForUnit(IReadOnlyUnit unit)
+	{
+		TeamPosition position = GetPositionWithUnit(unit);
+		if (position != null)
+		{
+			position.PlayUnitDeathAnimation();
+		}
+    }
+
+    public void HideMoveSelectUI()
 	{
 		foreach (TeamPosition position in _teamPositions)
 		{

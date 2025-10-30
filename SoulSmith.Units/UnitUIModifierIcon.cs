@@ -1,15 +1,20 @@
-﻿using SoulSmith.Asset;
+﻿using Microsoft.Xna.Framework;
+using SoulSmith.Asset;
+using SoulSmith.Battle.Modifiers;
+using SoulSmith.Battle.Moves;
 using SoulSmith.Core;
 using SoulSmith.Drawing;
-using SoulSmith.Object.Canvas;
-using Microsoft.Xna.Framework;
 using SoulSmith.Drawing.Text;
-using SoulSmith.Battle.Modifiers;
+using SoulSmith.Object.Canvas;
+using SoulSmith.Shapes;
 
 namespace SoulSmith.Units
 {
-    public class UnitUIModifierIcon : CanvasObject
+    public class UnitUIModifierIcon : ButtonObject
     {
+        public const string HOVERZONEICONKEY = "ZonedResources/UI/Units/Modifiers/IconHoverZone";
+        public const string DESCRIPTIONDISPLAYBACKBOARDKEY = "Textures/UI/Units/Modifiers/InfoPopup";
+        public const float TIMEHOVEREDFORDESCRIPTIONDISPLAY = 0.2f;
         public readonly static Vector2 DURATIONTEXTPOSITION = new Vector2(UnitUIModifierDisplay.ICONSIZE / 2);
         public readonly static Vector2 TEXTSIZE = new Vector2(UnitUIModifierDisplay.ICONSIZE * 3 / 4);
         public readonly static Vector2 STATUSTEXTPOSITION = new Vector2(DURATIONTEXTPOSITION.X, DURATIONTEXTPOSITION.Y - UnitUIModifierDisplay.ICONSIZE / 4 - GAPBETWEENDURATIONANDSTATUSTEXT);
@@ -21,8 +26,9 @@ namespace SoulSmith.Units
         private CanvasObject _modifierIcon;
         private CanvasObject _statusTextDisplay;
         private CanvasObject _durationTextDisplay;
+        private UnitUIModifierDescriptionDisplay _descriptionDisplay;
 
-        public UnitUIModifierIcon(Position position, IReadOnlyModifier modifier) : base(position)
+        public UnitUIModifierIcon(Position position, IReadOnlyModifier modifier) : base(HOVERZONEICONKEY, HOVERZONEICONKEY, position)
         {
             UnMirrorable = true;
 
@@ -30,6 +36,30 @@ namespace SoulSmith.Units
             InitializeIcon(modifier);
             InitializeStatusTextDisplay(modifier);
             InitializeDurationTextDisplay(modifier);
+            InitializeDescriptionDisplay(modifier);
+        }
+
+        public override void Process(double delta)
+        {
+            base.Process(delta);
+
+            if (TimeHovered > TIMEHOVEREDFORDESCRIPTIONDISPLAY) _descriptionDisplay.Show();
+        }
+
+        public override void OnMouseExit()
+        {
+            base.OnMouseExit();
+
+            _descriptionDisplay.Hide();
+        }
+
+        private void InitializeDescriptionDisplay(IReadOnlyModifier modifier)
+        {
+            _descriptionDisplay = new UnitUIModifierDescriptionDisplay(DESCRIPTIONDISPLAYBACKBOARDKEY, new Position(new Vector2(UnitUIModifierDisplay.ICONSIZE / 2, 0), new Vector2(0.27f, 0.27f), 0, 10));
+            _descriptionDisplay.Hide();
+            _descriptionDisplay.UpdateDescription(modifier.Description);
+            _descriptionDisplay.SetOriginPlacement(OriginPlacement.LeftMiddle);
+            AddChild(_descriptionDisplay);
         }
 
         private void InitializeIcon(IReadOnlyModifier modifier)

@@ -19,10 +19,9 @@
         "ModifierIconKey": "Textures/SolidColor/Black",
         "FriendlyName": "Cheered On",
         "Description": {
-            "LocalizationKey": "Modifiers/Joy/CheeredOn",
+            "LocalizationKey": "Modifiers/Descriptions/SingleEmotion/Joy/CheeredOn",
             "LocalizationVariables": {
-                "Percent": 30,
-                "Duration": 1
+                "Percent": 30
             }
         }
     }

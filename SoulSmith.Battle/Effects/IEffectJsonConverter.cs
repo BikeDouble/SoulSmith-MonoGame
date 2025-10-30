@@ -53,7 +53,7 @@ namespace SoulSmith.Battle.Effects
                     reader.Read();
                     break;
                 case "ReapplyStatModifier":
-                    value = JsonSerializer.Deserialize<ReapplyStatModifierEffect>(ref reader, options);
+                    value = JsonSerializer.Deserialize<ReapplyStaticStatModifierEffect>(ref reader, options);
                     reader.Read();
                     break;
                 case "ReapplyPayloadModifier":

@@ -83,6 +83,7 @@ namespace SoulSmith_MonoGame
             _assetManager.RegisterEmotionLoader(new EmotionLoader());
             _assetManager.RegisterEffectVisualizationFactoryLoader(new EffectVisualizationFactoryLoader());
             _assetManager.RegisterModifierFactoryLoader(new ModifierFactoryLoader());
+            _assetManager.RegisterTextBoxLoader(new TextBoxLoader());
         }
 
         private void InitializeLocalization()

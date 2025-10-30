@@ -15,12 +15,12 @@ using System.Threading.Tasks;
 
 namespace SoulSmith.Battle.Effects.Modifier
 {
-    [JsonConverter(typeof(ReapplyStatModifierEffectJsonConverter))]
-    public class ReapplyStatModifierEffect : VisualizedEffectBase, IEffect
+    [JsonConverter(typeof(ReapplyStaticStatModifierEffectJsonConverter))]
+    public class ReapplyStaticStatModifierEffect : VisualizedEffectBase, IEffect
     {
         private float _portionOfModToRefund;
 
-        public ReapplyStatModifierEffect(
+        public ReapplyStaticStatModifierEffect(
             float portionOfModToRefund,
             TargetingStyle targetingStyle,
             EffectVisualizationFactory visualizationFactory,
@@ -52,7 +52,6 @@ namespace SoulSmith.Battle.Effects.Modifier
                 currentStatMod.IsVisible,
                 currentStatMod.IconKey,
                 currentStatMod.FriendlyName,
-                currentStatMod.Description,
                 currentStatMod.MergeKey);
 
             AddModifierPayload payload = new AddModifierPayload(sender, GetTrueTarget(sender, target, combat), modifier, parentEffectResult, this, originator, ImmediateAfterEffects);
@@ -61,9 +60,9 @@ namespace SoulSmith.Battle.Effects.Modifier
         }
     }
 
-    public class ReapplyStatModifierEffectJsonConverter : JsonConverter<ReapplyStatModifierEffect>
+    public class ReapplyStaticStatModifierEffectJsonConverter : JsonConverter<ReapplyStaticStatModifierEffect>
     {
-        public override ReapplyStatModifierEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ReapplyStaticStatModifierEffect Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected start of an object");
 
@@ -121,10 +120,10 @@ namespace SoulSmith.Battle.Effects.Modifier
 
             if (!portionOfModToRefund.HasValue) throw new JsonException("Portion of mod to refund is required");
 
-            return new ReapplyStatModifierEffect(portionOfModToRefund.Value, targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects);
+            return new ReapplyStaticStatModifierEffect(portionOfModToRefund.Value, targetingStyle, visualizationFactory, additionalDelay, immediateAfterEffects);
         }
 
-        public override void Write(Utf8JsonWriter writer, ReapplyStatModifierEffect value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ReapplyStaticStatModifierEffect value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

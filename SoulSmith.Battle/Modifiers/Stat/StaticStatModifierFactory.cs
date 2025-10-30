@@ -20,9 +20,8 @@ namespace SoulSmith.Battle.Modifiers.Stat
             bool isVisible,
             string iconKey,
             string friendlyName,
-            string description,
             string mergeKey)
-            : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, description, mergeKey)
+            : base(duration, durationStyle, alignment, isVisible, iconKey, friendlyName, "", mergeKey)
         {
             StatType = statType;
             ModStyle = statModStyle;
@@ -35,7 +34,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
 
         public override IModifier CreateModifier(IReadOnlyUnit sender, IReadOnlyUnit target, IReadOnlyCombat combat, IEffectOriginator originator, ResultBase parentResult)
         {
-            return new StaticStatModifier(StatType, ModStyle, ModAmount, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, Description, MergeKey);
+            return new StaticStatModifier(StatType, ModStyle, ModAmount, Duration, DurationStyle, ModifierAlignment, originator, IsModifierVisible, ModifierIconKey, FriendlyName, MergeKey);
         }
     }
 
@@ -56,7 +55,6 @@ namespace SoulSmith.Battle.Modifiers.Stat
             bool? isModifierVisible = null;
             string modifierIconKey = null;
             string friendlyName = "Unnamed";
-            string description = string.Empty;
             string mergeKey = null;
 
             while (reader.TokenType != JsonTokenType.EndObject)
@@ -111,11 +109,6 @@ namespace SoulSmith.Battle.Modifiers.Stat
                         friendlyName = reader.GetString() ?? "Unnamed";
                         reader.Read();
                         break;
-                    case "Description":
-                        LocalizedStringJsonConverter localizedStringConverter = new LocalizedStringJsonConverter();
-                        description = localizedStringConverter.Read(ref reader, typeof(string), options);
-                        reader.Read();
-                        break;
                     case "MergeKey":
                         mergeKey = reader.GetString();
                         reader.Read();
@@ -134,7 +127,7 @@ namespace SoulSmith.Battle.Modifiers.Stat
             if (modifierAlignment == null) throw new JsonException("Expected 'ModifierAlignment' property to be present.");
             if ((modifierIconKey == null) && (isModifierVisible.Value)) throw new JsonException("Expected 'ModifierIconKey' property to be present.");
             
-            return new StaticStatModifierFactory(statType, modStyle, modAmount.Value, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, description, mergeKey);
+            return new StaticStatModifierFactory(statType, modStyle, modAmount.Value, duration, durationStyle.Value, modifierAlignment.Value, isModifierVisible.Value, modifierIconKey, friendlyName, mergeKey);
         }
 
         public override void Write(Utf8JsonWriter writer, StaticStatModifierFactory value, JsonSerializerOptions options)

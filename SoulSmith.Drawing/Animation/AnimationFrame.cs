@@ -150,7 +150,7 @@ namespace SoulSmith.Drawing.Animation
                         reader.Read();
                         break;
                     case "width":
-                    case "Width":
+                    case "WordWidthMultiplier":
                         if (reader.TokenType != JsonTokenType.Number) throw new JsonException("Expected number");
                         sourceWidth = reader.GetInt32();
                         reader.Read();

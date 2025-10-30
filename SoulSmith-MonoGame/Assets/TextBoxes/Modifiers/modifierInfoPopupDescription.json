@@ -1,0 +1,14 @@
+{
+    "Format": {
+        "X": 0,
+        "Y": 0,
+        "Width": 512,
+        "Height": 256,
+        "BottomXOffset": 0,
+        "FontSize": 60,
+        "SpaceBetweenLines": -5,
+        "BorderPadding": 10,
+        "LinePositioning": "Top"
+    },
+    "Font": "Fonts/Raleway/Medium"
+}

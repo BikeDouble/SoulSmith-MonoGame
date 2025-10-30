@@ -27,11 +27,11 @@ namespace SoulSmith.Drawing.Text
             font.DrawText(spriteBatch, text, position.Coordinates, color, position.Rotation, origin);
         }
 
-        public Vector2 MeasureString(string text)
+        public Vector2 MeasureString(string text, int? fontSize = null)
         {
-            int fontSize = STANDARDFONTSIZE;
+            fontSize ??= STANDARDFONTSIZE;
 
-            DynamicSpriteFont font = _fontSystem.GetFont(fontSize);
+            DynamicSpriteFont font = _fontSystem.GetFont(fontSize.Value);
 
             return font.MeasureString(text);
         }

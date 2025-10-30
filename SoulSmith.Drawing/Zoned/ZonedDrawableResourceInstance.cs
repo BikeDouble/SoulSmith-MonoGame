@@ -18,7 +18,7 @@ namespace SoulSmith.Drawing.Zoned
         private Dictionary<string, IZone> _zones;
         private IDrawableResource _resource;
 
-        public SamplerState SamplerState { get { return _resource.SamplerState; } }
+        public SamplerState SamplerState { get { return _resource?.SamplerState ?? SamplerState.PointClamp; } }
 
         public ZonedDrawableResourceInstance(IDictionary<string, IZone> zones, IDrawableResource resource) //TODO add multizone support
         {
@@ -146,10 +146,10 @@ namespace SoulSmith.Drawing.Zoned
             return _zones.Values.FirstOrDefault();
         }
 
-        public int Width { get { return _resource.Width; } }
-        public int Height { get { return _resource.Height; } }
-        public Vector2 Origin { get { return _resource.Origin; } }
-        public OriginPlacement OriginPlacement { get { return _resource.OriginPlacement; } set { _resource.OriginPlacement = value; } }
+        public int Width { get { return _resource?.Width ?? 0; } }
+        public int Height { get { return _resource?.Height ?? 0; } }
+        public Vector2 Origin { get { return _resource?.Origin ?? Vector2.Zero; } }
+        public OriginPlacement OriginPlacement { get { return _resource?.OriginPlacement ?? OriginPlacement.Center; } set { if (_resource != null) _resource.OriginPlacement = value; } }
     }
 
     public class ZonedDrawableResourceInstanceJsonConverter : JsonConverter<ZonedDrawableResourceInstance>
@@ -192,7 +192,7 @@ namespace SoulSmith.Drawing.Zoned
             }
 
             if (zones == null || zones.Count == 0) throw new JsonException("Zones cannot be null or empty");
-            if (resource == null) throw new JsonException("Resource cannot be null");
+            //if (resource == null) throw new JsonException("Resource cannot be null");
 
             return new ZonedDrawableResourceInstance(zones, resource);
         }

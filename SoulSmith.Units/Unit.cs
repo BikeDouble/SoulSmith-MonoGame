@@ -165,8 +165,8 @@ public class Unit : CanvasObject, IReadOnlyUnit
 						_sprite.PlayAttackAnimation();
 				} else if (triggerResult.Trigger == CombatTrigger.OnUnitDeath)
 				{
-					if (triggerResult.Target == this)
-						_sprite.PlayDeathAnimation();
+					//if (triggerResult.Target == this)
+					//	_sprite.PlayDeathAnimation();
 				}	
 				break;
 			case DamageResult damageResult:
@@ -180,6 +180,11 @@ public class Unit : CanvasObject, IReadOnlyUnit
 
 		UpdateUI();
 	}
+
+	public void PlayDeathAnimation()
+	{
+		_sprite.PlayDeathAnimation();
+    }
 
     public int GetModStat(StatType stat)
 	{
@@ -288,6 +293,7 @@ public class Unit : CanvasObject, IReadOnlyUnit
 	public UnitUI UI { get { return _uI; } }
 	public UnitSprite Sprite { get { return _sprite; } }
 	public IReadOnlyUnitSprite ReadOnlySprite { get { return _sprite; } }
+	public EmotionTags.EmotionTag EmotionTag { get { return _emotionTag; } }
     public string FriendlyName { get { return _friendlyName; } }
     public int MaxHealth { get { return _stats.GetModStat(StatType.MaxHealth); } }
     public int CurHealth { get { return _stats.GetModStat(StatType.CurHealth); } }

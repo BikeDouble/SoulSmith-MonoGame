@@ -26,5 +26,34 @@
                 "TeamDoubleAttackHit": "Hit all enemies with {AttackPercent}% of your Attack twice."
             }
         }
+    },
+    "Modifiers": {
+        "Descriptions": {
+            "SingleEmotion": {
+                "Joy": {
+                    "CheeredOn": "Deal {Percent}% of your Attack as essence damage to any unit you hit."
+                }
+            },
+            "Generic": {
+                "AttackUpFlat": "Your Attack is increased by {ModAmount}.",
+                "AttackUpAdditive": "Your Attack is increased by {ModAmount}%, additively.",
+                "AttackUpMultiplicative": "Your Attack is increased by {ModAmount}%, multiplicatively.",
+                "AttackDownFlat": "Your Attack is decreased by {ModAmount}.",
+                "AttackDownAdditive": "Your Attack is decreased by {ModAmount}%, additively.",
+                "AttackDownMultiplicative": "Your Attack is decreased by {ModAmount}%, multiplicatively.",
+                "DefenseUpFlat": "Your Defense is increased by {ModAmount}.",
+                "DefenseUpAdditive": "Your Defense is increased by {ModAmount}%, additively.",
+                "DefenseUpMultiplicative": "Your Defense is increased by {ModAmount}%, multiplicatively.",
+                "DefenseDownFlat": "Your Defense is decreased by {ModAmount}.",
+                "DefenseDownAdditive": "Your Defense is decreased by {ModAmount}%, additively.",
+                "DefenseDownMultiplicative": "Your Defense is decreased by {ModAmount}%, multiplicatively.",
+                "IncreaseHitDamageFlat": "Your hit damage is increased by {ModAmount}.",
+                "IncreaseHitDamageAdditive": "Your hit damage is increased by {ModAmount}%, additively.",
+                "IncreaseHitDamageMultiplicative": "Your hit damage is increased by {ModAmount}%, multiplicatively.",
+                "DecreaseHitDamageFlat": "Your hit damage is decreased by {ModAmount}.",
+                "DecreaseHitDamageAdditive": "Your hit damage is decreased by {ModAmount}%, additively.",
+                "DecreaseHitDamageMultiplicative": "Your hit damage is decreased by {ModAmount}%, multiplicatively."
+            }
+        }
     }
 }

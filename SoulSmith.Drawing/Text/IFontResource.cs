@@ -12,6 +12,6 @@ namespace SoulSmith.Drawing.Text
     public interface IFontResource : IDisposable
     {
         public void DrawText(IReadOnlyPosition position, Color color, string text, Vector2 origin, SpriteBatch spriteBatch);
-        public Vector2 MeasureString(string text);
+        public Vector2 MeasureString(string text, int? fontSize = null);
     }
 }

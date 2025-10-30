@@ -68,7 +68,6 @@ namespace SoulSmith.Battle.Moves
 
             string name = string.Empty;
             string localizationKey = string.Empty;
-            Dictionary<string, string> localizationVariables = null;
             string description = "Localization keys not yet implemented.";
             IEffect[] effects = null;
             EmotionTags.EmotionTag emotionTag = EmotionTags.EmotionTag.Typeless;

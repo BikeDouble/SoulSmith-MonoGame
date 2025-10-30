@@ -55,7 +55,7 @@ public partial class Run : CanvasObject
 
 	private void InitializeCombat()
 	{
-        _combatManager = new Combats.Combat(new MoveSelector_PlayerInput(), new MoveSelector_PlayerInput());
+        _combatManager = new Combats.Combat(new MoveSelector_PlayerInput(), new MoveSelector_Random());
 		AddChild(_combatManager);
 
 		_combatManager.OfferUnitToInventoryEventHandler += OnOfferUnitToInventory;

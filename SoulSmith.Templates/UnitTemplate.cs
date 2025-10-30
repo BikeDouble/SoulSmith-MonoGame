@@ -40,6 +40,30 @@ public class UnitTemplate : IDisposable
 
     public void Dispose() { }
 
+    public UnitTemplate GetModdedCopy(IDictionary<StatType, int> statslist, int? timeOnBoard = null)
+    {
+        var newStats = new Dictionary<StatType, int>(statslist);
+        
+        foreach (var stat in this.StatsList)
+        {
+            if (!newStats.ContainsKey(stat.Key))
+            {
+                newStats[stat.Key] = stat.Value;
+            }
+        }
+
+        return new UnitTemplate(
+            newStats,
+            this.MoveSetWeightedList,
+            this.Emotion,
+            timeOnBoard ?? this.TimeOnBoard,
+            this.SpriteName,
+            this.SpriteType,
+            this.SpriteSizeMod,
+            this.FriendlyName
+        );
+    }
+
     public ReadOnlyDictionary<StatType, int> StatsList { get { return _statsList; } }
     public IReadOnlySoulSmithWeightedList<string> MoveSetWeightedList { get {  return _moveSetString; } }
     public EmotionTags.EmotionTag Emotion { get { return _emotion; } }

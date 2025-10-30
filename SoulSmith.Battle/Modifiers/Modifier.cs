@@ -141,7 +141,7 @@ namespace SoulSmith.Battle.Modifiers
         public string IconKey { get; private set; }
         public ModifierAlignment Alignment { get; private set; }
         public string FriendlyName { get; private set; }
-        public string Description { get; private set; }
+        public string Description { get; protected set; }
         public string MergeKey { get; private set; }
         public virtual string StatusText { get; private set; }
         public IEffectOriginator Originator { get; private set; }

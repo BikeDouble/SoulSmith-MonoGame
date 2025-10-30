@@ -504,7 +504,8 @@ public class Combat : CanvasObject, IReadOnlyCombat
 	private void OnUnitDeathCall(object sender, UnitDeathCallArgs e) 
 	{
 		_effectQueue.OnUnitDeath(e.Killer, e.CallingUnit, e.KillingEffectResult);
-	}
+		GetTeamWithUnit(e.CallingUnit).PlayDeathAnimationForUnit(e.CallingUnit);
+    }
 
 	private void OnUnitRetreatCall(object sender, UnitRetreatCallArgs e)
 	{

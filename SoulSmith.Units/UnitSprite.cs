@@ -52,6 +52,7 @@ public class UnitSprite : CanvasObject, IReadOnlyUnitSprite
     {
         UpdateResourceState(SPRITEDEATHSTATE, FORCEDEATHSTATE);
         _timeInAnimation = DEATHANIMATIONDURATION;
+        _timeUntilHurtAnimationAllowed = double.MaxValue; // Prevent hurt animation from playing after death animation
     }
 
     public void PlayAttackAnimation()

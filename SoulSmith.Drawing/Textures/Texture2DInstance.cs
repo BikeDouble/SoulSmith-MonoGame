@@ -92,6 +92,8 @@ namespace SoulSmith.Drawing.Textures
                     return new Vector2(Texture.Width / 2, Texture.Height);
                 case OriginPlacement.TopMiddle:
                     return new Vector2(Texture.Width / 2, 0);
+                case OriginPlacement.LeftMiddle:
+                    return new Vector2(0, Texture.Height / 2);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(OriginPlacement), OriginPlacement, "Invalid origin placement specified.");
             }

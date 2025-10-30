@@ -13,5 +13,6 @@ namespace SoulSmith.Drawing
         BottomMiddle,
         TopMiddle,
         BottomRight,
+        LeftMiddle
     }
 }
